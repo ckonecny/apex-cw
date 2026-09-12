@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'theme/app_colors.dart';
 import 'theme/theme_controller.dart';
+import 'l10n/strings.dart';
 import 'ui/home_screen.dart';
 
 void main() async {
@@ -10,6 +11,7 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   await ThemeController.load();
+  await Strings.load();
   runApp(const MorserinoApp());
 }
 
@@ -35,15 +37,18 @@ class MorserinoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: ThemeController.mode,
-      builder: (context, mode, _) => MaterialApp(
-        title: 'Morserino Mobile',
-        debugShowCheckedModeBanner: false,
-        themeMode: mode,
-        theme: _theme(AppColors.light, Brightness.light),
-        darkTheme: _theme(AppColors.dark, Brightness.dark),
-        home: const HomeScreen(),
+    return ValueListenableBuilder<int>(
+      valueListenable: Strings.lang,
+      builder: (context, _, __) => ValueListenableBuilder<ThemeMode>(
+        valueListenable: ThemeController.mode,
+        builder: (context, mode, _) => MaterialApp(
+          title: 'Morserino Mobile',
+          debugShowCheckedModeBanner: false,
+          themeMode: mode,
+          theme: _theme(AppColors.light, Brightness.light),
+          darkTheme: _theme(AppColors.dark, Brightness.dark),
+          home: const HomeScreen(),
+        ),
       ),
     );
   }

@@ -190,9 +190,22 @@ class CwGenerator(private val tone: CwTonePlugin) {
         private set
     @Volatile private var paused  = false
 
+    // Bumped on every stop()/start()/playOne() call. A thread only fires its
+    // callbacks (onWord/onChar/onWaiting/onDone) while its OWN snapshot still
+    // equals the live counter — once stop() bumps it, an already-interrupted
+    // thread's still-in-flight finally block is silenced instead of firing a
+    // stale event into whatever session started next. Without this, a delayed
+    // onDone from a just-stopped generatorLoop() could arrive a few
+    // milliseconds into the NEXT session and get mistaken for that session's
+    // own completion (e.g. the start marker's playOne() completing before it
+    // actually played, or the new session ending itself right after start) —
+    // found by tracing a real, intermittent repro via logcat.
+    @Volatile private var generation = 0
+
     /** Play a single string (for Echo Trainer). Calls onDone when finished. */
     fun playOne(text: String) {
         if (running) return
+        val myGen = ++generation
         running = true
         thread = Thread({
             try {
@@ -205,26 +218,28 @@ class CwGenerator(private val tone: CwTonePlugin) {
                 // Trainer / Learn New Char / Preview) — before the operator was
                 // allowed to key their echo. Now onDone fires right after the
                 // last element's own natural key-up.
-                playWord(text, trailingGap = false)
+                playWord(text, myGen, trailingGap = false)
             } catch (_: InterruptedException) {
                 Thread.currentThread().interrupt()
             } finally {
                 running = false
                 CwAudioNative.setPlaying(false)
-                onDone?.invoke(false)
+                if (myGen == generation) onDone?.invoke(false)
             }
         }, "cw-gen-one").also { it.isDaemon = true; it.start() }
     }
 
     fun start() {
         if (running) return
+        val myGen = ++generation
         running = true
-        thread = Thread({ generatorLoop() }, "cw-generator").also {
+        thread = Thread({ generatorLoop(myGen) }, "cw-generator").also {
             it.isDaemon = true; it.start()
         }
     }
 
     fun stop() {
+        generation++
         running = false
         paused  = false
         thread?.interrupt()
@@ -242,7 +257,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
     }
 
     // ── Main loop ─────────────────────────────────────────────────────────────
-    private fun generatorLoop() {
+    private fun generatorLoop(myGen: Int) {
         var stoppedByMaxWords = false
         try {
             var lastText: String? = null
@@ -257,10 +272,10 @@ class CwGenerator(private val tone: CwTonePlugin) {
                 repeatNext = false
                 wordCount++
 
-                playWord(text)
+                playWord(text, myGen)
                 if (eachWordTwice && running) {
                     sleepMs(ditMs() * wordGapExtra())
-                    playWord(text)
+                    playWord(text, myGen)
                 }
 
                 if (!running) break
@@ -269,7 +284,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
                     // Pause and wait for the operator's paddle choice (dit=repeat, dah=next),
                     // exactly like the real device's autoStop "halt" state.
                     awaitingChoice = true
-                    onWaiting?.invoke()
+                    if (myGen == generation) onWaiting?.invoke()
                     while (awaitingChoice && running) Thread.sleep(20)
                     repeatNext = pendingRepeat
                 } else if (maxWords > 0 && wordCount >= maxWords) {
@@ -288,7 +303,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
         } finally {
             awaitingChoice = false
             CwAudioNative.setPlaying(false)
-            onDone?.invoke(stoppedByMaxWords)
+            if (myGen == generation) onDone?.invoke(stoppedByMaxWords)
         }
     }
 
@@ -427,8 +442,8 @@ class CwGenerator(private val tone: CwTonePlugin) {
     // gap after the WORD's very last character — that gap only exists to space
     // this word from whatever plays next, which for a standalone single-word
     // playback is nothing, so keeping it just adds dead time before onDone.
-    private fun playWord(text: String, trailingGap: Boolean = true) {
-        onWord?.invoke(text)
+    private fun playWord(text: String, myGen: Int, trailingGap: Boolean = true) {
+        if (myGen == generation) onWord?.invoke(text)
         val upper = text.uppercase()
         var i = 0
         while (i < upper.length && running) {
@@ -438,20 +453,20 @@ class CwGenerator(private val tone: CwTonePlugin) {
             val nextIndex = i + (if (consumesTwo) 2 else 1)
             val isLastToken = nextIndex >= upper.length
             if (consumesTwo) {
-                playChar(twoChar!!, trailingGap || !isLastToken)
+                playChar(twoChar!!, myGen, trailingGap || !isLastToken)
             } else {
                 val c = upper[i].toString()
                 if (c == " ") {
                     sleepMs(ditMs() * wordGapExtra())
                 } else {
-                    playChar(c, trailingGap || !isLastToken)
+                    playChar(c, myGen, trailingGap || !isLastToken)
                 }
             }
             i = nextIndex
         }
     }
 
-    private fun playChar(ch: String, withTrailingGap: Boolean = true) {
+    private fun playChar(ch: String, myGen: Int, withTrailingGap: Boolean = true) {
         val morse = morseTable[ch] ?: return
         for ((idx, sym) in morse.withIndex()) {
             if (!running) break
@@ -465,7 +480,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
         // Fire only once the character has actually finished playing — matches the
         // real device's dispGeneratedChar(), called at KEY_DOWN→KEY_UP once keying
         // for that char is done, not when it starts.
-        onChar?.invoke(ch)
+        if (myGen == generation) onChar?.invoke(ch)
         // inter-character gap: interCharSpace total dits; -1 because last inter-element already consumed 1 dit
         if (withTrailingGap) sleepMs(ditMs() * (interCharSpace - 1))
     }

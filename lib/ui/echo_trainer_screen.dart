@@ -9,6 +9,7 @@ import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
+import '../l10n/strings.dart';
 
 enum _State { idle, playing, receiving, correct, wrong }
 
@@ -66,7 +67,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Call Signs, no File Player). Random(0) and Adapt. Rand.(4) are handled
   // locally in Dart (see _fetchTarget()), so their ordinals here are unused.
   static const _kochModeOrdinals = [0, 5, 1, 3, 0];
-  static const _kochModeLabels = ['Zufall', 'Abkürzungen', 'Wörter', 'Gemischt', 'Adapt. Rand.'];
+  static List<String> get _kochModeLabels => [
+    Strings.t('mode_random'), Strings.t('mode_abbrevs'), Strings.t('mode_words'),
+    Strings.t('mode_mixed'), 'Adapt. Rand.',
+  ];
   int    _kochModeIndex = 0;
   // "Adapt. Rand." (KOCH_ADAPTIVE): weighted-random character draw — wrong
   // answers raise a character's weight (drawn more often), right answers
@@ -293,6 +297,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // frameWordForDisplay = true), skipped for Learn New Chr/Preview Char
     // (KOCH_LEARN/KOCH_PREVIEW set startFirst = false).
     if (widget.fixedTarget == null) {
+      // Sync playback speed before the marker plays — otherwise it plays at
+      // whatever wpm the native generator was left at by a previous session
+      // (same fix as the CW Generator screen's start marker).
+      await _genChannel.invokeMethod('setWpm', _currentWpm).catchError((_) {});
       await _playSignal('VVVKA');
       if (!mounted || !_sessionActive) return;
       setState(() {
@@ -581,11 +589,15 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return Scaffold(
+    // Rebuild this whole screen the instant the language changes — see the
+    // matching comment in settings_screen.dart's build().
+    return ValueListenableBuilder<int>(
+      valueListenable: Strings.lang,
+      builder: (context, _, __) => Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
         backgroundColor: c.surface,
-        title: Text(widget.title ?? 'Echo Trainer',
+        title: Text(widget.title ?? Strings.t('echo_trainer_title'),
             style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
                 color: c.textPrimary)),
         leading: IconButton(
@@ -688,13 +700,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           ),
         ],
       ),
+      ),
     );
   }
 
   Widget _buildLog(double fontSize) {
     final c = AppColors.of(context);
     if (_log.isEmpty) {
-      return Align(alignment: Alignment.bottomLeft, child: Text('▶ START drücken',
+      return Align(alignment: Alignment.bottomLeft, child: Text(Strings.t('press_start'),
           style: TextStyle(fontFamily: 'CwMono', fontSize: 20,
               color: c.textDisabled, fontStyle: FontStyle.italic)));
     }
@@ -737,11 +750,11 @@ class _StatusLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final (text, color) = switch (state) {
-      _State.idle      => ('Drücke START', c.textDisabled),
-      _State.playing   => ('Anhören …', c.warning),
-      _State.receiving => ('Senden …', c.info),
-      _State.correct   => ('✓ Richtig!', c.accent),
-      _State.wrong     => ('✗ Falsch', c.danger),
+      _State.idle      => (Strings.t('echo_status_idle'), c.textDisabled),
+      _State.playing   => (Strings.t('echo_status_playing'), c.warning),
+      _State.receiving => (Strings.t('echo_status_receiving'), c.info),
+      _State.correct   => (Strings.t('echo_status_correct'), c.accent),
+      _State.wrong     => (Strings.t('echo_status_wrong'), c.danger),
     };
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -795,17 +808,22 @@ class _StatsBar extends StatelessWidget {
 }
 
 class _EchoModeSelector extends StatelessWidget {
-  static const _defaultLabels = ['Zufall', 'Wörter', 'Rufzeichen', 'Gemischt', 'Practice Set', 'Abkürzungen'];
-  final List<String> labels;
+  final List<String>? labels;
   final int selected;
   final bool enabled;
   final ValueChanged<int> onChanged;
   const _EchoModeSelector({required this.selected, required this.enabled, required this.onChanged,
-      this.labels = _defaultLabels});
+      this.labels});
+
+  static List<String> _defaultLabels() => [
+    Strings.t('mode_random'), Strings.t('mode_words'), Strings.t('mode_callsigns'),
+    Strings.t('mode_mixed'), 'Practice Set', Strings.t('mode_abbrevs'),
+  ];
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
+    final effectiveLabels = labels ?? _defaultLabels();
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
       child: LayoutBuilder(builder: (context, constraints) {
@@ -814,7 +832,7 @@ class _EchoModeSelector extends StatelessWidget {
         final itemWidth = (constraints.maxWidth - gap * (perRow - 1)) / perRow;
         return Wrap(
           spacing: gap, runSpacing: gap,
-          children: List.generate(labels.length, (i) {
+          children: List.generate(effectiveLabels.length, (i) {
             final active = i == selected;
             return SizedBox(width: itemWidth, child: GestureDetector(
               onTap: enabled ? () => onChanged(i) : null,
@@ -825,7 +843,7 @@ class _EchoModeSelector extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: active ? c.accentPurple : c.border),
                 ),
-                child: Text(labels[i], textAlign: TextAlign.center,
+                child: Text(effectiveLabels[i], textAlign: TextAlign.center,
                     style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
                         color: !enabled
                             ? c.textDisabled

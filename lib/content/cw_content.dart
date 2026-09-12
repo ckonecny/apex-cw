@@ -8,6 +8,8 @@
 // these 45; the app doesn't support prosigns as individually orderable
 // Koch characters yet, so those 6 are left out here (tracked in the
 // portation canvas).
+import '../l10n/strings.dart';
+
 const kochSeqM32 = [
   'M','K','R','S','U','A','P','T','L','O','W','I','.',
   'N','J','E','F','0','Y','V',',','G','5','/','Q','9',
@@ -85,7 +87,11 @@ List<String> kochActiveChars(int level, [List<String>? sequence]) {
 }
 
 // Human-readable mode names (index matches CwGenerator.Mode enum in Kotlin).
-const genModeNames = ['Zufallszeichen', 'Wörter', 'Rufzeichen', 'Gemischt', 'Practice Set', 'Abkürzungen'];
+// A function (not a const list) since the labels are localized.
+List<String> genModeNames() => [
+  Strings.t('mode_random'), Strings.t('mode_words'), Strings.t('mode_callsigns'),
+  Strings.t('mode_mixed'), 'Practice Set', Strings.t('mode_abbrevs'),
+];
 
 // Practice Set: parses a user-entered string into an ordered, de-duplicated
 // char list — same rule as Koch's Custom Chars (order doesn't matter here,

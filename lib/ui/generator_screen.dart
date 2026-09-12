@@ -8,6 +8,7 @@ import 'echo_trainer_screen.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
 import 'widgets/pinch_zoom_text.dart';
+import '../l10n/strings.dart';
 
 class GeneratorScreen extends StatefulWidget {
   final bool kochMode;  // true = Koch Trainer, false = CW Generator
@@ -33,7 +34,8 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   // Matches the real device's Koch-nested Generator submenu (Random/CW Abbrevs/
   // English Words/Mixed — no Call Signs, no File Player).
   static const _kochModeOrdinals = [0, 5, 1, 3];
-  static const _kochModeLabels = ['Zufall', 'Abkürzungen', 'Wörter', 'Gemischt'];
+  static List<String> get _kochModeLabels =>
+      [Strings.t('mode_random'), Strings.t('mode_abbrevs'), Strings.t('mode_words'), Strings.t('mode_mixed')];
   int  _kochModeIndex = 0;
   int  _outputCase = 0;   // 0=lower, 1=UPPER — display only, content stays uppercase internally
   // 0=Display off, 1=Char by char, 2=Word by word (matches M32 "CW Gen Displ")
@@ -148,19 +150,35 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     // clears it.
     if (mounted) setState(() { _running = true; _waiting = false; _pendingWord = ''; });
 
+    // Sync playback speed/spacing BEFORE the marker plays — otherwise it
+    // plays with whatever the native generator was left at (its own
+    // defaults, on the very first session this app run) instead of the
+    // currently configured values, since only the 'start' call further below
+    // would otherwise update them.
+    await _genChannel.invokeMethod('setWpm', _wpm);
+    await _genChannel.invokeMethod('setInterCharSpace', _interCharSpace);
+    await _genChannel.invokeMethod('setInterWordSpace', _interWordSpace);
+    if (mounted && _log.isNotEmpty) setState(() => _appendText(' '));   // gap from the previous session's last char
+
     // Starting signal, sent at the start of every fresh session (m32_v6.ino:
     // clearText = "vvvA"; frameWordForDisplay = true). Audio: V V V <KA>. The
     // ON-SCREEN text is NOT the raw "vvvA" — dispGeneratedChar() runs every
     // character through cleanUpProSigns() before display (m32_v6.ino:2686),
     // which expands the single-char prosign code 'A' to "<ka>" (see the table
     // in cleanUpProSigns() and the "vvv<ka>" opener mentioned in its own
-    // comment at m32_v6.ino:2707) — so the real device shows "vvv<ka>".
+    // comment at m32_v6.ino:2707) — so the real device shows "vvv<ka>",
+    // revealed character-by-character as it plays (same as regular content —
+    // _onEvent appends each 'char' event live while _awaitingSignal), not
+    // all at once after the whole marker finishes.
     await _playSignal('VVVKA');
     if (!mounted || !_running) return;   // stopped while the start signal played
-    setState(() {
-      if (_log.isNotEmpty) _appendText(' ');   // gap from the previous session's last char
-      _appendText('vvv<ka>', bold: true);
-    });
+
+    // The real device leaves a full InterWord-Space gap between the marker
+    // and the first generated word. playOne() plays the marker with
+    // trailingGap=false (so Echo Trainer doesn't force an artificial wait
+    // before the operator can answer), which otherwise leaves zero gap here.
+    await Future.delayed(Duration(milliseconds: _ditMs() * _interWordSpace));
+    if (!mounted || !_running) return;
 
     await _genChannel.invokeMethod('start', {
       'wpm':            _wpm,
@@ -208,12 +226,11 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   /// End signal, sent when "Max # of Words" is reached (m32_v6.ino: "+",
   /// i.e. <ar>, with frameWordForDisplay = true) — not sent on manual Stop.
   Future<void> _playEndSignal() async {
-    await _playSignal('+');
-    if (mounted) setState(() {
-      if (_log.isNotEmpty) _appendText(' ');   // gap from the last generated char
-      _appendText('+', bold: true);
-    });
+    if (mounted && _log.isNotEmpty) setState(() => _appendText(' '));   // gap from the last generated char
+    await _playSignal('+');   // its 'char' event appends the '+' itself, see _onEvent
   }
+
+  int _ditMs() => (1200 / _wpm).round();
 
   Future<void> _choosePaddle(bool repeat) async {
     await _genChannel.invokeMethod('choosePaddle', repeat);
@@ -227,7 +244,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   void _openLearnNewChar() {
     final newest = _activeKochChars[(_kochLevel - 1).clamp(0, _activeKochChars.length - 1)];
     Navigator.push(context, MaterialPageRoute(builder: (_) => EchoTrainerScreen(
-      fixedTarget: newest, title: 'Neu: $newest',
+      fixedTarget: newest, title: Strings.t('gen_new_char_title').replaceFirst('{ch}', newest),
     )));
   }
 
@@ -249,7 +266,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     );
     if (picked != null && mounted) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => EchoTrainerScreen(
-        fixedTarget: picked, title: 'Vorhören: $picked',
+        fixedTarget: picked, title: Strings.t('gen_preview_char_title').replaceFirst('{ch}', picked),
       )));
     }
   }
@@ -276,8 +293,15 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     final value = ev['value'] as String;
     if (_awaitingSignal) {
       // This event belongs to a start/end marker's playOne(), not the main
-      // generator — swallow it; the marker text is appended explicitly.
-      if (type == 'done') _signalDone?.complete();
+      // generator. Reveal each character as it plays — same char-by-char
+      // timing as regular content — translating the KA prosign token to its
+      // display form; 'word'/'waiting' carry no display text of their own
+      // and are swallowed, and 'done' resolves the marker's completer.
+      if (type == 'char' && mounted) {
+        setState(() => _appendText(value == 'KA' ? '<ka>' : value.toLowerCase(), bold: true));
+      } else if (type == 'done') {
+        _signalDone?.complete();
+      }
       return;
     }
     if (!mounted) return;
@@ -312,7 +336,11 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final title = widget.kochMode ? 'Koch Trainer' : 'CW Generator';
-    return Scaffold(
+    // Rebuild this whole screen the instant the language changes — see the
+    // matching comment in settings_screen.dart's build().
+    return ValueListenableBuilder<int>(
+      valueListenable: Strings.lang,
+      builder: (context, _, __) => Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
         backgroundColor: c.surface,
@@ -387,17 +415,17 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: Row(children: [
                 Expanded(child: _KochToolButton(
-                  icon: Icons.fiber_new, label: 'Neu lernen',
+                  icon: Icons.fiber_new, label: Strings.t('gen_learn_new'),
                   onTap: _openLearnNewChar,
                 )),
                 const SizedBox(width: 12),
                 Expanded(child: _KochToolButton(
-                  icon: Icons.hearing, label: 'Vorhören',
+                  icon: Icons.hearing, label: Strings.t('gen_preview'),
                   onTap: _openPreviewChar,
                 )),
                 const SizedBox(width: 12),
                 Expanded(child: _KochToolButton(
-                  icon: Icons.repeat, label: 'Echo üben',
+                  icon: Icons.repeat, label: Strings.t('gen_practice_echo'),
                   onTap: _openKochEcho,
                 )),
               ]),
@@ -411,14 +439,14 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Row(children: [
                 Expanded(child: _ChoiceButton(
-                  label: '◀ WIEDERHOLEN', sub: 'Dit',
+                  label: '◀ ${Strings.t('repeat_upper')}', sub: 'Dit',
                   color: c.warning,
                   enabled: _waiting,
                   onTap: () => _choosePaddle(true),
                 )),
                 const SizedBox(width: 12),
                 Expanded(child: _ChoiceButton(
-                  label: 'WEITER ▶', sub: 'Dah',
+                  label: '${Strings.t('next_upper')} ▶', sub: 'Dah',
                   color: c.info,
                   enabled: _waiting,
                   onTap: () => _choosePaddle(false),
@@ -454,6 +482,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           ),
         ],
       ),
+      ),
     );
   }
 
@@ -470,7 +499,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     // log, just at different granularity/timing (handled in _onEvent) — never
     // highlighted or shown while still being sent.
     if (_log.isEmpty) {
-      return Align(alignment: Alignment.bottomLeft, child: Text('▶ START drücken',
+      return Align(alignment: Alignment.bottomLeft, child: Text(Strings.t('press_start'),
           style: TextStyle(fontFamily: 'CwMono', fontSize: 20,
               color: c.textDisabled, fontStyle: FontStyle.italic)));
     }
@@ -548,11 +577,11 @@ class _PreviewCharSheet extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Text('Zeichen vorhören',
+          Text(Strings.t('gen_preview_chars_title'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 15,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
           const SizedBox(height: 4),
-          Text('Ganze Kurs-Sequenz — auch noch nicht gelernte Zeichen',
+          Text(Strings.t('gen_preview_chars_desc'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
           const SizedBox(height: 14),
           ConstrainedBox(
@@ -650,13 +679,13 @@ class _ChoiceButton extends StatelessWidget {
 class _ModeSelector extends StatelessWidget {
   final int selected;
   final ValueChanged<int> onChanged;
-  final List<String> labels;
-  const _ModeSelector({required this.selected, required this.onChanged,
-      this.labels = genModeNames});
+  final List<String>? labels;
+  const _ModeSelector({required this.selected, required this.onChanged, this.labels});
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
+    final effectiveLabels = labels ?? genModeNames();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: LayoutBuilder(builder: (context, constraints) {
@@ -665,7 +694,7 @@ class _ModeSelector extends StatelessWidget {
         final itemWidth = (constraints.maxWidth - gap * (perRow - 1)) / perRow;
         return Wrap(
           spacing: gap, runSpacing: gap,
-          children: List.generate(labels.length, (i) {
+          children: List.generate(effectiveLabels.length, (i) {
             final active = i == selected;
             return SizedBox(width: itemWidth, child: GestureDetector(
               onTap: () => onChanged(i),
@@ -682,7 +711,7 @@ class _ModeSelector extends StatelessWidget {
                         : c.border,
                   ),
                 ),
-                child: Text(labels[i],
+                child: Text(effectiveLabels[i],
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontFamily: 'CwMono', fontSize: 10,

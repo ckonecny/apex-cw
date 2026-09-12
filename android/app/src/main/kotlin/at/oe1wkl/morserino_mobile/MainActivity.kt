@@ -144,6 +144,14 @@ class MainActivity : FlutterActivity() {
                         result.success(null)
                     }
                     "setWpm"  -> { generator.wpm = (call.arguments as? Number)?.toInt() ?: 20; result.success(null) }
+                    "setInterCharSpace" -> {
+                        generator.interCharSpace = (call.arguments as? Number)?.toInt() ?: 3
+                        result.success(null)
+                    }
+                    "setInterWordSpace" -> {
+                        generator.interWordSpace = (call.arguments as? Number)?.toInt() ?: 7
+                        result.success(null)
+                    }
                     "choosePaddle" -> {
                         generator.choosePaddle(call.arguments as? Boolean ?: false)
                         result.success(null)

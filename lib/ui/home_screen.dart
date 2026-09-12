@@ -4,6 +4,7 @@ import 'generator_screen.dart';
 import 'echo_trainer_screen.dart';
 import 'settings_screen.dart';
 import '../theme/app_colors.dart';
+import '../l10n/strings.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,7 +12,11 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return Scaffold(
+    // Rebuild the instant the language changes — see the matching comment
+    // in settings_screen.dart's build().
+    return ValueListenableBuilder<int>(
+      valueListenable: Strings.lang,
+      builder: (context, _, __) => Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
         backgroundColor: c.surface,
@@ -35,7 +40,7 @@ class HomeScreen extends StatelessWidget {
             _ModeCard(
               icon: Icons.settings_input_component,
               title: 'CW Keyer',
-              subtitle: 'Morsetaste · Iambic · Touch-Paddle',
+              subtitle: Strings.t('home_keyer_subtitle'),
               color: c.accent,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const KeyerScreen())),
@@ -44,7 +49,7 @@ class HomeScreen extends StatelessWidget {
             _ModeCard(
               icon: Icons.graphic_eq,
               title: 'CW Generator',
-              subtitle: 'Zufallszeichen · Wörter · Rufzeichen',
+              subtitle: Strings.t('home_generator_subtitle'),
               color: c.info,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const GeneratorScreen())),
@@ -62,13 +67,14 @@ class HomeScreen extends StatelessWidget {
             _ModeCard(
               icon: Icons.repeat,
               title: 'Echo Trainer',
-              subtitle: 'Anhören · Nachsenden · Auswertung',
+              subtitle: Strings.t('home_echo_subtitle'),
               color: c.accentPurple,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const EchoTrainerScreen())),
             ),
           ],
         ),
+      ),
       ),
     );
   }

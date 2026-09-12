@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../content/cw_content.dart';
 import '../theme/app_colors.dart';
 import '../theme/theme_controller.dart';
+import '../l10n/strings.dart';
 
 enum _LearnState { idle, waitDit, waitDah, done }
 
@@ -258,10 +259,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       switch (type) {
         case 'step':
-          if (val == '1') { _learnState = _LearnState.waitDit; _learnMessage = 'Dit-Taste drücken …'; }
-          else            { _learnState = _LearnState.waitDah; _learnMessage = 'Dah-Taste drücken …'; }
+          if (val == '1') { _learnState = _LearnState.waitDit; _learnMessage = Strings.t('settings_press_dit_key'); }
+          else            { _learnState = _LearnState.waitDah; _learnMessage = Strings.t('settings_press_dah_key'); }
         case 'done':
-          _learnState = _LearnState.done; _learnMessage = 'Gespeichert: $val';
+          _learnState = _LearnState.done; _learnMessage = Strings.t('settings_saved').replaceFirst('{val}', val);
           _loadPaddleDesc();
           Future.delayed(const Duration(seconds: 2), () {
             if (mounted) setState(() => _learnState = _LearnState.idle);
@@ -301,11 +302,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return Scaffold(
+    // Rebuild this whole screen the instant the language changes — Strings.t()
+    // is a plain static lookup, not an InheritedWidget, so without this the
+    // already-built widgets here would only pick up the new language on their
+    // next unrelated rebuild (e.g. a slider drag), not immediately like Theme.
+    return ValueListenableBuilder<int>(
+      valueListenable: Strings.lang,
+      builder: (context, _, __) => Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
         backgroundColor: c.surface,
-        title: Text('Einstellungen',
+        title: Text(Strings.t('settings_title'),
             style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
@@ -317,14 +324,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
 
           // ── Darstellung ───────────────────────────────────────────────────
-          _SectionHeader('Darstellung'),
+          _SectionHeader(Strings.t('settings_appearance')),
           const SizedBox(height: 12),
           _SettingsCard(children: [
             ValueListenableBuilder<ThemeMode>(
               valueListenable: ThemeController.mode,
               builder: (context, mode, _) => _SegmentRow(
                 label: 'Theme',
-                options: const ['System', 'Hell', 'Dunkel'],
+                options: [Strings.t('theme_system'), Strings.t('theme_light'), Strings.t('theme_dark')],
                 selected: switch (mode) {
                   ThemeMode.light => 1,
                   ThemeMode.dark  => 2,
@@ -334,25 +341,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     [ThemeMode.system, ThemeMode.light, ThemeMode.dark][v]),
               ),
             ),
+            const _Div(),
+            ValueListenableBuilder<int>(
+              valueListenable: Strings.lang,
+              builder: (context, lang, _) => _SegmentRow(
+                label: Strings.t('settings_language'),
+                options: const ['Deutsch', 'English'],
+                selected: lang,
+                onChanged: Strings.set,
+              ),
+            ),
           ]),
 
           const SizedBox(height: 24),
 
           // ── Allgemein ──────────────────────────────────────────────────────
-          _SectionHeader('Allgemein'),
+          _SectionHeader(Strings.t('settings_general')),
           const SizedBox(height: 12),
           _SettingsCard(children: [
-            _LabeledSlider(label: 'Standard-WPM',        value: _wpm.toDouble(),
+            _LabeledSlider(label: Strings.t('settings_default_wpm'), value: _wpm.toDouble(),
                 min: 5, max: 60, divisions: 55, display: '$_wpm',
                 onChanged: (v) { setState(() => _wpm = v.round()); _saveLive(); }),
             const _Div(),
-            _LabeledSlider(label: 'Standard Koch-Level', value: _kochLevel.toDouble(),
+            _LabeledSlider(label: Strings.t('settings_default_koch_level'), value: _kochLevel.toDouble(),
                 min: 2, max: _activeKochChars.length.toDouble(),
                 divisions: _activeKochChars.length - 2,
                 display: '$_kochLevel',
                 onChanged: (v) { setState(() => _kochLevel = v.round()); _saveLive(); }),
             const _Div(),
-            _LabeledSlider(label: 'Tonhöhe (Hz)',        value: _pitch.toDouble(),
+            _LabeledSlider(label: Strings.t('settings_pitch'), value: _pitch.toDouble(),
                 min: 300, max: 900, divisions: 12, display: '$_pitch Hz',
                 onChanged: (v) { setState(() => _pitch = (v / 50).round() * 50); _saveLive(); }),
             const _Div(),
@@ -373,7 +390,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 12),
           _SettingsCard(children: [
             _SegmentRow(
-              label: 'Reihenfolge',
+              label: Strings.t('settings_sequence'),
               options: _kochSeqLabels,
               selected: _kochSeq,
               onChanged: _applyKochSeq,
@@ -381,7 +398,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             if (_kochSeq == 3) ...[
               const _Div(),
               _LabeledSlider(
-                label: 'LICW Einstiegspunkt',
+                label: Strings.t('settings_licw_entry_point'),
                 value: _licwCarouselStart.toDouble(),
                 min: 0, max: 13, divisions: 13,
                 display: '$_licwCarouselStart',
@@ -391,10 +408,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             if (_kochSeq == 4) ...[
               const _Div(),
               _CharSetField(
-                label: 'Eigene Zeichen (Reihenfolge = Lernreihenfolge)',
+                label: Strings.t('settings_custom_chars_label'),
                 initialValue: _customKochChars,
                 onChanged: _applyCustomKochChars,
-                countLabel: '${_activeKochChars.length} eindeutige Zeichen erkannt',
+                countLabel: Strings.t('settings_unique_chars_detected').replaceFirst('{n}', '${_activeKochChars.length}'),
               ),
             ],
           ]),
@@ -404,16 +421,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Practice Set ─────────────────────────────────────────────────────
           _SectionHeader('Practice Set'),
           const SizedBox(height: 4),
-          Text('Eigene Zeichenauswahl für CW-Gen-Modus "Practice Set" und Boost',
+          Text(Strings.t('settings_practice_set_desc'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
           const SizedBox(height: 12),
           _SettingsCard(children: [
             _CharSetField(
-              label: 'Zeichen',
+              label: Strings.t('settings_characters'),
               initialValue: _practiceChars,
               onChanged: _applyPracticeChars,
-              countLabel: '${_activePracticeChars.length} eindeutige Zeichen erkannt',
-              hint: 'z.B. QXZJ...',
+              countLabel: Strings.t('settings_unique_chars_detected').replaceFirst('{n}', '${_activePracticeChars.length}'),
+              hint: 'e.g. QXZJ...',
             ),
             const _Div(),
             Padding(
@@ -427,7 +444,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 4, bottom: 8),
-                  child: Text('Practice-Set-Zeichen in Zufallszeichen-Übungen häufiger ziehen',
+                  child: Text(Strings.t('settings_boost_practice_desc'),
                       style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
                           color: c.textFaint)),
                 ),
@@ -442,22 +459,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 12),
           _SettingsCard(children: [
             _SegmentRow(
-              label: 'Modus',
+              label: Strings.t('settings_mode'),
               options: const ['Iambic A', 'Iambic B', 'Ultimatic', 'Non-Squeeze', 'Straight'],
               selected: _keyerMode,
               onChanged: _applyKeyerMode,
             ),
             const _Div(),
-            _ToggleRow(label: 'Bestätigungston', value: _confirmTone,
+            _ToggleRow(label: Strings.t('settings_confirm_tone'), value: _confirmTone,
                 onChanged: (v) { setState(() => _confirmTone = v); _saveLive(); }),
           ]),
 
           const SizedBox(height: 24),
 
           // ── Abstände ───────────────────────────────────────────────────────
-          _SectionHeader('Abstände'),
+          _SectionHeader(Strings.t('settings_spacing')),
           const SizedBox(height: 4),
-          Text('Abstand in Dit-Längen, wie am Morserino (normal = 3 / 7)',
+          Text(Strings.t('settings_spacing_desc'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
           const SizedBox(height: 12),
           _SettingsCard(children: [
@@ -478,7 +495,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _SettingsCard(children: [
             _SegmentRow(
               label: 'CW Gen Displ',
-              options: const ['Aus', 'Zeichenweise', 'Wortweise'],
+              options: [Strings.t('opt_off'), Strings.t('opt_by_char'), Strings.t('opt_by_word')],
               selected: _genDisplay,
               onChanged: (v) { setState(() => _genDisplay = v); _saveLive(); },
             ),
@@ -490,14 +507,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onChanged: (v) { setState(() => _stopAfterItem = v); _saveLive(); }),
                 Padding(
                   padding: EdgeInsets.only(bottom: 8),
-                  child: Text('Pausiert nach jedem Wort: Dit = wiederholen, Dah = nächstes Wort',
+                  child: Text(Strings.t('settings_stop_next_rep_desc'),
                       style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
                           color: c.textFaint)),
                 ),
               ]),
             ),
             const _Div(),
-            _ToggleRow(label: 'Jedes Wort 2×', value: _eachWordTwice,
+            _ToggleRow(label: Strings.t('settings_each_word_twice'), value: _eachWordTwice,
                 onChanged: (v) { setState(() => _eachWordTwice = v); _saveLive(); }),
             const _Div(),
             _SegmentRow(
@@ -507,23 +524,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: (v) { setState(() => _randomOption = v); _saveLive(); },
             ),
             const _Div(),
-            _LabeledSlider(label: 'Gruppen-Länge', value: _groupLength.toDouble(),
+            _LabeledSlider(label: Strings.t('settings_group_length'), value: _groupLength.toDouble(),
                 min: 2, max: 8, divisions: 6, display: '$_groupLength',
                 onChanged: (v) { setState(() => _groupLength = v.round()); _saveLive(); }),
             const _Div(),
-            _LabeledSlider(label: 'Max. Wortlänge', value: _wordLengthMax.toDouble(),
+            _LabeledSlider(label: Strings.t('settings_max_word_length'), value: _wordLengthMax.toDouble(),
                 min: 0, max: 8, divisions: 8,
-                display: _wordLengthMax == 0 ? 'alle' : '$_wordLengthMax',
+                display: _wordLengthMax == 0 ? Strings.t('opt_all') : '$_wordLengthMax',
                 onChanged: (v) { setState(() => _wordLengthMax = v.round()); _saveLive(); }),
             const _Div(),
-            _LabeledSlider(label: 'Max. Abkürzungslänge', value: _abbrevLengthMax.toDouble(),
+            _LabeledSlider(label: Strings.t('settings_max_abbrev_length'), value: _abbrevLengthMax.toDouble(),
                 min: 0, max: 5, divisions: 5,
-                display: _abbrevLengthMax == 0 ? 'alle' : '${_abbrevLengthMax + 1}',
+                display: _abbrevLengthMax == 0 ? Strings.t('opt_all') : '${_abbrevLengthMax + 1}',
                 onChanged: (v) { setState(() => _abbrevLengthMax = v.round()); _saveLive(); }),
             const _Div(),
             _LabeledSlider(label: 'Max # of Words', value: _maxWords.toDouble(),
                 min: 0, max: 250, divisions: 50,
-                display: _maxWords == 0 ? 'unbegrenzt' : '$_maxWords',
+                display: _maxWords == 0 ? Strings.t('opt_unlimited') : '$_maxWords',
                 onChanged: (v) { setState(() => _maxWords = (v / 5).round() * 5); _saveLive(); }),
           ]),
 
@@ -535,7 +552,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _SettingsCard(children: [
             _SegmentRow(
               label: 'Length Calls',
-              options: const ['Unbegr.', '3', '4', '5', '6'],
+              options: [Strings.t('opt_unlim_short'), '3', '4', '5', '6'],
               selected: _callLengthOpt,
               onChanged: (v) { setState(() => _callLengthOpt = v); _saveLive(); },
             ),
@@ -547,7 +564,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: (v) { setState(() => _callRegionOpt = v); _saveLive(); },
             ),
             const _Div(),
-            _ToggleRow(label: 'Nur gängige Präfixe', value: _callCommonOnly,
+            _ToggleRow(label: Strings.t('settings_common_prefixes_only'), value: _callCommonOnly,
                 onChanged: (v) { setState(() => _callCommonOnly = v); _saveLive(); }),
           ]),
 
@@ -557,18 +574,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _SectionHeader('Echo Trainer'),
           const SizedBox(height: 12),
           _SettingsCard(children: [
-            _LabeledSlider(label: 'Denkzeit', value: _echoThinkTime.toDouble(),
+            _LabeledSlider(label: Strings.t('settings_think_time'), value: _echoThinkTime.toDouble(),
                 min: 1, max: 20, divisions: 19, display: '${_echoThinkTime}s',
                 onChanged: (v) { setState(() => _echoThinkTime = v.round()); _saveLive(); }),
             const _Div(),
-            _LabeledSlider(label: 'Wiederholungen', value: _echoRepeats.toDouble(),
+            _LabeledSlider(label: Strings.t('settings_repeats'), value: _echoRepeats.toDouble(),
                 min: 0, max: 7, divisions: 7,
                 display: _echoRepeats == 7 ? 'Forever' : '$_echoRepeats ×',
                 onChanged: (v) { setState(() => _echoRepeats = v.round()); _saveLive(); }),
             const _Div(),
             _SegmentRow(
               label: 'Echo Prompt',
-              options: const ['Sound', 'Anzeige', 'Beides'],
+              options: [Strings.t('opt_sound'), Strings.t('opt_display'), Strings.t('opt_both')],
               selected: _echoDisplay - 1,
               onChanged: (v) { setState(() => _echoDisplay = v + 1); _saveLive(); },
             ),
@@ -577,7 +594,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: (v) { setState(() => _adaptiveSpeed = v); _saveLive(); }),
             if (_adaptiveSpeed) ...[
               const _Div(),
-              _LabeledSlider(label: 'Max. Speed', value: _echoSpeedMax.toDouble(),
+              _LabeledSlider(label: Strings.t('settings_max_speed'), value: _echoSpeedMax.toDouble(),
                   min: 10, max: 50, divisions: 40, display: '$_echoSpeedMax WPM',
                   onChanged: (v) { setState(() => _echoSpeedMax = v.round()); _saveLive(); }),
             ],
@@ -595,40 +612,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ]),
           const SizedBox(height: 12),
           if (_learnState == _LearnState.idle)
-            _ActionButton(label: 'Paddle-Tasten anlernen',
+            _ActionButton(label: Strings.t('settings_learn_paddle_keys'),
                 icon: Icons.settings_remote, color: c.info, onTap: _startLearn)
           else
             _LearnCard(state: _learnState, message: _learnMessage, onCancel: _cancelLearn),
 
           const SizedBox(height: 24),
 
-          // ── Voreinstellungen ───────────────────────────────────────────────
-          _SectionHeader('Voreinstellungen'),
-          const SizedBox(height: 12),
-          _SettingsCard(children: [
-            _PresetRow(label: 'Original vband Adapter', subtitle: "Dit='[', Dah=']'",
-                onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Originalen vband-Adapter einstecken und "Paddle-Tasten anlernen" verwenden.',
-                      style: TextStyle(fontFamily: 'CwMono')),
-                  backgroundColor: c.surface))),
-            const _Div(),
-            _PresetRow(label: 'Selbstbau (Arduino)', subtitle: "Dit='ü', Dah='+'",
-                onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Arduino-Adapter einstecken und "Paddle-Tasten anlernen" verwenden.',
-                      style: TextStyle(fontFamily: 'CwMono')),
-                  backgroundColor: c.surface))),
-          ]),
-
-          const SizedBox(height: 24),
-
           // ── Key-Events analysieren ─────────────────────────────────────────
-          _SectionHeader('Key-Events analysieren'),
+          _SectionHeader(Strings.t('settings_analyze_key_events')),
           const SizedBox(height: 8),
-          Text('Adapter einstecken, Analyser starten, dann Tasten drücken.',
+          Text(Strings.t('settings_analyze_key_events_desc'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
           const SizedBox(height: 12),
           _ActionButton(
-            label: _keyDiagActive ? 'Analyser stoppen' : 'Analyser starten',
+            label: _keyDiagActive ? Strings.t('settings_stop_analyzer') : Strings.t('settings_start_analyzer'),
             icon: _keyDiagActive ? Icons.stop_circle_outlined : Icons.search,
             color: _keyDiagActive ? c.danger : c.info,
             onTap: _toggleKeyDiag,
@@ -655,6 +653,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
           const SizedBox(height: 24),
         ],
+      ),
       ),
     );
   }
@@ -779,7 +778,8 @@ class _KochLevelPreview extends StatelessWidget {
         border: Border.all(color: c.borderAlt),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Level $level umfasst ${active.length} Zeichen:',
+        Text(Strings.t('settings_level_includes_chars')
+                .replaceFirst('{level}', '$level').replaceFirst('{n}', '${active.length}'),
             style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
                 color: c.textMuted)),
         const SizedBox(height: 8),
@@ -806,10 +806,10 @@ class _KochLevelPreview extends StatelessWidget {
 
 class _CharSetField extends StatelessWidget {
   final String label, initialValue, countLabel;
-  final String hint;
+  final String? hint;
   final ValueChanged<String> onChanged;
   const _CharSetField({required this.label, required this.initialValue,
-      required this.onChanged, required this.countLabel, this.hint = 'z.B. KMRSUAPTLO...'});
+      required this.onChanged, required this.countLabel, this.hint});
 
   @override
   Widget build(BuildContext context) {
@@ -830,7 +830,7 @@ class _CharSetField extends StatelessWidget {
           isDense: true,
           filled: true,
           fillColor: c.background,
-          hintText: hint,
+          hintText: hint ?? Strings.t('settings_char_hint_default'),
           hintStyle: TextStyle(fontFamily: 'CwMono', color: c.textDisabled),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
               borderSide: BorderSide(color: c.border)),
@@ -968,7 +968,7 @@ class _LearnCard extends StatelessWidget {
             style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: color))),
         if (state != _LearnState.done)
           TextButton(onPressed: onCancel,
-              child: Text('Abbrechen',
+              child: Text(Strings.t('cancel'),
                   style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
                       color: c.textMuted))),
       ]),
@@ -976,27 +976,3 @@ class _LearnCard extends StatelessWidget {
   }
 }
 
-class _PresetRow extends StatelessWidget {
-  final String label, subtitle;
-  final VoidCallback onTap;
-  const _PresetRow({required this.label, required this.subtitle, required this.onTap});
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    return InkWell(
-    onTap: onTap,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(children: [
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-              color: c.textPrimary)),
-          Text(subtitle, style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
-              color: c.textMuted)),
-        ])),
-        Icon(Icons.info_outline, color: c.textDisabled, size: 18),
-      ]),
-    ),
-  );
-  }
-}
