@@ -124,6 +124,7 @@ class MainActivity : FlutterActivity() {
                         generator.interWordSpace = (args?.get("interWordSpace") as? Number)?.toInt() ?: 7
                         generator.eachWordTwice  = args?.get("eachWordTwice")  as? Boolean ?: false
                         generator.groupLength    = (args?.get("groupLength")    as? Number)?.toInt() ?: 5
+                        generator.randomOption   = (args?.get("randomOption")   as? Number)?.toInt() ?: 0
                         generator.wordLengthMax  = (args?.get("wordLengthMax")  as? Number)?.toInt() ?: 0
                         generator.stopAfterItem  = args?.get("stopAfterItem") as? Boolean ?: false
                         generator.abbrevLengthMax = (args?.get("abbrevLengthMax") as? Number)?.toInt() ?: 0
@@ -173,10 +174,12 @@ class MainActivity : FlutterActivity() {
                         generator.kochLevel     = (args?.get("kochLevel")     as? Number)?.toInt() ?: 5
                         generator.wordLengthMax = (args?.get("wordLengthMax") as? Number)?.toInt() ?: 0
                         generator.groupLength   = (args?.get("groupLength")   as? Number)?.toInt() ?: 5
+                        generator.randomOption  = (args?.get("randomOption")  as? Number)?.toInt() ?: 0
                         generator.abbrevLengthMax = (args?.get("abbrevLengthMax") as? Number)?.toInt() ?: 0
                         generator.callLengthOpt   = (args?.get("callLengthOpt")   as? Number)?.toInt() ?: 0
                         generator.callRegionOpt   = (args?.get("callRegionOpt")   as? Number)?.toInt() ?: 0
                         generator.callCommonOnly  = args?.get("callCommonOnly")  as? Boolean ?: false
+                        generator.kochActive      = args?.get("kochActive")      as? Boolean ?: false
                         result.success(generator.nextContent())
                     }
                     else      -> result.notImplemented()

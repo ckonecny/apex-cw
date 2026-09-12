@@ -42,6 +42,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   bool _eachWordTwice  = false;
   int  _wordLengthMax  = 0;
   int  _groupLength    = 5;
+  int  _randomOption   = 0;   // "Random Groups" — ignored in Koch mode (kochActive)
   int  _abbrevLengthMax = 0;
   int  _maxWords        = 0;
   int  _callLengthOpt   = 0;
@@ -51,7 +52,9 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   int  _interWordSpace = 7;
   int    _kochSeq         = 0;
   String _customKochChars = '';
-  List<String> get _activeKochChars => kochSequenceChars(_kochSeq, _customKochChars);
+  int    _licwCarouselStart = 0;
+  List<String> get _activeKochChars =>
+      kochSequenceChars(_kochSeq, _customKochChars, licwCarouselStart: _licwCarouselStart);
 
   // Display log: reveals chars/words only once they've actually finished
   // playing — matches the real device (dispGeneratedChar() fires at KEY_UP,
@@ -100,6 +103,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _eachWordTwice  = p.getBool('eachWordTwice') ?? false;
       _wordLengthMax  = p.getInt('wordLengthMax')  ?? 0;
       _groupLength    = p.getInt('groupLength')    ?? 5;
+      _randomOption   = (p.getInt('randomOption')  ?? 0).clamp(0, 9);
       _abbrevLengthMax = (p.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _maxWords        = p.getInt('maxWords')        ?? 0;
       _callLengthOpt   = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
@@ -109,6 +113,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _interWordSpace = (p.getInt('interWordSpace') ?? 7).clamp(6, 105);
       _kochSeq         = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
       _customKochChars = p.getString('customKochChars') ?? '';
+      _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
       _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
     });
     _genChannel.invokeMethod('setKochChars', _activeKochChars);
@@ -166,6 +171,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       'interWordSpace': _interWordSpace,
       'eachWordTwice':  _eachWordTwice,
       'groupLength':    _groupLength,
+      'randomOption':   _randomOption,
       'wordLengthMax':  _wordLengthMax,
       'stopAfterItem':  _stopAfterItem,
       'abbrevLengthMax': _abbrevLengthMax,
@@ -222,6 +228,15 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     final newest = _activeKochChars[(_kochLevel - 1).clamp(0, _activeKochChars.length - 1)];
     Navigator.push(context, MaterialPageRoute(builder: (_) => EchoTrainerScreen(
       fixedTarget: newest, title: 'Neu: $newest',
+    )));
+  }
+
+  // Koch Trainer's own Echo Trainer branch (MorseMenu.cpp: "Koch Trainer >
+  // Echo Trainer" — Random/CW Abbrevs/English Words/Mixed/Adapt. Rand.,
+  // distinct from the standalone top-level "Echo Trainer").
+  void _openKochEcho() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const EchoTrainerScreen(
+      kochMode: true, title: 'Koch Trainer: Echo',
     )));
   }
 
@@ -379,6 +394,11 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                 Expanded(child: _KochToolButton(
                   icon: Icons.hearing, label: 'Vorhören',
                   onTap: _openPreviewChar,
+                )),
+                const SizedBox(width: 12),
+                Expanded(child: _KochToolButton(
+                  icon: Icons.repeat, label: 'Echo üben',
+                  onTap: _openKochEcho,
                 )),
               ]),
             ),

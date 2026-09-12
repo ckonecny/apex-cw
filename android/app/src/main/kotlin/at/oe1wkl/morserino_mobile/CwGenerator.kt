@@ -35,6 +35,11 @@ class CwGenerator(private val tone: CwTonePlugin) {
     @Volatile var interWordSpace: Int = 7     // total inter-word gap, in dits
     @Volatile var eachWordTwice: Boolean = false
     @Volatile var groupLength: Int = 5        // random char group length
+    // "Random Groups" (M32 posRandomOption): which subset of the alphabet the
+    // plain (non-Koch) Random Chars mode draws from. Ignored when kochActive —
+    // Koch Trainer's Random always draws from the active Koch level instead,
+    // exactly like getRandomChars()'s own kochActive branch in m32_v6.ino.
+    @Volatile var randomOption: Int = 0
     @Volatile var wordLengthMax: Int = 0      // 0 = no filter
     @Volatile var stopAfterItem: Boolean = false  // Morserino "Stop<>Next": false=continue, true=stop after one item
     @Volatile var abbrevLengthMax: Int = 0    // 0 = no filter (M32 "Length Abbrev")
@@ -317,7 +322,50 @@ class CwGenerator(private val tone: CwTonePlugin) {
         return intArrayOf(1, 3, 8)[boostLevel.coerceIn(0, 2)]
     }
 
-    private fun randomCharGroup(): String = randomKochChars(groupLength.coerceIn(2, 8))
+    private fun randomCharGroup(): String {
+        val len = groupLength.coerceIn(2, 8)
+        return if (kochActive) randomKochChars(len) else randomPoolChars(len)
+    }
+
+    // Master alphabet for "Random Groups" (mirrors CWchars[0..50] in m32_v6.ino,
+    // minus the trailing äöüH it never actually draws from). The six single-
+    // letter prosign codes there (S,A,N,K,E,B at indices 45..50) are
+    // represented here by their two-letter mnemonics ("AS","KA","KN","SK",
+    // "VE","BK") instead: playWord() upper-cases all generated text before
+    // parsing, so — unlike the firmware, which tells a prosign code from the
+    // real letter by case — this app can only recognize a prosign via its
+    // two-character lookahead (see morseTable), the same convention already
+    // used by the start/end session markers.
+    private val randomCharsAlphabet: List<String> =
+        "abcdefghijklmnopqrstuvwxyz0123456789.,:-/=?@+".map { it.toString() } +
+        listOf("AS", "KA", "KN", "SK", "VE", "BK")
+
+    // "Random Groups" pool ranges into randomCharsAlphabet — matches
+    // getRandomChars()'s option table in m32_v6.ino exactly (half-open [s,e)
+    // there becomes an inclusive s..(e-1) range here).
+    private fun randomGroupsRange(option: Int): IntRange = when (option) {
+        1 -> 0..25    // Alpha
+        2 -> 26..35   // Num
+        3 -> 36..44   // Punct
+        4 -> 44..50   // Pro
+        5 -> 0..35    // Alpha+Num
+        6 -> 26..44   // Num+Punct
+        7 -> 36..50   // Punct+Pro
+        8 -> 0..44    // Alpha+Num+Punct
+        9 -> 26..50   // Num+Punct+Pro
+        else -> 0..50 // All
+    }
+
+    private fun randomPoolChars(len: Int): String {
+        val range = randomGroupsRange(randomOption)
+        val tries = boostAttempts()
+        return (1..len).joinToString("") {
+            var idx = range.random()
+            var t = 1
+            while (t < tries && randomCharsAlphabet[idx] !in practiceChars) { idx = range.random(); t++ }
+            randomCharsAlphabet[idx]
+        }
+    }
 
     private fun activeKochSet(): List<String> = kochChars.take(kochLevel.coerceIn(2, kochChars.size))
 

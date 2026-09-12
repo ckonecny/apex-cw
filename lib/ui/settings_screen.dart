@@ -32,8 +32,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // 0=M32, 1=LCWO, 2=CW Academy, 3=LICW, 4=Custom (matches M32 "Koch Sequence")
   int    _kochSeq          = 0;
   String _customKochChars  = '';
+  // "LICW Carousel" entry point (posCarouselStart, 0-13) — only relevant when
+  // Koch Sequence = LICW; rotates which slice of the LICW curriculum is active.
+  int    _licwCarouselStart = 0;
   static const _kochSeqLabels = ['M32', 'LCWO', 'CW Academy', 'LICW', 'Custom'];
-  List<String> get _activeKochChars => kochSequenceChars(_kochSeq, _customKochChars);
+  List<String> get _activeKochChars =>
+      kochSequenceChars(_kochSeq, _customKochChars, licwCarouselStart: _licwCarouselStart);
 
   // ── Practice Set ──────────────────────────────────────────────────────────
   String _practiceChars = '';
@@ -57,6 +61,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _eachWordTwice  = false;
   int  _wordLengthMax  = 0;     // 0 = no filter
   int  _groupLength    = 5;
+  // randomOption: which alphabet subset "Zufallszeichen" draws from when NOT
+  // in Koch mode (matches M32 "Random Groups" / posRandomOption exactly).
+  int  _randomOption   = 0;
+  static const _randomOptionLabels = [
+    'All Chars', 'Alpha', 'Numerals', 'Interpunct.', 'Pro Signs',
+    'Alpha + Num', 'Num+Interp.', 'Interp+ProSn', 'Alph+Num+Int', 'Num+Int+ProS',
+  ];
   int  _abbrevLengthMax = 0;    // 0=unlimited, 1..5 -> max length 2..6 (M32 "Length Abbrev")
   int  _maxWords        = 0;    // 0=unlimited, step 5 (M32 "Max # of Words")
 
@@ -69,7 +80,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // ── Echo Trainer ───────────────────────────────────────────────────────────
   int  _echoThinkTime  = 8;   // seconds
-  int  _echoRepeats    = 0;   // replays if wrong
+  // M32 "Echo Repeats": 0-6 = that many replays after a wrong/missed answer
+  // before the word is revealed and the trainer moves on; 7 = "Forever"
+  // (never gives up). Default 3, matching the real device's default.
+  int  _echoRepeats    = 3;
   // echoDisplay: 1=Sound only, 2=Display only, 3=Sound & Disp (matches M32 "Echo Prompt")
   int  _echoDisplay    = 1;
   bool _adaptiveSpeed  = false;
@@ -111,6 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _outputCase     = (p.getInt('outputCase')    ?? 0).clamp(0, 1);
       _kochSeq         = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
       _customKochChars = p.getString('customKochChars') ?? '';
+      _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
       _practiceChars   = p.getString('practiceChars') ?? '';
       _boostLevel      = (p.getInt('boostLevel') ?? 0).clamp(0, 2);
       _keyerMode      = p.getInt('keyerMode')      ?? 0;
@@ -125,13 +140,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _eachWordTwice  = p.getBool('eachWordTwice') ?? false;
       _wordLengthMax  = p.getInt('wordLengthMax')  ?? 0;
       _groupLength    = p.getInt('groupLength')    ?? 5;
+      _randomOption   = (p.getInt('randomOption')  ?? 0).clamp(0, 9);
       _abbrevLengthMax = (p.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _maxWords        = p.getInt('maxWords')        ?? 0;
       _callLengthOpt   = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
       _callRegionOpt   = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
       _echoThinkTime  = p.getInt('echoThinkTime')  ?? 8;
-      _echoRepeats    = p.getInt('echoRepeats')    ?? 0;
+      _echoRepeats    = (p.getInt('echoRepeats')   ?? 3).clamp(0, 7);
       _echoDisplay    = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _adaptiveSpeed  = p.getBool('adaptiveSpeed') ?? false;
       _echoSpeedMax   = p.getInt('echoSpeedMax')   ?? 35;
@@ -149,6 +165,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setInt('outputCase',     _outputCase);
     await p.setInt('kochSeq',         _kochSeq);
     await p.setString('customKochChars', _customKochChars);
+    await p.setInt('licwCarouselStart', _licwCarouselStart);
     await p.setString('practiceChars', _practiceChars);
     await p.setInt('boostLevel',     _boostLevel);
     await p.setInt('keyerMode',      _keyerMode);
@@ -160,6 +177,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setBool('eachWordTwice', _eachWordTwice);
     await p.setInt('wordLengthMax',  _wordLengthMax);
     await p.setInt('groupLength',    _groupLength);
+    await p.setInt('randomOption',   _randomOption);
     await p.setInt('abbrevLengthMax', _abbrevLengthMax);
     await p.setInt('maxWords',        _maxWords);
     await p.setInt('callLengthOpt',   _callLengthOpt);
@@ -200,6 +218,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _applyKochSeq(int seq) {
     setState(() {
       _kochSeq = seq;
+      _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
+    });
+    _saveLive();
+    _syncKochChars();
+  }
+
+  void _applyLicwCarouselStart(int start) {
+    setState(() {
+      _licwCarouselStart = start;
       _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
     });
     _saveLive();
@@ -351,6 +378,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               selected: _kochSeq,
               onChanged: _applyKochSeq,
             ),
+            if (_kochSeq == 3) ...[
+              const _Div(),
+              _LabeledSlider(
+                label: 'LICW Einstiegspunkt',
+                value: _licwCarouselStart.toDouble(),
+                min: 0, max: 13, divisions: 13,
+                display: '$_licwCarouselStart',
+                onChanged: (v) => _applyLicwCarouselStart(v.round()),
+              ),
+            ],
             if (_kochSeq == 4) ...[
               const _Div(),
               _CharSetField(
@@ -463,6 +500,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _ToggleRow(label: 'Jedes Wort 2×', value: _eachWordTwice,
                 onChanged: (v) { setState(() => _eachWordTwice = v); _saveLive(); }),
             const _Div(),
+            _SegmentRow(
+              label: 'Random Groups',
+              options: _randomOptionLabels,
+              selected: _randomOption,
+              onChanged: (v) { setState(() => _randomOption = v); _saveLive(); },
+            ),
+            const _Div(),
             _LabeledSlider(label: 'Gruppen-Länge', value: _groupLength.toDouble(),
                 min: 2, max: 8, divisions: 6, display: '$_groupLength',
                 onChanged: (v) { setState(() => _groupLength = v.round()); _saveLive(); }),
@@ -518,8 +562,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: (v) { setState(() => _echoThinkTime = v.round()); _saveLive(); }),
             const _Div(),
             _LabeledSlider(label: 'Wiederholungen', value: _echoRepeats.toDouble(),
-                min: 0, max: 5, divisions: 5,
-                display: _echoRepeats == 0 ? 'aus' : '$_echoRepeats ×',
+                min: 0, max: 7, divisions: 7,
+                display: _echoRepeats == 7 ? 'Forever' : '$_echoRepeats ×',
                 onChanged: (v) { setState(() => _echoRepeats = v.round()); _saveLive(); }),
             const _Div(),
             _SegmentRow(

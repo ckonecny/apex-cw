@@ -23,18 +23,45 @@ const kochSeqCwAcademy = [
   'W','3','6','?','F','Y',',','P','G','Q','7','9','/','B','V','+','K','J',
   '8','0','=','X','Z','.','-','@',':',
 ];
-const kochSeqLicw = [
-  'R','E','A','T','I','N','P','G','S','L','C','D','H','O','F','U','W','B',
-  'K','M','Y','5','9',',','Q','X','V','7','3','?','+','=','1','6','.','Z',
-  'J','/','2','8','4','0','-','@',':',
-];
+// Full LICW curriculum source (MorsePreferences.h's licwAllKochChars), the
+// basis for the carousel rotation below. Uppercase K/A/S/N/E/B here are
+// prosign codes (<sk> <ka> <kn> ...), not the letters — same convention as
+// CWchars in m32_v6.ino.
+const _licwAllKochChars = 'reatinpgslcdhofuwbkmy59,qxv73?+K=16.zj/28B40-ASNE@:';
+
+// LICW Carousel "Entry Point" (posCarouselStart, 0-13): ports
+// Koch::setupLICWkochChars() exactly — start<6 rotates an 18-char "BC1"
+// window, start>=6 rotates the full 44-char "BC2" window. The 6 prosign
+// markers embedded in _licwAllKochChars are dropped (this app doesn't support
+// prosigns as individually orderable Koch characters yet — see the portation
+// canvas), and "-@:" (never covered by any carousel window; MorsePreferences.
+// cpp caps the rotation at 44 chars) is appended for parity with kochSeqLicw
+// so levels above the carousel's own range still have somewhere to grow.
+List<String> licwCarouselChars(int start) {
+  const prosigns = {'K', 'A', 'S', 'N', 'E', 'B'};
+  final s = start.clamp(0, 13);
+  final buf = StringBuffer();
+  if (s < 6) {
+    final segLen = 18 - 3 * s;
+    buf.write(_licwAllKochChars.substring(3 * s, 3 * s + segLen));
+    if (s > 0) buf.write(_licwAllKochChars.substring(0, 3 * s));
+  } else {
+    buf.write(_licwAllKochChars.substring(0, 18));
+    final segLen = 44 - 3 * s;
+    buf.write(_licwAllKochChars.substring(3 * s, 3 * s + segLen));
+    if (s > 6) buf.write(_licwAllKochChars.substring(18, 18 + (3 * s - 18)));
+  }
+  final rotated = buf.toString().split('').where((c) => !prosigns.contains(c)).join();
+  return (rotated.toUpperCase() + '-@:').split('');
+}
 
 // seq: 0=M32, 1=LCWO, 2=CW Academy, 3=LICW, 4=Custom (matches M32 "Koch Sequence")
-List<String> kochSequenceChars(int seq, String customChars) {
+// licwCarouselStart: "LICW Carousel" entry point (0-13), only meaningful for seq=3.
+List<String> kochSequenceChars(int seq, String customChars, {int licwCarouselStart = 0}) {
   switch (seq) {
     case 1: return kochSeqLcwo;
     case 2: return kochSeqCwAcademy;
-    case 3: return kochSeqLicw;
+    case 3: return licwCarouselChars(licwCarouselStart);
     case 4:
       final seen = <String>{};
       final out = <String>[];
