@@ -102,6 +102,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int _keyerMode = 0;
   bool _touchDit = false;
   bool _touchDah = false;
+  // "CurtisB DitT%"/"CurtisB DahT%" — only meaningful in Iambic B/Ultimatic;
+  // shared with the CW Keyer screen, synced to the native keyer at session
+  // start (see _startSession()) since this screen's own keyer instance is
+  // otherwise left at whatever a different screen last configured it to.
+  int _curtisBDitTiming = 75;
+  int _curtisBDahTiming = 45;
+  int _acs = 0;   // M32 "AutoChar Spc" — shared with the CW Keyer screen, same sync-at-session-start reasoning
 
   // Echo settings (from SharedPreferences)
   int  _echoThinkTime = 8;   // seconds
@@ -110,6 +117,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   bool _confirmTone   = false;
   bool _adaptiveSpeed = false;
   int  _echoSpeedMax  = 35;
+  int  _pitch         = 600;  // base sidetone pitch (M32 "Tone Pitch")
+  // "Tone Shift" (M32 posEchoToneShift): 0=off, 1=up 1 half-tone, 2=down 1
+  // half-tone — shifts the OPERATOR's own echoed-answer sidetone away from
+  // the target word's playback pitch (m32_v6.ino KEY_START/MorseDecoder::ON_()),
+  // so the two are audibly distinguishable. Applied in _beginReceive(), not to
+  // the target word playback itself.
+  int  _toneShift     = 1;
+  int  _toneSoftness  = 4;   // M32 "Tone Softness" (0..8 -> 1..9 ms attack/release)
 
   String _target  = '';
   String _attempt = '';
@@ -177,6 +192,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _modeIndex      = (p.getInt('echoModeIndex') ?? 0).clamp(0, 5);
       _kochModeIndex  = (p.getInt('kochEchoModeIndex') ?? 0).clamp(0, _kochModeLabels.length - 1);
       _keyerMode      = p.getInt('keyerMode')      ?? 0;
+      _curtisBDitTiming = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
+      _curtisBDahTiming = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
+      _acs              = (p.getInt('acs') ?? 0).clamp(0, 3);
+      _pitch           = p.getInt('pitch') ?? 600;
+      _toneShift       = (p.getInt('toneShift') ?? 1).clamp(0, 2);
+      _toneSoftness    = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
       _kochSeq         = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
       _customKochChars = p.getString('customKochChars') ?? '';
       _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
@@ -292,6 +313,19 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // re-entering this screen (a fresh State instance).
     setState(() => _state = _State.playing);
 
+    // Sync the shared native keyer's mode/CurtisB timing before it's used to
+    // receive the echoed answer — otherwise it's left at whatever a DIFFERENT
+    // screen (or nothing, on a fresh app session) last configured it to, same
+    // class of bug as the CW Generator's stale-wpm marker fix.
+    await _keyerChannel.invokeMethod('setMode', _keyerMode).catchError((_) {});
+    await _keyerChannel.invokeMethod('setCurtisBTiming',
+        {'dit': _curtisBDitTiming, 'dah': _curtisBDahTiming}).catchError((_) {});
+    await _keyerChannel.invokeMethod('setAcs', _acs).catchError((_) {});
+    // Base sidetone pitch for the target word; _beginReceive() shifts it for
+    // the operator's own echoed answer (Tone Shift).
+    await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});
+    await _toneChannel.invokeMethod('setEnvelopeMs', (_toneSoftness + 1).toDouble()).catchError((_) {});
+
     // Starting signal, sent at the start of every fresh session — same
     // "vvv<ka>" marker as the CW Generator (m32_v6.ino: clearText = "vvvA";
     // frameWordForDisplay = true), skipped for Learn New Chr/Preview Char
@@ -340,6 +374,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   /// End signal, sent when "Max # of Words" is reached — matches the CW
   /// Generator's "+" (=<ar>) marker, not sent on manual Stop.
   Future<void> _playEndSignal() async {
+    await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});   // base pitch, not the shifted echo tone
     await _playSignal('+');
     if (mounted) setState(() {
       if (_log.isNotEmpty) _appendLog(' ', _Role.marker);
@@ -384,6 +419,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     _revealOnDone = _echoDisplay != _dispCodeOnly;
     await _genChannel.invokeMethod('setWpm', _currentWpm).catchError((_) {});
+    await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});   // base pitch — see _beginReceive() for the shifted one
     await _genChannel.invokeMethod('playOne', _target);
   }
 
@@ -405,6 +441,16 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   }
 
   void _beginReceive() {
+    // Tone Shift (M32 "Tone Shift"): shift the operator's own echoed-answer
+    // sidetone up/down one half-tone from the target word's playback pitch,
+    // so the two are audibly distinguishable — matches MorseDecoder::ON_()/
+    // m32_v6.ino's KEY_START, both gated on morseState==echoTrainer there.
+    final shifted = switch (_toneShift) {
+      1 => (_pitch * 18 / 17).round(),
+      2 => (_pitch * 17 / 18).round(),
+      _ => _pitch,
+    };
+    _toneChannel.invokeMethod('setFreq', shifted);
     _keyerChannel.invokeMethod('start');
     setState(() => _state = _State.receiving);
     // Start the timeout immediately — otherwise it only ever gets (re)armed

@@ -15,6 +15,10 @@ static AAudioStream* gStream = nullptr;
 static std::atomic<bool>   gPlaying{false};
 static std::atomic<double> gFreqHz {600.0};
 static std::atomic<float>  gVolume {0.7f};
+// "Tone Softness" (M32 default 5 ms): attack/release time of the sidetone's
+// gain envelope, in ms — same value for both edges, matching
+// MorseOutput::setSidetoneEnvelope()'s symmetric ADSR (attack=release=t).
+static std::atomic<float>  gEnvelopeMs {5.0f};
 
 // These are only touched by the callback thread — no atomics needed.
 static double gPhase = 0.0;
@@ -29,8 +33,9 @@ static aaudio_data_callback_result_t audioCallback(
     float* out = static_cast<float*>(audioData);
     const double sampleRate = AAudioStream_getSampleRate(stream);
     const double step     = 2.0 * M_PI * gFreqHz.load(std::memory_order_relaxed) / sampleRate;
-    const double rampUp   = 1.0 / (sampleRate * 0.003);  // 3 ms attack
-    const double rampDown = 1.0 / (sampleRate * 0.005);  // 5 ms release
+    const double envSec   = gEnvelopeMs.load(std::memory_order_relaxed) / 1000.0;
+    const double rampUp   = 1.0 / (sampleRate * envSec);   // attack
+    const double rampDown = rampUp;                        // release — same edge time, matches the real device
     const bool   playing  = gPlaying.load(std::memory_order_acquire);
     const float  vol      = gVolume.load(std::memory_order_relaxed);
 
@@ -116,6 +121,12 @@ JNIEXPORT void JNICALL
 Java_at_oe1wkl_morserino_1mobile_CwAudioNative_setVolume(JNIEnv*, jclass, jfloat vol)
 {
     gVolume.store(vol, std::memory_order_relaxed);
+}
+
+JNIEXPORT void JNICALL
+Java_at_oe1wkl_morserino_1mobile_CwAudioNative_setEnvelopeMs(JNIEnv*, jclass, jfloat ms)
+{
+    gEnvelopeMs.store(ms, std::memory_order_relaxed);
 }
 
 JNIEXPORT void JNICALL

@@ -20,6 +20,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   static const _settingsChannel = MethodChannel('at.oe1wkl.morserino_mobile/settings');
   static const _settingsEvents  = EventChannel('at.oe1wkl.morserino_mobile/settings_events');
   static const _genChannel      = MethodChannel('at.oe1wkl.morserino_mobile/cw_generator');
+  static const _toneChannel     = MethodChannel('at.oe1wkl.morserino_mobile/cw_tone');
 
   // ── General ────────────────────────────────────────────────────────────────
   int  _wpm       = 20;
@@ -28,6 +29,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // outputCase: 0=lower, 1=UPPER (matches M32 "Output Case"; applies to all
   // displayed generated/decoded text, not stored — content stays uppercase internally)
   int  _outputCase = 0;
+  // "Tone Softness" (M32 posToneSoftness, default 4): sidetone attack/release
+  // time, prefValue 0..8 maps to 1..9 ms (MorseOutput::setSidetoneEnvelope()).
+  int  _toneSoftness = 4;
 
   // ── Koch Sequence ─────────────────────────────────────────────────────────
   // 0=M32, 1=LCWO, 2=CW Academy, 3=LICW, 4=Custom (matches M32 "Koch Sequence")
@@ -48,6 +52,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // ── Keyer ──────────────────────────────────────────────────────────────────
   int  _keyerMode   = 0;    // 0=Iambic A, 1=Iambic B, 2=Ultimatic, 3=Non-Squeeze, 4=Straight
   bool _confirmTone = false;
+  // "CurtisB DitT%"/"CurtisB DahT%" (M32 defaults 75/45): only meaningful in
+  // Iambic B/Ultimatic — how far into the current element (as a % of its
+  // length) the keyer starts looking ahead for the opposite paddle.
+  int  _curtisBDitTiming = 75;
+  int  _curtisBDahTiming = 45;
+  // "AutoChar Spc" (M32 posACS, default 0=off): minimum pause enforced
+  // between characters — 1/2/3 = 2/3/4 dits.
+  int  _acs = 0;
+  // "Tone Shift" (M32 posEchoToneShift, default 1): shifts the operator's own
+  // echoed-answer sidetone in the Echo Trainer up/down a half-tone from the
+  // target word's pitch, so the two are audibly distinguishable. Has no
+  // effect on the standalone CW Keyer, matching the real device.
+  int  _toneShift = 1;
 
   // ── Spacing ────────────────────────────────────────────────────────────────
   // Absolute gap length in dits, exactly like the real M32 (Interchar 3..45,
@@ -124,6 +141,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _kochLevel      = p.getInt('kochLevel')      ?? 5;
       _pitch          = p.getInt('pitch')          ?? 600;
       _outputCase     = (p.getInt('outputCase')    ?? 0).clamp(0, 1);
+      _toneSoftness   = (p.getInt('toneSoftness')  ?? 4).clamp(0, 8);
       _kochSeq         = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
       _customKochChars = p.getString('customKochChars') ?? '';
       _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
@@ -131,6 +149,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _boostLevel      = (p.getInt('boostLevel') ?? 0).clamp(0, 2);
       _keyerMode      = p.getInt('keyerMode')      ?? 0;
       _confirmTone    = p.getBool('confirmTone')   ?? false;
+      _curtisBDitTiming = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
+      _curtisBDahTiming = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
+      _acs              = (p.getInt('acs') ?? 0).clamp(0, 3);
+      _toneShift        = (p.getInt('toneShift') ?? 1).clamp(0, 2);
       // clamp() guards against stale values from the old 1..8 multiplier scale
       _interCharSpace = (p.getInt('interCharSpace') ?? 3).clamp(3, 45);
       _interWordSpace = (p.getInt('interWordSpace') ?? 7).clamp(6, 105);
@@ -164,6 +186,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setInt('kochLevel',      _kochLevel);
     await p.setInt('pitch',          _pitch);
     await p.setInt('outputCase',     _outputCase);
+    await p.setInt('toneSoftness',   _toneSoftness);
     await p.setInt('kochSeq',         _kochSeq);
     await p.setString('customKochChars', _customKochChars);
     await p.setInt('licwCarouselStart', _licwCarouselStart);
@@ -171,6 +194,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setInt('boostLevel',     _boostLevel);
     await p.setInt('keyerMode',      _keyerMode);
     await p.setBool('confirmTone',   _confirmTone);
+    await p.setInt('curtisBDitTiming', _curtisBDitTiming);
+    await p.setInt('curtisBDahTiming', _curtisBDahTiming);
+    await p.setInt('acs',            _acs);
+    await p.setInt('toneShift',      _toneShift);
     await p.setInt('interCharSpace', _interCharSpace);
     await p.setInt('interWordSpace', _interWordSpace);
     await p.setInt('genDisplayMode', _genDisplay);
@@ -297,6 +324,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _saveLive();
   }
 
+  Future<void> _applyToneSoftness(double v) async {
+    final ms = v.round();
+    setState(() => _toneSoftness = ms);
+    await _toneChannel.invokeMethod('setEnvelopeMs', (ms + 1).toDouble());
+    _saveLive();
+  }
+
+  Future<void> _applyCurtisBTiming({int? dit, int? dah}) async {
+    setState(() {
+      if (dit != null) _curtisBDitTiming = dit;
+      if (dah != null) _curtisBDahTiming = dah;
+    });
+    await _settingsChannel.invokeMethod('setCurtisBTiming',
+        {'dit': _curtisBDitTiming, 'dah': _curtisBDahTiming});
+    _saveLive();
+  }
+
+  Future<void> _applyAcs(int value) async {
+    setState(() => _acs = value);
+    await _settingsChannel.invokeMethod('setAcs', value);
+    _saveLive();
+  }
+
   // ── Build ─────────────────────────────────────────────────────────────────
 
   @override
@@ -372,6 +422,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _LabeledSlider(label: Strings.t('settings_pitch'), value: _pitch.toDouble(),
                 min: 300, max: 900, divisions: 12, display: '$_pitch Hz',
                 onChanged: (v) { setState(() => _pitch = (v / 50).round() * 50); _saveLive(); }),
+            const _Div(),
+            _LabeledSlider(label: Strings.t('settings_tone_softness'), value: _toneSoftness.toDouble(),
+                min: 0, max: 8, divisions: 8, display: '${_toneSoftness + 1} ms',
+                onChanged: _applyToneSoftness),
             const _Div(),
             _SegmentRow(
               label: 'Output Case',
@@ -463,6 +517,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
               options: const ['Iambic A', 'Iambic B', 'Ultimatic', 'Non-Squeeze', 'Straight'],
               selected: _keyerMode,
               onChanged: _applyKeyerMode,
+            ),
+            if (_keyerMode == 1 || _keyerMode == 2) ...[
+              const _Div(),
+              _LabeledSlider(label: Strings.t('settings_curtisb_dit'),
+                  value: _curtisBDitTiming.toDouble(),
+                  min: 0, max: 100, divisions: 20, display: '$_curtisBDitTiming%',
+                  onChanged: (v) => _applyCurtisBTiming(dit: v.round())),
+              const _Div(),
+              _LabeledSlider(label: Strings.t('settings_curtisb_dah'),
+                  value: _curtisBDahTiming.toDouble(),
+                  min: 0, max: 100, divisions: 20, display: '$_curtisBDahTiming%',
+                  onChanged: (v) => _applyCurtisBTiming(dah: v.round())),
+            ],
+            const _Div(),
+            _SegmentRow(
+              label: Strings.t('settings_acs'),
+              options: [Strings.t('opt_off'), '2 dits', '3 dits', '4 dits'],
+              selected: _acs,
+              onChanged: _applyAcs,
             ),
             const _Div(),
             _ToggleRow(label: Strings.t('settings_confirm_tone'), value: _confirmTone,
@@ -598,6 +671,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   min: 10, max: 50, divisions: 40, display: '$_echoSpeedMax WPM',
                   onChanged: (v) { setState(() => _echoSpeedMax = v.round()); _saveLive(); }),
             ],
+            const _Div(),
+            _SegmentRow(
+              label: Strings.t('settings_tone_shift'),
+              options: [Strings.t('opt_tone_shift_off'), Strings.t('opt_tone_shift_up'), Strings.t('opt_tone_shift_down')],
+              selected: _toneShift,
+              onChanged: (v) { setState(() => _toneShift = v); _saveLive(); },
+            ),
           ]),
 
           const SizedBox(height: 24),

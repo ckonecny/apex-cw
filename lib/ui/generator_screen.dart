@@ -124,6 +124,12 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     final boostLevel    = (p2.getInt('boostLevel') ?? 0).clamp(0, 2);
     await _genChannel.invokeMethod('setPracticeChars', practiceChars);
     await _genChannel.invokeMethod('setBoostLevel', boostLevel);
+    // Sidetone pitch/envelope: this screen never set these before, so they
+    // were left at whatever the CW Keyer screen (or nothing) last configured.
+    final pitch = p2.getInt('pitch') ?? 600;
+    final toneSoftness = (p2.getInt('toneSoftness') ?? 4).clamp(0, 8);
+    await _toneChannel.invokeMethod('setFreq', pitch);
+    await _toneChannel.invokeMethod('setEnvelopeMs', (toneSoftness + 1).toDouble());
   }
 
   Future<void> _savePrefs() async {

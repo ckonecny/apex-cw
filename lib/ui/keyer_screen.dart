@@ -54,10 +54,17 @@ class _KeyerScreenState extends State<KeyerScreen> {
       _outputCase = (prefs.getInt('outputCase') ?? 0).clamp(0, 1);
     });
     final pitch = prefs.getInt('pitch') ?? 600;
+    final toneSoftness = (prefs.getInt('toneSoftness') ?? 4).clamp(0, 8);
+    final curtisBDit = (prefs.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
+    final curtisBDah = (prefs.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
+    final acs = (prefs.getInt('acs') ?? 0).clamp(0, 3);
     await _toneChannel.invokeMethod('setFreq', pitch);
     await _toneChannel.invokeMethod('setVolume', 0.7);
+    await _toneChannel.invokeMethod('setEnvelopeMs', (toneSoftness + 1).toDouble());
     await _keyerChannel.invokeMethod('setWpm',  _wpm);
     await _keyerChannel.invokeMethod('setMode', _keyerMode);
+    await _keyerChannel.invokeMethod('setCurtisBTiming', {'dit': curtisBDit, 'dah': curtisBDah});
+    await _keyerChannel.invokeMethod('setAcs', acs);
     await _keyerChannel.invokeMethod('start');
     if (mounted) setState(() => _ready = true);
   }

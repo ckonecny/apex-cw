@@ -10,5 +10,6 @@ object CwAudioNative {
     external fun setPlaying(on: Boolean)
     external fun setFreqHz(hz: Double)
     external fun setVolume(vol: Float)
+    external fun setEnvelopeMs(ms: Float)
     external fun getLatencyMs(): Int
 }

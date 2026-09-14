@@ -10,6 +10,24 @@ class CwKeyer(private val tone: CwTonePlugin) {
     @Volatile var wpm: Int = 20
     @Volatile var mode: Mode = Mode.IAMBIC_A
 
+    // "CurtisB DitT%"/"CurtisB DahT%" (0-100, defaults 75/45 match the real
+    // device's MorsePreferences.cpp): how far into the CURRENT element,
+    // as a percentage of its length, the keyer starts looking for the
+    // OPPOSITE paddle in Iambic B / Ultimatic mode — matches m32_v6.ino's
+    // KEYED-state curtistimer (2 + elementLength*value/100 ms), which polls
+    // only the opposite paddle from that point until the element ends,
+    // letting the operator "look ahead" into the next element earlier or
+    // later than the element's own boundary.
+    @Volatile var curtisBDitTiming: Int = 75
+    @Volatile var curtisBDahTiming: Int = 45
+
+    // "AutoChar Spc" (M32 posACS, default 0=off; 1/2/3 -> 2/3/4 dits): once a
+    // character completes, the keyer ignores a new paddle press until this
+    // many dit-lengths have passed — a training aid that enforces a minimum
+    // gap between characters. Matches m32_v6.ino's acsTimer, armed at
+    // character-end and checked before starting the next element.
+    @Volatile var acsValue: Int = 0
+
     private val ditMs  get() = (1200.0 / wpm).roundToInt()
     private val dahMs  get() = ditMs * 3
     private val gapMs  get() = ditMs
@@ -30,7 +48,9 @@ class CwKeyer(private val tone: CwTonePlugin) {
     private var state    = State.IDLE
     private var ditLast  = false
     private var deadline = 0L
+    private var elementStart = 0L
     private var keyIsDown = false
+    private var acsGateUntil = 0L
 
     // Ultimatic: track when paddle opened for debounce
     private val BOUNCE_MS = 5L
@@ -70,6 +90,7 @@ class CwKeyer(private val tone: CwTonePlugin) {
         dit       = false; dah       = false
         keyIsDown = false
         idleSince = 0L; wordGapSent = false
+        acsGateUntil = 0L
         skUpAt = 0L; skWaitingGap = false; skWordGapSent = false
         CwAudioNative.setPlaying(false)
         thread = Thread({
@@ -127,7 +148,12 @@ class CwKeyer(private val tone: CwTonePlugin) {
         when (state) {
             State.IDLE -> {
                 if (d || h || dm || hm) {
-                    state = State.KEY_START
+                    // AutoChar Spc: hold off starting the next character's first
+                    // element until the gate opens — the paddle press/memory
+                    // stays pending (nothing is cleared here) so it fires the
+                    // instant the gate clears, just like the real device's
+                    // acsTimer check in its DIT/DAH keyer-state cases.
+                    if (acsValue == 0 || now >= acsGateUntil) state = State.KEY_START
                 } else if (!wordGapSent && idleSince != 0L && now - idleSince >= ditMs * 6) {
                     onSymbol?.invoke("  ")
                     wordGapSent = true
@@ -137,30 +163,46 @@ class CwKeyer(private val tone: CwTonePlugin) {
             State.KEY_START -> {
                 val sendDit = decideDit(d, h, dm, hm)
                 setKey(true)
+                elementStart = now
                 deadline = now + (if (sendDit) ditMs else dahMs)
                 state = if (sendDit) State.DIT else State.DAH
                 onSymbol?.invoke(if (sendDit) "·" else "—")
             }
 
-            State.DIT -> if (now >= deadline) {
-                setKey(false)
-                ditMem = false
-                ditLast = true
-                deadline = now + gapMs
-                state = State.INTER_ELEMENT
+            State.DIT -> {
+                // Enhanced Curtis mode (Iambic B/Ultimatic): from curtisBDitTiming%
+                // into this dit onward, poll the OPPOSITE (dah) paddle only —
+                // mirrors m32_v6.ino's KEYED-state curtistimer check.
+                if ((mode == Mode.IAMBIC_B || mode == Mode.ULTIMATIC) && !dahMem && h &&
+                    now >= elementStart + 2 + (ditMs * curtisBDitTiming / 100)) {
+                    dahMem = true
+                }
+                if (now >= deadline) {
+                    setKey(false)
+                    ditMem = false
+                    ditLast = true
+                    deadline = now + gapMs
+                    state = State.INTER_ELEMENT
+                }
             }
 
-            State.DAH -> if (now >= deadline) {
-                setKey(false)
-                dahMem = false
-                ditLast = false
-                deadline = now + gapMs
-                state = State.INTER_ELEMENT
+            State.DAH -> {
+                if ((mode == Mode.IAMBIC_B || mode == Mode.ULTIMATIC) && !ditMem && d &&
+                    now >= elementStart + 2 + (dahMs * curtisBDahTiming / 100)) {
+                    ditMem = true
+                }
+                if (now >= deadline) {
+                    setKey(false)
+                    dahMem = false
+                    ditLast = false
+                    deadline = now + gapMs
+                    state = State.INTER_ELEMENT
+                }
             }
 
             State.INTER_ELEMENT -> {
-                // Iambic B: while both held during inter-element gap, queue opposite
-                if (mode == Mode.IAMBIC_B && d && h) {
+                // Iambic B/Ultimatic: while both held during inter-element gap, queue opposite
+                if ((mode == Mode.IAMBIC_B || mode == Mode.ULTIMATIC) && d && h) {
                     if (ditLast) dahMem = true else ditMem = true
                 }
                 if (now >= deadline) {
@@ -172,6 +214,7 @@ class CwKeyer(private val tone: CwTonePlugin) {
                         onSymbol?.invoke(" ")
                         idleSince = now
                         wordGapSent = false
+                        if (acsValue > 0) acsGateUntil = now + ditMs * (acsValue + 1)
                     }
                 }
             }

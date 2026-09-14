@@ -43,6 +43,9 @@ class Strings {
     'opt_sound': ['Sound', 'Sound'],
     'opt_display': ['Anzeige', 'Display'],
     'opt_both': ['Beides', 'Both'],
+    'opt_tone_shift_off': ['Kein Shift', 'No Shift'],
+    'opt_tone_shift_up': ['Hoch ½', 'Up ½'],
+    'opt_tone_shift_down': ['Runter ½', 'Down ½'],
 
     // ── Settings screen ──────────────────────────────────────────────────
     'settings_title': ['Einstellungen', 'Settings'],
@@ -55,6 +58,7 @@ class Strings {
     'settings_default_wpm': ['Standard-WPM', 'Default WPM'],
     'settings_default_koch_level': ['Standard Koch-Level', 'Default Koch Level'],
     'settings_pitch': ['Tonhöhe (Hz)', 'Pitch (Hz)'],
+    'settings_tone_softness': ['Ton-Weichheit', 'Tone Softness'],
     'settings_sequence': ['Reihenfolge', 'Sequence'],
     'settings_licw_entry_point': ['LICW Einstiegspunkt', 'LICW Entry Point'],
     'settings_custom_chars_label': ['Eigene Zeichen (Reihenfolge = Lernreihenfolge)', 'Custom Characters (order = learning order)'],
@@ -64,6 +68,10 @@ class Strings {
     'settings_boost_practice_desc': ['Practice-Set-Zeichen in Zufallszeichen-Übungen häufiger ziehen', 'Draw Practice Set characters more often in Random Characters exercises'],
     'settings_mode': ['Modus', 'Mode'],
     'settings_confirm_tone': ['Bestätigungston', 'Confirmation Tone'],
+    'settings_curtisb_dit': ['CurtisB Dit-Timing', 'CurtisB Dit Timing'],
+    'settings_curtisb_dah': ['CurtisB Dah-Timing', 'CurtisB Dah Timing'],
+    'settings_tone_shift': ['Ton-Versatz (Echo)', 'Tone Shift (Echo)'],
+    'settings_acs': ['Auto-Zeichenabstand', 'AutoChar Spacing'],
     'settings_spacing': ['Abstände', 'Spacing'],
     'settings_spacing_desc': ['Abstand in Dit-Längen, wie am Morserino (normal = 3 / 7)', 'Spacing in dit lengths, as on the Morserino (normal = 3 / 7)'],
     'settings_stop_next_rep_desc': ['Pausiert nach jedem Wort: Dit = wiederholen, Dah = nächstes Wort', 'Pauses after each word: Dit = repeat, Dah = next word'],

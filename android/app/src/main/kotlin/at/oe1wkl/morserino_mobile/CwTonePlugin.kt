@@ -58,6 +58,10 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
                 CwAudioNative.setVolume((call.arguments as? Number)?.toFloat() ?: 0.7f)
                 result.success(null)
             }
+            "setEnvelopeMs" -> {
+                CwAudioNative.setEnvelopeMs((call.arguments as? Number)?.toFloat() ?: 5.0f)
+                result.success(null)
+            }
             "playConfirmTone" -> {
                 playConfirmTone(call.arguments as? Boolean ?: true)
                 result.success(null)

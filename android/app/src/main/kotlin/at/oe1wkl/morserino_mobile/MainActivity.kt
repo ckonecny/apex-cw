@@ -95,6 +95,17 @@ class MainActivity : FlutterActivity() {
                         keyer.mode = uiIndexToKeyerMode((call.arguments as? Number)?.toInt() ?: 0)
                         result.success(null)
                     }
+                    "setCurtisBTiming" -> {
+                        @Suppress("UNCHECKED_CAST")
+                        val args = call.arguments as? Map<String, Any>
+                        keyer.curtisBDitTiming = (args?.get("dit") as? Number)?.toInt() ?: 75
+                        keyer.curtisBDahTiming = (args?.get("dah") as? Number)?.toInt() ?: 45
+                        result.success(null)
+                    }
+                    "setAcs" -> {
+                        keyer.acsValue = (call.arguments as? Number)?.toInt() ?: 0
+                        result.success(null)
+                    }
                     "setInputs" -> {
                         @Suppress("UNCHECKED_CAST")
                         val args = call.arguments as? Map<String, Any>
@@ -213,6 +224,17 @@ class MainActivity : FlutterActivity() {
                     }
                     "setKeyerMode" -> {
                         keyer.mode = uiIndexToKeyerMode((call.arguments as? Number)?.toInt() ?: 0)
+                        result.success(null)
+                    }
+                    "setCurtisBTiming" -> {
+                        @Suppress("UNCHECKED_CAST")
+                        val args = call.arguments as? Map<String, Any>
+                        keyer.curtisBDitTiming = (args?.get("dit") as? Number)?.toInt() ?: 75
+                        keyer.curtisBDahTiming = (args?.get("dah") as? Number)?.toInt() ?: 45
+                        result.success(null)
+                    }
+                    "setAcs" -> {
+                        keyer.acsValue = (call.arguments as? Number)?.toInt() ?: 0
                         result.success(null)
                     }
                     "startKeyDiag" -> { keyDiagMode = true;  result.success(null) }
