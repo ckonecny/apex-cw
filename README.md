@@ -26,6 +26,11 @@ wonderful piece of hardware — see the [main project](https://github.com/oe1wkl
 for where to get one. This app is for practicing on the go with what's
 already in your pocket, not a substitute for it.
 
+This port was built against **firmware version 9.0.0** (`VERSION_MAJOR`/
+`_MINOR`/`_PATCH` in `morsedefs.h` at the time this app was started) — later
+firmware changes aren't automatically reflected here and would need their own
+review against this app's behavior.
+
 ## What this app is — and isn't
 
 This app focuses on the parts of the Morserino-32 that are genuinely useful
