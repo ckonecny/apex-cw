@@ -102,6 +102,13 @@ send, so there's no fixed list of supported adapters to match against.
 ## Development
 
 Built with Flutter (UI, Dart) and native Kotlin/C++ on the Android side
-(low-latency AAudio sidetone, iambic keyer and CW generator timing). See
-`lib/` for the Flutter app and `android/app/src/main/kotlin` and
-`android/app/src/main/cpp` for the native pieces.
+(low-latency AAudio sidetone, iambic keyer and CW generator timing). The
+Flutter project lives in `android/` (run `flutter` commands from there): see
+`android/lib/` for the Flutter app and `android/android/app/src/main/kotlin`
+and `android/android/app/src/main/cpp` for the native pieces.
+
+`reference/` is a read-only git submodule of the original firmware, pinned
+at tag `V9.0` (the v9.0.0 baseline above) — the source of truth this port is
+checked against. See `docs/PROJECT.md` for the full repo layout and
+`docs/STATUS.md`/`docs/DECISIONS.md`/`docs/PORTING-MAP.md` for current state,
+architecture rationale, and the module-by-module porting status.

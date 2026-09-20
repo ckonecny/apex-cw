@@ -1,0 +1,48 @@
+# CLAUDE.md — Morserino Mobile
+
+Read automatically at session start. Keep this short — depth lives in
+`docs/`, loaded on demand, not here.
+
+## What this is
+
+Android port (Flutter + native Kotlin/C++) of the Morserino-32's CW training
+modes. Independent, parallel project; full credit for the design to Willi
+Kraml/OE1WKL. Details: `docs/PROJECT.md`. Current state, next steps, open
+questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
+
+## Layout
+
+- `android/` — the actual Flutter/Kotlin/C++ project. `cd` here to run
+  `flutter` commands.
+- `reference/` — read-only git submodule of the original firmware
+  (`oe1wkl/Morserino-32`), pinned at tag `V9.0`. Never edit; `git submodule
+  update` only if deliberately re-pinning (record why in `docs/DECISIONS.md`
+  if so).
+- `docs/STATUS.md`, `docs/DECISIONS.md`, `docs/PORTING-MAP.md` — see
+  `docs/PROJECT.md` for what each holds.
+
+## Hard rules (each has caused a real bug already — see docs/DECISIONS.md)
+
+1. **Verify against `reference/`, not memory or the user manuals.** This
+   project's entire value is behavioral fidelity to the actual firmware
+   source, not to how it's documented or remembered.
+2. **The native engine (`CwGenerator.kt`/`CwKeyer.kt`) is a shared
+   singleton, not per-screen.** Nothing re-syncs wpm/pitch/spacing/mode/etc.
+   automatically — every screen that uses it must push its own config on
+   entry. Forgetting this is the single most common bug class so far
+   (hit and fixed repeatedly: wpm, pitch, spacing, keyer mode, CurtisB).
+3. **Prosigns are two-character mnemonic keys** ("KA", "KN", "SK", "AS",
+   "VE", "BK"), not the firmware's single-uppercase-letter convention —
+   `playWord()` uppercases all text before parsing, so the firmware's
+   case-based trick isn't available here.
+4. **Rebuild and reinstall on-device before calling a fix done.** A code
+   change with no reinstall has burned real user time before; say
+   explicitly if a fix is pending install.
+5. **Never `git commit` or `git push` unless explicitly asked**, even after
+   finishing a chunk of work — ask or wait to be told.
+
+## Build / run
+
+From `android/`: `flutter build apk --debug`, then
+`adb install -r build/app/outputs/flutter-apk/app-debug.apk`. Last known
+test device: `63061JEBF01551` (may not still be the one connected).

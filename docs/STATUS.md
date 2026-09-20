@@ -32,6 +32,6 @@ Everything above, tested on 63061JEBF01551.
   reliability on Android not yet validated.
 - iOS port: keep timing engine native per-platform, or move it into Dart for
   reuse (untested whether Dart timers are precise enough)?
-- `lib/audio/tone_synth.dart`, `lib/input/paddle_input.dart`,
-  `lib/keyer/iambic_keyer.dart` are unimported dead code from an early
+- `android/lib/audio/tone_synth.dart`, `android/lib/input/paddle_input.dart`,
+  `android/lib/keyer/iambic_keyer.dart` are unimported dead code from an early
   pure-Dart prototype — safe to delete, not yet done.

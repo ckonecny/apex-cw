@@ -1,7 +1,9 @@
 # Porting Map
 
-Original = `Software/src/Version 6 and newer/` in the firmware repo, v9.0.0
-baseline. Android files are relative to this repo.
+Original = `reference/Software/src/Version 6 and newer/` (submodule, tag
+`V9.0`). Android Kotlin/C++ files are bare names below, relative to
+`android/android/app/src/main/{kotlin/at/oe1wkl/morserino_mobile,cpp}/`;
+Dart files are given relative to `android/` (e.g. `lib/...`).
 
 | Original module | Android module | Status |
 |---|---|---|
@@ -33,6 +35,6 @@ baseline. Android files are relative to this repo.
 | — (no firmware equivalent) | `lib/theme/*`, `lib/ui/widgets/pinch_zoom_text.dart` | Done — app-only theme/text-size |
 
 ## Dead code (not wired up, safe to delete)
-`lib/audio/tone_synth.dart`, `lib/input/paddle_input.dart`,
-`lib/keyer/iambic_keyer.dart` — early pure-Dart prototype, superseded by the
-native Kotlin/C++ engine, unimported.
+`android/lib/audio/tone_synth.dart`, `android/lib/input/paddle_input.dart`,
+`android/lib/keyer/iambic_keyer.dart` — early pure-Dart prototype, superseded
+by the native Kotlin/C++ engine, unimported.
