@@ -149,6 +149,9 @@ class Strings {
     'ac_spacing_down': ['Abstand verlängert', 'Spacing widened'],
     'ac_char_speed_up': ['Zeichentempo erhöht', 'Char speed increased'],
     'ac_char_unlocked': ['Neues Zeichen freigeschaltet', 'New character unlocked'],
+    'ac_status_line': [
+      'WPM {wpm} · Abstand {ic}/{iw} · Trend {ema}% {trend}',
+      'WPM {wpm} · Spacing {ic}/{iw} · Trend {ema}% {trend}'],
 
     // ── Adaptive Mode settings ───────────────────────────────────────────
     'settings_adaptive_mode': ['Adaptiver Modus', 'Adaptive Mode'],

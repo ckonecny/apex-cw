@@ -172,6 +172,33 @@ The three open questions from the previous session are now resolved:
   must be user-configurable" above), or hardcoded with a comment if the user
   prefers not to expose it. Decide at implementation time; ask if unclear.
 
+## Result-screen transparency (added 2026-09-21, still part of step 5)
+
+After testing questions came up about what the notices actually mean, the
+result screen (`AdaptiveCopyBody._buildResult`) now always shows a status
+line — `WPM {wpm} · Spacing {interCharSpace}/{interWordSpace} · Trend
+{blockEma%} {▲/▼/=}` — plus, on the notice chips themselves, the concrete
+before→after values (e.g. "Abstand verkürzt: 4→3 / 8→7") instead of just a
+bare label. Design choices made (both per explicit user preference over
+alternatives — a block-history list and a sparkline were the other
+options):
+- Trend shown as the single current blockquote-EMA value with an up/down/
+  flat arrow vs. the previous block, not a history list or chart. Simple,
+  and it's literally the number the engine's decisions are driven by, so
+  it doubles as a way to understand *why* a decision did or didn't fire.
+- Current wpm/spacing values always shown, not just on change — so it's
+  always clear what the trainer is currently doing, not only when it just
+  changed something.
+- "Abstand" ("spacing") explicitly means `interCharSpace` AND
+  `interWordSpace` together, stepped by 1 dit each per block — this was a
+  real point of confusion, worth restating here for the next session too.
+
+This doesn't change the underlying decision logic (still EMA-based, per
+"Decisions: weighting/recency questions" above) — it only makes that logic
+observable, which is a prerequisite for actually testing/interpreting step
+6 below. The "let the user override the suggestion" TODO (see "Flagged
+TODOs" below) is still open and is a different, bigger change.
+
 ## Starting point for the next session
 
 Steps 1–5 are done and built/installed on `63061JEBF01551`, but **not yet

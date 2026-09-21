@@ -78,6 +78,18 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   late final int _startInterWordSpace = widget.interWordSpace;
   TempoDecision? _lastDecision;
   bool _unlockedThisBlock = false;
+  // Result-screen status line: the values the engine is actually reasoning
+  // about, captured explicitly (not read back from `widget` after the
+  // on*Changed callbacks, to not depend on parent-rebuild timing).
+  double _displayEma = 1.0;
+  int _displayEmaTrend = 0; // -1/0/+1 vs. the previous block
+  int _displayWpm = 0;
+  int _displayInterCharSpace = 0;
+  int _displayInterWordSpace = 0;
+  // Before/after pairs for the change notices, only set on a block where
+  // that value actually changed.
+  int? _wpmBefore;
+  int? _interCharBefore, _interWordBefore;
 
   _Phase _phase = _Phase.idle;
   int _blockNumber = 1;
@@ -251,23 +263,34 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       ),
       initialBlockEma: p.getDouble('adaptiveBlockEma') ?? 1.0,
     );
+    final prevEma = _engine!.blockEma;
     final spacingAtCharSpeed = widget.interCharSpace <= 3 && widget.interWordSpace <= 7;
     final decision = _engine!.recordBlock(results, spacingAtCharSpeed: spacingAtCharSpeed);
-    await p.setDouble('adaptiveBlockEma', _engine!.blockEma);
+    final newEma = _engine!.blockEma;
+    await p.setDouble('adaptiveBlockEma', newEma);
 
+    var newInterChar = widget.interCharSpace;
+    var newInterWord = widget.interWordSpace;
+    int? interCharBefore, interWordBefore;
     if (decision.spacingStep == TempoStep.up) {
-      widget.onSpacingChanged?.call(
-        (widget.interCharSpace - 1).clamp(3, _startInterCharSpace),
-        (widget.interWordSpace - 1).clamp(7, _startInterWordSpace),
-      );
+      interCharBefore = widget.interCharSpace;
+      interWordBefore = widget.interWordSpace;
+      newInterChar = (widget.interCharSpace - 1).clamp(3, _startInterCharSpace);
+      newInterWord = (widget.interWordSpace - 1).clamp(7, _startInterWordSpace);
+      widget.onSpacingChanged?.call(newInterChar, newInterWord);
     } else if (decision.spacingStep == TempoStep.down) {
-      widget.onSpacingChanged?.call(
-        (widget.interCharSpace + 1).clamp(3, _startInterCharSpace),
-        (widget.interWordSpace + 1).clamp(7, _startInterWordSpace),
-      );
+      interCharBefore = widget.interCharSpace;
+      interWordBefore = widget.interWordSpace;
+      newInterChar = (widget.interCharSpace + 1).clamp(3, _startInterCharSpace);
+      newInterWord = (widget.interWordSpace + 1).clamp(7, _startInterWordSpace);
+      widget.onSpacingChanged?.call(newInterChar, newInterWord);
     }
+    var newWpm = widget.wpm;
+    int? wpmBefore;
     if (decision.charSpeedStep == TempoStep.up) {
-      widget.onWpmChanged?.call(widget.wpm + 1);
+      wpmBefore = widget.wpm;
+      newWpm = widget.wpm + 1;
+      widget.onWpmChanged?.call(newWpm);
     }
 
     final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
@@ -283,6 +306,14 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _resultTotal = total;
       _lastDecision = decision;
       _unlockedThisBlock = unlocked;
+      _displayEma = newEma;
+      _displayEmaTrend = (newEma - prevEma).abs() < 0.0001 ? 0 : (newEma > prevEma ? 1 : -1);
+      _displayWpm = newWpm;
+      _displayInterCharSpace = newInterChar;
+      _displayInterWordSpace = newInterWord;
+      _wpmBefore = wpmBefore;
+      _interCharBefore = interCharBefore;
+      _interWordBefore = interWordBefore;
       _phase = _Phase.result;
     });
   }
@@ -303,9 +334,17 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final notices = <String>[];
     final d = _lastDecision;
     if (d != null) {
-      if (d.charSpeedStep == TempoStep.up) notices.add(Strings.t('ac_char_speed_up'));
-      if (d.spacingStep == TempoStep.up) notices.add(Strings.t('ac_spacing_up'));
-      if (d.spacingStep == TempoStep.down) notices.add(Strings.t('ac_spacing_down'));
+      if (d.charSpeedStep == TempoStep.up && _wpmBefore != null) {
+        notices.add('${Strings.t('ac_char_speed_up')}: $_wpmBefore→$_displayWpm');
+      }
+      if (d.spacingStep == TempoStep.up && _interCharBefore != null) {
+        notices.add('${Strings.t('ac_spacing_up')}: '
+            '$_interCharBefore→$_displayInterCharSpace / $_interWordBefore→$_displayInterWordSpace');
+      }
+      if (d.spacingStep == TempoStep.down && _interCharBefore != null) {
+        notices.add('${Strings.t('ac_spacing_down')}: '
+            '$_interCharBefore→$_displayInterCharSpace / $_interWordBefore→$_displayInterWordSpace');
+      }
     }
     if (_unlockedThisBlock) notices.add(Strings.t('ac_char_unlocked'));
     return notices;
@@ -550,6 +589,14 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
             Text(Strings.t('ac_correct_of')
                     .replaceFirst('{c}', '$_resultCorrect').replaceFirst('{t}', '$_resultTotal'),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+            const SizedBox(height: 10),
+            Text(Strings.t('ac_status_line')
+                    .replaceFirst('{wpm}', '$_displayWpm')
+                    .replaceFirst('{ic}', '$_displayInterCharSpace')
+                    .replaceFirst('{iw}', '$_displayInterWordSpace')
+                    .replaceFirst('{ema}', '${(_displayEma * 100).round()}')
+                    .replaceFirst('{trend}', _displayEmaTrend > 0 ? '▲' : _displayEmaTrend < 0 ? '▼' : '='),
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
             if (weak.isNotEmpty) ...[
               const SizedBox(height: 20),
               Text(Strings.t('ac_weak_chars'),
