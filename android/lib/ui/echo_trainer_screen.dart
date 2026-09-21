@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
 import '../content/cw_content.dart';
+import '../content/char_stats.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
@@ -74,11 +75,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int    _kochModeIndex = 0;
   // "Adapt. Rand." (KOCH_ADAPTIVE): weighted-random character draw — wrong
   // answers raise a character's weight (drawn more often), right answers
-  // lower it, within [1,20]. A simplified, in-app stand-in for the firmware's
-  // persisted Koch::adaptiveProbabilities[]/fireCharSeen() system: same idea
-  // (struggle with a char, see it more), without the full NVS-backed
-  // per-attempt bookkeeping.
-  Map<String, int> _adaptiveWeight = {};
+  // lower it, within [1,20]. Backed by CharStatsStore, shared with the
+  // (planned) Adaptive Copy mode — see docs/ADAPTIVE-COPY.md.
+  final CharStatsStore _charStats = CharStatsStore();
   int    _kochSeq         = 0;
   String _customKochChars = '';
   int    _licwCarouselStart = 0;
@@ -213,7 +212,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _currentWpm     = _wpm;
     });
     _genChannel.invokeMethod('setKochChars', _activeKochChars);
-    _loadAdaptiveWeights();
+    await _charStats.load(p);
+    if (mounted) setState(() {});
   }
 
   Future<void> _savePrefs() async {
@@ -224,30 +224,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await p.setInt('kochEchoModeIndex', _kochModeIndex);
   }
 
-  Future<void> _loadAdaptiveWeights() async {
-    final p = await SharedPreferences.getInstance();
-    final raw = p.getString('adaptiveWeights') ?? '';
-    final map = <String, int>{};
-    for (final part in raw.split(',')) {
-      final kv = part.split(':');
-      if (kv.length == 2) {
-        final w = int.tryParse(kv[1]);
-        if (w != null) map[kv[0]] = w;
-      }
-    }
-    if (mounted) setState(() => _adaptiveWeight = map);
-  }
-
-  Future<void> _saveAdaptiveWeights() async {
-    final p = await SharedPreferences.getInstance();
-    await p.setString('adaptiveWeights', _adaptiveWeight.entries.map((e) => '${e.key}:${e.value}').join(','));
-  }
-
   // Weighted-random single character from the active Koch set — weight
   // defaults to 1 (never drawn yet / already mastered back down to baseline).
   String _pickAdaptiveChar() {
     final active = kochActiveChars(_kochLevel, _activeKochChars);
-    final weights = active.map((c) => _adaptiveWeight[c] ?? 1).toList();
+    final weights = active.map((c) => _charStats.weightFor(c)).toList();
     final total = weights.fold<int>(0, (a, b) => a + b);
     var r = _random.nextInt(total);
     for (var i = 0; i < active.length; i++) {
@@ -262,13 +243,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   String _pickAdaptiveGroup() =>
       List.generate(_groupLength.clamp(2, 8), (_) => _pickAdaptiveChar()).join();
 
-  void _applyAdaptiveFeedback(String target, bool correct) {
+  Future<void> _applyAdaptiveFeedback(String target, bool correct) async {
     if (!widget.kochMode || _kochModeIndex != 4) return;
     for (final ch in target.split('')) {
-      final w = _adaptiveWeight[ch] ?? 1;
-      _adaptiveWeight[ch] = (correct ? w - 1 : w + 2).clamp(1, 20);
+      _charStats.record(ch, correct);
     }
-    _saveAdaptiveWeights();
+    final p = await SharedPreferences.getInstance();
+    await _charStats.save(p);
   }
 
   @override

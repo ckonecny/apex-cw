@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
 import '../content/cw_content.dart';
 import 'echo_trainer_screen.dart';
+import 'adaptive_copy_body.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
 import 'widgets/pinch_zoom_text.dart';
@@ -37,6 +38,10 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   static List<String> get _kochModeLabels =>
       [Strings.t('mode_random'), Strings.t('mode_abbrevs'), Strings.t('mode_words'), Strings.t('mode_mixed')];
   int  _kochModeIndex = 0;
+  // Classic (0) vs Adaptiv (1) flow — orthogonal to the content-mode choice
+  // above, Koch Trainer only for now (see docs/ADAPTIVE-COPY.md). Random/
+  // Abbrevs/Words/Mixed selection above stays shared between both flows.
+  int  _flow = 0;
   int  _outputCase = 0;   // 0=lower, 1=UPPER — display only, content stays uppercase internally
   // 0=Display off, 1=Char by char, 2=Word by word (matches M32 "CW Gen Displ")
   int  _genDisplay     = 1;
@@ -100,6 +105,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _kochLevel      = p.getInt('kochLevel')      ?? 5;
       _genDisplay     = (p.getInt('genDisplayMode') ?? 1).clamp(0, 2);
       _kochModeIndex  = (p.getInt('kochModeIndex')  ?? 0).clamp(0, _kochModeLabels.length - 1);
+      _flow           = (p.getInt('kochFlow')       ?? 0).clamp(0, 1);
       _outputCase     = (p.getInt('outputCase')     ?? 0).clamp(0, 1);
       _stopAfterItem  = p.getBool('stopAfterItem') ?? false;
       _eachWordTwice  = p.getBool('eachWordTwice') ?? false;
@@ -137,6 +143,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     await p.setInt('wpm',       _wpm);
     await p.setInt('kochLevel', _kochLevel);
     await p.setInt('kochModeIndex', _kochModeIndex);
+    await p.setInt('kochFlow', _flow);
   }
 
   @override
@@ -360,24 +367,52 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       ),
       body: Column(
         children: [
-          // ── Sent text display ──────────────────────────────────────────
-          Expanded(
-            child: PinchZoomFontSize(
-              prefsKey: 'genLogFontSize',
-              builder: (context, fontSize) => Container(
-                margin: const EdgeInsets.all(16),
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: c.surface,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: c.border),
-                ),
-                child: _buildTextDisplay(fontSize),
-              ),
+          // ── Classic / Adaptiv flow toggle (Koch Trainer only for now —
+          // see docs/ADAPTIVE-COPY.md) — orthogonal to the content-mode
+          // selector below, not a replacement for it. ────────────────────
+          if (widget.kochMode)
+            _FlowToggle(
+              selected: _flow,
+              onChanged: (f) {
+                if (_running) _stop();
+                setState(() => _flow = f);
+                _savePrefs();
+              },
             ),
+
+          // ── Practice area: Classic's sent-text log, or the Adaptiv
+          // send→reveal→mark→result flow ──────────────────────────────────
+          Expanded(
+            child: (widget.kochMode && _flow == 1)
+                ? AdaptiveCopyBody(
+                    kochLevel: _kochLevel,
+                    activeKochChars: _activeKochChars,
+                    contentModeIndex: _kochModeIndex,
+                    contentModeOrdinals: _kochModeOrdinals,
+                    contentModeLabels: _kochModeLabels,
+                    wpm: _wpm,
+                    groupLength: _groupLength,
+                    maxWords: _maxWords,
+                    abbrevLengthMax: _abbrevLengthMax,
+                    interCharSpace: _interCharSpace,
+                    interWordSpace: _interWordSpace,
+                  )
+                : PinchZoomFontSize(
+                    prefsKey: 'genLogFontSize',
+                    builder: (context, fontSize) => Container(
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: c.surface,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: c.border),
+                      ),
+                      child: _buildTextDisplay(fontSize),
+                    ),
+                  ),
           ),
 
-          // ── Controls ───────────────────────────────────────────────────
+          // ── Controls (shared by Classic and Adaptiv) ─────────────────────
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(children: [
@@ -440,52 +475,55 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           // ── Repeat / Next paddle choice (Stop<Next>Rep, mirrors real M32) ──
           // Reserved space stays fixed whenever the mode is on, so the text
           // display above doesn't jump in size when the buttons enable/disable.
-          if (_stopAfterItem)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              child: Row(children: [
-                Expanded(child: _ChoiceButton(
-                  label: '◀ ${Strings.t('repeat_upper')}', sub: 'Dit',
-                  color: c.warning,
-                  enabled: _waiting,
-                  onTap: () => _choosePaddle(true),
-                )),
-                const SizedBox(width: 12),
-                Expanded(child: _ChoiceButton(
-                  label: '${Strings.t('next_upper')} ▶', sub: 'Dah',
-                  color: c.info,
-                  enabled: _waiting,
-                  onTap: () => _choosePaddle(false),
-                )),
-              ]),
-            ),
+          // Classic-only: the Adaptiv flow has its own buttons per phase.
+          if (!(widget.kochMode && _flow == 1)) ...[
+            if (_stopAfterItem)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: Row(children: [
+                  Expanded(child: _ChoiceButton(
+                    label: '◀ ${Strings.t('repeat_upper')}', sub: 'Dit',
+                    color: c.warning,
+                    enabled: _waiting,
+                    onTap: () => _choosePaddle(true),
+                  )),
+                  const SizedBox(width: 12),
+                  Expanded(child: _ChoiceButton(
+                    label: '${Strings.t('next_upper')} ▶', sub: 'Dah',
+                    color: c.info,
+                    enabled: _waiting,
+                    onTap: () => _choosePaddle(false),
+                  )),
+                ]),
+              ),
 
-          // ── Start / Stop button ────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _running
-                      ? c.danger.withOpacity(0.2)
-                      : c.accent.withOpacity(0.2),
-                  foregroundColor: _running
-                      ? c.danger
-                      : c.accent,
-                  side: BorderSide(
-                    color: _running ? c.danger : c.accent,
+            // ── Start / Stop button ────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _running
+                        ? c.danger.withOpacity(0.2)
+                        : c.accent.withOpacity(0.2),
+                    foregroundColor: _running
+                        ? c.danger
+                        : c.accent,
+                    side: BorderSide(
+                      color: _running ? c.danger : c.accent,
+                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  onPressed: _running ? _stop : _start,
+                  child: Text(_running ? '■  STOP' : '▶  START',
+                      style: const TextStyle(fontFamily: 'CwMono', fontSize: 18,
+                          fontWeight: FontWeight.bold)),
                 ),
-                onPressed: _running ? _stop : _start,
-                child: Text(_running ? '■  STOP' : '▶  START',
-                    style: const TextStyle(fontFamily: 'CwMono', fontSize: 18,
-                        fontWeight: FontWeight.bold)),
               ),
             ),
-          ),
+          ],
         ],
       ),
       ),
@@ -678,6 +716,42 @@ class _ChoiceButton extends StatelessWidget {
               color: c.withOpacity(0.7))),
         ]),
       ),
+    );
+  }
+}
+
+class _FlowToggle extends StatelessWidget {
+  final int selected;   // 0=Classic, 1=Adaptiv
+  final ValueChanged<int> onChanged;
+  const _FlowToggle({required this.selected, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final labels = [Strings.t('flow_classic'), Strings.t('flow_adaptiv')];
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+      child: Row(children: List.generate(labels.length, (i) {
+        final active = i == selected;
+        return Expanded(child: Padding(
+          padding: EdgeInsets.only(right: i == 0 ? 6 : 0, left: i == 1 ? 6 : 0),
+          child: GestureDetector(
+            onTap: () => onChanged(i),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              decoration: BoxDecoration(
+                color: active ? c.accentPurple.withOpacity(0.15) : c.surface,
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: active ? c.accentPurple : c.border),
+              ),
+              child: Text(labels[i], textAlign: TextAlign.center,
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: active ? c.accentPurple : c.textMuted)),
+            ),
+          ),
+        ));
+      })),
     );
   }
 }
