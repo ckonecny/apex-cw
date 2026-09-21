@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/char_stats.dart';
-import '../content/cw_content.dart' show kochActiveChars;
+import '../content/cw_content.dart' show kochActiveChars, parsePracticeChars;
 import '../content/adaptive_copy_engine.dart';
 import '../theme/app_colors.dart';
 import '../l10n/strings.dart';
@@ -67,6 +67,15 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   static const _genEvents = EventChannel('at.oe1wkl.morserino_mobile/cw_gen_events');
   static const _toneChannel = MethodChannel('at.oe1wkl.morserino_mobile/cw_tone');
 
+  // Weak-char detection for the "weak characters" display and the
+  // boost-next-block proposal: needs enough attempts to be meaningful (not
+  // just one unlucky group) and an error rate clearly above noise. Reuses
+  // CharStat.emaErrorRate — the same lifetime-persistent per-character store
+  // Echo Trainer's "Adapt. Rand." already uses (docs/ADAPTIVE-COPY.md).
+  static const _weakCharMinAttempts = 8;
+  static const _weakCharThreshold = 0.12;
+  static const _weakCharMaxShown = 5;
+
   final CharStatsStore _charStats = CharStatsStore();
   AdaptiveCopyEngine? _engine;
   // Floor for the spacing "step down" direction — never make spacing wider
@@ -78,18 +87,36 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   late final int _startInterWordSpace = widget.interWordSpace;
   TempoDecision? _lastDecision;
   bool _unlockedThisBlock = false;
-  // Result-screen status line: the values the engine is actually reasoning
-  // about, captured explicitly (not read back from `widget` after the
-  // on*Changed callbacks, to not depend on parent-rebuild timing).
+  // Result-screen status line: the EMA the engine is actually reasoning
+  // about, captured explicitly (not read back from `widget`, to not depend
+  // on parent-rebuild timing).
   double _displayEma = 1.0;
   int _displayEmaTrend = 0; // -1/0/+1 vs. the previous block
-  int _displayWpm = 0;
-  int _displayInterCharSpace = 0;
-  int _displayInterWordSpace = 0;
-  // Before/after pairs for the change notices, only set on a block where
-  // that value actually changed.
+  // Before values for the change notices, only set on a block where that
+  // value actually changed.
   int? _wpmBefore;
   int? _interCharBefore, _interWordBefore;
+  // Engine's proposed post-block values — not applied yet. The result
+  // screen lets the user accept/reject each one (default: accepted, same
+  // as the old fully-automatic behavior) and nudge the magnitude before
+  // it's applied on "Next Block"/"Finish" (docs/ADAPTIVE-COPY.md, "User
+  // override on the result screen" TODO). Null when the engine made no
+  // proposal of that kind this block.
+  int? _pendingWpm;
+  int? _pendingInterChar, _pendingInterWord;
+  bool _acceptCharSpeed = true;
+  bool _acceptSpacing = true;
+  bool _acceptUnlock = true;
+  // Weak characters (lifetime EMA, not just this block) shown on the result
+  // screen, keyed to error rate. Each is tapped on/off to control whether
+  // it's included in the boosted draw for the next block — the "eingreifen
+  // in die vorgeschlagenen Zeichen" override (docs/ADAPTIVE-COPY.md).
+  Map<String, double> _weakChars = {};
+  final Set<String> _excludedBoostChars = {};
+  // wpm actually pushed to the generator for the in-flight block — set by
+  // _startBlock(), independent of widget.wpm so a just-accepted override
+  // takes effect immediately rather than waiting for a parent rebuild.
+  int _activeWpm = 0;
 
   _Phase _phase = _Phase.idle;
   int _blockNumber = 1;
@@ -111,12 +138,63 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     _sessionActive = false;
     _genSub?.cancel();
     _genChannel.invokeMethod('stop');
+    // The boost proposal pushes practiceChars/boostLevel to the shared
+    // generator singleton (CLAUDE.md rule: nothing re-syncs this
+    // automatically). Restore the Settings-persisted values on the way out
+    // so leaving Adaptive Copy doesn't silently leave Classic mode (or the
+    // Echo Trainer) boosting our leftover weak-char set.
+    _restorePracticeCharsAndBoost();
     super.dispose();
   }
 
-  int _ditMs() => (1200 / widget.wpm).round();
+  Future<void> _restorePracticeCharsAndBoost() async {
+    final p = await SharedPreferences.getInstance();
+    final practiceChars = parsePracticeChars(p.getString('practiceChars') ?? '');
+    final boostLevel = (p.getInt('boostLevel') ?? 0).clamp(0, 2);
+    await _genChannel.invokeMethod('setPracticeChars', practiceChars);
+    await _genChannel.invokeMethod('setBoostLevel', boostLevel);
+  }
 
   int get _blockSize => widget.maxWords > 0 ? widget.maxWords : 5;
+
+  // Resolved target for the *next* block: the pending proposal if accepted,
+  // otherwise the unchanged current value. Drives both the status line and
+  // what actually gets pushed to the generator in _startBlock().
+  int get _effectiveWpm =>
+      (_acceptCharSpeed && _pendingWpm != null) ? _pendingWpm! : widget.wpm;
+  int get _effectiveInterChar =>
+      (_acceptSpacing && _pendingInterChar != null) ? _pendingInterChar! : widget.interCharSpace;
+  int get _effectiveInterWord =>
+      (_acceptSpacing && _pendingInterWord != null) ? _pendingInterWord! : widget.interWordSpace;
+
+  void _stepPendingWpm(int delta) {
+    if (_pendingWpm == null) return;
+    setState(() => _pendingWpm = (_pendingWpm! + delta).clamp(widget.wpm, widget.wpm + 5));
+  }
+
+  void _stepPendingSpacing(int delta) {
+    if (_pendingInterChar == null || _pendingInterWord == null) return;
+    setState(() {
+      _pendingInterChar = (_pendingInterChar! + delta).clamp(3, _startInterCharSpace);
+      _pendingInterWord = (_pendingInterWord! + delta).clamp(7, _startInterWordSpace);
+    });
+  }
+
+  // Pushes the accepted proposals to the shared state the caller
+  // (GeneratorScreen) owns. Called right before leaving the result screen,
+  // not inside _finishBlock() — that's the whole point of the override UI.
+  void _applyPendingDecision() {
+    if (_acceptCharSpeed && _pendingWpm != null && _pendingWpm != widget.wpm) {
+      widget.onWpmChanged?.call(_pendingWpm!);
+    }
+    if (_acceptSpacing && _pendingInterChar != null && _pendingInterWord != null &&
+        (_pendingInterChar != widget.interCharSpace || _pendingInterWord != widget.interWordSpace)) {
+      widget.onSpacingChanged?.call(_pendingInterChar!, _pendingInterWord!);
+    }
+    if (_acceptUnlock && _unlockedThisBlock) {
+      widget.onKochLevelChanged?.call(widget.kochLevel + 1);
+    }
+  }
 
   Future<String> _fetchGroup() async {
     final ordinal = widget.contentModeOrdinals[widget.contentModeIndex];
@@ -152,8 +230,16 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     }
   }
 
-  Future<void> _startBlock() async {
+  // wpm/interCharSpace/interWordSpace default to the widget's current
+  // values; _nextBlock() passes the just-accepted overrides explicitly
+  // instead, since calling widget.onWpmChanged/onSpacingChanged and then
+  // immediately reading widget.wpm/widget.interCharSpace in the same
+  // synchronous call would still see the pre-rebuild values.
+  Future<void> _startBlock({int? wpm, int? interCharSpace, int? interWordSpace}) async {
     if (_phase == _Phase.sending) return;
+    _activeWpm = wpm ?? widget.wpm;
+    final activeInterChar = interCharSpace ?? widget.interCharSpace;
+    final activeInterWord = interWordSpace ?? widget.interWordSpace;
     _sessionActive = true;
     setState(() {
       _phase = _Phase.sending;
@@ -167,9 +253,19 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // Sync tempo/spacing/tone before sending — nothing else does this for
     // us (CLAUDE.md rule: shared singleton engine, every screen must push
     // its own config on entry).
-    await _genChannel.invokeMethod('setWpm', widget.wpm);
-    await _genChannel.invokeMethod('setInterCharSpace', widget.interCharSpace);
-    await _genChannel.invokeMethod('setInterWordSpace', widget.interWordSpace);
+    await _genChannel.invokeMethod('setWpm', _activeWpm);
+    await _genChannel.invokeMethod('setInterCharSpace', activeInterChar);
+    await _genChannel.invokeMethod('setInterWordSpace', activeInterWord);
+    // Boost proposal from the previous block's result screen, minus
+    // whatever the user tapped out — reuses the same practiceChars/
+    // boostLevel mechanism as CW Generator's "Practice Set" + Boost
+    // (CwGenerator.kt randomKochChars() already consults both). Empty/off
+    // when there's no accepted weak char, e.g. the very first block.
+    final boostChars = _weakChars.keys
+        .where((ch) => !_excludedBoostChars.contains(ch))
+        .toList();
+    await _genChannel.invokeMethod('setPracticeChars', boostChars);
+    await _genChannel.invokeMethod('setBoostLevel', boostChars.isEmpty ? 0 : 2);
     final pitch = p.getInt('pitch') ?? 600;
     final toneSoftness = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
     await _toneChannel.invokeMethod('setFreq', pitch);
@@ -199,7 +295,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       // playOne() plays with trailingGap=false (see CwGenerator.kt) — same
       // reasoning as the Classic flow's start-marker gap: insert the
       // inter-word gap ourselves between groups.
-      await Future.delayed(Duration(milliseconds: _ditMs() * widget.interWordSpace));
+      final ditMs = (1200 / _activeWpm).round();
+      await Future.delayed(Duration(milliseconds: ditMs * activeInterWord));
     }
     if (!_sessionActive || !mounted) return;
     _revealBlock();
@@ -256,7 +353,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // block (docs/ADAPTIVE-COPY.md "Decisions: weighting/recency questions").
     _engine ??= AdaptiveCopyEngine(
       thresholds: AdaptiveCopyThresholds(
-        highThreshold: (p.getInt('adaptiveHighThresholdPct') ?? 90) / 100,
+        // Clamped to 99 even though Settings now caps the slider there too —
+        // guards a value already persisted as 100 before that cap existed
+        // (100% is an unreachable trap, see ADAPTIVE-COPY.md).
+        highThreshold: ((p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99)) / 100,
         lowThreshold: (p.getInt('adaptiveLowThresholdPct') ?? 70) / 100,
         blockEmaAlpha: (p.getInt('adaptiveEmaAlphaPct') ?? 30) / 100,
         unlockOccurrences: p.getInt('adaptiveUnlockOccurrences') ?? 20,
@@ -269,28 +369,37 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final newEma = _engine!.blockEma;
     await p.setDouble('adaptiveBlockEma', newEma);
 
-    var newInterChar = widget.interCharSpace;
-    var newInterWord = widget.interWordSpace;
-    int? interCharBefore, interWordBefore;
+    // Proposals only — not applied here. The result screen shows them as
+    // accept/reject/adjust suggestions; _applyPendingDecision() pushes
+    // whatever's still accepted once the user leaves the result screen.
+    int? newInterChar, newInterWord, interCharBefore, interWordBefore;
     if (decision.spacingStep == TempoStep.up) {
-      interCharBefore = widget.interCharSpace;
-      interWordBefore = widget.interWordSpace;
-      newInterChar = (widget.interCharSpace - 1).clamp(3, _startInterCharSpace);
-      newInterWord = (widget.interWordSpace - 1).clamp(7, _startInterWordSpace);
-      widget.onSpacingChanged?.call(newInterChar, newInterWord);
+      final ic = (widget.interCharSpace - 1).clamp(3, _startInterCharSpace);
+      final iw = (widget.interWordSpace - 1).clamp(7, _startInterWordSpace);
+      // Already at the floor — clamping produced no real change, so don't
+      // propose a no-op ("tightened: 3→3") suggestion row.
+      if (ic != widget.interCharSpace || iw != widget.interWordSpace) {
+        interCharBefore = widget.interCharSpace;
+        interWordBefore = widget.interWordSpace;
+        newInterChar = ic;
+        newInterWord = iw;
+      }
     } else if (decision.spacingStep == TempoStep.down) {
-      interCharBefore = widget.interCharSpace;
-      interWordBefore = widget.interWordSpace;
-      newInterChar = (widget.interCharSpace + 1).clamp(3, _startInterCharSpace);
-      newInterWord = (widget.interWordSpace + 1).clamp(7, _startInterWordSpace);
-      widget.onSpacingChanged?.call(newInterChar, newInterWord);
+      final ic = (widget.interCharSpace + 1).clamp(3, _startInterCharSpace);
+      final iw = (widget.interWordSpace + 1).clamp(7, _startInterWordSpace);
+      // Already at the ceiling (this session's starting spacing) — same
+      // no-op guard for "widened: 11→11".
+      if (ic != widget.interCharSpace || iw != widget.interWordSpace) {
+        interCharBefore = widget.interCharSpace;
+        interWordBefore = widget.interWordSpace;
+        newInterChar = ic;
+        newInterWord = iw;
+      }
     }
-    var newWpm = widget.wpm;
-    int? wpmBefore;
+    int? newWpm, wpmBefore;
     if (decision.charSpeedStep == TempoStep.up) {
       wpmBefore = widget.wpm;
       newWpm = widget.wpm + 1;
-      widget.onWpmChanged?.call(newWpm);
     }
 
     final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
@@ -298,7 +407,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         .toList();
     final unlocked = widget.kochLevel < widget.activeKochChars.length &&
         _engine!.shouldUnlockNextChar(activeChars);
-    if (unlocked) widget.onKochLevelChanged?.call(widget.kochLevel + 1);
+    final weakChars = _weakCharsLifetime();
 
     if (!mounted) return;
     setState(() {
@@ -308,55 +417,57 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _unlockedThisBlock = unlocked;
       _displayEma = newEma;
       _displayEmaTrend = (newEma - prevEma).abs() < 0.0001 ? 0 : (newEma > prevEma ? 1 : -1);
-      _displayWpm = newWpm;
-      _displayInterCharSpace = newInterChar;
-      _displayInterWordSpace = newInterWord;
       _wpmBefore = wpmBefore;
       _interCharBefore = interCharBefore;
       _interWordBefore = interWordBefore;
+      _pendingWpm = newWpm;
+      _pendingInterChar = newInterChar;
+      _pendingInterWord = newInterWord;
+      _acceptCharSpeed = true;
+      _acceptSpacing = true;
+      _acceptUnlock = true;
+      _weakChars = weakChars;
+      // Excluding a char only makes sense while it's actually on the list —
+      // drop stale exclusions for chars that fell off (e.g. its EMA
+      // recovered below threshold since the user last excluded it).
+      _excludedBoostChars.removeWhere((ch) => !weakChars.containsKey(ch));
       _phase = _Phase.result;
     });
   }
 
-  Map<String, int> _weakCharsThisBlock() {
-    final m = <String, int>{};
-    for (final key in _wrongPositions) {
-      final parts = key.split(':');
-      final g = int.parse(parts[0]);
-      final i = int.parse(parts[1]);
-      final ch = _sentGroups[g][i];
-      m[ch] = (m[ch] ?? 0) + 1;
+  // Lifetime EMA, not just this block — a character that was wrong once
+  // last block but is otherwise solid shouldn't vanish from the list just
+  // because this block's random draw didn't happen to include it, and one
+  // that's still weak should keep showing up even on a lucky all-correct
+  // block (docs/ADAPTIVE-COPY.md "weak characters").
+  Map<String, double> _weakCharsLifetime() {
+    final active = kochActiveChars(widget.kochLevel, widget.activeKochChars);
+    final entries = <MapEntry<String, double>>[];
+    for (final ch in active) {
+      final s = _charStats.stats[ch];
+      if (s == null || s.attempts < _weakCharMinAttempts) continue;
+      if (s.emaErrorRate < _weakCharThreshold) continue;
+      entries.add(MapEntry(ch, s.emaErrorRate));
     }
-    return m;
+    entries.sort((a, b) => b.value.compareTo(a.value));
+    return Map.fromEntries(entries.take(_weakCharMaxShown));
   }
 
-  List<String> get _adaptiveNotices {
-    final notices = <String>[];
-    final d = _lastDecision;
-    if (d != null) {
-      if (d.charSpeedStep == TempoStep.up && _wpmBefore != null) {
-        notices.add('${Strings.t('ac_char_speed_up')}: $_wpmBefore→$_displayWpm');
-      }
-      if (d.spacingStep == TempoStep.up && _interCharBefore != null) {
-        notices.add('${Strings.t('ac_spacing_up')}: '
-            '$_interCharBefore→$_displayInterCharSpace / $_interWordBefore→$_displayInterWordSpace');
-      }
-      if (d.spacingStep == TempoStep.down && _interCharBefore != null) {
-        notices.add('${Strings.t('ac_spacing_down')}: '
-            '$_interCharBefore→$_displayInterCharSpace / $_interWordBefore→$_displayInterWordSpace');
-      }
-    }
-    if (_unlockedThisBlock) notices.add(Strings.t('ac_char_unlocked'));
-    return notices;
-  }
+  bool get _hasSuggestions =>
+      _pendingWpm != null || _pendingInterChar != null || _unlockedThisBlock;
 
   void _finish() {
+    _applyPendingDecision();
     if (mounted) setState(() => _phase = _Phase.idle);
   }
 
   void _nextBlock() {
+    final wpm = _effectiveWpm;
+    final interChar = _effectiveInterChar;
+    final interWord = _effectiveInterWord;
+    _applyPendingDecision();
     _blockNumber++;
-    _startBlock();
+    _startBlock(wpm: wpm, interCharSpace: interChar, interWordSpace: interWord);
   }
 
   // ── Build ──────────────────────────────────────────────────────────────
@@ -444,7 +555,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                     .replaceFirst('{total}', '$_blockSize'),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
             const SizedBox(height: 6),
-            Text('${widget.wpm} WPM',
+            Text('$_activeWpm WPM',
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textDisabled)),
           ]),
         ),
@@ -577,7 +688,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   Widget _buildResult(BuildContext context) {
     final c = AppColors.of(context);
     final pct = _resultTotal == 0 ? 100 : (_resultCorrect * 100 ~/ _resultTotal);
-    final weak = _weakCharsThisBlock();
+    final weak = _weakChars;
     return Column(children: [
       _buildHeader(context),
       Expanded(
@@ -591,9 +702,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
             const SizedBox(height: 10),
             Text(Strings.t('ac_status_line')
-                    .replaceFirst('{wpm}', '$_displayWpm')
-                    .replaceFirst('{ic}', '$_displayInterCharSpace')
-                    .replaceFirst('{iw}', '$_displayInterWordSpace')
+                    .replaceFirst('{wpm}', '$_effectiveWpm')
+                    .replaceFirst('{ic}', '$_effectiveInterChar')
+                    .replaceFirst('{iw}', '$_effectiveInterWord')
                     .replaceFirst('{ema}', '${(_displayEma * 100).round()}')
                     .replaceFirst('{trend}', _displayEmaTrend > 0 ? '▲' : _displayEmaTrend < 0 ? '▼' : '='),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
@@ -601,34 +712,50 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
               const SizedBox(height: 20),
               Text(Strings.t('ac_weak_chars'),
                   style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+              const SizedBox(height: 2),
+              Text(Strings.t('ac_boost_hint'),
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
+                      color: c.textDisabled, fontStyle: FontStyle.italic),
+                  textAlign: TextAlign.center),
               const SizedBox(height: 8),
+              // Tappable, not just informational — each chip toggles whether
+              // that character is included in the boosted draw for the next
+              // block (practiceChars/boostLevel pushed in _startBlock()).
               Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
-                children: weak.entries.map((e) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: c.danger.withOpacity(0.1),
+                children: weak.entries.map((e) {
+                  final included = !_excludedBoostChars.contains(e.key);
+                  return InkWell(
+                    onTap: () => setState(() {
+                      if (included) {
+                        _excludedBoostChars.add(e.key);
+                      } else {
+                        _excludedBoostChars.remove(e.key);
+                      }
+                    }),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: c.danger.withOpacity(0.4)),
-                  ),
-                  child: Text('${e.key}  ${e.value}',
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.danger)),
-                )).toList(),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: included ? c.danger.withOpacity(0.1) : c.surfaceAlt,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                            color: included ? c.danger.withOpacity(0.4) : c.border),
+                      ),
+                      child: Text('${e.key}  ${(e.value * 100).round()}%',
+                          style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+                              color: included ? c.danger : c.textDisabled,
+                              decoration: included ? null : TextDecoration.lineThrough)),
+                    ),
+                  );
+                }).toList(),
               ),
             ],
-            if (_adaptiveNotices.isNotEmpty) ...[
+            if (_hasSuggestions) ...[
               const SizedBox(height: 20),
-              Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
-                children: _adaptiveNotices.map((msg) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: c.accent.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: c.accent.withOpacity(0.4)),
-                  ),
-                  child: Text(msg,
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent)),
-                )).toList(),
-              ),
+              Text(Strings.t('ac_suggestions_title'),
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+              const SizedBox(height: 8),
+              ..._buildSuggestionRows(context),
             ],
           ]),
         ),
@@ -642,6 +769,147 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         ]),
       ),
     ]);
+  }
+
+  // Result screen sits in a mainAxisSize.min Center column, so rows here
+  // get loose (not stretched) width constraints — size explicitly instead
+  // of relying on Expanded, which would need a bounded incoming width.
+  List<Widget> _buildSuggestionRows(BuildContext context) {
+    final rowWidth = MediaQuery.of(context).size.width - 32;
+    final rows = <Widget>[];
+    // Unlock goes first and stands out (star icon, bolder styling) — it's a
+    // bigger deal than a tempo/spacing nudge, and names the actual character
+    // so it's clear what's being proposed, not just that "something" unlocked.
+    if (_unlockedThisBlock) {
+      final nextChar = widget.kochLevel < widget.activeKochChars.length
+          ? widget.activeKochChars[widget.kochLevel]
+          : null;
+      rows.add(_SuggestionRow(
+        width: rowWidth,
+        accepted: _acceptUnlock,
+        onToggle: (v) => setState(() => _acceptUnlock = v),
+        label: nextChar == null
+            ? Strings.t('ac_char_unlocked')
+            : '${Strings.t('ac_char_unlocked')}: "$nextChar"',
+        highlight: true,
+      ));
+    }
+    if (_pendingWpm != null) {
+      rows.add(_SuggestionRow(
+        width: rowWidth,
+        accepted: _acceptCharSpeed,
+        onToggle: (v) => setState(() => _acceptCharSpeed = v),
+        label: '${Strings.t('ac_char_speed_up')}: $_wpmBefore→${_acceptCharSpeed ? _pendingWpm : _wpmBefore}',
+        onDecrement: _acceptCharSpeed ? () => _stepPendingWpm(-1) : null,
+        onIncrement: _acceptCharSpeed ? () => _stepPendingWpm(1) : null,
+      ));
+    }
+    if (_pendingInterChar != null) {
+      final label = _lastDecision!.spacingStep == TempoStep.up
+          ? Strings.t('ac_spacing_up')
+          : Strings.t('ac_spacing_down');
+      rows.add(_SuggestionRow(
+        width: rowWidth,
+        accepted: _acceptSpacing,
+        onToggle: (v) => setState(() => _acceptSpacing = v),
+        label: '$label: $_interCharBefore→${_acceptSpacing ? _pendingInterChar : _interCharBefore} / '
+            '$_interWordBefore→${_acceptSpacing ? _pendingInterWord : _interWordBefore}',
+        onDecrement: _acceptSpacing ? () => _stepPendingSpacing(-1) : null,
+        onIncrement: _acceptSpacing ? () => _stepPendingSpacing(1) : null,
+      ));
+    }
+    return rows;
+  }
+}
+
+// One adaptive-engine proposal on the result screen: a checkbox to
+// accept/reject it, and (when it carries a magnitude) +/- steppers to
+// adjust it before it's applied. See docs/ADAPTIVE-COPY.md "User override
+// on the result screen".
+class _SuggestionRow extends StatelessWidget {
+  final double width;
+  final bool accepted;
+  final ValueChanged<bool> onToggle;
+  final String label;
+  final VoidCallback? onIncrement;
+  final VoidCallback? onDecrement;
+  // Set for the Koch-unlock proposal only — a bigger deal than a tempo/
+  // spacing nudge, so it gets a star icon and a bolder border instead of
+  // blending into the same generic row style as the other two.
+  final bool highlight;
+
+  const _SuggestionRow({
+    required this.width,
+    required this.accepted,
+    required this.onToggle,
+    required this.label,
+    this.onIncrement,
+    this.onDecrement,
+    this.highlight = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    // No row-wide tap target — only the checkbox toggles acceptance.
+    // A whole-row InkWell made stray taps near the steppers register as an
+    // accidental reject instead, which is worse than requiring a precise
+    // checkbox tap.
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: SizedBox(
+        width: width,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          decoration: BoxDecoration(
+            color: accepted ? c.accent.withOpacity(highlight ? 0.18 : 0.1) : c.surfaceAlt,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+                color: accepted ? c.accent.withOpacity(highlight ? 0.8 : 0.4) : c.border,
+                width: highlight ? 2 : 1),
+          ),
+          child: Row(children: [
+            _TapTarget(
+              onTap: () => onToggle(!accepted),
+              child: Icon(accepted ? Icons.check_box : Icons.check_box_outline_blank,
+                  size: 22, color: accepted ? c.accent : c.textMuted),
+            ),
+            if (highlight)
+              Icon(Icons.star, size: 18, color: accepted ? c.accent : c.textMuted),
+            if (highlight) const SizedBox(width: 4),
+            Expanded(
+              child: Text(label,
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: highlight ? 13 : 12,
+                      fontWeight: highlight ? FontWeight.bold : FontWeight.normal,
+                      color: accepted ? c.accent : c.textMuted,
+                      decoration: accepted ? null : TextDecoration.lineThrough)),
+            ),
+            if (onDecrement != null)
+              _TapTarget(onTap: onDecrement!, child: Icon(Icons.remove, size: 20, color: c.accent)),
+            if (onIncrement != null)
+              _TapTarget(onTap: onIncrement!, child: Icon(Icons.add, size: 20, color: c.accent)),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+// 44x44 minimum touch target (Material guideline) around a small icon —
+// the plain Icon-in-Padding steppers this replaced were easy to miss and
+// the miss-tap fell through to the row behind them.
+class _TapTarget extends StatelessWidget {
+  final VoidCallback onTap;
+  final Widget child;
+  const _TapTarget({required this.onTap, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkResponse(
+      onTap: onTap,
+      radius: 24,
+      child: SizedBox(width: 44, height: 44, child: Center(child: child)),
+    );
   }
 }
 

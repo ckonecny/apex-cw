@@ -36,12 +36,18 @@ Trainer's "Adapt. Rand." runs on it), the Koch Trainer UI skeleton
 logic, unit tested), the "Adaptive Mode" settings section in
 `settings_screen.dart` (4 threshold sliders, persisted), and wiring the
 engine into `AdaptiveCopyBody._finishBlock()` (spacing/char-speed steps and
-Koch-level unlock now actually apply after each block, surfaced as notice
-chips on the result screen). Built and installed on `63061JEBF01551`.
-**Not yet run through a real multi-block session on-device** — only
-confirmed it builds/installs; whether the adaptation actually feels right
-(step sizes, timing) still needs testing. See docs/ADAPTIVE-COPY.md
-"Starting point for the next session" for the test checklist.
+Koch-level unlock computed after each block), and a result-screen override
+UI (`_SuggestionRow`) letting the user accept/reject/adjust each proposal
+before it's applied on "Finish"/"Next Block", rather than it landing
+automatically. Built and installed on `63061JEBF01551`.
+**Run through a real multi-block session on-device and confirmed working**
+(unlock, tempo/spacing step, override controls). Since then, fixed a unlock-
+threshold trap (100% high threshold was unreachable), a "spacing widened:
+X→X" no-op notice, switched the "weak characters" display from this-block-
+only to the character's lifetime EMA, and added the ability to tap weak
+characters on the result screen to include/exclude them from a boosted draw
+in the next block (reuses the existing Practice Set/Boost mechanism). See
+docs/ADAPTIVE-COPY.md "Flagged TODOs" for details on each.
 
 ## Backlog (later iteration, not urgent)
 - **Koch Trainer setup-screen decluttering:** the pre-start controls (Learn

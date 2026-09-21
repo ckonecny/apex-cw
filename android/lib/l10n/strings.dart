@@ -143,12 +143,16 @@ class Strings {
     'ac_result_title': ['Ergebnis', 'Result'],
     'ac_correct_of': ['{c} von {t} richtig', '{c} of {t} correct'],
     'ac_weak_chars': ['SCHWACHE ZEICHEN', 'WEAK CHARACTERS'],
+    'ac_boost_hint': [
+      'Tippen zum Aus-/Einschließen — öfter abfragen im nächsten Block',
+      'Tap to include/exclude — practiced more in the next block'],
     'ac_finish': ['Beenden', 'Finish'],
     'ac_next_block': ['Nächster Block', 'Next Block'],
     'ac_spacing_up': ['Abstand verkürzt', 'Spacing tightened'],
     'ac_spacing_down': ['Abstand verlängert', 'Spacing widened'],
     'ac_char_speed_up': ['Zeichentempo erhöht', 'Char speed increased'],
     'ac_char_unlocked': ['Neues Zeichen freigeschaltet', 'New character unlocked'],
+    'ac_suggestions_title': ['VORSCHLÄGE · ANTIPPEN ZUM ÄNDERN', 'SUGGESTIONS · TAP TO TOGGLE'],
     'ac_status_line': [
       'WPM {wpm} · Abstand {ic}/{iw} · Trend {ema}% {trend}',
       'WPM {wpm} · Spacing {ic}/{iw} · Trend {ema}% {trend}'],
@@ -158,9 +162,14 @@ class Strings {
     'settings_adaptive_mode_desc': [
       'Schwellenwerte, die steuern, wie Adaptiv Copy Tempo/Abstand anpasst und wann das nächste Koch-Zeichen freigeschaltet wird.',
       'Thresholds controlling how Adaptive Copy adjusts tempo/spacing and when the next Koch character unlocks.'],
-    'settings_adaptive_high_threshold': ['Erfolgsschwelle hoch', 'Success Threshold High'],
-    'settings_adaptive_low_threshold': ['Erfolgsschwelle niedrig', 'Success Threshold Low'],
+    'settings_adaptive_threshold_range': ['Erfolgsschwelle niedrig/hoch', 'Success Threshold Low/High'],
     'settings_adaptive_ema_alpha': ['EMA-Glättung', 'EMA Smoothing'],
     'settings_adaptive_unlock_occurrences': ['Vorkommen für Freischaltung', 'Occurrences for Unlock'],
+    'settings_reset_char_stats': ['Zeichenstatistik zurücksetzen', 'Reset Character Statistics'],
+    'settings_reset_char_stats_confirm_title': ['Wirklich zurücksetzen?', 'Really reset?'],
+    'settings_reset_char_stats_confirm_body': [
+      'Löscht die gesamte gelernte Zeichenstatistik (Fehlerrate, Übungsgewicht) für alle Zeichen, unwiderruflich. Betrifft Adaptiv Copy (schwache Zeichen, Freischaltung) und den Echo Trainer ("Adapt. Zufall").',
+      'Deletes all learned per-character statistics (error rate, practice weight) for every character, permanently. Affects Adaptive Copy (weak characters, unlocking) and Echo Trainer ("Adapt. Random").'],
+    'settings_reset_char_stats_done': ['Zeichenstatistik zurückgesetzt.', 'Character statistics reset.'],
   };
 }

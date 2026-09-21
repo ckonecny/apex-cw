@@ -153,6 +153,15 @@ The three open questions from the previous session are now resolved:
    own last-N-occurrences window, per "N=20 for character unlock" below)
    run independently and do not block or override each other. A block can
    simultaneously raise tempo *and* keep drilling a still-weak character.
+  **Confirmed (2026-09-21): content selection for Adaptive Copy is a plain
+  uniform draw over the active Koch set** (`CwGenerator.randomKochChars()` →
+  `active.random()`, no error-rate weighting — that weighting only exists
+  for Echo Trainer's separate "Adapt. Rand." `weight` field, which Adaptive
+  Copy never reads). This matters for interpreting step 6 below: with N
+  active chars, each gets on average `blockSize/N` occurrences per block, so
+  reaching the unlock-occurrence floor (default 20) for the *slowest* of N
+  characters (binomial variance, not just the average) can genuinely take
+  many blocks — not a sign anything is broken.
 3. **Start simple: no.** The user explicitly wants the EMA-based logic
    (per point 1) in the first version, not the flat "threshold × 2
    consecutive blocks" rule from the original concept sketch. The
@@ -271,12 +280,26 @@ later session (build order step 9).
 Raised by the user after step 5 (engine wiring) landed; not yet designed or
 estimated, just captured so they aren't lost:
 
-- **User override on the result screen.** Right now the spacing/char-speed
-  step and character unlock from step 5 apply automatically with no way to
-  undo or adjust them before the next block starts. Add a way, on the
-  result screen (`AdaptiveCopyBody._buildResult`), for the user to
-  accept/reject/adjust each suggestion (weak-character drill weight,
-  spacing change) rather than it being fully automatic.
+- **User override on the result screen — DONE (2026-09-21, built/installed
+  on `63061JEBF01551`, not yet exercised at the device).** `_finishBlock()`
+  now only computes the engine's proposals (`_pendingWpm`,
+  `_pendingInterChar`/`_pendingInterWord`, `_unlockedThisBlock`) instead of
+  applying them. The result screen shows each as a tappable row
+  (`_SuggestionRow` in `adaptive_copy_body.dart`) with a checkbox
+  (default: accepted, same net effect as the old automatic behavior) and
+  +/- steppers to nudge the magnitude (WPM clamped to
+  `[widget.wpm, widget.wpm + 5]`; spacing clamped to the existing
+  `[3, _startInterCharSpace]` / `[7, _startInterWordSpace]` bounds). Nothing
+  is pushed to `GeneratorScreen`'s state until `_applyPendingDecision()`
+  runs, called from both "Finish" and "Next Block". "Next Block" passes the
+  resolved values straight into `_startBlock()`'s new
+  `wpm`/`interCharSpace`/`interWordSpace` overrides rather than rereading
+  `widget.*`, since the parent's rebuild from the `on*Changed` callback
+  hasn't happened yet at that point in the same synchronous call. Scope
+  note: only the three suggestions the engine actually produces today
+  (char speed, spacing, unlock) got override controls — "weak-character
+  drill weight" isn't a real lever in `AdaptiveCopyEngine` yet, so there
+  was nothing to add a control for.
 - **Surface adaptive state in Settings, and confirm it survives app
   restarts.** Weak characters / the currently "determined" (adapted) speed
   should be visible in `settings_screen.dart`, not just implicit in
@@ -298,3 +321,90 @@ estimated, just captured so they aren't lost:
   needs its own separate stats track (or a separate dimension within
   `CharStatsStore`) rather than sharing Adaptive Copy's numbers outright.
   Revisit step 9's design before implementing it.
+- **Threshold sliders let High < Low be set — DONE (2026-09-21, built/
+  installed on `63061JEBF01551`, not yet exercised at the device).**
+  `settings_screen.dart`'s two independent high/low sliders had no
+  cross-validation. Replaced with a single `RangeSlider` (`_LabeledRangeSlider`,
+  new widget) showing both thumbs on one track, low always ≤ high with a
+  5-point minimum gap enforced in the `onChanged` handler (dragging one
+  thumb into the other pushes it along rather than letting them cross).
+- **Unlock proposal not visually distinct on the result screen — DONE
+  (2026-09-21, built/installed on `63061JEBF01551`, not yet exercised at the
+  device).** It already had its own accept/reject checkbox from the override
+  UI work above — that part was already done, just easy to miss since all
+  three suggestion rows looked identical. Now: unlock row moved first, gets
+  a star icon, bold text, thicker/more opaque accent border, and names the
+  actual next character (`"$nextChar"` from `widget.activeKochChars[widget.kochLevel]`)
+  instead of a generic "New character unlocked" label.
+- **High threshold = 100% was a silent, permanent unlock trap — DONE
+  (2026-09-21, found via on-device debug logging, built/installed on
+  `63061JEBF01551`).** User report: Koch level 5, 5 active chars, "Occurrences
+  for Unlock" set to the minimum (5), 7 blocks in a row marked 100% correct —
+  never unlocked. Root cause, confirmed via a temporary debug log of
+  `CharStat.attempts`/`emaErrorRate`: attempts were all 46-63 (way past the
+  floor), but the High Threshold setting had been dragged to 100% while
+  testing the new range slider. `CharStat.emaErrorRate` only decays toward 0
+  *asymptotically* (`ema = 0.2*0 + 0.8*ema` per correct hit) and is never
+  reset across a character's lifetime — so once a character has had even one
+  error, ever (including from a previous session, or Echo Trainer usage
+  sharing the same `CharStatsStore`), `1 - emaErrorRate` can get arbitrarily
+  close to 1.0 but never exactly reach it again. A 100% threshold is
+  therefore an invisible permanent trap for any character with error history,
+  and both the unlock check and the tempo/spacing check (`recordBlock`) use
+  the same high-threshold comparison. Fixed by capping the Settings range
+  slider (and, defensively, the value `AdaptiveCopyBody` actually reads out
+  of SharedPreferences) at 99% instead of 100%. Same trap doesn't apply
+  symmetrically to 0% on the low end — a low threshold just means "spacing
+  never widens," a valid (if extreme) choice, not a trap — so only the high
+  side was capped.
+- **"Spacing widened: 11→11" no-op notice — DONE (2026-09-21, built/
+  installed on `63061JEBF01551`).** User report after step 6 testing: a
+  spacing suggestion row showed identical before/after values. Root cause:
+  `_finishBlock()` checked only `decision.spacingStep != TempoStep.none`
+  before proposing a spacing change, not whether the clamp to
+  `[3, _startInterCharSpace]`/`[7, _startInterWordSpace]` actually changed
+  anything — already at the session's ceiling (or floor), the engine still
+  said "widen" (or "tighten"), but `(value ± 1).clamp(...)` clamped straight
+  back to the same value. Fixed: both branches now compare the clamped
+  result against the current value and only set `_pendingInterChar`/
+  `_pendingInterWord` (i.e. only propose a row at all) when it's a real
+  change.
+- **Weak characters only reflected this block, not the character's actual
+  history — DONE (2026-09-21, built/installed on `63061JEBF01551`).** User
+  report: a character marked wrong last block dropped off the "weak
+  characters" list entirely as soon as a block didn't happen to include it
+  (or did, and was right that once) — the display was built from
+  `_wrongPositions` of the just-finished block only, not from the
+  character's persistent stats. Replaced with `_weakCharsLifetime()`:
+  reads `CharStat.emaErrorRate`/`attempts` from the same lifetime-persistent
+  `CharStatsStore` the unlock/tempo logic already uses, filtered to the
+  active Koch set, requiring `attempts >= 8` (so one unlucky group can't put
+  a character on the list) and `emaErrorRate >= 0.12`, sorted worst-first,
+  capped at 5 shown. Chips now show the lifetime error-rate percentage
+  instead of a raw this-block miss count.
+- **User override on which characters get drilled more — DONE (2026-09-21,
+  built/installed on `63061JEBF01551`, not yet exercised at the device).**
+  This closes the "weak-character drill weight isn't a real lever yet" scope
+  note from the override-UI entry above. The weak-character chips on the
+  result screen are now tappable: each toggles whether that character is
+  included in a boosted draw for the next block (excluded chips show
+  grayed-out + struck through). Reuses the existing `practiceChars`/
+  `boostLevel` mechanism already wired into
+  `CwGenerator.kt randomKochChars()` for CW Generator's "Practice Set" +
+  Boost feature and Echo Trainer's "Adapt. Rand." — `AdaptiveCopyBody`
+  pushes the accepted weak-char set with `boostLevel=2` ("Strong", same
+  tier M32 calls strongest) via `setPracticeChars`/`setBoostLevel` right
+  before fetching each block's content, or clears both (`[]`/`0`) when
+  nothing is accepted. Per CLAUDE.md rule 2 (shared singleton, nothing
+  re-syncs automatically): `AdaptiveCopyBody.dispose()` restores the
+  Settings-persisted `practiceChars`/`boostLevel` so switching back to
+  Classic mode (or Echo Trainer) within the same `GeneratorScreen` session
+  doesn't inherit Adaptive Copy's leftover boost state.
+- **Reset character statistics — DONE (2026-09-21, built/installed on
+  `63061JEBF01551`).** New `CharStatsStore.reset()` (`char_stats.dart`)
+  clears `stats` and removes the SharedPreferences key. Exposed in
+  Settings under Adaptive Mode as a red `_ActionButton` ("Reset Character
+  Statistics") gated behind an `AlertDialog` confirmation. Affects both
+  Adaptive Copy (weak characters, unlock, boost) and Echo Trainer's "Adapt.
+  Rand." — the dialog body says so, since it's not obvious from Adaptive
+  Mode's settings section alone that this is a shared, cross-mode reset.

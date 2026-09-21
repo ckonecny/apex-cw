@@ -66,6 +66,14 @@ class CharStatsStore {
     await p.setString(_prefsKey, jsonEncode(encoded));
   }
 
+  // Wipes all per-character history (Settings "Reset Character Statistics").
+  // Affects both Echo Trainer's "Adapt. Rand." weighting and Adaptive Copy's
+  // weak-character/unlock/boost logic, since they share this store.
+  Future<void> reset(SharedPreferences p) async {
+    stats.clear();
+    await p.remove(_prefsKey);
+  }
+
   // Draw weight for a character — defaults to 1 (never drawn / already
   // mastered back down to baseline).
   int weightFor(String char) => stats[char]?.weight ?? 1;

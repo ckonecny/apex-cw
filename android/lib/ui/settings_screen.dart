@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../content/char_stats.dart';
 import '../content/cw_content.dart';
 import '../theme/app_colors.dart';
 import '../theme/theme_controller.dart';
@@ -184,7 +185,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _echoDisplay    = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _adaptiveSpeed  = p.getBool('adaptiveSpeed') ?? false;
       _echoSpeedMax   = p.getInt('echoSpeedMax')   ?? 35;
-      _adaptiveHighThresholdPct = (p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 100);
+      // Capped below 100: the per-char EMA error rate only decays toward 0
+      // asymptotically and a single historical error (ever, since it's never
+      // reset) keeps it from hitting exact 0 again — a 100% threshold is a
+      // permanent, invisible trap for that character. See ADAPTIVE-COPY.md.
+      _adaptiveHighThresholdPct = (p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99);
       _adaptiveLowThresholdPct  = (p.getInt('adaptiveLowThresholdPct')  ?? 70).clamp(30, 95);
       _adaptiveEmaAlphaPct      = (p.getInt('adaptiveEmaAlphaPct')      ?? 30).clamp(5, 100);
       _adaptiveUnlockOccurrences = (p.getInt('adaptiveUnlockOccurrences') ?? 20).clamp(5, 50);
@@ -323,6 +328,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _cancelLearn() async {
     await _settingsChannel.invokeMethod('cancelLearnPaddle');
     setState(() { _learnState = _LearnState.idle; _learnMessage = ''; });
+  }
+
+  // Resets the per-character learning history shared by Echo Trainer's
+  // "Adapt. Rand." weighting and Adaptive Copy's weak-character/unlock/boost
+  // logic. Irreversible, so a short confirmation guards against a stray tap
+  // wiping out weeks of accumulated stats.
+  Future<void> _confirmResetCharStats() async {
+    final c = AppColors.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(Strings.t('settings_reset_char_stats_confirm_title')),
+        content: Text(Strings.t('settings_reset_char_stats_confirm_body')),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(Strings.t('cancel'))),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(Strings.t('settings_reset_char_stats'),
+                  style: TextStyle(color: c.danger))),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final p = await SharedPreferences.getInstance();
+    await CharStatsStore().reset(p);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(Strings.t('settings_reset_char_stats_done'))));
+    }
   }
 
   Future<void> _toggleKeyDiag() async {
@@ -644,15 +680,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
           const SizedBox(height: 12),
           _SettingsCard(children: [
-            _LabeledSlider(label: Strings.t('settings_adaptive_high_threshold'),
-                value: _adaptiveHighThresholdPct.toDouble(),
-                min: 50, max: 100, divisions: 50, display: '$_adaptiveHighThresholdPct%',
-                onChanged: (v) { setState(() => _adaptiveHighThresholdPct = v.round()); _saveLive(); }),
-            const _Div(),
-            _LabeledSlider(label: Strings.t('settings_adaptive_low_threshold'),
-                value: _adaptiveLowThresholdPct.toDouble(),
-                min: 30, max: 95, divisions: 65, display: '$_adaptiveLowThresholdPct%',
-                onChanged: (v) { setState(() => _adaptiveLowThresholdPct = v.round()); _saveLive(); }),
+            _LabeledRangeSlider(
+                label: Strings.t('settings_adaptive_threshold_range'),
+                values: RangeValues(_adaptiveLowThresholdPct.toDouble(), _adaptiveHighThresholdPct.toDouble()),
+                // High capped at 99, not 100 — 100% is an unreachable trap:
+                // the per-char EMA error rate only decays toward 0
+                // asymptotically, so one historical error (ever, since it's
+                // never reset) keeps a character from unlocking again.
+                // Confirmed on-device 2026-09-21 (see ADAPTIVE-COPY.md).
+                min: 30, max: 99, divisions: 69,
+                display: '$_adaptiveLowThresholdPct% / $_adaptiveHighThresholdPct%',
+                // Keep a 5-point gap so low/high can never cross or touch —
+                // dragging one thumb into the other pushes it along instead
+                // of letting the range invert (user-reported: sliders let
+                // high < low be set, which the engine never defends against).
+                onChanged: (v) {
+                  var low = v.start.round();
+                  var high = v.end.round();
+                  if (high - low < 5) {
+                    if (low != _adaptiveLowThresholdPct) {
+                      high = (low + 5).clamp(35, 99);
+                    } else {
+                      low = (high - 5).clamp(30, 94);
+                    }
+                  }
+                  setState(() {
+                    _adaptiveLowThresholdPct = low;
+                    _adaptiveHighThresholdPct = high;
+                  });
+                  _saveLive();
+                }),
             const _Div(),
             _LabeledSlider(label: Strings.t('settings_adaptive_ema_alpha'),
                 value: _adaptiveEmaAlphaPct.toDouble(),
@@ -664,6 +721,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 min: 5, max: 50, divisions: 45, display: '$_adaptiveUnlockOccurrences',
                 onChanged: (v) { setState(() => _adaptiveUnlockOccurrences = v.round()); _saveLive(); }),
           ]),
+          const SizedBox(height: 12),
+          _ActionButton(
+            label: Strings.t('settings_reset_char_stats'),
+            icon: Icons.delete_sweep_outlined,
+            color: c.danger,
+            onTap: _confirmResetCharStats,
+          ),
 
           const SizedBox(height: 24),
 
@@ -856,6 +920,47 @@ class _LabeledSlider extends StatelessWidget {
           trackHeight: 3,
         ),
         child: Slider(value: value, min: min, max: max, divisions: divisions, onChanged: onChanged),
+      ),
+    ]),
+  );
+  }
+}
+
+// Two-thumb variant of _LabeledSlider for a low/high pair that must never
+// cross (e.g. Adaptive Mode's success thresholds) — one control instead of
+// two independent sliders that could be set inconsistently.
+class _LabeledRangeSlider extends StatelessWidget {
+  final String label, display;
+  final RangeValues values;
+  final double min, max;
+  final int divisions;
+  final ValueChanged<RangeValues> onChanged;
+  const _LabeledRangeSlider({required this.label, required this.values, required this.min,
+      required this.max, required this.divisions, required this.display,
+      required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+            color: c.textPrimary)),
+        const Spacer(),
+        Text(display, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+            color: c.accent)),
+      ]),
+      SliderTheme(
+        data: SliderTheme.of(context).copyWith(
+          activeTrackColor: c.accent,
+          inactiveTrackColor: c.border,
+          thumbColor: c.accent,
+          overlayColor: c.accent.withOpacity(0.1),
+          trackHeight: 3,
+        ),
+        child: RangeSlider(values: values, min: min, max: max, divisions: divisions, onChanged: onChanged),
       ),
     ]),
   );
