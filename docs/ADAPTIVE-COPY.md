@@ -408,3 +408,45 @@ estimated, just captured so they aren't lost:
   Adaptive Copy (weak characters, unlock, boost) and Echo Trainer's "Adapt.
   Rand." — the dialog body says so, since it's not obvious from Adaptive
   Mode's settings section alone that this is a shared, cross-mode reset.
+- **Manual spacing control always visible — DONE (2026-09-21, built/
+  installed on `63061JEBF01551`, not yet exercised at the device).** User
+  request: "bei jeder Zusammenfassung und auch zu Beginn den Block zum
+  Anpassen der Pausen einblenden." New `_buildSpacingControl()` in
+  `adaptive_copy_body.dart` — a small "ABSTAND ANPASSEN" section with −/+
+  steppers that adjust `interCharSpace`/`interWordSpace` directly via
+  `onSpacingChanged`, one dit at a time, clamped to the same `[3, 45]`/
+  `[6, 105]` range as the Settings sliders (not `_startInterCharSpace`/
+  `_startInterWordSpace` — those only cap how far the *engine* auto-widens,
+  not a manual override). Shown unconditionally on both the idle/start
+  screen (`_buildIdle`) and every result screen (`_buildResult`), separate
+  from — and independent of — the engine's own accept/reject spacing
+  suggestion row, which still only appears when the engine actually
+  proposes a change.
+- **New Koch character no longer also speeds up in the same block — DONE
+  (2026-09-21, built/installed on `63061JEBF01551`, not yet exercised at
+  the device).** User report: "in dem Moment wo ein neues Zeichen
+  hinzukommt wird mir das zu schnell." Per "Decisions: weighting/recency
+  questions" above, the unlock decision (`shouldUnlockNextChar`) and the
+  tempo/spacing decision (`recordBlock`) are intentionally independent and
+  were designed to fire simultaneously — but in practice, getting a new
+  character to learn *and* a tighter spacing/faster char speed in the same
+  block was too much at once. `AdaptiveCopyBody._finishBlock()` now
+  suppresses the spacing-tighten and char-speed-up proposals (not the
+  unlock itself, and not spacing-widen/slow-down) for any block where
+  `unlocked` is true — the engine's own `recordBlock()`/
+  `shouldUnlockNextChar()` logic in `adaptive_copy_engine.dart` is
+  unchanged, this is purely a proposal-suppression gate at the call site.
+  Worth re-reading against real usage: if this makes unlock blocks feel too
+  conservative, the suppression could instead just delay the speed-up
+  proposal by one block rather than dropping it.
+
+## Also investigated this session, not a bug (2026-09-21)
+User asked whether it's a bug that a block with 2 wrong characters still
+proposed a spacing-tighten. Confirmed as expected: `recordBlock()`'s
+blockquote EMA (`0.3 × thisBlockRate + 0.7 × previousEma`) can stay above
+the high threshold even with a couple of misses in the *current* block if
+the running EMA was already high from prior clean blocks — smoothing is
+the intended design (see "Decisions: weighting/recency questions" above),
+not a bug. No code change made. Offered a stricter "never propose a
+speed-up if the immediately preceding block had any error" rule as an
+option; user hasn't asked for it — still open if wanted later.

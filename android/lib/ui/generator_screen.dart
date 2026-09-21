@@ -4,10 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
 import '../content/cw_content.dart';
+import '../content/char_stats.dart';
 import 'echo_trainer_screen.dart';
 import 'adaptive_copy_body.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
+import '../util/char_color.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../l10n/strings.dart';
 
@@ -84,6 +86,30 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   late final MorseDecoder _decoder;
   String _decodedText = '';
 
+  // Koch Trainer start-screen "weak characters" panel — lets the user see
+  // and deselect which lifetime-weak characters get boosted once Start is
+  // pressed, same tap-to-exclude idea as Adaptive Copy's result screen
+  // (docs/ADAPTIVE-COPY.md). Classic mode itself never records attempts —
+  // this only reads history from Adaptive Copy / Echo Trainer sessions, so
+  // it's loaded once at screen entry.
+  final CharStatsStore _charStats = CharStatsStore();
+  Map<String, double> _kochWeakChars = {};
+  final Set<String> _excludedKochBoostChars = {};
+
+  // Setup-screen declutter (docs/STATUS.md backlog): while a block/session
+  // is actively running, hide the pre-start controls that won't be touched
+  // mid-practice (content mode, Learn New/Preview/Practice Echo, Classic/
+  // Adaptiv toggle) and repurpose the back button to return here instead of
+  // leaving the screen. _adaptiveActive mirrors AdaptiveCopyBody's own
+  // idle-vs-active phase via onActiveChanged, since that state lives inside
+  // the child widget.
+  final _adaptiveController = AdaptiveCopyController();
+  bool _adaptiveActive = false;
+  bool get _practiceActive => _running || (widget.kochMode && _flow == 1 && _adaptiveActive);
+  // Brief pause after pressing Start, before the first content actually
+  // plays, so the user can get ready.
+  bool _preparing = false;
+
   @override
   void initState() {
     super.initState();
@@ -136,6 +162,18 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     final toneSoftness = (p2.getInt('toneSoftness') ?? 4).clamp(0, 8);
     await _toneChannel.invokeMethod('setFreq', pitch);
     await _toneChannel.invokeMethod('setEnvelopeMs', (toneSoftness + 1).toDouble());
+    await _loadKochWeakChars();
+  }
+
+  Future<void> _loadKochWeakChars() async {
+    if (!widget.kochMode) return;
+    final p = await SharedPreferences.getInstance();
+    await _charStats.load(p);
+    if (!mounted) return;
+    setState(() {
+      _kochWeakChars = weakCharsLifetime(_charStats, kochActiveChars(_kochLevel, _activeKochChars));
+      _excludedKochBoostChars.removeWhere((ch) => !_kochWeakChars.containsKey(ch));
+    });
   }
 
   Future<void> _savePrefs() async {
@@ -156,7 +194,21 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     KeepScreenOn.disable();
     _stop();
     _logScroll.dispose();
+    // The Koch weak-chars panel pushes practiceChars/boostLevel to the
+    // shared generator singleton on Start (CLAUDE.md rule: nothing re-syncs
+    // this automatically). Restore the Settings-persisted values on the way
+    // out so leaving this screen doesn't leave Echo Trainer's "Adapt. Rand."
+    // boosting our leftover weak-char set.
+    _restorePracticeCharsAndBoost();
     super.dispose();
+  }
+
+  Future<void> _restorePracticeCharsAndBoost() async {
+    final p = await SharedPreferences.getInstance();
+    final practiceChars = parsePracticeChars(p.getString('practiceChars') ?? '');
+    final boostLevel = (p.getInt('boostLevel') ?? 0).clamp(0, 2);
+    await _genChannel.invokeMethod('setPracticeChars', practiceChars);
+    await _genChannel.invokeMethod('setBoostLevel', boostLevel);
   }
 
   Future<void> _start() async {
@@ -166,7 +218,23 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     // sequence just continues underneath what was already practiced, it doesn't
     // wipe it. Only navigating away (dispose) or truncation (_appendText's cap)
     // clears it.
-    if (mounted) setState(() { _running = true; _waiting = false; _pendingWord = ''; });
+    if (mounted) setState(() { _running = true; _waiting = false; _pendingWord = ''; _preparing = true; });
+
+    if (widget.kochMode) {
+      // Weak-char boost from the start-screen panel, minus whatever the
+      // user tapped out — reuses the same practiceChars/boostLevel
+      // mechanism as CW Generator's "Practice Set" + Boost.
+      final boostChars = _kochWeakChars.keys
+          .where((ch) => !_excludedKochBoostChars.contains(ch))
+          .toList();
+      await _genChannel.invokeMethod('setPracticeChars', boostChars);
+      await _genChannel.invokeMethod('setBoostLevel', boostChars.isEmpty ? 0 : 2);
+    }
+
+    // Brief pause so the user can get ready before anything actually plays.
+    await Future.delayed(const Duration(seconds: 1));
+    if (!mounted || !_running) return;
+    setState(() => _preparing = false);
 
     // Sync playback speed/spacing BEFORE the marker plays — otherwise it
     // plays with whatever the native generator was left at (its own
@@ -226,7 +294,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _awaitingSignal = false;
       _signalDone?.complete();
     }
-    if (mounted) setState(() { _running = false; _waiting = false; });
+    if (mounted) setState(() { _running = false; _waiting = false; _preparing = false; });
   }
 
   /// Plays a marker string (start "VVVKA" / end "+") via the native playOne()
@@ -246,6 +314,20 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   Future<void> _playEndSignal() async {
     if (mounted && _log.isNotEmpty) setState(() => _appendText(' '));   // gap from the last generated char
     await _playSignal('+');   // its 'char' event appends the '+' itself, see _onEvent
+  }
+
+  // Back button while a block/session is active: return to this screen's
+  // own setup/start state rather than leaving the screen (see PopScope in
+  // build()). Classic and the non-Koch generator just stop the running
+  // session (there's no separate "setup screen" for them — it's the same
+  // screen with controls shown again); the Adaptiv flow has its own idle
+  // phase, reset via the controller.
+  Future<void> _exitPracticeToSetup() async {
+    if (_running) {
+      await _stop();
+    } else if (widget.kochMode && _flow == 1 && _adaptiveActive) {
+      _adaptiveController.resetToIdle();
+    }
   }
 
   int _ditMs() => (1200 / _wpm).round();
@@ -358,7 +440,16 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     // matching comment in settings_screen.dart's build().
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => Scaffold(
+      builder: (context, _, __) => PopScope(
+      // While a block/session is actively running, the back button returns
+      // to this screen's own setup/start state instead of leaving the
+      // screen entirely — see _exitPracticeToSetup().
+      canPop: !_practiceActive,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _exitPracticeToSetup();
+      },
+      child: Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
         backgroundColor: c.surface,
@@ -367,15 +458,17 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                 color: c.textPrimary)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
-          onPressed: () { _stop(); Navigator.pop(context); },
+          onPressed: () => Navigator.maybePop(context),
         ),
       ),
       body: Column(
         children: [
           // ── Classic / Adaptiv flow toggle (Koch Trainer only for now —
           // see docs/ADAPTIVE-COPY.md) — orthogonal to the content-mode
-          // selector below, not a replacement for it. ────────────────────
-          if (widget.kochMode)
+          // selector below, not a replacement for it. Hidden while a
+          // block/session is running — it won't be changed mid-practice
+          // anyway (docs/STATUS.md "Koch Trainer setup-screen decluttering").
+          if (widget.kochMode && !_practiceActive)
             _FlowToggle(
               selected: _flow,
               onChanged: (f) {
@@ -387,7 +480,15 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
 
           // ── Practice area: Classic's sent-text log, or the Adaptiv
           // send→reveal→mark→result flow ──────────────────────────────────
+          // Keyed: siblings above/below (FlowToggle, Koch tool buttons row)
+          // appear/disappear together with _practiceActive, which shifts
+          // this Expanded's position in the Column's children list. Without
+          // a stable key, Flutter's list-diffing can't match it to its old
+          // Element in that case and remounts it from scratch — silently
+          // resetting AdaptiveCopyBody's _phase back to idle mid-block (the
+          // "must press Start Block twice" bug).
           Expanded(
+            key: const ValueKey('koch_practice_area'),
             child: (widget.kochMode && _flow == 1)
                 ? AdaptiveCopyBody(
                     kochLevel: _kochLevel,
@@ -410,6 +511,8 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                       setState(() { _interCharSpace = ic; _interWordSpace = iw; });
                       _savePrefs();
                     },
+                    controller: _adaptiveController,
+                    onActiveChanged: (v) { if (mounted) setState(() => _adaptiveActive = v); },
                   )
                 : PinchZoomFontSize(
                     prefsKey: 'genLogFontSize',
@@ -428,7 +531,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
 
           // ── Controls (shared by Classic and Adaptiv) ─────────────────────
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Column(children: [
               _SliderRow(
                 label: 'WPM', value: _wpm.toDouble(),
@@ -448,26 +551,34 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                   divisions: _activeKochChars.length - 2,
                   onChanged: (v) { setState(() => _kochLevel = v.round()); _savePrefs(); },
                 ),
-              if (widget.kochMode)
-                _ModeSelector(
-                  selected: _kochModeIndex,
-                  labels: _kochModeLabels,
-                  onChanged: (i) { setState(() => _kochModeIndex = i); _savePrefs(); },
-                )
-              else
-                _ModeSelector(
-                  selected: _modeIndex,
-                  onChanged: (i) => setState(() => _modeIndex = i),
-                ),
+              // Content mode selector — won't be changed mid-practice, so
+              // hidden while a block/session is running (see _FlowToggle
+              // comment above).
+              if (!_practiceActive)
+                if (widget.kochMode)
+                  _ModeSelector(
+                    selected: _kochModeIndex,
+                    labels: _kochModeLabels,
+                    onChanged: (i) { setState(() => _kochModeIndex = i); _savePrefs(); },
+                  )
+                else
+                  _ModeSelector(
+                    selected: _modeIndex,
+                    onChanged: (i) => setState(() => _modeIndex = i),
+                  ),
             ]),
           ),
 
-          if (widget.kochMode) _KochCharsRow(level: _kochLevel, sequence: _activeKochChars),
-
-          // ── Koch Trainer: Learn New Chr / Preview Char ──────────────────
           if (widget.kochMode)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              padding: const EdgeInsets.only(bottom: 4),
+              child: _KochCharsRow(level: _kochLevel, sequence: _activeKochChars),
+            ),
+
+          // ── Koch Trainer: Learn New Chr / Preview Char ──────────────────
+          if (widget.kochMode && !_practiceActive)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               child: Row(children: [
                 Expanded(child: _KochToolButton(
                   icon: Icons.fiber_new, label: Strings.t('gen_learn_new'),
@@ -531,7 +642,8 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: _running ? _stop : _start,
-                  child: Text(_running ? '■  STOP' : '▶  START',
+                  child: Text(
+                      _running ? (_preparing ? Strings.t('get_ready') : '■  STOP') : '▶  START',
                       style: const TextStyle(fontFamily: 'CwMono', fontSize: 18,
                           fontWeight: FontWeight.bold)),
                 ),
@@ -539,6 +651,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
             ),
           ],
         ],
+      ),
       ),
       ),
     );
@@ -553,6 +666,14 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               color: c.textDisabled, letterSpacing: 8)));
     }
 
+    // Koch Trainer's start screen: nothing sent yet this session, so the
+    // (empty) output log isn't useful here — show the weak-characters
+    // panel instead, letting the user steer the boost before pressing
+    // Start (docs/STATUS.md "Koch Trainer setup-screen decluttering").
+    if (widget.kochMode && !_running && _log.isEmpty) {
+      return _buildKochWeakCharsPanel(c);
+    }
+
     // 1 = Char by char, 2 = Word by word: both reveal into the same scrolling
     // log, just at different granularity/timing (handled in _onEvent) — never
     // highlighted or shown while still being sent.
@@ -564,23 +685,79 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     // Output Case ("posOutputCase") is display-only — content stays uppercase
     // internally, the transform is applied here at render time. The start/end
     // markers get a distinct color (not just bold) so they stand out from the
-    // practiced content, which frameWordForDisplay's bold-only weight on the
-    // real device's OLED/TFT can't do on our screen's richer palette.
+    // practiced content; regular characters are colored by type (letter/
+    // digit/other) so mixed content is easier to scan.
     return Scrollbar(
       controller: _logScroll,
       child: SingleChildScrollView(
         controller: _logScroll,
         padding: const EdgeInsets.only(bottom: 2),
         child: RichText(
-          text: TextSpan(children: _log.map((span) {
+          text: TextSpan(children: _log.expand((span) {
             final text = _outputCase == 1 ? span.text.toUpperCase() : span.text.toLowerCase();
-            return TextSpan(text: text, style: TextStyle(
+            if (span.bold) {
+              return [TextSpan(text: text, style: TextStyle(
+                  fontFamily: 'CwMono', fontSize: fontSize, height: 1.5,
+                  color: c.warning, fontWeight: FontWeight.bold))];
+            }
+            return text.split('').map((ch) => TextSpan(text: ch, style: TextStyle(
                 fontFamily: 'CwMono', fontSize: fontSize, height: 1.5,
-                color: span.bold ? c.warning : c.accent,
-                fontWeight: span.bold ? FontWeight.bold : FontWeight.normal));
+                color: charTypeColor(ch, c))));
           }).toList()),
         ),
       ),
+    );
+  }
+
+  // Tap-to-exclude weak-characters panel shown on the Koch Trainer's start
+  // screen in place of the (empty) output log — mirrors AdaptiveCopyBody's
+  // result-screen chips (docs/ADAPTIVE-COPY.md).
+  Widget _buildKochWeakCharsPanel(AppColors c) {
+    if (_kochWeakChars.isEmpty) {
+      return Align(alignment: Alignment.center, child: Text(Strings.t('press_start'),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 20,
+              color: c.textDisabled, fontStyle: FontStyle.italic)));
+    }
+    return Center(
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Text(Strings.t('ac_weak_chars'),
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
+                fontWeight: FontWeight.bold, color: c.textDisabled)),
+        const SizedBox(height: 2),
+        Text(Strings.t('gen_boost_hint'),
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
+                color: c.textDisabled, fontStyle: FontStyle.italic),
+            textAlign: TextAlign.center),
+        const SizedBox(height: 12),
+        Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
+          children: _kochWeakChars.entries.map((e) {
+            final included = !_excludedKochBoostChars.contains(e.key);
+            return InkWell(
+              onTap: () => setState(() {
+                if (included) {
+                  _excludedKochBoostChars.add(e.key);
+                } else {
+                  _excludedKochBoostChars.remove(e.key);
+                }
+              }),
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: included ? c.danger.withOpacity(0.1) : c.surfaceAlt,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                      color: included ? c.danger.withOpacity(0.4) : c.border),
+                ),
+                child: Text('${e.key}  ${(e.value * 100).round()}%',
+                    style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+                        color: included ? c.danger : c.textDisabled,
+                        decoration: included ? null : TextDecoration.lineThrough)),
+              ),
+            );
+          }).toList(),
+        ),
+      ]),
     );
   }
 }

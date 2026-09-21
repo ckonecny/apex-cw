@@ -112,6 +112,10 @@ class Strings {
     'press_start': ['▶ START drücken', '▶ Press START'],
     'gen_preview_chars_title': ['Zeichen vorhören', 'Preview Characters'],
     'gen_preview_chars_desc': ['Ganze Kurs-Sequenz — auch noch nicht gelernte Zeichen', 'Whole course sequence — including not-yet-learned characters'],
+    'get_ready': ['Bereit machen …', 'Get ready …'],
+    'gen_boost_hint': [
+      'Tippen zum Aus-/Einschließen — bevorzugt abgefragt ab dem Start',
+      'Tap to include/exclude — practiced more from Start'],
 
     // ── Echo Trainer screen ──────────────────────────────────────────────
     'echo_trainer_title': ['Echo Trainer', 'Echo Trainer'],
@@ -156,6 +160,10 @@ class Strings {
     'ac_status_line': [
       'WPM {wpm} · Abstand {ic}/{iw} · Trend {ema}% {trend}',
       'WPM {wpm} · Spacing {ic}/{iw} · Trend {ema}% {trend}'],
+    'ac_spacing_control_title': ['ABSTAND ANPASSEN', 'ADJUST SPACING'],
+    'ac_spacing_control_hint': [
+      'Zeichen/Wort (dits) — größer = mehr Pause',
+      'Char/word (dits) — higher = more pause'],
 
     // ── Adaptive Mode settings ───────────────────────────────────────────
     'settings_adaptive_mode': ['Adaptiver Modus', 'Adaptive Mode'],

@@ -14,9 +14,19 @@ import '../content/char_stats.dart';
 import '../content/cw_content.dart' show kochActiveChars, parsePracticeChars;
 import '../content/adaptive_copy_engine.dart';
 import '../theme/app_colors.dart';
+import '../util/char_color.dart';
 import '../l10n/strings.dart';
 
 enum _Phase { idle, sending, revealed, marking, result }
+
+// Lets the parent (GeneratorScreen) reset an in-progress session back to
+// the idle/start phase — e.g. from the app bar back button, which during
+// practice should return to the Koch Trainer setup screen rather than
+// leaving the screen entirely. Bound in _AdaptiveCopyBodyState.initState().
+class AdaptiveCopyController {
+  VoidCallback? _resetToIdle;
+  void resetToIdle() => _resetToIdle?.call();
+}
 
 class AdaptiveCopyBody extends StatefulWidget {
   final int kochLevel;
@@ -39,6 +49,12 @@ class AdaptiveCopyBody extends StatefulWidget {
   final ValueChanged<int>? onWpmChanged;
   final ValueChanged<int>? onKochLevelChanged;
   final void Function(int interCharSpace, int interWordSpace)? onSpacingChanged;
+  // Lets the parent hide its setup controls (mode selector, Learn New/
+  // Preview/Practice Echo, Classic/Adaptiv toggle) while a block is active,
+  // and reset back to idle from its own back button — see
+  // AdaptiveCopyController above.
+  final ValueChanged<bool>? onActiveChanged;
+  final AdaptiveCopyController? controller;
 
   const AdaptiveCopyBody({
     super.key,
@@ -56,6 +72,8 @@ class AdaptiveCopyBody extends StatefulWidget {
     this.onWpmChanged,
     this.onKochLevelChanged,
     this.onSpacingChanged,
+    this.onActiveChanged,
+    this.controller,
   });
 
   @override
@@ -132,6 +150,31 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   bool _sessionActive = false;
   Completer<void>? _doneCompleter;
   StreamSubscription? _genSub;
+  // True for the brief pause right after "Start Block" — gives the user a
+  // moment to get ready before the first group actually plays.
+  bool _preparing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller?._resetToIdle = _resetToIdle;
+    _loadInitialWeakChars();
+  }
+
+  // Populates _weakChars from lifetime stats right away, so the idle/start
+  // screen's panel (and the boost it drives) is available from the very
+  // first block, not only after _finishBlock() has run once.
+  Future<void> _loadInitialWeakChars() async {
+    final p = await SharedPreferences.getInstance();
+    await _charStats.load(p);
+    if (!mounted) return;
+    setState(() {
+      _weakChars = weakCharsLifetime(
+          _charStats, kochActiveChars(widget.kochLevel, widget.activeKochChars),
+          minAttempts: _weakCharMinAttempts, threshold: _weakCharThreshold, maxShown: _weakCharMaxShown);
+      _excludedBoostChars.removeWhere((ch) => !_weakChars.containsKey(ch));
+    });
+  }
 
   @override
   void dispose() {
@@ -145,6 +188,21 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // Echo Trainer) boosting our leftover weak-char set.
     _restorePracticeCharsAndBoost();
     super.dispose();
+  }
+
+  // Bound to widget.controller — lets the parent's back button return to
+  // the idle/start phase (and its setup controls) instead of leaving the
+  // screen, without tearing down this whole widget.
+  void _resetToIdle() {
+    _sessionActive = false;
+    _genSub?.cancel();
+    _genChannel.invokeMethod('stop');
+    if (_pauseGate != null) {
+      _pauseGate!.complete();
+      _pauseGate = null;
+    }
+    if (mounted) setState(() { _phase = _Phase.idle; _paused = false; });
+    widget.onActiveChanged?.call(false);
   }
 
   Future<void> _restorePracticeCharsAndBoost() async {
@@ -240,14 +298,23 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     _activeWpm = wpm ?? widget.wpm;
     final activeInterChar = interCharSpace ?? widget.interCharSpace;
     final activeInterWord = interWordSpace ?? widget.interWordSpace;
+    final wasIdle = _phase == _Phase.idle;
     _sessionActive = true;
     setState(() {
       _phase = _Phase.sending;
+      _preparing = true;
       _sentGroups = [];
       _wrongPositions.clear();
       _currentGroupIndex = 0;
       _paused = false;
     });
+    if (wasIdle) widget.onActiveChanged?.call(true);
+
+    // Brief pause before the first group actually plays, so the user can
+    // get ready — mirrors the same "Start" delay in GeneratorScreen._start().
+    await Future.delayed(const Duration(seconds: 1));
+    if (!_sessionActive || !mounted) return;
+    setState(() => _preparing = false);
 
     final p = await SharedPreferences.getInstance();
     // Sync tempo/spacing/tone before sending — nothing else does this for
@@ -369,11 +436,22 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final newEma = _engine!.blockEma;
     await p.setDouble('adaptiveBlockEma', newEma);
 
+    final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
+        .map((ch) => _charStats.stats[ch] ?? CharStat())
+        .toList();
+    final unlocked = widget.kochLevel < widget.activeKochChars.length &&
+        _engine!.shouldUnlockNextChar(activeChars);
+
     // Proposals only — not applied here. The result screen shows them as
     // accept/reject/adjust suggestions; _applyPendingDecision() pushes
     // whatever's still accepted once the user leaves the result screen.
+    // A new Koch character is enough to absorb on its own — don't also
+    // tighten spacing or raise char speed in the same block it unlocks
+    // ("in dem moment wo ein neues zeichen hinzukommt wird mir das zu
+    // schnell"). Widening/slowing down is unaffected, since that only ever
+    // makes the next block easier.
     int? newInterChar, newInterWord, interCharBefore, interWordBefore;
-    if (decision.spacingStep == TempoStep.up) {
+    if (decision.spacingStep == TempoStep.up && !unlocked) {
       final ic = (widget.interCharSpace - 1).clamp(3, _startInterCharSpace);
       final iw = (widget.interWordSpace - 1).clamp(7, _startInterWordSpace);
       // Already at the floor — clamping produced no real change, so don't
@@ -397,17 +475,13 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       }
     }
     int? newWpm, wpmBefore;
-    if (decision.charSpeedStep == TempoStep.up) {
+    if (decision.charSpeedStep == TempoStep.up && !unlocked) {
       wpmBefore = widget.wpm;
       newWpm = widget.wpm + 1;
     }
-
-    final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
-        .map((ch) => _charStats.stats[ch] ?? CharStat())
-        .toList();
-    final unlocked = widget.kochLevel < widget.activeKochChars.length &&
-        _engine!.shouldUnlockNextChar(activeChars);
-    final weakChars = _weakCharsLifetime();
+    final weakChars = weakCharsLifetime(
+        _charStats, kochActiveChars(widget.kochLevel, widget.activeKochChars),
+        minAttempts: _weakCharMinAttempts, threshold: _weakCharThreshold, maxShown: _weakCharMaxShown);
 
     if (!mounted) return;
     setState(() {
@@ -435,30 +509,13 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     });
   }
 
-  // Lifetime EMA, not just this block — a character that was wrong once
-  // last block but is otherwise solid shouldn't vanish from the list just
-  // because this block's random draw didn't happen to include it, and one
-  // that's still weak should keep showing up even on a lucky all-correct
-  // block (docs/ADAPTIVE-COPY.md "weak characters").
-  Map<String, double> _weakCharsLifetime() {
-    final active = kochActiveChars(widget.kochLevel, widget.activeKochChars);
-    final entries = <MapEntry<String, double>>[];
-    for (final ch in active) {
-      final s = _charStats.stats[ch];
-      if (s == null || s.attempts < _weakCharMinAttempts) continue;
-      if (s.emaErrorRate < _weakCharThreshold) continue;
-      entries.add(MapEntry(ch, s.emaErrorRate));
-    }
-    entries.sort((a, b) => b.value.compareTo(a.value));
-    return Map.fromEntries(entries.take(_weakCharMaxShown));
-  }
-
   bool get _hasSuggestions =>
       _pendingWpm != null || _pendingInterChar != null || _unlockedThisBlock;
 
   void _finish() {
     _applyPendingDecision();
     if (mounted) setState(() => _phase = _Phase.idle);
+    widget.onActiveChanged?.call(false);
   }
 
   void _nextBlock() {
@@ -483,30 +540,136 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     };
   }
 
+  // Idle/start screen. _weakChars is already populated here (loaded in
+  // initState from lifetime stats, not just after a block) so the panel —
+  // and the boost it drives on the very first block — is visible right
+  // away, not only from the second block onward.
   Widget _buildIdle(BuildContext context) {
     final c = AppColors.of(context);
-    return Center(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Text(Strings.t('ac_idle_hint'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
-                color: c.textMuted, fontStyle: FontStyle.italic),
-            textAlign: TextAlign.center),
-        const SizedBox(height: 20),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: c.accent.withOpacity(0.2),
-            foregroundColor: c.accent,
-            side: BorderSide(color: c.accent),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    return LayoutBuilder(builder: (context, constraints) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: Center(
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Text(Strings.t('ac_idle_hint'),
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
+                      color: c.textMuted, fontStyle: FontStyle.italic),
+                  textAlign: TextAlign.center),
+              const SizedBox(height: 24),
+              _buildSpacingControl(context),
+              if (_weakChars.isNotEmpty) ...[
+                const SizedBox(height: 24),
+                _buildWeakCharsSection(context),
+              ],
+              const SizedBox(height: 28),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: c.accent.withOpacity(0.2),
+                  foregroundColor: c.accent,
+                  side: BorderSide(color: c.accent),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                onPressed: _startBlock,
+                child: Text('▶  ${Strings.t('ac_start_block')}',
+                    style: const TextStyle(fontFamily: 'CwMono', fontSize: 16,
+                        fontWeight: FontWeight.bold)),
+              ),
+            ]),
           ),
-          onPressed: _startBlock,
-          child: Text('▶  ${Strings.t('ac_start_block')}',
-              style: const TextStyle(fontFamily: 'CwMono', fontSize: 16,
-                  fontWeight: FontWeight.bold)),
         ),
+      );
+    });
+  }
+
+  // Weak-character chips, tappable to include/exclude from the boosted
+  // draw — shared between the idle/start screen (boosts the next block
+  // about to start) and the result screen (boosts the block after that
+  // one), see docs/ADAPTIVE-COPY.md.
+  Widget _buildWeakCharsSection(BuildContext context) {
+    final c = AppColors.of(context);
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      Text(Strings.t('ac_weak_chars'),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+      const SizedBox(height: 2),
+      Text(Strings.t('ac_boost_hint'),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
+              color: c.textDisabled, fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center),
+      const SizedBox(height: 8),
+      Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
+        children: _weakChars.entries.map((e) {
+          final included = !_excludedBoostChars.contains(e.key);
+          return InkWell(
+            onTap: () => setState(() {
+              if (included) {
+                _excludedBoostChars.add(e.key);
+              } else {
+                _excludedBoostChars.remove(e.key);
+              }
+            }),
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: included ? c.danger.withOpacity(0.1) : c.surfaceAlt,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                    color: included ? c.danger.withOpacity(0.4) : c.border),
+              ),
+              child: Text('${e.key}  ${(e.value * 100).round()}%',
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+                      color: included ? c.danger : c.textDisabled,
+                      decoration: included ? null : TextDecoration.lineThrough)),
+            ),
+          );
+        }).toList(),
+      ),
+    ]);
+  }
+
+  // Manual spacing control, requested to be visible at every summary and at
+  // the start ("bitte bei jeder zusammenfassung und auch zu beginn den
+  // block zum anpassen der pausen einblenden") — separate from the engine's
+  // own accept/reject spacing suggestion on the result screen: this one
+  // always shows and lets the user nudge the pause directly, any time.
+  // Bounds match the Settings sliders (interCharSpace/interWordSpace), not
+  // _startInterCharSpace/_startInterWordSpace — those only cap how far the
+  // *engine* is allowed to auto-widen, not a manual override.
+  void _adjustSpacing(int delta) {
+    final ic = (widget.interCharSpace + delta).clamp(3, 45);
+    final iw = (widget.interWordSpace + delta).clamp(6, 105);
+    if (ic == widget.interCharSpace && iw == widget.interWordSpace) return;
+    widget.onSpacingChanged?.call(ic, iw);
+  }
+
+  Widget _buildSpacingControl(BuildContext context) {
+    final c = AppColors.of(context);
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      Text(Strings.t('ac_spacing_control_title'),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+      const SizedBox(height: 2),
+      Text(Strings.t('ac_spacing_control_hint'),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
+              color: c.textDisabled, fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center),
+      const SizedBox(height: 6),
+      Row(mainAxisSize: MainAxisSize.min, children: [
+        _TapTarget(onTap: () => _adjustSpacing(-1),
+            child: Icon(Icons.remove, size: 20, color: c.accent)),
+        SizedBox(
+          width: 84,
+          child: Text('${widget.interCharSpace}/${widget.interWordSpace}',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 15,
+                  fontWeight: FontWeight.bold, color: c.textPrimary)),
+        ),
+        _TapTarget(onTap: () => _adjustSpacing(1),
+            child: Icon(Icons.add, size: 20, color: c.accent)),
       ]),
-    );
+    ]);
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -530,9 +693,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       Expanded(
         child: Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Text(Strings.t('ac_listening'),
+            Text(_preparing ? Strings.t('get_ready') : Strings.t('ac_listening'),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 26,
-                    fontWeight: FontWeight.bold, color: c.textPrimary)),
+                    fontWeight: FontWeight.bold,
+                    color: _preparing ? c.warning : c.textPrimary)),
             const SizedBox(height: 20),
             Row(mainAxisSize: MainAxisSize.min,
                 children: List.generate(_blockSize, (i) {
@@ -591,20 +755,28 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         ]),
       ),
       Expanded(
-        child: ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          itemCount: _sentGroups.length,
-          itemBuilder: (context, i) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Row(children: [
-              SizedBox(width: 24, child: Text('${i + 1}',
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textDisabled))),
-              Expanded(child: Text(_sentGroups[i].split('').join(' '),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 22,
-                      fontWeight: FontWeight.bold, color: c.textPrimary))),
-            ]),
-          ),
-        ),
+        child: LayoutBuilder(builder: (context, constraints) {
+          // Center the tiles when they fit, but still allow scrolling once
+          // there are more groups than fit at once — a plain Center() inside
+          // a scroll view only works when the content is already shorter
+          // than the viewport, hence the explicit minHeight constraint.
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Center(
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  runAlignment: WrapAlignment.center,
+                  spacing: 20,
+                  runSpacing: 16,
+                  children: List.generate(_sentGroups.length,
+                      (i) => _buildRevealedTile(context, i)),
+                ),
+              ),
+            ),
+          );
+        }),
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -621,6 +793,37 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         ]),
       ),
     ]);
+  }
+
+  // One sent group on the "revealed" screen — a fixed-width card so groups
+  // wrap into as many columns as fit, instead of a single left-stuck
+  // column with the rest of the middle area left empty. Characters are
+  // colored by type (letter/digit/other) so mixed-content groups are
+  // easier to scan.
+  Widget _buildRevealedTile(BuildContext context, int i) {
+    final c = AppColors.of(context);
+    final group = _sentGroups[i];
+    return Container(
+      width: 150,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: c.surfaceAlt,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: c.border),
+      ),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Text('${i + 1}',
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+        const SizedBox(height: 2),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 6,
+          children: group.split('').map((ch) => Text(ch,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 22,
+                  fontWeight: FontWeight.bold, color: charTypeColor(ch, c)))).toList(),
+        ),
+      ]),
+    );
   }
 
   Widget _buildMarking(BuildContext context) {
@@ -659,7 +862,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                       ),
                       child: Text(group[i], style: TextStyle(fontFamily: 'CwMono',
                           fontSize: 18, fontWeight: FontWeight.bold,
-                          color: wrong ? c.danger : c.textPrimary)),
+                          color: wrong ? c.danger : charTypeColor(group[i], c))),
                     ),
                   );
                 }),
@@ -708,47 +911,11 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                     .replaceFirst('{ema}', '${(_displayEma * 100).round()}')
                     .replaceFirst('{trend}', _displayEmaTrend > 0 ? '▲' : _displayEmaTrend < 0 ? '▼' : '='),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+            const SizedBox(height: 20),
+            _buildSpacingControl(context),
             if (weak.isNotEmpty) ...[
               const SizedBox(height: 20),
-              Text(Strings.t('ac_weak_chars'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
-              const SizedBox(height: 2),
-              Text(Strings.t('ac_boost_hint'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
-                      color: c.textDisabled, fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.center),
-              const SizedBox(height: 8),
-              // Tappable, not just informational — each chip toggles whether
-              // that character is included in the boosted draw for the next
-              // block (practiceChars/boostLevel pushed in _startBlock()).
-              Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
-                children: weak.entries.map((e) {
-                  final included = !_excludedBoostChars.contains(e.key);
-                  return InkWell(
-                    onTap: () => setState(() {
-                      if (included) {
-                        _excludedBoostChars.add(e.key);
-                      } else {
-                        _excludedBoostChars.remove(e.key);
-                      }
-                    }),
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: included ? c.danger.withOpacity(0.1) : c.surfaceAlt,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                            color: included ? c.danger.withOpacity(0.4) : c.border),
-                      ),
-                      child: Text('${e.key}  ${(e.value * 100).round()}%',
-                          style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-                              color: included ? c.danger : c.textDisabled,
-                              decoration: included ? null : TextDecoration.lineThrough)),
-                    ),
-                  );
-                }).toList(),
-              ),
+              _buildWeakCharsSection(context),
             ],
             if (_hasSuggestions) ...[
               const SizedBox(height: 20),

@@ -49,14 +49,94 @@ characters on the result screen to include/exclude them from a boosted draw
 in the next block (reuses the existing Practice Set/Boost mechanism). See
 docs/ADAPTIVE-COPY.md "Flagged TODOs" for details on each.
 
+**This session (2026-09-21):** two more on-device reports acted on — (1) a
+manual "ABSTAND ANPASSEN" spacing control (−/+ steppers on
+`interCharSpace`/`interWordSpace`, independent of the engine's own
+suggestions) now always shows on the idle/start screen and every result
+screen, not just when the engine happens to propose a spacing change; (2) a
+block that unlocks a new Koch character no longer also proposes a spacing-
+tighten/char-speed-up in that same block (`_finishBlock()` in
+`adaptive_copy_body.dart`) — a new character alone is enough to absorb at
+once, per user feedback ("wird mir das zu schnell"). Both built/installed on
+`63061JEBF01551`, not yet exercised through a real session. Also confirmed
+(not a bug): a block with 2 errors can still trigger a spacing-tighten
+suggestion — intended EMA-smoothing behavior, not a bug; see
+docs/ADAPTIVE-COPY.md "Also investigated this session, not a bug" for the
+full explanation and an open (declined-so-far) offer to add a stricter
+no-speedup-after-error rule.
+
+## Koch Trainer / CW Generator GUI cleanup (this round)
+Implemented the setup-screen decluttering flagged below, plus a round of
+requested layout/readability fixes to `generator_screen.dart` and
+`adaptive_copy_body.dart`:
+- **Setup-screen declutter:** content-mode selector (Random/Abbrevs/Words/
+  Mixed), Learn New/Preview/Practice Echo, and the Classic/Adaptiv toggle
+  are now hidden while a block/session is actively running (Classic:
+  `_running`; Adaptiv: `AdaptiveCopyBody` reports its own idle-vs-active
+  phase back via a new `onActiveChanged` callback, since that state lives
+  inside the child widget).
+- **Back button during practice:** the app bar back arrow now goes through
+  `PopScope`/`Navigator.maybePop`; while a block/session is active it
+  returns to this same screen's setup/start state (Classic: stops the
+  session; Adaptiv: resets `AdaptiveCopyBody` to idle via a new
+  `AdaptiveCopyController`) instead of leaving the screen. Only pops for
+  real when nothing is running.
+- **1s "get ready" pause:** both Classic's Start button and Adaptiv's
+  "Start Block" now wait one second (declutter already applied, so the
+  screen is already calm) before anything actually plays.
+- **Koch Trainer start-screen weak characters:** the (otherwise empty)
+  output box on the Koch Trainer's start screen now shows the lifetime-weak
+  characters (same `weakCharsLifetime()` helper in `char_stats.dart`, now
+  shared with `AdaptiveCopyBody`) with tap-to-exclude chips; the resulting
+  set is pushed as `practiceChars`/`boostLevel` when Start is pressed, and
+  restored to the Settings-persisted values on dispose (shared-singleton
+  rule).
+- **Revealed-groups layout:** `AdaptiveCopyBody`'s "Sent" review screen
+  replaced a single left-stuck column with a centered, wrapping grid of
+  fixed-width tiles that uses the whole middle area, still scrollable if it
+  overflows.
+- **Character-type coloring:** letters/digits/other (punctuation, prosign
+  tokens) are now colored with three distinct theme colors (`accent`/
+  `info`/`accentPurple`, via a new `charTypeColor()` helper in
+  `util/char_color.dart`) in the Classic log display, the Adaptiv review
+  grid, and the marking screen (correct chars only — wrong stays red).
+Built and installed on `63061JEBF01551` earlier this session; exercised
+live on-device through several Koch Trainer/Adaptiv sessions during this
+session's debugging (see "Known issues" below) with no problems noticed —
+user said it "sieht gut aus bis hier her" (looks good so far). Not a
+per-change checklist verification, just general confirmation nothing broke.
+
+## Known issues
+- **Intermittent dark/locked screen during practice — root cause not
+  found, not reproduced.** User report: screen went dark mid-practice once
+  more this session, previously flagged as something that must never
+  happen (`KeepScreenOn`, `android/lib/util/keep_screen_on.dart`, exists
+  specifically to prevent this). Investigated: `KeepScreenOn.enable()`/
+  `disable()` call sites in `generator_screen.dart` (init/dispose-bound)
+  are unchanged and correct; no native (`MainActivity.kt`) diff this
+  session; predictive-back is not enabled in the manifest, ruling out a
+  back-gesture animation glitch; proximity sensor ruled out (user confirmed
+  phone was lying flat on the table, not covered). Live `adb`-based testing
+  (polling `dumpsys window windows`/`dumpsys power` through 40s–100s+ idle
+  windows across the Adaptive Copy sending/revealed/result phases) never
+  reproduced a drop — the `KEEP_SCREEN_ON` flag held throughout. However,
+  that testing was done with the phone connected via USB to the Mac for
+  `adb`; the user's real practice setup has the USB port occupied by a
+  USB-to-audio adapter + headset instead, not connected to a computer — and
+  the user reports no recurrence at all since switching to that real setup
+  mid-session. Being tethered to a host for debugging can suppress some
+  Android power-management behavior, which may explain why it couldn't be
+  reproduced under test conditions; not confirmed, just the leading
+  hypothesis. No code change made — nothing in the diff explains a
+  regression, and the bug may be a device power-management interaction
+  rather than an app bug at all. **Next step:** keep an eye on it during
+  normal (headset, no computer) practice; if it recurs, report back
+  immediately (what phase of the flow, how long idle beforehand) so it can
+  be investigated further, ideally with a wireless-adb test setup that
+  doesn't require a USB tether to the Mac.
+
 ## Backlog (later iteration, not urgent)
-- **Koch Trainer setup-screen decluttering:** the pre-start controls (Learn
-  New Chr/Preview/Echo/CW Generator picker, WPM, Koch lesson, content mode)
-  are needed before starting but are just distracting, irrelevant noise once
-  a training run is actually active. Collapse/hide them once running, same
-  idea for any other screen with the same setup-then-run shape (e.g. the
-  planned Adaptive Copy flow itself). Flagged during Adaptive Copy Mode
-  design (docs/ADAPTIVE-COPY.md), applies more broadly.
+(nothing currently queued here)
 
 ## Open questions
 - QSO Bot (~1800 LOC in firmware): worth doing at all, and if so, SOTA-only

@@ -90,3 +90,26 @@ class CharStatsStore {
     s.weight = (correct ? s.weight - 1 : s.weight + 2).clamp(1, 20);
   }
 }
+
+// Lifetime-EMA weak characters among `activeChars`, worst first — shared
+// between Adaptive Copy's result screen and the Koch Trainer's start screen
+// (both let the user tap a char to include/exclude it from a boosted draw).
+// Needs enough attempts to be meaningful (not one unlucky group) and an
+// error rate clearly above noise.
+Map<String, double> weakCharsLifetime(
+  CharStatsStore store,
+  List<String> activeChars, {
+  int minAttempts = 8,
+  double threshold = 0.12,
+  int maxShown = 5,
+}) {
+  final entries = <MapEntry<String, double>>[];
+  for (final ch in activeChars) {
+    final s = store.stats[ch];
+    if (s == null || s.attempts < minAttempts) continue;
+    if (s.emaErrorRate < threshold) continue;
+    entries.add(MapEntry(ch, s.emaErrorRate));
+  }
+  entries.sort((a, b) => b.value.compareTo(a.value));
+  return Map.fromEntries(entries.take(maxShown));
+}
