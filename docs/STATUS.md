@@ -29,12 +29,19 @@ Everything above, tested on 63061JEBF01551.
 New listen-and-copy-on-paper mode with per-character stats driving
 speed/spacing/Koch-level adaptation. Not a firmware port — net-new concept.
 Design decisions, build order, and open points: see `docs/ADAPTIVE-COPY.md`.
-`char_stats.dart` (shared per-character stats store) is done and Echo
-Trainer's "Adapt. Rand." runs on it; next up is the Koch Trainer UI skeleton
-(Classic/Adaptiv toggle, orthogonal to the existing Random/Abbrevs/Words/
-Mixed content-mode choice — not a new content-mode entry). The adaptive
-weighting/recency logic still needs its own discussion before
-`adaptive_copy_engine.dart` gets written.
+Done so far: `char_stats.dart` (shared per-character stats store, Echo
+Trainer's "Adapt. Rand." runs on it), the Koch Trainer UI skeleton
+(Classic/Adaptiv toggle + send→reveal→mark→result flow, tested on device),
+`adaptive_copy_engine.dart` (pure-Dart EMA-based tempo/unlock decision
+logic, unit tested), the "Adaptive Mode" settings section in
+`settings_screen.dart` (4 threshold sliders, persisted), and wiring the
+engine into `AdaptiveCopyBody._finishBlock()` (spacing/char-speed steps and
+Koch-level unlock now actually apply after each block, surfaced as notice
+chips on the result screen). Built and installed on `63061JEBF01551`.
+**Not yet run through a real multi-block session on-device** — only
+confirmed it builds/installs; whether the adaptation actually feels right
+(step sizes, timing) still needs testing. See docs/ADAPTIVE-COPY.md
+"Starting point for the next session" for the test checklist.
 
 ## Backlog (later iteration, not urgent)
 - **Koch Trainer setup-screen decluttering:** the pre-start controls (Learn

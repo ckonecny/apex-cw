@@ -107,6 +107,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _adaptiveSpeed  = false;
   int  _echoSpeedMax   = 35;
 
+  // ── Adaptive Mode (Adaptive Copy engine thresholds) ─────────────────────
+  // See docs/ADAPTIVE-COPY.md "Decisions: weighting/recency questions" and
+  // AdaptiveCopyThresholds (content/adaptive_copy_engine.dart) for what
+  // these drive. Stored as percent ints for slider-friendliness; converted
+  // to the 0..1 doubles AdaptiveCopyThresholds expects where consumed.
+  int _adaptiveHighThresholdPct = 90;  // AdaptiveCopyThresholds.highThreshold
+  int _adaptiveLowThresholdPct  = 70;  // AdaptiveCopyThresholds.lowThreshold
+  int _adaptiveEmaAlphaPct      = 30;  // AdaptiveCopyThresholds.blockEmaAlpha
+  int _adaptiveUnlockOccurrences = 20; // AdaptiveCopyThresholds.unlockOccurrences
+
   // ── Paddle ────────────────────────────────────────────────────────────────
   String _ditDesc = '…';
   String _dahDesc = '…';
@@ -174,6 +184,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _echoDisplay    = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _adaptiveSpeed  = p.getBool('adaptiveSpeed') ?? false;
       _echoSpeedMax   = p.getInt('echoSpeedMax')   ?? 35;
+      _adaptiveHighThresholdPct = (p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 100);
+      _adaptiveLowThresholdPct  = (p.getInt('adaptiveLowThresholdPct')  ?? 70).clamp(30, 95);
+      _adaptiveEmaAlphaPct      = (p.getInt('adaptiveEmaAlphaPct')      ?? 30).clamp(5, 100);
+      _adaptiveUnlockOccurrences = (p.getInt('adaptiveUnlockOccurrences') ?? 20).clamp(5, 50);
       _kochLevel      = _kochLevel.clamp(2, _activeKochChars.length);
     });
     _syncKochChars();
@@ -216,6 +230,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setInt('echoDisplayMode', _echoDisplay);
     await p.setBool('adaptiveSpeed', _adaptiveSpeed);
     await p.setInt('echoSpeedMax',   _echoSpeedMax);
+    await p.setInt('adaptiveHighThresholdPct', _adaptiveHighThresholdPct);
+    await p.setInt('adaptiveLowThresholdPct',  _adaptiveLowThresholdPct);
+    await p.setInt('adaptiveEmaAlphaPct',      _adaptiveEmaAlphaPct);
+    await p.setInt('adaptiveUnlockOccurrences', _adaptiveUnlockOccurrences);
   }
 
   void _saveLive() => _save();  // called on every interactive change
@@ -615,6 +633,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 min: 0, max: 250, divisions: 50,
                 display: _maxWords == 0 ? Strings.t('opt_unlimited') : '$_maxWords',
                 onChanged: (v) { setState(() => _maxWords = (v / 5).round() * 5); _saveLive(); }),
+          ]),
+
+          const SizedBox(height: 24),
+
+          // ── Adaptive Mode ────────────────────────────────────────────────────
+          _SectionHeader(Strings.t('settings_adaptive_mode')),
+          const SizedBox(height: 4),
+          Text(Strings.t('settings_adaptive_mode_desc'),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+          const SizedBox(height: 12),
+          _SettingsCard(children: [
+            _LabeledSlider(label: Strings.t('settings_adaptive_high_threshold'),
+                value: _adaptiveHighThresholdPct.toDouble(),
+                min: 50, max: 100, divisions: 50, display: '$_adaptiveHighThresholdPct%',
+                onChanged: (v) { setState(() => _adaptiveHighThresholdPct = v.round()); _saveLive(); }),
+            const _Div(),
+            _LabeledSlider(label: Strings.t('settings_adaptive_low_threshold'),
+                value: _adaptiveLowThresholdPct.toDouble(),
+                min: 30, max: 95, divisions: 65, display: '$_adaptiveLowThresholdPct%',
+                onChanged: (v) { setState(() => _adaptiveLowThresholdPct = v.round()); _saveLive(); }),
+            const _Div(),
+            _LabeledSlider(label: Strings.t('settings_adaptive_ema_alpha'),
+                value: _adaptiveEmaAlphaPct.toDouble(),
+                min: 5, max: 100, divisions: 19, display: '$_adaptiveEmaAlphaPct%',
+                onChanged: (v) { setState(() => _adaptiveEmaAlphaPct = v.round()); _saveLive(); }),
+            const _Div(),
+            _LabeledSlider(label: Strings.t('settings_adaptive_unlock_occurrences'),
+                value: _adaptiveUnlockOccurrences.toDouble(),
+                min: 5, max: 50, divisions: 45, display: '$_adaptiveUnlockOccurrences',
+                onChanged: (v) { setState(() => _adaptiveUnlockOccurrences = v.round()); _saveLive(); }),
           ]),
 
           const SizedBox(height: 24),

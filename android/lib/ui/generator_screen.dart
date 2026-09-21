@@ -144,6 +144,11 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     await p.setInt('kochLevel', _kochLevel);
     await p.setInt('kochModeIndex', _kochModeIndex);
     await p.setInt('kochFlow', _flow);
+    // Only ever change here via AdaptiveCopyBody's onSpacingChanged, but
+    // still worth persisting so the Settings screen reflects the adapted
+    // value too (interCharSpace/interWordSpace are shared, global keys).
+    await p.setInt('interCharSpace', _interCharSpace);
+    await p.setInt('interWordSpace', _interWordSpace);
   }
 
   @override
@@ -396,6 +401,15 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                     abbrevLengthMax: _abbrevLengthMax,
                     interCharSpace: _interCharSpace,
                     interWordSpace: _interWordSpace,
+                    onWpmChanged: (v) { setState(() => _wpm = v); _savePrefs(); },
+                    onKochLevelChanged: (v) {
+                      setState(() => _kochLevel = v.clamp(2, _activeKochChars.length));
+                      _savePrefs();
+                    },
+                    onSpacingChanged: (ic, iw) {
+                      setState(() { _interCharSpace = ic; _interWordSpace = iw; });
+                      _savePrefs();
+                    },
                   )
                 : PinchZoomFontSize(
                     prefsKey: 'genLogFontSize',

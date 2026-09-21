@@ -145,5 +145,19 @@ class Strings {
     'ac_weak_chars': ['SCHWACHE ZEICHEN', 'WEAK CHARACTERS'],
     'ac_finish': ['Beenden', 'Finish'],
     'ac_next_block': ['Nächster Block', 'Next Block'],
+    'ac_spacing_up': ['Abstand verkürzt', 'Spacing tightened'],
+    'ac_spacing_down': ['Abstand verlängert', 'Spacing widened'],
+    'ac_char_speed_up': ['Zeichentempo erhöht', 'Char speed increased'],
+    'ac_char_unlocked': ['Neues Zeichen freigeschaltet', 'New character unlocked'],
+
+    // ── Adaptive Mode settings ───────────────────────────────────────────
+    'settings_adaptive_mode': ['Adaptiver Modus', 'Adaptive Mode'],
+    'settings_adaptive_mode_desc': [
+      'Schwellenwerte, die steuern, wie Adaptiv Copy Tempo/Abstand anpasst und wann das nächste Koch-Zeichen freigeschaltet wird.',
+      'Thresholds controlling how Adaptive Copy adjusts tempo/spacing and when the next Koch character unlocks.'],
+    'settings_adaptive_high_threshold': ['Erfolgsschwelle hoch', 'Success Threshold High'],
+    'settings_adaptive_low_threshold': ['Erfolgsschwelle niedrig', 'Success Threshold Low'],
+    'settings_adaptive_ema_alpha': ['EMA-Glättung', 'EMA Smoothing'],
+    'settings_adaptive_unlock_occurrences': ['Vorkommen für Freischaltung', 'Occurrences for Unlock'],
   };
 }

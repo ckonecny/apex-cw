@@ -1,16 +1,18 @@
 // Adaptive Copy Mode — listen-and-copy-on-paper flow: send a block of
 // groups, reveal, tap errors, show a result. See docs/ADAPTIVE-COPY.md.
 //
-// This is the UI-skeleton stage: tempo/spacing are fixed (whatever the
-// shared WPM/spacing settings are), no auto-adaptation between blocks yet —
-// that's `adaptive_copy_engine.dart`, still to come. Character stats ARE
-// already recorded via the shared CharStatsStore so nothing has to be
-// migrated later.
+// Tempo/spacing/Koch-level auto-adaptation is driven by AdaptiveCopyEngine
+// (adaptive_copy_engine.dart) at the end of each block. The engine only
+// computes decisions — this widget owns applying them (via the
+// on*Changed callbacks, since wpm/kochLevel/spacing are GeneratorScreen's
+// state, shared with the Classic flow) and persisting the blockquote EMA.
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/char_stats.dart';
+import '../content/cw_content.dart' show kochActiveChars;
+import '../content/adaptive_copy_engine.dart';
 import '../theme/app_colors.dart';
 import '../l10n/strings.dart';
 
@@ -31,6 +33,12 @@ class AdaptiveCopyBody extends StatefulWidget {
   final int abbrevLengthMax;
   final int interCharSpace;
   final int interWordSpace;
+  // Applies the adaptive engine's decisions back to the caller's state
+  // (GeneratorScreen owns wpm/kochLevel/spacing, shared with the Classic
+  // flow) — null-safe no-ops if the caller doesn't wire them up.
+  final ValueChanged<int>? onWpmChanged;
+  final ValueChanged<int>? onKochLevelChanged;
+  final void Function(int interCharSpace, int interWordSpace)? onSpacingChanged;
 
   const AdaptiveCopyBody({
     super.key,
@@ -45,6 +53,9 @@ class AdaptiveCopyBody extends StatefulWidget {
     required this.abbrevLengthMax,
     required this.interCharSpace,
     required this.interWordSpace,
+    this.onWpmChanged,
+    this.onKochLevelChanged,
+    this.onSpacingChanged,
   });
 
   @override
@@ -57,6 +68,16 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   static const _toneChannel = MethodChannel('at.oe1wkl.morserino_mobile/cw_tone');
 
   final CharStatsStore _charStats = CharStatsStore();
+  AdaptiveCopyEngine? _engine;
+  // Floor for the spacing "step down" direction — never make spacing wider
+  // (slower/easier) than what the screen started with (docs/ADAPTIVE-COPY.md
+  // "Success-rate high/low thresholds": "not below the configured start
+  // value"). Captured once; independent of later widget.interCharSpace
+  // changes driven by our own onSpacingChanged calls.
+  late final int _startInterCharSpace = widget.interCharSpace;
+  late final int _startInterWordSpace = widget.interWordSpace;
+  TempoDecision? _lastDecision;
+  bool _unlockedThisBlock = false;
 
   _Phase _phase = _Phase.idle;
   int _blockNumber = 1;
@@ -205,20 +226,63 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final p = await SharedPreferences.getInstance();
     await _charStats.load(p);
     var total = 0, correct = 0;
+    final results = <bool>[];
     for (var g = 0; g < _sentGroups.length; g++) {
       final group = _sentGroups[g];
       for (var i = 0; i < group.length; i++) {
         final wrong = _wrongPositions.contains('$g:$i');
         total++;
         if (!wrong) correct++;
+        results.add(!wrong);
         _charStats.record(group[i], !wrong, block: _blockNumber);
       }
     }
     await _charStats.save(p);
+
+    // Adaptive engine: blockquote EMA -> spacing/char-speed step, plus an
+    // independent per-character unlock decision — both can fire on the same
+    // block (docs/ADAPTIVE-COPY.md "Decisions: weighting/recency questions").
+    _engine ??= AdaptiveCopyEngine(
+      thresholds: AdaptiveCopyThresholds(
+        highThreshold: (p.getInt('adaptiveHighThresholdPct') ?? 90) / 100,
+        lowThreshold: (p.getInt('adaptiveLowThresholdPct') ?? 70) / 100,
+        blockEmaAlpha: (p.getInt('adaptiveEmaAlphaPct') ?? 30) / 100,
+        unlockOccurrences: p.getInt('adaptiveUnlockOccurrences') ?? 20,
+      ),
+      initialBlockEma: p.getDouble('adaptiveBlockEma') ?? 1.0,
+    );
+    final spacingAtCharSpeed = widget.interCharSpace <= 3 && widget.interWordSpace <= 7;
+    final decision = _engine!.recordBlock(results, spacingAtCharSpeed: spacingAtCharSpeed);
+    await p.setDouble('adaptiveBlockEma', _engine!.blockEma);
+
+    if (decision.spacingStep == TempoStep.up) {
+      widget.onSpacingChanged?.call(
+        (widget.interCharSpace - 1).clamp(3, _startInterCharSpace),
+        (widget.interWordSpace - 1).clamp(7, _startInterWordSpace),
+      );
+    } else if (decision.spacingStep == TempoStep.down) {
+      widget.onSpacingChanged?.call(
+        (widget.interCharSpace + 1).clamp(3, _startInterCharSpace),
+        (widget.interWordSpace + 1).clamp(7, _startInterWordSpace),
+      );
+    }
+    if (decision.charSpeedStep == TempoStep.up) {
+      widget.onWpmChanged?.call(widget.wpm + 1);
+    }
+
+    final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
+        .map((ch) => _charStats.stats[ch] ?? CharStat())
+        .toList();
+    final unlocked = widget.kochLevel < widget.activeKochChars.length &&
+        _engine!.shouldUnlockNextChar(activeChars);
+    if (unlocked) widget.onKochLevelChanged?.call(widget.kochLevel + 1);
+
     if (!mounted) return;
     setState(() {
       _resultCorrect = correct;
       _resultTotal = total;
+      _lastDecision = decision;
+      _unlockedThisBlock = unlocked;
       _phase = _Phase.result;
     });
   }
@@ -233,6 +297,18 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       m[ch] = (m[ch] ?? 0) + 1;
     }
     return m;
+  }
+
+  List<String> get _adaptiveNotices {
+    final notices = <String>[];
+    final d = _lastDecision;
+    if (d != null) {
+      if (d.charSpeedStep == TempoStep.up) notices.add(Strings.t('ac_char_speed_up'));
+      if (d.spacingStep == TempoStep.up) notices.add(Strings.t('ac_spacing_up'));
+      if (d.spacingStep == TempoStep.down) notices.add(Strings.t('ac_spacing_down'));
+    }
+    if (_unlockedThisBlock) notices.add(Strings.t('ac_char_unlocked'));
+    return notices;
   }
 
   void _finish() {
@@ -489,6 +565,21 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                   ),
                   child: Text('${e.key}  ${e.value}',
                       style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.danger)),
+                )).toList(),
+              ),
+            ],
+            if (_adaptiveNotices.isNotEmpty) ...[
+              const SizedBox(height: 20),
+              Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
+                children: _adaptiveNotices.map((msg) => Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: c.accent.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: c.accent.withOpacity(0.4)),
+                  ),
+                  child: Text(msg,
+                      style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent)),
                 )).toList(),
               ),
             ],

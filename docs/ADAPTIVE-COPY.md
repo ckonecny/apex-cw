@@ -79,44 +79,126 @@ confusion-pair matrix.
      `generator_screen.dart`). Content mode selection
      (Random/Abbrevs/Words/Mixed) stays exactly as today and just feeds into
      whichever flow is active, as intended.
-  3. **← current step.** `adaptive_copy_engine.dart` (pure-Dart, injectable
-     RNG, unit tested) — blocked on the weighting/recency question below;
-     see "Starting point for the next session".
-  4. Settings section for the configurable thresholds.
-  5. Rebuild/install + on-device test (timing incl. Farnsworth).
-  6. Extend Classic/Adaptiv toggle to the non-Koch CW Generator.
-  7. Stage 2 (confusion pairs) as a further follow-up.
-  8. Echo Trainer reuse of `adaptive_copy_engine.dart`'s tempo logic — later,
+  3. ~~`adaptive_copy_engine.dart`~~ — done: `AdaptiveCopyEngine` with
+     `recordBlock()` (blockquote-EMA-driven spacing/char-speed step
+     decision) and `shouldUnlockNextChar()` (per-char EMA + attempts-floor
+     unlock decision), per "Decisions: weighting/recency questions" below.
+     10 unit tests in `android/test/content/adaptive_copy_engine_test.dart`,
+     all passing. **Not yet wired into `AdaptiveCopyBody`** — no RNG
+     injection needed (the engine consumes results, it doesn't generate
+     content), so that part of the original plan didn't apply. **← current
+     step is now 4.**
+  4. ~~Settings section for the configurable thresholds~~ — done: "Adaptive
+     Mode" section in `settings_screen.dart` (4 sliders: Success Threshold
+     High/Low, EMA Smoothing, Occurrences for Unlock; stored as
+     `adaptiveHighThresholdPct`/`adaptiveLowThresholdPct`/
+     `adaptiveEmaAlphaPct`/`adaptiveUnlockOccurrences` SharedPreferences
+     keys, percent/int for slider-friendliness — convert to the 0..1
+     doubles `AdaptiveCopyThresholds` expects at the call site). Built,
+     installed on `63061JEBF01551`. Not yet exercised on-device beyond
+     "sliders move and persist" — no other code reads these values yet;
+     that's step 5.
+  5. ~~Wire `AdaptiveCopyEngine` into `AdaptiveCopyBody._finishBlock()`~~ —
+     done: `_finishBlock()` builds the per-block `List<bool>`, loads
+     `AdaptiveCopyThresholds` from the settings above (lazily creates the
+     engine, restores `blockEma` from a new `adaptiveBlockEma`
+     SharedPreferences key), calls `recordBlock()` and
+     `shouldUnlockNextChar()` (against `kochActiveChars(kochLevel,
+     activeKochChars)`'s `CharStat`s), and applies the result via three new
+     `AdaptiveCopyBody` callbacks (`onWpmChanged`, `onKochLevelChanged`,
+     `onSpacingChanged(interCharSpace, interWordSpace)`) that
+     `GeneratorScreen` wires to its own `_wpm`/`_kochLevel`/
+     `_interCharSpace`/`_interWordSpace` state + `_savePrefs()` (now also
+     persists `interCharSpace`/`interWordSpace`, previously never written
+     from this screen). Spacing step size is 1 dit per block; char-speed
+     step is +1 wpm (docs said "+1..+2" — started at the simpler +1, easy
+     to widen later). The spacing "down" floor and "up" floor are enforced
+     via `_startInterCharSpace`/`_startInterWordSpace`, captured once from
+     the widget's initial values (see "Success-rate high/low thresholds"
+     below for the floor rationale). Result screen shows small notice chips
+     (spacing tightened/widened, char speed increased, character unlocked)
+     — new `ac_spacing_up`/`ac_spacing_down`/`ac_char_speed_up`/
+     `ac_char_unlocked` strings. Built, installed on `63061JEBF01551`.
+     **Not yet run through a full multi-block session on-device** — only
+     confirmed it builds/installs; behavior (does spacing actually tighten,
+     does a char actually unlock) still needs a real test run. **← current
+     step is now 6.**
+  6. **← current step.** On-device test: run several Adaptive Copy blocks
+     with intentionally high and low accuracy, confirm spacing/char-speed
+     actually step as expected and a character unlocks once its stats clear
+     the threshold; verify timing (incl. Farnsworth spacing) sounds right.
+  7. Extend Classic/Adaptiv toggle to the non-Koch CW Generator.
+  8. Stage 2 (confusion pairs) as a further follow-up.
+  9. Echo Trainer reuse of `adaptive_copy_engine.dart`'s tempo logic — later,
      opportunistic.
+  10. **Later session, not v1:** replace/extend the EMA (step 3) with real
+      trend detection (improving/degrading/flat), per decision 1 below.
+
+## Decisions: weighting/recency questions (answered 2026-09-21)
+
+The three open questions from the previous session are now resolved:
+
+1. **Time window per decision: EMA, not last-block-only, not full trend
+   detection (yet).** Char-speed/spacing decisions are driven by an
+   exponential moving average of blockquote success rate (and, per
+   character, of that character's own hit rate), not just the most recent
+   block. Actual trend detection (improving/degrading/flat classification)
+   is explicitly deferred — **not** part of the first version.
+   - **Follow-up flag for a later session:** replace/extend the EMA with
+     real trend detection once the EMA version is working and calibrated.
+     Track this as a future step (see build order below) so it isn't lost.
+2. **Signal precedence: independent, simultaneous.** Tempo/spacing-step
+   decisions (driven by the EMA of overall blockquote success) and
+   per-character drill-weight/unlock decisions (driven by each character's
+   own last-N-occurrences window, per "N=20 for character unlock" below)
+   run independently and do not block or override each other. A block can
+   simultaneously raise tempo *and* keep drilling a still-weak character.
+3. **Start simple: no.** The user explicitly wants the EMA-based logic
+   (per point 1) in the first version, not the flat "threshold × 2
+   consecutive blocks" rule from the original concept sketch. The
+   consecutive-blocks rule is superseded by the EMA approach below.
+
+### EMA design for v1 (to pin down while implementing)
+- Blockquote-level EMA: one EMA over per-block success rate, feeding the
+  tempo/spacing step decision (still uses the existing high/low thresholds,
+  default 90%/70%, but evaluated against the EMA value instead of two raw
+  consecutive blocks).
+- Per-character EMA or last-N window: per "N=20 for character unlock" below,
+  each character's own last-N-occurrences hit rate drives its unlock
+  decision, independently of the blockquote-level EMA.
+- EMA smoothing factor (alpha): not yet chosen — needs a sensible default
+  (e.g. alpha giving roughly N=5–10 block half-life) exposed the same way as
+  the other Adaptive Mode thresholds (user-configurable, per "Thresholds
+  must be user-configurable" above), or hardcoded with a comment if the user
+  prefers not to expose it. Decide at implementation time; ask if unclear.
 
 ## Starting point for the next session
 
-Everything through step 2 is done and confirmed working on-device. Next
-up is step 3, `adaptive_copy_engine.dart`, gated on three concrete
-questions the user still needs to answer (asked once already, not yet
-answered — don't re-derive, just ask again at the start of that session):
+Steps 1–5 are done and built/installed on `63061JEBF01551`, but **not yet
+exercised through a real multi-block session** — that's step 6, and it's a
+user/device task, not something verifiable from the source alone:
 
-1. **Time window per decision.** Should char-speed/spacing decisions look
-   only at the most recent block (as the original concept sketch says: "≥90%
-   two blocks in a row"), or at a moving average / actual trend across more
-   blocks?
-2. **Signal precedence.** When multiple signals point different ways in the
-   same block (e.g. overall blockquote is good enough to raise tempo, but
-   one specific character is still weak) — does one win, or do independent
-   signals (tempo/spacing step vs. per-character drill weight) apply
-   simultaneously without conflicting?
-3. **Start simple?** Is it acceptable to ship the concept doc's original
-   simple rule (blockquote-threshold × 2 consecutive blocks for
-   tempo/spacing, per-character last-N-occurrences window for char unlock)
-   as a first, later-recalibratable version — i.e. don't over-engineer
-   question 1/2 up front?
-
-Once answered, `adaptive_copy_engine.dart` takes generic inputs (a list of
-`(char, correct)` results per block, current tempo/spacing values, the
-configurable thresholds) — see "Adaptive engine must be reusable" above —
-and wires into `AdaptiveCopyBody._finishBlock()`
-(`android/lib/ui/adaptive_copy_body.dart`), which currently just records
-stats and shows a flat result with no tempo/spacing/unlock suggestion yet.
+1. Open Koch Trainer → Adaptiv, run several blocks marking (almost) everything
+   correct, and confirm: after ~2+ high-scoring blocks, a spacing-tightened
+   notice appears and `interCharSpace`/`interWordSpace` in Settings actually
+   move down by 1 each; once spacing reaches 3/7 dits, a further good block
+   should show "char speed increased" and bump WPM.
+2. Run blocks marking many wrong, confirm a spacing-widened notice appears
+   and spacing moves back up (capped at the value it started at when you
+   opened the screen — see `_startInterCharSpace`/`_startInterWordSpace` in
+   `adaptive_copy_body.dart`).
+3. Drill one specific character to ≥20 correct occurrences (or whatever
+   "Occurrences for Unlock" is set to in Settings → Adaptive Mode) at a high
+   hit rate while keeping others below threshold or below the occurrence
+   floor, confirm a "character unlocked" notice appears and the Koch level
+   slider in the training screen actually increments.
+4. Listen for correct timing throughout, including Farnsworth-style
+   spacing if `interCharSpace`/`interWordSpace` were pushed away from
+   3/7.
+5. Report back what works vs. doesn't — the step sizes (1 dit for
+   spacing, +1 wpm for char speed) and the "spacing at char speed" gate in
+   `adaptive_copy_body.dart::_finishBlock()` are first-guess values, not
+   verified against real training feel yet.
 
 ## Open points (to clarify before/while implementing)
 
@@ -129,26 +211,22 @@ auto-unlocks (Koch level +1). This would be a new *automatic* alternative
 to the existing manual Koch-level slider — needs a decision on whether it
 replaces, supplements, or is optional relative to the manual slider.
 
-### Success-rate high/low thresholds — meaning confirmed
+### Success-rate high/low thresholds — meaning confirmed, evaluation updated
 Drive char-speed/spacing only, separate from the N-based unlock:
-- Blockquote ≥ high threshold (default 90%) in two consecutive blocks →
-  spacing speed +1 step.
-- Blockquote < low threshold (default 70%) → spacing speed −1 step (not
+- Blockquote EMA ≥ high threshold (default 90%) → spacing speed +1 step.
+  (Supersedes the original "two consecutive blocks" phrasing — see
+  "Decisions: weighting/recency questions" above: evaluated against the EMA,
+  not two raw consecutive blocks.)
+- Blockquote EMA < low threshold (default 70%) → spacing speed −1 step (not
   below the configured start value).
 - Only once spacing speed == char speed does char speed itself step up
   (+1..+2).
 
-### Not yet decided — the actual weighting/recency question
-Raised explicitly by the user and deliberately deferred to its own
-discussion before writing `adaptive_copy_engine.dart`:
-- Given a mix of signals (char speed up/down, spacing up/down, unlock next
-  char, drill weak chars harder), what decides which one "wins" in a given
-  block, and in what order/precedence?
-- What time window matters for each per-character decision: most recent
-  block only? Moving average across several? An actual trend (improving vs.
-  degrading vs. flat) rather than a flat window average?
-- The EMA-only sketch in the original concept doc (Section 5) is a
-  starting point, not a final answer — revisit before implementation.
+### Resolved — weighting/recency question
+See "Decisions: weighting/recency questions (answered 2026-09-21)" above:
+EMA-based time window, independent/simultaneous signal precedence, full
+EMA (not the flat threshold rule) for v1. Trend detection deferred to a
+later session (build order step 9).
 
 ### Also still open (carried over from the original concept doc, unchanged)
 - Whether/how results from this mode ever merge with the pre-existing Koch
@@ -160,3 +238,36 @@ discussion before writing `adaptive_copy_engine.dart`:
 - Block-protocol logging (timestamp, sent text, marked positions, tempo,
   blockquote) — recommended in the concept doc so stats can be recomputed
   if rules change later; not yet designed.
+
+## Flagged TODOs (2026-09-21, not yet scheduled into the build order)
+
+Raised by the user after step 5 (engine wiring) landed; not yet designed or
+estimated, just captured so they aren't lost:
+
+- **User override on the result screen.** Right now the spacing/char-speed
+  step and character unlock from step 5 apply automatically with no way to
+  undo or adjust them before the next block starts. Add a way, on the
+  result screen (`AdaptiveCopyBody._buildResult`), for the user to
+  accept/reject/adjust each suggestion (weak-character drill weight,
+  spacing change) rather than it being fully automatic.
+- **Surface adaptive state in Settings, and confirm it survives app
+  restarts.** Weak characters / the currently "determined" (adapted) speed
+  should be visible in `settings_screen.dart`, not just implicit in
+  `AdaptiveCopyBody`'s live state. Note: the underlying persistence mostly
+  already exists — `CharStatsStore` saves to SharedPreferences on every
+  `_finishBlock()` (`char_stats.dart`), and step 5's `_savePrefs()` now also
+  persists the adapted `wpm`/`interCharSpace`/`interWordSpace`/`kochLevel`
+  — but this hasn't been verified end-to-end (kill app, reopen, confirm
+  nothing reset) and none of it is currently *shown* anywhere in Settings.
+  Both parts (verify persistence, add Settings visibility) are open.
+- **Echo Trainer needs its own adaptive signal, not a 1:1 reuse.** Per the
+  user: sending (copying by ear onto paper, what Adaptive Copy measures)
+  and receiving/echoing back (what Echo Trainer measures) can diverge per
+  character or per speed — someone can struggle keying a character back
+  but hear it fine, or vice versa. The existing "Adaptive engine must be
+  reusable" plan (build order step 9: Echo Trainer reuse of
+  `adaptive_copy_engine.dart`'s tempo logic) assumed the same weighting
+  could drive both. That assumption is now explicitly wrong: Echo Trainer
+  needs its own separate stats track (or a separate dimension within
+  `CharStatsStore`) rather than sharing Adaptive Copy's numbers outright.
+  Revisit step 9's design before implementing it.
