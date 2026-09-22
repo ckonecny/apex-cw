@@ -19,6 +19,10 @@ static std::atomic<float>  gVolume {0.7f};
 // gain envelope, in ms — same value for both edges, matching
 // MorseOutput::setSidetoneEnvelope()'s symmetric ADSR (attack=release=t).
 static std::atomic<float>  gEnvelopeMs {5.0f};
+// AAUDIO_UNSPECIFIED (0) lets the system pick the current default output;
+// a nonzero id (from AudioManager.getDevices()) pins the stream to that
+// device. Set by AudioRouteManager.kt before calling restartStream().
+static std::atomic<int32_t> gPreferredDeviceId {0};
 
 // These are only touched by the callback thread — no atomics needed.
 static double gPhase = 0.0;
@@ -57,26 +61,20 @@ static aaudio_data_callback_result_t audioCallback(
     return AAUDIO_CALLBACK_RESULT_CONTINUE;
 }
 
-static void errorCallback(AAudioStream* /*stream*/, void* /*userData*/, aaudio_result_t error) {
-    LOGE("AAudio error: %s", AAudio_convertResultToText(error));
-    // Restart the stream on xrun
-    if (gStream) {
-        AAudioStream_requestStop(gStream);
-        AAudioStream_requestStart(gStream);
-    }
-}
+static void errorCallback(AAudioStream* stream, void* userData, aaudio_result_t error);
 
-extern "C" {
+// Opens gStream against gPreferredDeviceId (0 = system default). Caller must
+// ensure any previous gStream has already been stopped/closed.
+static aaudio_result_t openStreamInternal() {
+    const int32_t deviceId = gPreferredDeviceId.load(std::memory_order_relaxed);
 
-JNIEXPORT jint JNICALL
-Java_at_oe1wkl_morserino_1mobile_CwAudioNative_startStream(JNIEnv*, jclass)
-{
     AAudioStreamBuilder* builder = nullptr;
     aaudio_result_t res = AAudio_createStreamBuilder(&builder);
     if (res != AAUDIO_OK) { LOGE("createStreamBuilder: %s", AAudio_convertResultToText(res)); return res; }
 
     AAudioStreamBuilder_setFormat(builder, AAUDIO_FORMAT_PCM_FLOAT);
     AAudioStreamBuilder_setChannelCount(builder, 1);
+    AAudioStreamBuilder_setDeviceId(builder, deviceId);
     // Try EXCLUSIVE first: direct hardware path = lowest possible latency
     AAudioStreamBuilder_setSharingMode(builder, AAUDIO_SHARING_MODE_EXCLUSIVE);
     AAudioStreamBuilder_setPerformanceMode(builder, AAUDIO_PERFORMANCE_MODE_LOW_LATENCY);
@@ -92,6 +90,7 @@ Java_at_oe1wkl_morserino_1mobile_CwAudioNative_startStream(JNIEnv*, jclass)
         AAudio_createStreamBuilder(&b2);
         AAudioStreamBuilder_setFormat(b2, AAUDIO_FORMAT_PCM_FLOAT);
         AAudioStreamBuilder_setChannelCount(b2, 1);
+        AAudioStreamBuilder_setDeviceId(b2, deviceId);
         AAudioStreamBuilder_setPerformanceMode(b2, AAUDIO_PERFORMANCE_MODE_LOW_LATENCY);
         AAudioStreamBuilder_setDataCallback(b2, audioCallback, nullptr);
         AAudioStreamBuilder_setErrorCallback(b2, errorCallback, nullptr);
@@ -103,6 +102,44 @@ Java_at_oe1wkl_morserino_1mobile_CwAudioNative_startStream(JNIEnv*, jclass)
     res = AAudioStream_requestStart(gStream);
     if (res != AAUDIO_OK) LOGE("requestStart: %s", AAudio_convertResultToText(res));
     return res;
+}
+
+static void errorCallback(AAudioStream* /*stream*/, void* /*userData*/, aaudio_result_t error) {
+    LOGE("AAudio error: %s", AAudio_convertResultToText(error));
+    // Any AAudio error on this stream (xrun, or AAUDIO_ERROR_DISCONNECTED when
+    // the routed device is unplugged/unpaired) leaves the old handle unusable —
+    // restarting it in place doesn't work, a fresh stream must be opened.
+    if (gStream) {
+        AAudioStream_requestStop(gStream);
+        AAudioStream_close(gStream);
+        gStream = nullptr;
+    }
+    openStreamInternal();
+}
+
+extern "C" {
+
+JNIEXPORT jint JNICALL
+Java_at_oe1wkl_morserino_1mobile_CwAudioNative_startStream(JNIEnv*, jclass)
+{
+    return openStreamInternal();
+}
+
+JNIEXPORT jint JNICALL
+Java_at_oe1wkl_morserino_1mobile_CwAudioNative_restartStream(JNIEnv*, jclass)
+{
+    if (gStream) {
+        AAudioStream_requestStop(gStream);
+        AAudioStream_close(gStream);
+        gStream = nullptr;
+    }
+    return openStreamInternal();
+}
+
+JNIEXPORT void JNICALL
+Java_at_oe1wkl_morserino_1mobile_CwAudioNative_setPreferredDeviceId(JNIEnv*, jclass, jint deviceId)
+{
+    gPreferredDeviceId.store(deviceId, std::memory_order_relaxed);
 }
 
 JNIEXPORT void JNICALL

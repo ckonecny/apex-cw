@@ -118,6 +118,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   int _adaptiveEmaAlphaPct      = 30;  // AdaptiveCopyThresholds.blockEmaAlpha
   int _adaptiveUnlockOccurrences = 20; // AdaptiveCopyThresholds.unlockOccurrences
 
+  // ── Audio Output ──────────────────────────────────────────────────────────
+  // Kind values match AudioRouteManager.kt's KIND_* constants exactly.
+  int _outputKindPref = 0;
+  List<int> _outputKindsAvailable = const [0];
+  String _activeOutputLabel = '…';
+
   // ── Paddle ────────────────────────────────────────────────────────────────
   String _ditDesc = '…';
   String _dahDesc = '…';
@@ -135,6 +141,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _load();
     _loadPaddleDesc();
+    _loadOutputDeviceKinds();
     _eventSub = _settingsEvents.receiveBroadcastStream().listen(_onSettingsEvent);
   }
 
@@ -320,9 +327,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
         case 'keyDiag':
           _keyDiagLog.insert(0, val);
           if (_keyDiagLog.length > 20) _keyDiagLog.removeLast();
+        case 'audioRoute':
+          _activeOutputLabel = val;
       }
     });
   }
+
+  // Native-side labels ("Lautsprecher"/"Kabel/USB"/"Bluetooth") are matched
+  // back to localized strings here rather than sent pre-translated, since the
+  // same event also fires from a background AudioDeviceCallback.
+  String _localizedActiveLabel() => switch (_activeOutputLabel) {
+    'Kabel/USB' => Strings.t('opt_audio_wired'),
+    'Bluetooth' => Strings.t('opt_audio_bluetooth'),
+    _           => Strings.t('opt_audio_speaker'),
+  };
+
+  Future<void> _loadOutputDeviceKinds() async {
+    final result = await _settingsChannel.invokeMapMethod<String, dynamic>('getOutputDeviceKinds');
+    if (result == null || !mounted) return;
+    setState(() {
+      _outputKindPref = result['preferred'] as int? ?? 0;
+      _outputKindsAvailable = (result['available'] as List?)?.cast<int>() ?? const [0];
+    });
+  }
+
+  Future<void> _applyOutputKind(int kind) async {
+    setState(() => _outputKindPref = kind);
+    await _settingsChannel.invokeMethod('setOutputDeviceKind', kind);
+  }
+
+  String _outputKindLabel(int kind) => switch (kind) {
+    1 => Strings.t('opt_audio_speaker'),
+    2 => Strings.t('opt_audio_wired'),
+    3 => Strings.t('opt_audio_bluetooth'),
+    _ => Strings.t('opt_audio_auto'),
+  };
 
   Future<void> _startLearn()  async { await _settingsChannel.invokeMethod('startLearnPaddle'); }
   Future<void> _cancelLearn() async {
@@ -612,6 +651,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _LabeledSlider(label: 'InterWord Spc', value: _interWordSpace.toDouble(),
                 min: 6, max: 105, divisions: 99, display: '$_interWordSpace dits',
                 onChanged: (v) { setState(() => _interWordSpace = v.round()); _saveLive(); }),
+          ]),
+
+          const SizedBox(height: 24),
+
+          // ── Audioausgabe ─────────────────────────────────────────────────────
+          _SectionHeader(Strings.t('settings_audio_output')),
+          const SizedBox(height: 4),
+          Text(Strings.t('settings_audio_output_desc'),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+          const SizedBox(height: 12),
+          _SettingsCard(children: [
+            _SegmentRow(
+              label: Strings.t('settings_audio_output_active').replaceFirst('{val}', _localizedActiveLabel()),
+              options: _outputKindsAvailable.map(_outputKindLabel).toList(),
+              selected: _outputKindsAvailable.indexOf(_outputKindPref).clamp(0, _outputKindsAvailable.length - 1),
+              onChanged: (i) => _applyOutputKind(_outputKindsAvailable[i]),
+            ),
           ]),
 
           const SizedBox(height: 24),
