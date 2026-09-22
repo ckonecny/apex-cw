@@ -105,6 +105,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   late final int _startInterWordSpace = widget.interWordSpace;
   TempoDecision? _lastDecision;
   bool _unlockedThisBlock = false;
+  // Guards the "hear it" preview button against overlapping taps while a
+  // preview is already playing (see _previewNewChar).
+  bool _previewingNewChar = false;
   // Result-screen status line: the EMA the engine is actually reasoning
   // about, captured explicitly (not read back from `widget`, to not depend
   // on parent-rebuild timing).
@@ -288,6 +291,33 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     }
   }
 
+  // Plays a just-unlocked character a couple of times in place, right on the
+  // result screen's suggestion row — reuses the same generator/tone channels
+  // and done-event plumbing _startBlock()'s per-group playback already uses,
+  // so no new native surface is needed. Deliberately not routed through
+  // EchoTrainerScreen(fixedTarget: ...) (the existing "Learn New Chr" flow):
+  // that navigates away from Adaptive Copy, which is exactly what this is
+  // meant to avoid.
+  Future<void> _previewNewChar(String ch) async {
+    if (_previewingNewChar) return;
+    setState(() => _previewingNewChar = true);
+    // _genSub is cancelled by _revealNow() (early "Aufdecken") but not by a
+    // block that ran to completion — re-subscribe defensively so the "done"
+    // event that resolves _doneCompleter below always has a listener.
+    _genSub ??= _genEvents.receiveBroadcastStream().listen(_onGenEvent);
+    try {
+      for (var i = 0; i < 2; i++) {
+        final completer = Completer<void>();
+        _doneCompleter = completer;
+        await _genChannel.invokeMethod('playOne', ch);
+        await completer.future;
+        if (i == 0) await Future.delayed(const Duration(milliseconds: 500));
+      }
+    } finally {
+      if (mounted) setState(() => _previewingNewChar = false);
+    }
+  }
+
   // wpm/interCharSpace/interWordSpace default to the widget's current
   // values; _nextBlock() passes the just-accepted overrides explicitly
   // instead, since calling widget.onWpmChanged/onSpacingChanged and then
@@ -450,8 +480,20 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // ("in dem moment wo ein neues zeichen hinzukommt wird mir das zu
     // schnell"). Widening/slowing down is unaffected, since that only ever
     // makes the next block easier.
+    //
+    // Beyond that single block: suppress tighten/speed-up proposals for the
+    // whole time the user is still working through Koch lessons (not all
+    // sequence characters unlocked yet) — user feedback 2026-09-22: pausing
+    // reduction pressure on top of still-being-introduced-to-new-characters
+    // felt like a constant nag. The manual spacing +/- control
+    // (_buildSpacingControl) is untouched by this — it's independent of the
+    // engine's proposals and still lets the user tighten by hand any time.
+    // Once the full sequence is unlocked, the (now hysteresis-gated, see
+    // AdaptiveCopyThresholds.spacingUpConsecutiveBlocks) tighten/speed-up
+    // proposals resume normally.
+    final rampingUpKoch = widget.kochLevel < widget.activeKochChars.length;
     int? newInterChar, newInterWord, interCharBefore, interWordBefore;
-    if (decision.spacingStep == TempoStep.up && !unlocked) {
+    if (decision.spacingStep == TempoStep.up && !unlocked && !rampingUpKoch) {
       final ic = (widget.interCharSpace - 1).clamp(3, _startInterCharSpace);
       final iw = (widget.interWordSpace - 1).clamp(7, _startInterWordSpace);
       // Already at the floor — clamping produced no real change, so don't
@@ -475,7 +517,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       }
     }
     int? newWpm, wpmBefore;
-    if (decision.charSpeedStep == TempoStep.up && !unlocked) {
+    if (decision.charSpeedStep == TempoStep.up && !unlocked && !rampingUpKoch) {
       wpmBefore = widget.wpm;
       newWpm = widget.wpm + 1;
     }
@@ -959,6 +1001,11 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
             ? Strings.t('ac_char_unlocked')
             : '${Strings.t('ac_char_unlocked')}: "$nextChar"',
         highlight: true,
+        // Lets the user hear the brand-new character right here, without
+        // leaving Adaptive Copy for the separate Learn New Chr screen — user
+        // feedback 2026-09-22: they want to stay "im Lern-Flow". Plays
+        // in-place over the same channels _startBlock() already uses.
+        onPreview: nextChar == null || _previewingNewChar ? null : () => _previewNewChar(nextChar),
       ));
     }
     if (_pendingWpm != null) {
@@ -1004,6 +1051,9 @@ class _SuggestionRow extends StatelessWidget {
   // spacing nudge, so it gets a star icon and a bolder border instead of
   // blending into the same generic row style as the other two.
   final bool highlight;
+  // Unlock row only: plays the new character in place. Null while a preview
+  // is already in flight, or when there's no next character to preview.
+  final VoidCallback? onPreview;
 
   const _SuggestionRow({
     required this.width,
@@ -1013,6 +1063,7 @@ class _SuggestionRow extends StatelessWidget {
     this.onIncrement,
     this.onDecrement,
     this.highlight = false,
+    this.onPreview,
   });
 
   @override
@@ -1051,6 +1102,8 @@ class _SuggestionRow extends StatelessWidget {
                       color: accepted ? c.accent : c.textMuted,
                       decoration: accepted ? null : TextDecoration.lineThrough)),
             ),
+            if (onPreview != null)
+              _TapTarget(onTap: onPreview!, child: Icon(Icons.volume_up, size: 20, color: c.accent)),
             if (onDecrement != null)
               _TapTarget(onTap: onDecrement!, child: Icon(Icons.remove, size: 20, color: c.accent)),
             if (onIncrement != null)

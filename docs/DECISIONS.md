@@ -75,3 +75,52 @@ Given the sub-ms timing requirement above, porting to iOS means either a
 Swift rewrite of the engine or moving that logic into Dart and accepting
 unverified Dart-timer precision — deliberately not decided yet (see
 STATUS.md).
+
+## Adaptive Copy: spacing-up hysteresis, and no new Adaptive-mode toggle
+2026-09-22 user feedback: the spacing-tighten proposal fired too readily
+relative to the Koch-unlock proposal (unlock needs ~20 occurrences/char;
+spacing-up only needed one block's EMA crossing `highThreshold`), and it
+piled onto an already-stressful ramp-up through Koch lessons. Explicitly
+declined a per-mode enable/disable preference for this ("das müsste man
+dann spiegelgleich auch für das lernen von neuen zeichen machen" — mirroring
+it for the unlock side too would bloat the settings). Fixed structurally
+instead, in two parts:
+- `AdaptiveCopyEngine.recordBlock()` (`adaptive_copy_engine.dart`) now
+  requires `spacingUpConsecutiveBlocks` (default 2) consecutive high-EMA
+  blocks before proposing spacing-up/char-speed-up — an internal engine
+  constant, not a Settings-exposed value. Spacing-down (widen, the safety
+  net for a struggling block) stays single-block-reactive, unaffected.
+- `AdaptiveCopyBody._finishBlock()` additionally suppresses spacing-up/
+  char-speed-up proposals for the whole time `kochLevel < activeKochChars
+  .length` (still working through the sequence), not just the single block
+  that unlocks a character (existing `!unlocked` guard) — generalizing that
+  guard's own reasoning to the whole ramp-up phase. The manual spacing +/−
+  stepper (`_buildSpacingControl`) is untouched — independent of the
+  engine's proposals by design, so the user can still tighten by hand any
+  time without being pushed.
+
+## Adaptive Copy: new-char preview stays in-flow, doesn't reuse Learn New Chr
+Same 2026-09-22 feedback: engine-driven Koch unlocks happen mid-Adaptive-
+Copy-session, before the user has ever heard the new character — unlike the
+manual Classic flow, where Learn New Chr (`_openLearnNewChar()`,
+`generator_screen.dart`) is used before advancing the Koch level by hand.
+Considered routing the accepted-unlock case through that same
+`EchoTrainerScreen(fixedTarget: ...)` screen, but explicitly declined — user
+wants to stay "im Lern-Flow", not navigate out of Adaptive Copy. Instead
+added a "hear it" speaker icon directly on the unlock suggestion row
+(`_previewNewChar()` in `adaptive_copy_body.dart`), playing the new
+character in place via the same `_genChannel`/done-event plumbing
+`_startBlock()` already uses — no new native surface, no screen change.
+
+## Koch character draw weighting ported from firmware (was uniform)
+`CwGenerator.kt randomKochChars()` drew uniformly from the active Koch set —
+a divergence from `Koch::getRandomChar()` (`MorsePreferences.cpp`), which
+draws from the last third of the active set 1-in-3 times (comment there:
+"generate the last third of the chars learned a bit more often"). Ported
+literally as `weightedKochChar()` rather than inventing a new "boost the
+newest character" mechanism, since the firmware's existing weighting already
+gives the newest, least-practiced character disproportionate representation
+(it always sits in that last third) without any Adaptive-Copy-specific code.
+Affects Koch generation generally (Classic and Adaptiv), not just Adaptive
+Copy — intentional, since this is a fidelity fix (CLAUDE.md rule 1), not an
+Adaptive-Copy-only behavior.

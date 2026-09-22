@@ -20,12 +20,21 @@ class AdaptiveCopyThresholds {
   // approximated by CharStatsStore's continuous per-char EMA plus this
   // attempts floor) before it's eligible to unlock the next Koch character.
   final int unlockOccurrences;
+  // Consecutive blocks the EMA must stay >= highThreshold before a
+  // spacing-up (tighten) step is proposed — the unlock decision already
+  // needs ~unlockOccurrences per character to fire, so a single-block EMA
+  // crossing let spacing-up fire far more readily than unlock, which is
+  // what made it feel like a constant nag during Koch progression (user
+  // feedback, 2026-09-22: "das verringern des abstands macht mir stress").
+  // spacing-down (widen) stays a same-block safety net, unaffected by this.
+  final int spacingUpConsecutiveBlocks;
 
   const AdaptiveCopyThresholds({
     this.highThreshold = 0.90,
     this.lowThreshold = 0.70,
     this.blockEmaAlpha = 0.3,
     this.unlockOccurrences = 20,
+    this.spacingUpConsecutiveBlocks = 2,
   });
 }
 
@@ -46,6 +55,9 @@ class TempoDecision {
 class AdaptiveCopyEngine {
   final AdaptiveCopyThresholds thresholds;
   double _blockEma;
+  // Consecutive blocks so far with blockEma >= highThreshold — see
+  // AdaptiveCopyThresholds.spacingUpConsecutiveBlocks.
+  int _consecutiveHigh = 0;
 
   // `initialBlockEma` lets a caller resume a persisted EMA across sessions;
   // defaults to 1.0 (assume success) so the first block doesn't immediately
@@ -67,8 +79,12 @@ class AdaptiveCopyEngine {
     _blockEma = thresholds.blockEmaAlpha * successRate + (1 - thresholds.blockEmaAlpha) * _blockEma;
 
     if (_blockEma >= thresholds.highThreshold) {
-      return TempoDecision(TempoStep.up, spacingAtCharSpeed ? TempoStep.up : TempoStep.none);
+      _consecutiveHigh++;
+      final up = _consecutiveHigh >= thresholds.spacingUpConsecutiveBlocks;
+      return TempoDecision(
+          up ? TempoStep.up : TempoStep.none, up && spacingAtCharSpeed ? TempoStep.up : TempoStep.none);
     }
+    _consecutiveHigh = 0;
     if (_blockEma < thresholds.lowThreshold) {
       return const TempoDecision(TempoStep.down, TempoStep.none);
     }

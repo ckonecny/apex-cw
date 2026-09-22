@@ -24,11 +24,28 @@ void main() {
       expect(decision.charSpeedStep, TempoStep.none);
     });
 
-    test('spacing at char speed lets a high EMA also step char speed', () {
+    test('a single high block does not yet step spacing (hysteresis)', () {
       final engine = AdaptiveCopyEngine(initialBlockEma: 0.95);
+      final decision = engine.recordBlock(List.filled(10, true), spacingAtCharSpeed: true);
+      expect(decision.spacingStep, TempoStep.none);
+      expect(decision.charSpeedStep, TempoStep.none);
+    });
+
+    test('spacing at char speed lets a high EMA also step char speed, '
+        'once the consecutive-high requirement is met', () {
+      final engine = AdaptiveCopyEngine(initialBlockEma: 0.95);
+      engine.recordBlock(List.filled(10, true), spacingAtCharSpeed: true);
       final decision = engine.recordBlock(List.filled(10, true), spacingAtCharSpeed: true);
       expect(decision.spacingStep, TempoStep.up);
       expect(decision.charSpeedStep, TempoStep.up);
+    });
+
+    test('a dip back below high resets the consecutive-high streak', () {
+      final engine = AdaptiveCopyEngine(initialBlockEma: 0.95);
+      engine.recordBlock(List.filled(10, true), spacingAtCharSpeed: false); // 1st high
+      engine.recordBlock(List.filled(10, false), spacingAtCharSpeed: false); // dip, resets streak
+      final decision = engine.recordBlock(List.filled(10, true), spacingAtCharSpeed: false); // 1st high again
+      expect(decision.spacingStep, TempoStep.none);
     });
 
     test('repeated failing blocks cross the low threshold and step down', () {

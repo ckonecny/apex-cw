@@ -52,7 +52,34 @@ characters on the result screen to include/exclude them from a boosted draw
 in the next block (reuses the existing Practice Set/Boost mechanism). See
 docs/ADAPTIVE-COPY.md "Flagged TODOs" for details on each.
 
-**This session (2026-09-21):** two more on-device reports acted on — (1) a
+**This session (2026-09-22):** brainstormed two more on-device reports with
+the user, agreed on an approach for each, then implemented and installed
+both (see docs/DECISIONS.md for the reasoning behind each choice):
+1. Spacing-tighten/char-speed-up proposals no longer fire off a single good
+   block (`AdaptiveCopyEngine.recordBlock()` now needs
+   `spacingUpConsecutiveBlocks` = 2 consecutive high-EMA blocks,
+   `adaptive_copy_engine.dart`), and are suppressed entirely while
+   `kochLevel < activeKochChars.length` (still working through the Koch
+   sequence), not just in the single block that unlocks a character
+   (`AdaptiveCopyBody._finishBlock()`). Spacing-down (widen) and the manual
+   +/− spacing stepper are both unaffected — no new Settings toggle.
+2. The Koch-unlock suggestion row now has a "hear it" speaker icon
+   (`_previewNewChar()` in `adaptive_copy_body.dart`) that plays the
+   just-unlocked character in place, twice, without leaving Adaptive Copy.
+3. Ported the firmware's Koch character weighting (`Koch::getRandomChar()`,
+   "last third of chars learned a bit more often") into
+   `CwGenerator.kt randomKochChars()`, which had been drawing uniformly — a
+   genuine fidelity gap. This also means the newest/least-practiced
+   character now naturally comes up more often, addressing the user's
+   request for that without any Adaptive-Copy-specific boost code. Affects
+   Koch generation generally, not just Adaptive Copy.
+
+Engine test updated for the new hysteresis behavior + two new hysteresis
+tests (`adaptive_copy_engine_test.dart`), all passing. `flutter build apk
+--debug` + install succeeded on `63061JEBF01551`. **Confirmed working
+on-device** through a real session — user reported "funktioniert super".
+
+**Previous session (2026-09-21):** two more on-device reports acted on — (1) a
 manual "ABSTAND ANPASSEN" spacing control (−/+ steppers on
 `interCharSpace`/`interWordSpace`, independent of the engine's own
 suggestions) now always shows on the idle/start screen and every result

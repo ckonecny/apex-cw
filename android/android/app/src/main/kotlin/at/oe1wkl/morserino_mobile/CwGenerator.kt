@@ -384,13 +384,27 @@ class CwGenerator(private val tone: CwTonePlugin) {
 
     private fun activeKochSet(): List<String> = kochChars.take(kochLevel.coerceIn(2, kochChars.size))
 
+    // Mirrors Koch::getRandomChar()'s weighting exactly (MorsePreferences.cpp,
+    // "in Koch mode, we generate the last third of the chars learned a bit
+    // more often"): 2-in-3 draws come from the whole active set, 1-in-3 are
+    // restricted to its last third — which is where the most recently
+    // unlocked (least-practiced) character always sits, so it comes up
+    // disproportionately more than long-mastered ones without a separate
+    // boost mechanism. This was previously a uniform draw here, diverging
+    // from the firmware.
+    private fun weightedKochChar(active: List<String>): String {
+        val endk = active.size
+        return if (Random.nextInt(3) != 0) active[Random.nextInt(endk)]
+        else active[Random.nextInt(2 * endk / 3, endk)]
+    }
+
     private fun randomKochChars(len: Int): String {
         val active = activeKochSet()
         val tries  = boostAttempts()
         return (1..len).map {
-            var c = active.random()
+            var c = weightedKochChar(active)
             var t = 1
-            while (t < tries && c !in practiceChars) { c = active.random(); t++ }
+            while (t < tries && c !in practiceChars) { c = weightedKochChar(active); t++ }
             c
         }.joinToString("")
     }
