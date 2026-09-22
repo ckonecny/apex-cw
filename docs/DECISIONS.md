@@ -57,6 +57,19 @@ The port targets a specific firmware snapshot rather than "whatever's
 current" — recorded in the README so future firmware changes are a known,
 reviewable diff rather than silent drift.
 
+## Audio output tracked by device category, not AAudio device id
+`AudioRouteManager.kt` persists the user's output preference (Auto/Speaker/
+Wired-USB/Bluetooth) as a category, not as an `AudioDeviceInfo.id` — Android
+reassigns ids each time a device is plugged in or paired, so an id captured
+once would go stale on the very next reconnect. AAudio also does not
+re-route an already-open stream when the active output changes; a real
+`AAUDIO_ERROR_DISCONNECTED` (or any other stream error) requires closing and
+reopening a fresh stream, which the old `errorCallback` in `cw_tone_jni.cpp`
+didn't do (it tried to restart the same, now-dead handle) — root cause of the
+"unplug USB/Bluetooth, sidetone goes silent until app restart" bug.
+`AudioDeviceCallback` in `AudioRouteManager` drives that reopen automatically
+on every device add/remove, in addition to the manual Settings picker.
+
 ## Native (not Dart) engine, iOS reuse deferred as an open question
 Given the sub-ms timing requirement above, porting to iOS means either a
 Swift rewrite of the engine or moving that logic into Dart and accepting

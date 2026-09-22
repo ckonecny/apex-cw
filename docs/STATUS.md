@@ -13,6 +13,9 @@ Latest tagged build: v0.1.0.
   theme, pinch-zoom text size.
 - Native engine (Kotlin CwGenerator/CwKeyer + C++ AAudio sidetone) is a
   shared singleton synced from each screen's own entry point.
+- Audio output device handling: auto-detects USB/Bluetooth connect and
+  disconnect while running (no more app restart needed to pick up the new
+  device), plus a manual Auto/Speaker/Wired-USB/Bluetooth picker in Settings.
 - README + docs/PORTING-MAP.md keep the firmware comparison; canvas artifact
   has the full per-preference audit (not duplicated here).
 

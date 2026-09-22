@@ -20,6 +20,7 @@ class MainActivity : FlutterActivity() {
     private lateinit var tonePlugin:  CwTonePlugin
     private lateinit var keyer:       CwKeyer
     private lateinit var generator:   CwGenerator
+    private lateinit var audioRouteManager: AudioRouteManager
 
     // Paddle configuration — loaded from SharedPreferences
     private var ditChar = 0xFC  // 'ü' (self-built vband default)
@@ -53,6 +54,13 @@ class MainActivity : FlutterActivity() {
         )
         keyer     = CwKeyer(tonePlugin)
         generator = CwGenerator(tonePlugin)
+
+        // Reopens the sidetone stream on whichever output device matches the
+        // user's preference whenever USB/Bluetooth audio hardware is (un)plugged.
+        audioRouteManager = AudioRouteManager(this) { activeLabel ->
+            runOnUiThread { settingsEventSink?.success(mapOf("type" to "audioRoute", "value" to activeLabel)) }
+        }
+        audioRouteManager.start()
 
         // ── Keyer symbol stream → Dart ─────────────────────────────────────────
         EventChannel(flutterEngine.dartExecutor.binaryMessenger, SYMBOL_CHANNEL)
@@ -243,6 +251,15 @@ class MainActivity : FlutterActivity() {
                         setKeepScreenOn(call.arguments as? Boolean ?: false)
                         result.success(null)
                     }
+                    "getOutputDeviceKinds" -> result.success(mapOf(
+                        "preferred" to audioRouteManager.getPreferredKind(),
+                        "available" to audioRouteManager.listAvailableKinds()
+                    ))
+                    "setOutputDeviceKind" -> {
+                        audioRouteManager.setPreferredKind(
+                            (call.arguments as? Number)?.toInt() ?: AudioRouteManager.KIND_AUTO)
+                        result.success(null)
+                    }
                     else -> result.notImplemented()
                 }
             }
@@ -359,6 +376,7 @@ class MainActivity : FlutterActivity() {
     override fun onDestroy() {
         keyer.stop()
         generator.stop()
+        audioRouteManager.stop()
         CwAudioNative.stopStream()
         super.onDestroy()
     }
