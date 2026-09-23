@@ -1,4 +1,4 @@
-# CLAUDE.md — Morserino Mobile
+# CLAUDE.md — Next CW Trainer
 
 Read automatically at session start. Keep this short — depth lives in
 `docs/`, loaded on demand, not here.
@@ -6,8 +6,10 @@ Read automatically at session start. Keep this short — depth lives in
 ## What this is
 
 Android port (Flutter + native Kotlin/C++) of the Morserino-32's CW training
-modes. Independent, parallel project; full credit for the design to Willi
-Kraml/OE1WKL. Details: `docs/PROJECT.md`. Current state, next steps, open
+modes. Independent project with no connection to Willi Kraml/OE1WKL or the
+Morserino-32 team beyond reusing algorithms and training logic read out of
+their firmware source; full credit for that design goes to Willi Kraml/
+OE1WKL. Details: `docs/PROJECT.md`. Current state, next steps, open
 questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
 
 ## Layout
@@ -40,6 +42,15 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
    explicitly if a fix is pending install.
 5. **Never `git commit` or `git push` unless explicitly asked**, even after
    finishing a chunk of work — ask or wait to be told.
+6. **Never modify anything under `reference/`.** It's a pinned, read-only
+   submodule; re-pin only deliberately, and record why in
+   `docs/DECISIONS.md` if you do.
+7. **One module per session**, per `docs/PORTING-MAP.md` — pick a row, do
+   that, don't sprawl into unrelated modules in the same session.
+8. **After finishing a task, update `docs/STATUS.md`** — done items, current
+   next-3-steps, open questions.
+9. **Record new or changed architecture decisions in `docs/DECISIONS.md`**
+   as they're made, not after the fact.
 
 ## Build / run
 

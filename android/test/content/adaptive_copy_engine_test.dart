@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:morserino_mobile/content/adaptive_copy_engine.dart';
-import 'package:morserino_mobile/content/char_stats.dart';
+import 'package:next_cw_trainer/content/adaptive_copy_engine.dart';
+import 'package:next_cw_trainer/content/char_stats.dart';
 
 void main() {
   group('AdaptiveCopyEngine.recordBlock', () {

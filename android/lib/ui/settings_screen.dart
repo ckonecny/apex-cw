@@ -18,10 +18,10 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  static const _settingsChannel = MethodChannel('at.oe1wkl.morserino_mobile/settings');
-  static const _settingsEvents  = EventChannel('at.oe1wkl.morserino_mobile/settings_events');
-  static const _genChannel      = MethodChannel('at.oe1wkl.morserino_mobile/cw_generator');
-  static const _toneChannel     = MethodChannel('at.oe1wkl.morserino_mobile/cw_tone');
+  static const _settingsChannel = MethodChannel('at.oe1cko.nextcwtrainer/settings');
+  static const _settingsEvents  = EventChannel('at.oe1cko.nextcwtrainer/settings_events');
+  static const _genChannel      = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
+  static const _toneChannel     = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
   // ── General ────────────────────────────────────────────────────────────────
   int  _wpm       = 20;

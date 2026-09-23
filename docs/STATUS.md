@@ -1,6 +1,6 @@
 # Status
 
-Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/morserino_mobile (private).
+Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private).
 Latest tagged build: v0.1.0.
 
 ## Done
@@ -18,15 +18,52 @@ Latest tagged build: v0.1.0.
   device), plus a manual Auto/Speaker/Wired-USB/Bluetooth picker in Settings.
 - README + docs/PORTING-MAP.md keep the firmware comparison; canvas artifact
   has the full per-preference audit (not duplicated here).
+- **Project renamed "Morserino Mobile" → "Next CW Trainer" (2026-09-23):**
+  app label/title, Dart package (`morserino_mobile` → `next_cw_trainer`),
+  Android package/applicationId (`at.oe1wkl.morserino_mobile` →
+  `at.oe1cko.nextcwtrainer`, incl. JNI symbol names and MethodChannel/
+  EventChannel names), GitHub repo (`ckonecny/morserino_mobile` →
+  `ckonecny/next_cw_trainer`), and local project folder (`~/morserino_mobile`
+  → `~/next_cw_trainer`) all updated. README/CLAUDE.md/docs now spell out
+  that this project has no connection to Willi Kraml/OE1WKL beyond reusing
+  algorithms/training logic read out of the firmware source. Old app
+  (`at.oe1wkl.morserino_mobile`) uninstalled from `63061JEBF01551`, new one
+  built and installed successfully.
 
 ## Working / verified on device
 Everything above, tested on 63061JEBF01551.
 
-## Next 3 steps (candidates, not yet decided)
-1. Koch Sequence Prosign extension (6 prosigns at the end of each sequence) —
-   small, self-contained.
-2. RECALL/STORE Snapshot (named settings profiles) — small-medium.
-3. CW Generator File Player — medium (needs Android file picker).
+## Next steps — requested by user (2026-09-23), to be done one per session
+1. **Output Case lower/UPPER setting not applied in Adaptive Copy mode.**
+   The existing lower/UPPER output-case setting (Settings screen) works in
+   Classic mode but isn't applied to the text shown in Adaptive Copy — needs
+   the same case transform wired into `adaptive_copy_body.dart`'s
+   rendering.
+2. **Change default Custom Koch Sequence** to
+   `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?` (currently something else —
+   check current default in Settings/`cw_content.dart` and replace).
+3. **Change InterCharSpc/InterWordSpc defaults to 28/40** (currently
+   different values — find in Settings defaults and update).
+4. **Couple the InterCharSpc/InterWordSpc sliders** so InterWordSpc can never
+   be set below InterCharSpc, the same way the low/high success-threshold
+   sliders in Adaptive Mode settings already constrain each other (find that
+   existing low/high slider-pairing logic in `settings_screen.dart` and
+   reuse the same pattern for the spacing sliders).
+5. **Simplify the Adaptive Copy error-marking flow after a block.** Currently
+   fiddly; user wants: tap the word that had an error → that word's
+   characters are shown individually → tap the wrong character(s) in it →
+   back out to the block overview, which then shows the marked/wrong
+   characters highlighted in place. Needs a new per-word drill-down screen/
+   state in `adaptive_copy_body.dart`'s result/marking flow, replacing
+   however errors are currently selected there.
+6. **Weak-character boost after a single miss is far too aggressive.** User
+   observed: in a 9-character Koch lesson, marking one character wrong once
+   caused it to make up ~80% of the very next block. Should instead be a
+   moderate boost sustained over several following blocks, not a single
+   massive spike. Look at the lifetime weak-char boost logic (see
+   `docs/DECISIONS.md` "lifetime weak-char boost" entry and
+   `char_stats.dart`/`CwGenerator.kt`'s practice-set/boost weighting) and
+   flatten the boost curve/spread it across more blocks.
 
 ## In design: Adaptive Copy Mode
 New listen-and-copy-on-paper mode with per-character stats driving

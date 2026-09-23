@@ -81,9 +81,9 @@ class AdaptiveCopyBody extends StatefulWidget {
 }
 
 class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
-  static const _genChannel = MethodChannel('at.oe1wkl.morserino_mobile/cw_generator');
-  static const _genEvents = EventChannel('at.oe1wkl.morserino_mobile/cw_gen_events');
-  static const _toneChannel = MethodChannel('at.oe1wkl.morserino_mobile/cw_tone');
+  static const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
+  static const _genEvents = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
+  static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
   // Weak-char detection for the "weak characters" display and the
   // boost-next-block proposal: needs enough attempts to be meaningful (not

@@ -1,4 +1,4 @@
-package at.oe1wkl.morserino_mobile
+package at.oe1cko.nextcwtrainer
 
 object CwAudioNative {
     init {

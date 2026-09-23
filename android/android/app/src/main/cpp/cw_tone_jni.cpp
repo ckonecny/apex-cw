@@ -120,13 +120,13 @@ static void errorCallback(AAudioStream* /*stream*/, void* /*userData*/, aaudio_r
 extern "C" {
 
 JNIEXPORT jint JNICALL
-Java_at_oe1wkl_morserino_1mobile_CwAudioNative_startStream(JNIEnv*, jclass)
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_startStream(JNIEnv*, jclass)
 {
     return openStreamInternal();
 }
 
 JNIEXPORT jint JNICALL
-Java_at_oe1wkl_morserino_1mobile_CwAudioNative_restartStream(JNIEnv*, jclass)
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_restartStream(JNIEnv*, jclass)
 {
     if (gStream) {
         AAudioStream_requestStop(gStream);
@@ -137,37 +137,37 @@ Java_at_oe1wkl_morserino_1mobile_CwAudioNative_restartStream(JNIEnv*, jclass)
 }
 
 JNIEXPORT void JNICALL
-Java_at_oe1wkl_morserino_1mobile_CwAudioNative_setPreferredDeviceId(JNIEnv*, jclass, jint deviceId)
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_setPreferredDeviceId(JNIEnv*, jclass, jint deviceId)
 {
     gPreferredDeviceId.store(deviceId, std::memory_order_relaxed);
 }
 
 JNIEXPORT void JNICALL
-Java_at_oe1wkl_morserino_1mobile_CwAudioNative_setPlaying(JNIEnv*, jclass, jboolean on)
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_setPlaying(JNIEnv*, jclass, jboolean on)
 {
     gPlaying.store(on, std::memory_order_release);
 }
 
 JNIEXPORT void JNICALL
-Java_at_oe1wkl_morserino_1mobile_CwAudioNative_setFreqHz(JNIEnv*, jclass, jdouble hz)
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_setFreqHz(JNIEnv*, jclass, jdouble hz)
 {
     gFreqHz.store(hz, std::memory_order_relaxed);
 }
 
 JNIEXPORT void JNICALL
-Java_at_oe1wkl_morserino_1mobile_CwAudioNative_setVolume(JNIEnv*, jclass, jfloat vol)
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_setVolume(JNIEnv*, jclass, jfloat vol)
 {
     gVolume.store(vol, std::memory_order_relaxed);
 }
 
 JNIEXPORT void JNICALL
-Java_at_oe1wkl_morserino_1mobile_CwAudioNative_setEnvelopeMs(JNIEnv*, jclass, jfloat ms)
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_setEnvelopeMs(JNIEnv*, jclass, jfloat ms)
 {
     gEnvelopeMs.store(ms, std::memory_order_relaxed);
 }
 
 JNIEXPORT void JNICALL
-Java_at_oe1wkl_morserino_1mobile_CwAudioNative_stopStream(JNIEnv*, jclass)
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_stopStream(JNIEnv*, jclass)
 {
     if (gStream) {
         AAudioStream_requestStop(gStream);
@@ -177,7 +177,7 @@ Java_at_oe1wkl_morserino_1mobile_CwAudioNative_stopStream(JNIEnv*, jclass)
 }
 
 JNIEXPORT jint JNICALL
-Java_at_oe1wkl_morserino_1mobile_CwAudioNative_getLatencyMs(JNIEnv*, jclass)
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_getLatencyMs(JNIEnv*, jclass)
 {
     if (!gStream) return -1;
     int32_t burstFrames   = AAudioStream_getFramesPerBurst(gStream);

@@ -1,4 +1,4 @@
-# Morserino Mobile
+# Next CW Trainer
 
 An Android app (Flutter UI + native Kotlin/C++ audio and keying) that brings
 the core CW/Morse **training** modes of the [Morserino-32](https://github.com/oe1wkl/Morserino-32)
@@ -6,10 +6,11 @@ to a phone or tablet.
 
 ## Project intent
 
-This is an independent, community side project that runs **in parallel** to
-Willi Kraml's (OE1WKL) original Morserino-32 hardware and firmware project —
-it is not a replacement for it, a fork of its source, or an official product
-of the Morserino-32 team.
+This is an independent, community side project with **no connection** to
+Willi Kraml (OE1WKL) or the Morserino-32 team beyond reusing algorithms and
+training logic read out of the original firmware source — it is not a
+replacement for it, a fork of its source, or an official product of the
+Morserino-32 team.
 
 The complete idea behind the Morserino-32, its training curriculum (the Koch
 method sequencing, the Echo Trainer flow, the QSO Bot concept, and everything
@@ -19,7 +20,9 @@ too — it was built by reading the [original firmware source](https://github.co
 and reimplementing its training logic as faithfully as possible for Android,
 from scratch, in Dart/Kotlin. It contains none of the original C++ firmware
 code and is not affiliated with, endorsed by, or sponsored by Willi Kraml,
-OE1WKL, or the Morserino-32 project.
+OE1WKL, or the Morserino-32 project. Aside from that shared lineage in the
+training algorithms, this project and Willi Kraml/OE1WKL have no connection
+to each other.
 
 If you don't already own a Morserino-32: go build or buy one, it's a
 wonderful piece of hardware — see the [main project](https://github.com/oe1wkl/Morserino-32)

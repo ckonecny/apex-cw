@@ -2,7 +2,7 @@
 
 Original = `reference/Software/src/Version 6 and newer/` (submodule, tag
 `V9.0`). Android Kotlin/C++ files are bare names below, relative to
-`android/android/app/src/main/{kotlin/at/oe1wkl/morserino_mobile,cpp}/`;
+`android/android/app/src/main/{kotlin/at/oe1cko/nextcwtrainer,cpp}/`;
 Dart files are given relative to `android/` (e.g. `lib/...`).
 
 | Original module | Android module | Status |

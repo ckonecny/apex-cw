@@ -12,11 +12,11 @@ void main() async {
   ]);
   await ThemeController.load();
   await Strings.load();
-  runApp(const MorserinoApp());
+  runApp(const NextCwTrainerApp());
 }
 
-class MorserinoApp extends StatelessWidget {
-  const MorserinoApp({super.key});
+class NextCwTrainerApp extends StatelessWidget {
+  const NextCwTrainerApp({super.key});
 
   ThemeData _theme(AppColors c, Brightness brightness) => ThemeData(
         brightness: brightness,
@@ -42,7 +42,7 @@ class MorserinoApp extends StatelessWidget {
       builder: (context, _, __) => ValueListenableBuilder<ThemeMode>(
         valueListenable: ThemeController.mode,
         builder: (context, mode, _) => MaterialApp(
-          title: 'Morserino Mobile',
+          title: 'Next CW Trainer',
           debugShowCheckedModeBanner: false,
           themeMode: mode,
           theme: _theme(AppColors.light, Brightness.light),

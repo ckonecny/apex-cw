@@ -1,10 +1,12 @@
 # Project
 
-Morserino Mobile: an Android app (Flutter + native Kotlin/C++) that ports the
+Next CW Trainer: an Android app (Flutter + native Kotlin/C++) that ports the
 Morserino-32's CW **training** modes (Keyer, Generator, Koch Trainer, Echo
-Trainer) to a phone. Independent, parallel project — not affiliated with the
-original. Full credit for the design/curriculum: Willi Kraml, OE1WKL, and
-the Morserino-32 team. See `README.md` for the full intent statement,
+Trainer) to a phone. Independent project, not affiliated with the original —
+its only connection to Willi Kraml/OE1WKL or the Morserino-32 team is that
+its algorithms and training logic were read out of their firmware source;
+full credit for that design/curriculum goes to Willi Kraml, OE1WKL, and the
+Morserino-32 team. See `README.md` for the full intent statement,
 scope/hardware-distinction, and the paddle-adapter note (vband etc.).
 
 ## Repo layout

@@ -124,3 +124,19 @@ gives the newest, least-practiced character disproportionate representation
 Affects Koch generation generally (Classic and Adaptiv), not just Adaptive
 Copy — intentional, since this is a fidelity fix (CLAUDE.md rule 1), not an
 Adaptive-Copy-only behavior.
+
+## Project renamed to "Next CW Trainer"; package namespace dropped oe1wkl
+User request: the "Morserino Mobile" name and the `at.oe1wkl.*` package
+namespace overstated a connection to Willi Kraml/OE1WKL that doesn't exist —
+this project only reuses algorithms/training logic read out of his firmware
+source, nothing more. Renamed everywhere: app label/title, Dart package
+(`morserino_mobile` → `next_cw_trainer`), Android package/applicationId
+(`at.oe1wkl.morserino_mobile` → `at.oe1cko.nextcwtrainer`, `oe1cko` being the
+user's own callsign), JNI exported symbol names in `cw_tone_jni.cpp`
+(`Java_at_oe1wkl_morserino_1mobile_*` → `Java_at_oe1cko_nextcwtrainer_*`),
+MethodChannel/EventChannel name strings (must match on both the Dart and
+Kotlin sides), GitHub repo, and local folder. Left untouched: `reference/`
+submodule (still the real `oe1wkl/Morserino-32` firmware, pinned per rule 6),
+and all README/docs attribution language crediting Willi Kraml/OE1WKL for
+the original design/curriculum — that credit is accurate and stays, it's
+only the implied *project* affiliation that was misleading.

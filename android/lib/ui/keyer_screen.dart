@@ -15,9 +15,9 @@ class KeyerScreen extends StatefulWidget {
 }
 
 class _KeyerScreenState extends State<KeyerScreen> {
-  static const _toneChannel  = MethodChannel('at.oe1wkl.morserino_mobile/cw_tone');
-  static const _keyerChannel = MethodChannel('at.oe1wkl.morserino_mobile/cw_keyer');
-  static const _symbolStream = EventChannel('at.oe1wkl.morserino_mobile/cw_symbols');
+  static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
+  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
 
   // Decoded text (mirrors the real device's CW Keyer, which decodes keyed
   // input via keyerTable/displayDecodedMorse() rather than showing raw

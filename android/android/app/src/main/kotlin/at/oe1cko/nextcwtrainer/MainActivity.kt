@@ -1,4 +1,4 @@
-package at.oe1wkl.morserino_mobile
+package at.oe1cko.nextcwtrainer
 
 import android.content.Context
 import android.view.KeyEvent
@@ -32,13 +32,13 @@ class MainActivity : FlutterActivity() {
     @Volatile private var keyDiagMode = false
 
     companion object {
-        private const val SYMBOL_CHANNEL   = "at.oe1wkl.morserino_mobile/cw_symbols"
-        private const val KEYER_CHANNEL    = "at.oe1wkl.morserino_mobile/cw_keyer"
-        private const val GEN_CHANNEL      = "at.oe1wkl.morserino_mobile/cw_generator"
-        private const val GEN_EV_CHANNEL   = "at.oe1wkl.morserino_mobile/cw_gen_events"
-        private const val SETTINGS_CHANNEL = "at.oe1wkl.morserino_mobile/settings"
-        private const val SETTINGS_EV      = "at.oe1wkl.morserino_mobile/settings_events"
-        private const val PREFS_NAME       = "morserino_prefs"
+        private const val SYMBOL_CHANNEL   = "at.oe1cko.nextcwtrainer/cw_symbols"
+        private const val KEYER_CHANNEL    = "at.oe1cko.nextcwtrainer/cw_keyer"
+        private const val GEN_CHANNEL      = "at.oe1cko.nextcwtrainer/cw_generator"
+        private const val GEN_EV_CHANNEL   = "at.oe1cko.nextcwtrainer/cw_gen_events"
+        private const val SETTINGS_CHANNEL = "at.oe1cko.nextcwtrainer/settings"
+        private const val SETTINGS_EV      = "at.oe1cko.nextcwtrainer/settings_events"
+        private const val PREFS_NAME       = "next_cw_trainer_prefs"
         private const val PREF_DIT         = "paddle_dit"
         private const val PREF_DAH         = "paddle_dah"
     }

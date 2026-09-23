@@ -4,7 +4,7 @@
 import 'package:flutter/services.dart';
 
 class ToneSynth {
-  static const _channel = MethodChannel('at.oe1wkl.morserino_mobile/cw_tone');
+  static const _channel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
   int pitchHz;
   double volume;

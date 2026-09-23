@@ -1,4 +1,4 @@
-package at.oe1wkl.morserino_mobile
+package at.oe1cko.nextcwtrainer
 
 import android.util.Log
 import io.flutter.plugin.common.MethodCall
@@ -7,7 +7,7 @@ import io.flutter.plugin.common.MethodChannel
 class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCallHandler {
 
     companion object {
-        const val CHANNEL = "at.oe1wkl.morserino_mobile/cw_tone"
+        const val CHANNEL = "at.oe1cko.nextcwtrainer/cw_tone"
         private const val TAG = "CwTonePlugin"
     }
 

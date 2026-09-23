@@ -22,9 +22,9 @@ class GeneratorScreen extends StatefulWidget {
 }
 
 class _GeneratorScreenState extends State<GeneratorScreen> {
-  static const _genChannel = MethodChannel('at.oe1wkl.morserino_mobile/cw_generator');
-  static const _genEvents  = EventChannel('at.oe1wkl.morserino_mobile/cw_gen_events');
-  static const _toneChannel = MethodChannel('at.oe1wkl.morserino_mobile/cw_tone');
+  static const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
+  static const _genEvents  = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
+  static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
   StreamSubscription? _sub;
 

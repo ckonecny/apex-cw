@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: c.background,
       appBar: AppBar(
         backgroundColor: c.surface,
-        title: Text('Morserino Mobile',
+        title: Text('Next CW Trainer',
             style: TextStyle(fontFamily: 'CwMono', fontSize: 18,
                 color: c.textPrimary)),
         actions: [

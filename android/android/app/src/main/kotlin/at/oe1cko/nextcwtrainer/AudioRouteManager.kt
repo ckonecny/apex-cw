@@ -1,4 +1,4 @@
-package at.oe1wkl.morserino_mobile
+package at.oe1cko.nextcwtrainer
 
 import android.content.Context
 import android.media.AudioDeviceCallback
@@ -18,7 +18,7 @@ class AudioRouteManager(
 ) {
     companion object {
         private const val TAG = "AudioRouteManager"
-        private const val PREFS_NAME = "morserino_prefs"
+        private const val PREFS_NAME = "next_cw_trainer_prefs"
         private const val PREF_OUTPUT_KIND = "audio_output_kind"
 
         // Persisted preference categories — stable across reconnects, unlike

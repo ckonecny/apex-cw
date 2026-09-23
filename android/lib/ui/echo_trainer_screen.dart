@@ -46,11 +46,11 @@ class EchoTrainerScreen extends StatefulWidget {
 }
 
 class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
-  static const _genChannel    = MethodChannel('at.oe1wkl.morserino_mobile/cw_generator');
-  static const _genEvents     = EventChannel('at.oe1wkl.morserino_mobile/cw_gen_events');
-  static const _keyerChannel  = MethodChannel('at.oe1wkl.morserino_mobile/cw_keyer');
-  static const _symbolStream  = EventChannel('at.oe1wkl.morserino_mobile/cw_symbols');
-  static const _toneChannel   = MethodChannel('at.oe1wkl.morserino_mobile/cw_tone');
+  static const _genChannel    = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
+  static const _genEvents     = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
+  static const _keyerChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
+  static const _symbolStream  = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _toneChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
   static const _dispCodeOnly    = 1;  // Sound only
   static const _dispDispOnly    = 2;  // Display only (no audio)
