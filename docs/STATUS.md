@@ -30,6 +30,17 @@ Latest tagged build: v0.1.0.
   (`at.oe1wkl.morserino_mobile`) uninstalled from `63061JEBF01551`, new one
   built and installed successfully.
 
+- **WiFi Trx (2026-09-23), first version, installed on 63061JEBF01551 but
+  not yet tried against a real server:** new home card "WiFi Trx". One
+  endpoint (name or IP, default `cq.morserino.info`, empty = broadcast),
+  connect/disconnect, receive (word-by-word playback at the sender's WPM +
+  RX/TX log), send via keyer/touch paddles (per word) or typed text, macros
+  CQ / Call+Name / `:usr`. New prefs in Settings > WiFi Trx: Callsign, Name.
+  Uses system WLAN/mobile data (no SSID/password). See DECISIONS.md.
+  Next: test against cq.morserino.info (registration "hi" @20 WPM assumed
+  from the chatserver README, not verified against that exact server),
+  multiple endpoints (add/edit/delete), maybe a foreground service.
+
 ## Working / verified on device
 Everything above, tested on 63061JEBF01551.
 
@@ -298,3 +309,8 @@ installed on `63061JEBF01551`, user-confirmed working:
 - `android/lib/audio/tone_synth.dart`, `android/lib/input/paddle_input.dart`,
   `android/lib/keyer/iambic_keyer.dart` are unimported dead code from an early
   pure-Dart prototype — safe to delete, not yet done.
+
+- WiFi Trx v2: multiple services (add/edit/delete, dropdown), per-service persisted log (long-press to clear), WPM slider, no automatic "hi", quick chips removed. Verified on device.
+- Keyer/WiFi Trx word gap now follows InterWord Spc (was fixed 6 dits). Verified on device.
+
+- WiFi Trx tested on device against cq.morserino.info (send + receive OK), service add/edit/delete OK. Next: optional per-service login command, foreground service for background operation, direct Morserino-to-Morserino test, adaptive word gap for straight key.

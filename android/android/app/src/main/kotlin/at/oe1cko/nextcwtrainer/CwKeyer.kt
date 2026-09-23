@@ -28,6 +28,10 @@ class CwKeyer(private val tone: CwTonePlugin) {
     // character-end and checked before starting the next element.
     @Volatile var acsValue: Int = 0
 
+    // Word gap in dits, counted from the end of a character. Firmware keyer/
+    // Trx modes use (InterWord Spc - 1) dits (m32_v6.ino, interWordTimer).
+    @Volatile var wordGapDits: Int = 6
+
     private val ditMs  get() = (1200.0 / wpm).roundToInt()
     private val dahMs  get() = ditMs * 3
     private val gapMs  get() = ditMs
@@ -154,7 +158,7 @@ class CwKeyer(private val tone: CwTonePlugin) {
                     // instant the gate clears, just like the real device's
                     // acsTimer check in its DIT/DAH keyer-state cases.
                     if (acsValue == 0 || now >= acsGateUntil) state = State.KEY_START
-                } else if (!wordGapSent && idleSince != 0L && now - idleSince >= ditMs * 6) {
+                } else if (!wordGapSent && idleSince != 0L && now - idleSince >= ditMs * wordGapDits) {
                     onSymbol?.invoke("  ")
                     wordGapSent = true
                 }

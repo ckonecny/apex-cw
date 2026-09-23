@@ -3,6 +3,7 @@ import 'keyer_screen.dart';
 import 'generator_screen.dart';
 import 'echo_trainer_screen.dart';
 import 'settings_screen.dart';
+import 'wifi_trx_screen.dart';
 import '../theme/app_colors.dart';
 import '../l10n/strings.dart';
 
@@ -71,6 +72,15 @@ class HomeScreen extends StatelessWidget {
               color: c.accentPurple,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const EchoTrainerScreen())),
+            ),
+            const SizedBox(height: 16),
+            _ModeCard(
+              icon: Icons.wifi,
+              title: 'WiFi Trx',
+              subtitle: Strings.t('home_wifitrx_subtitle'),
+              color: c.danger,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const WifiTrxScreen())),
             ),
           ],
         ),

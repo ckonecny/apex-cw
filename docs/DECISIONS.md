@@ -248,3 +248,35 @@ active/inactive color pair, not a single value) to theme tokens. Worth
 remembering for any future `Switch`/`Checkbox`/`Radio` usage in dark theme —
 Material's "off" state is not automatically theme-aware just because the
 "on" state is.
+
+## WiFi Trx: networking in Dart, MOPP ported from cwForTx, "hi" registration
+- **UDP lives in Dart** (`dart:io` `RawDatagramSocket`), not in Kotlin: no
+  native code needed, and the engine singleton is untouched except for one
+  new generator call `playPatterns`. One socket bound to port 7373 both
+  sends and receives (as `audp` does in the firmware), so NAT mappings and
+  server replies line up; falls back to an ephemeral port if 7373 is taken.
+- **Encoder is a literal port of `cwForTx()`** (m32_v6.ino), including the
+  end-of-word-overwrites-end-of-char step-back and `strlen` trimming;
+  decoder rejects what the firmware rejects (version != 01, WPM outside
+  5..60, first element 00). Unit-tested against the PARIS@16 example in the
+  protocol doc (`test/mopp_test.dart`).
+- **Playback uses raw patterns, not text** (`CwGenerator.playPatterns`):
+  going through text would turn K+A into the prosign KA (mnemonic
+  convention, see rule 3).
+- **Deviation:** the firmware sends the keyer-decoder's measured WPM for
+  straight key; we send the configured WPM.
+- **Registration:** per the Morse-Code-over-IP chatserver README, a client
+  registers by sending "hi" at 20 WPM; the server sends empty keepalives
+  every 10 s and ":bye" when dropping a client. Taken from a web summary of
+  that README, not from the firmware — verify against cq.morserino.info.
+- **`INTERNET` permission** added to the main manifest (previously only
+  present via Flutter's debug/profile manifests).
+- Connection only lives while the WiFi Trx screen is open (no foreground
+  service yet).
+
+
+### WiFi Trx: no automatic registration packet
+The automatic "hi" on connect was removed: other services use other commands. Users type what their service expects. Services and logs are stored in prefs (`trxServices`, `trxLog_<id>`); WPM in `trxWpm`. Per-service configurable login commands are a possible later step.
+
+### Keyer word gap follows the InterWord Spc pref
+Firmware keyer/Trx modes end a word (m32_v6.ino interWordTimer) (InterWord Spc − 1) dits after a character ends. The app hard-coded 6 dits. `CwKeyer.wordGapDits` is now set via `setInterWordSpace` (KeyerScreen, WiFi Trx; Echo Trainer pushes 7 = old behaviour). Straight key path unchanged (7 dits from key-up; firmware uses the decoder there). Note: app default for `interWordSpace` is 40, firmware default is 7.

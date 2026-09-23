@@ -65,6 +65,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
     await _keyerChannel.invokeMethod('setMode', _keyerMode);
     await _keyerChannel.invokeMethod('setCurtisBTiming', {'dit': curtisBDit, 'dah': curtisBDah});
     await _keyerChannel.invokeMethod('setAcs', acs);
+    await _keyerChannel.invokeMethod('setInterWordSpace', (prefs.getInt('interWordSpace') ?? 40).clamp(6, 105));
     await _keyerChannel.invokeMethod('start');
     if (mounted) setState(() => _ready = true);
   }

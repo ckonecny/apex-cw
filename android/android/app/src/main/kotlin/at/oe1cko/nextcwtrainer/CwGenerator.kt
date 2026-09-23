@@ -229,6 +229,43 @@ class CwGenerator(private val tone: CwTonePlugin) {
         }, "cw-gen-one").also { it.isDaemon = true; it.start() }
     }
 
+    /**
+     * Plays raw dit/dah patterns (e.g. ".-", "-...") one per character, with
+     * standard inter-character spacing — for WiFi Trx receive, where the
+     * packet carries the exact elements (not text, so no prosign-key
+     * ambiguity like "KA" = K+A vs <KA>). Calls onDone when finished.
+     */
+    fun playPatterns(patterns: List<String>) {
+        if (running) return
+        val myGen = ++generation
+        running = true
+        thread = Thread({
+            try {
+                for ((i, p) in patterns.withIndex()) {
+                    if (!running) break
+                    playPattern(p)
+                    if (i < patterns.size - 1) sleepMs(ditMs() * (interCharSpace - 1))
+                }
+            } catch (_: InterruptedException) {
+                Thread.currentThread().interrupt()
+            } finally {
+                running = false
+                CwAudioNative.setPlaying(false)
+                if (myGen == generation) onDone?.invoke(false)
+            }
+        }, "cw-gen-patterns").also { it.isDaemon = true; it.start() }
+    }
+
+    private fun playPattern(morse: String) {
+        for ((idx, sym) in morse.withIndex()) {
+            if (!running) break
+            CwAudioNative.setPlaying(true)
+            sleepMs(if (sym == '.') ditMs() else dahMs())
+            CwAudioNative.setPlaying(false)
+            if (idx < morse.length - 1) sleepMs(ditMs())
+        }
+    }
+
     fun start() {
         if (running) return
         val myGen = ++generation

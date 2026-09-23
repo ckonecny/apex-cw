@@ -305,6 +305,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _keyerChannel.invokeMethod('setCurtisBTiming',
         {'dit': _curtisBDitTiming, 'dah': _curtisBDahTiming}).catchError((_) {});
     await _keyerChannel.invokeMethod('setAcs', _acs).catchError((_) {});
+    // Echo trainer keeps its own word-end rule; don't inherit the keyer's.
+    await _keyerChannel.invokeMethod('setInterWordSpace', 7).catchError((_) {});
     // Base sidetone pitch for the target word; _beginReceive() shifts it for
     // the operator's own echoed answer (Tone Shift).
     await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});

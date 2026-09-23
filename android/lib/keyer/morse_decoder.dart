@@ -7,7 +7,7 @@
 // rather than turning into a space after every single letter.
 
 class MorseDecoder {
-  static const _table = {
+  static const table = {
     '.-':    'A', '-...': 'B', '-.-.': 'C', '-..':  'D',
     '.':     'E', '..-.': 'F', '--.':  'G', '....': 'H',
     '..':    'I', '.---': 'J', '-.-':  'K', '.-..': 'L',
@@ -52,7 +52,7 @@ class MorseDecoder {
 
   void _flush() {
     if (_buf.isEmpty) return;
-    final ch = _table[_buf] ?? '?';
+    final ch = table[_buf] ?? '?';
     onChar(ch);
     _buf = '';
   }

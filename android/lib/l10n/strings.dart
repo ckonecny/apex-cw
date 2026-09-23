@@ -30,6 +30,7 @@ class Strings {
     // ── Home ─────────────────────────────────────────────────────────────
     'home_keyer_subtitle':     ['Morsetaste · Iambic · Touch-Paddle', 'Morse Key · Iambic · Touch Paddle'],
     'home_generator_subtitle': ['Zufallszeichen · Wörter · Rufzeichen', 'Random Chars · Words · Callsigns'],
+    'home_wifitrx_subtitle':   ['CW über UDP · cq.morserino.info', 'CW over UDP · cq.morserino.info'],
     'home_echo_subtitle':      ['Anhören · Nachsenden · Auswertung', 'Listen · Echo Back · Evaluation'],
 
     // ── Common ───────────────────────────────────────────────────────────

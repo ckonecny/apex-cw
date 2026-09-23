@@ -19,7 +19,7 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | `MorsePreferences.cpp` NVS persistence | `SharedPreferences` | Done (equivalent, different storage) |
 | `MorseTextEntry.cpp` (on-device char picker) | Flutter native text fields | N/A — superseded by touch keyboard |
 | Display layer (`DisplayWrapper`, `M32OledLGFX`) | Flutter widgets | N/A — superseded |
-| `MorseWiFi.cpp` / cwForTx() (WiFi Trx UDP protocol) | — | Not started |
+| `MorseWiFi.cpp` / cwForTx() (WiFi Trx UDP protocol) | `lib/net/mopp.dart`, `lib/net/mopp_client.dart`, `lib/ui/wifi_trx_screen.dart` | First version: single server/peer, send + receive, in foreground only. Not yet tested against a real server. ESP-NOW/LoRa: N/A |
 | `MorseQsoBot.cpp`, `MorseQsoBotMatch.h`, `qso_content.h` | — | Not started |
 | `goertzel.cpp` (mic CW decode) | — | Not started |
 | File Player / multi-part file builder | — | Not started |

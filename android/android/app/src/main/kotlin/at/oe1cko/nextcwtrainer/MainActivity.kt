@@ -110,6 +110,10 @@ class MainActivity : FlutterActivity() {
                         keyer.curtisBDahTiming = (args?.get("dah") as? Number)?.toInt() ?: 45
                         result.success(null)
                     }
+                    "setInterWordSpace" -> {
+                        keyer.wordGapDits = ((call.arguments as? Number)?.toInt() ?: 7).coerceAtLeast(2) - 1
+                        result.success(null)
+                    }
                     "setAcs" -> {
                         keyer.acsValue = (call.arguments as? Number)?.toInt() ?: 0
                         result.success(null)
@@ -160,6 +164,11 @@ class MainActivity : FlutterActivity() {
                     "resume"  -> { generator.resume(); result.success(null) }
                     "playOne" -> {
                         generator.playOne(call.arguments as? String ?: "")
+                        result.success(null)
+                    }
+                    "playPatterns" -> {
+                        @Suppress("UNCHECKED_CAST")
+                        generator.playPatterns((call.arguments as? List<String>) ?: emptyList())
                         result.success(null)
                     }
                     "setWpm"  -> { generator.wpm = (call.arguments as? Number)?.toInt() ?: 20; result.success(null) }

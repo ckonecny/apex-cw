@@ -840,6 +840,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           const SizedBox(height: 24),
 
+          // ── WiFi Trx ───────────────────────────────────────────────────────
+          _SectionHeader('WiFi Trx'),
+          const SizedBox(height: 12),
+          _SettingsCard(children: [
+            _TextPrefField(label: 'Callsign', prefsKey: 'callsign',
+                capitalization: TextCapitalization.characters),
+            const _Div(),
+            _TextPrefField(label: 'Name', prefsKey: 'opName',
+                capitalization: TextCapitalization.words),
+          ]),
+
+          const SizedBox(height: 24),
+
           // ── Echo Trainer ───────────────────────────────────────────────────
           _SectionHeader('Echo Trainer'),
           const SizedBox(height: 12),
@@ -1128,6 +1141,63 @@ class _KochLevelPreview extends StatelessWidget {
                 color: isNewest ? c.warning : c.accent)),
           );
         }).toList()),
+      ]),
+    );
+  }
+}
+
+/// Free-text preference that saves itself on every change (no _saveLive
+/// plumbing needed — nothing else in the app has to react live).
+class _TextPrefField extends StatefulWidget {
+  final String label, prefsKey;
+  final TextCapitalization capitalization;
+  const _TextPrefField({required this.label, required this.prefsKey,
+      required this.capitalization});
+
+  @override
+  State<_TextPrefField> createState() => _TextPrefFieldState();
+}
+
+class _TextPrefFieldState extends State<_TextPrefField> {
+  final _ctl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((p) {
+      if (mounted) _ctl.text = p.getString(widget.prefsKey) ?? '';
+    });
+  }
+
+  @override
+  void dispose() { _ctl.dispose(); super.dispose(); }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(widget.label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+            color: c.textPrimary)),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _ctl,
+          textCapitalization: widget.capitalization,
+          autocorrect: false,
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.accent),
+          onChanged: (v) async => (await SharedPreferences.getInstance())
+              .setString(widget.prefsKey, v.trim()),
+          decoration: InputDecoration(
+            isDense: true, filled: true, fillColor: c.background,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
+                borderSide: BorderSide(color: c.border)),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
+                borderSide: BorderSide(color: c.border)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
+                borderSide: BorderSide(color: c.accent)),
+          ),
+        ),
       ]),
     );
   }
