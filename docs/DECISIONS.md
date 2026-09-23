@@ -125,6 +125,44 @@ Affects Koch generation generally (Classic and Adaptiv), not just Adaptive
 Copy — intentional, since this is a fidelity fix (CLAUDE.md rule 1), not an
 Adaptive-Copy-only behavior.
 
+## Changing a `?? default` doesn't reach a pref already persisted as ''
+2026-09-23: after changing the Custom Koch Sequence's code default from `''`
+to a real sequence, the Settings field still showed empty and the Koch
+Trainer's Custom set still drew a "random"-looking (actually
+uniform-over-empty-falls-back-elsewhere) sequence on-device. Root cause:
+`p.getString('customKochChars') ?? '<new default>'` only substitutes on
+`null`, but every prior session had already called `save()`/`_saveLive()`
+at least once, persisting the *old* default (`''`) as an actual stored
+value — so the lookup never returned `null` again, and the new code default
+was permanently unreachable for this already-installed app. Fixed in all
+three load sites (`settings_screen.dart`, `generator_screen.dart`,
+`echo_trainer_screen.dart`) by treating an empty stored string the same as
+absent: `(p.getString('customKochChars') ?? '').isNotEmpty ? ... : '<new
+default>'`. General lesson: a persisted-preference default change needs to
+survive an already-populated value that matches the *old* default, not just
+a missing key — `??` alone only covers a fresh install.
+
+## Adaptive Copy's auto-boost dialed back from Strong to Moderate
+2026-09-23 user report: in a 9-character Koch lesson, marking one character
+wrong once made it ~80% of the very next block — far too extreme a spike.
+Root cause: `AdaptiveCopyBody._startBlock()` always pushed `boostLevel` 2
+("Strong", `CwGenerator.kt boostAttempts()` = 8 rejection-sampling draws)
+whenever there was any accepted weak character. `boostAttempts()` itself is
+a faithful firmware port (`practiceBoostAttempts()` in
+`MorsePreferences.cpp`, `{Off,Moderate,Strong} -> {1,3,8}`) and stays
+untouched — Off/Moderate/Strong is a user-facing Settings choice elsewhere
+(CW Generator's own "Practice Set"/Boost) and changing the table itself
+would be a fidelity regression (rule 1). What's app-specific, not firmware,
+is Adaptive Copy automatically picking Strong every time — so only that
+call site was changed to push level 1 (Moderate, 3 attempts) instead.
+Weak characters already stay boosted across every block until their
+lifetime EMA error rate drops below threshold or the user un-taps them (not
+cleared after one block), so a gentler per-block rate integrates to a
+sustained-but-not-overwhelming boost across that whole stretch, matching
+what the user asked for ("über die nächsten paar Blöcke etwas häufiger als
+sonst, aber nicht so extrem"). `generator_screen.dart`'s Classic-mode weak-
+chars panel keeps pushing Strong, unaffected — not part of this request.
+
 ## Project renamed to "Next CW Trainer"; package namespace dropped oe1wkl
 User request: the "Morserino Mobile" name and the `at.oe1wkl.*` package
 namespace overstated a connection to Willi Kraml/OE1WKL that doesn't exist —

@@ -79,7 +79,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // (planned) Adaptive Copy mode — see docs/ADAPTIVE-COPY.md.
   final CharStatsStore _charStats = CharStatsStore();
   int    _kochSeq         = 0;
-  String _customKochChars = '';
+  String _customKochChars = 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
   int    _licwCarouselStart = 0;
   List<String> get _activeKochChars =>
       kochSequenceChars(_kochSeq, _customKochChars, licwCarouselStart: _licwCarouselStart);
@@ -198,7 +198,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _toneShift       = (p.getInt('toneShift') ?? 1).clamp(0, 2);
       _toneSoftness    = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
       _kochSeq         = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
-      _customKochChars = p.getString('customKochChars') ?? '';
+      _customKochChars = (p.getString('customKochChars') ?? '').isNotEmpty
+          ? p.getString('customKochChars')!
+          : 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
       _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
       _abbrevLengthMax = (p.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _callLengthOpt   = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
@@ -649,7 +651,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                     onChanged: (i) { setState(() => _modeIndex = i); _savePrefs(); },
                   ),
             if (widget.kochMode)
-              _KochCharsRow(level: _kochLevel, sequence: _activeKochChars),
+              _KochCharsRow(level: _kochLevel, sequence: _activeKochChars, outputCase: _outputCase),
           ],
 
           // ── Scrolling transcript (target/attempt/verdict/markers) ───────
@@ -887,7 +889,9 @@ class _EchoModeSelector extends StatelessWidget {
 class _KochCharsRow extends StatelessWidget {
   final int level;
   final List<String> sequence;
-  const _KochCharsRow({required this.level, required this.sequence});
+  // 0=lower, 1=UPPER — display only, matches the screen's outputCase setting.
+  final int outputCase;
+  const _KochCharsRow({required this.level, required this.sequence, this.outputCase = 1});
 
   @override
   Widget build(BuildContext context) {
@@ -900,7 +904,8 @@ class _KochCharsRow extends StatelessWidget {
         color: c.surfaceAlt, borderRadius: BorderRadius.circular(8),
       ),
       child: Wrap(spacing: 6, children: active.map((ch) =>
-          Text(ch, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+          Text(outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase(),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
               color: c.accent))).toList()),
     );
   }

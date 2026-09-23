@@ -45,6 +45,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   // Abbrevs/Words/Mixed selection above stays shared between both flows.
   int  _flow = 0;
   int  _outputCase = 0;   // 0=lower, 1=UPPER — display only, content stays uppercase internally
+  String _displayChar(String ch) => _outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase();
   // 0=Display off, 1=Char by char, 2=Word by word (matches M32 "CW Gen Displ")
   int  _genDisplay     = 1;
   bool _stopAfterItem  = false;
@@ -57,10 +58,10 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   int  _callLengthOpt   = 0;
   int  _callRegionOpt   = 0;
   bool _callCommonOnly  = true;
-  int  _interCharSpace = 3;
-  int  _interWordSpace = 7;
+  int  _interCharSpace = 28;
+  int  _interWordSpace = 40;
   int    _kochSeq         = 0;
-  String _customKochChars = '';
+  String _customKochChars = 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
   int    _licwCarouselStart = 0;
   List<String> get _activeKochChars =>
       kochSequenceChars(_kochSeq, _customKochChars, licwCarouselStart: _licwCarouselStart);
@@ -143,10 +144,12 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _callLengthOpt   = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
       _callRegionOpt   = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
-      _interCharSpace = (p.getInt('interCharSpace') ?? 3).clamp(3, 45);
-      _interWordSpace = (p.getInt('interWordSpace') ?? 7).clamp(6, 105);
+      _interCharSpace = (p.getInt('interCharSpace') ?? 28).clamp(3, 45);
+      _interWordSpace = (p.getInt('interWordSpace') ?? 40).clamp(6, 105);
       _kochSeq         = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
-      _customKochChars = p.getString('customKochChars') ?? '';
+      _customKochChars = (p.getString('customKochChars') ?? '').isNotEmpty
+          ? p.getString('customKochChars')!
+          : 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
       _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
       _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
     });
@@ -362,7 +365,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     final picked = await showModalBottomSheet<String>(
       context: context,
       backgroundColor: c.surface,
-      builder: (_) => _PreviewCharSheet(sequence: _activeKochChars, currentLevel: _kochLevel),
+      builder: (_) => _PreviewCharSheet(sequence: _activeKochChars, currentLevel: _kochLevel, outputCase: _outputCase),
     );
     if (picked != null && mounted) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => EchoTrainerScreen(
@@ -572,7 +575,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           if (widget.kochMode)
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
-              child: _KochCharsRow(level: _kochLevel, sequence: _activeKochChars),
+              child: _KochCharsRow(level: _kochLevel, sequence: _activeKochChars, outputCase: _outputCase),
             ),
 
           // ── Koch Trainer: Learn New Chr / Preview Char ──────────────────
@@ -749,7 +752,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                   border: Border.all(
                       color: included ? c.danger.withOpacity(0.4) : c.border),
                 ),
-                child: Text('${e.key}  ${(e.value * 100).round()}%',
+                child: Text('${_displayChar(e.key)}  ${(e.value * 100).round()}%',
                     style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
                         color: included ? c.danger : c.textDisabled,
                         decoration: included ? null : TextDecoration.lineThrough)),
@@ -803,7 +806,9 @@ class _KochToolButton extends StatelessWidget {
 class _PreviewCharSheet extends StatelessWidget {
   final List<String> sequence;
   final int currentLevel;
-  const _PreviewCharSheet({required this.sequence, required this.currentLevel});
+  // 0=lower, 1=UPPER — display only, matches the screen's outputCase setting.
+  final int outputCase;
+  const _PreviewCharSheet({required this.sequence, required this.currentLevel, this.outputCase = 1});
 
   @override
   Widget build(BuildContext context) {
@@ -836,7 +841,8 @@ class _PreviewCharSheet extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(color: color.withOpacity(0.4)),
                     ),
-                    child: Text(sequence[i], style: TextStyle(fontFamily: 'CwMono',
+                    child: Text(outputCase == 1 ? sequence[i].toUpperCase() : sequence[i].toLowerCase(),
+                        style: TextStyle(fontFamily: 'CwMono',
                         fontSize: 15, fontWeight: FontWeight.bold, color: color)),
                   ),
                 );
@@ -852,7 +858,9 @@ class _PreviewCharSheet extends StatelessWidget {
 class _KochCharsRow extends StatelessWidget {
   final int level;
   final List<String> sequence;
-  const _KochCharsRow({required this.level, required this.sequence});
+  // 0=lower, 1=UPPER — display only, matches the screen's outputCase setting.
+  final int outputCase;
+  const _KochCharsRow({required this.level, required this.sequence, this.outputCase = 1});
 
   @override
   Widget build(BuildContext context) {
@@ -867,7 +875,7 @@ class _KochCharsRow extends StatelessWidget {
       ),
       child: Wrap(
         spacing: 6,
-        children: active.map((ch) => Text(ch,
+        children: active.map((ch) => Text(outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase(),
             style: TextStyle(
                 fontFamily: 'CwMono', fontSize: 13,
                 color: c.accent))).toList(),

@@ -37,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // ── Koch Sequence ─────────────────────────────────────────────────────────
   // 0=M32, 1=LCWO, 2=CW Academy, 3=LICW, 4=Custom (matches M32 "Koch Sequence")
   int    _kochSeq          = 0;
-  String _customKochChars  = '';
+  String _customKochChars  = 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
   // "LICW Carousel" entry point (posCarouselStart, 0-13) — only relevant when
   // Koch Sequence = LICW; rotates which slice of the LICW curriculum is active.
   int    _licwCarouselStart = 0;
@@ -70,8 +70,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // ── Spacing ────────────────────────────────────────────────────────────────
   // Absolute gap length in dits, exactly like the real M32 (Interchar 3..45,
   // InterWord 6..105; default = normal Morse timing 3/7).
-  int _interCharSpace = 3;
-  int _interWordSpace = 7;
+  int _interCharSpace = 28;
+  int _interWordSpace = 40;
 
   // ── CW Generator ──────────────────────────────────────────────────────────
   // genDisplay: 0=Display off, 1=Char by char, 2=Word by word (matches M32 "CW Gen Displ")
@@ -161,7 +161,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _outputCase     = (p.getInt('outputCase')    ?? 0).clamp(0, 1);
       _toneSoftness   = (p.getInt('toneSoftness')  ?? 4).clamp(0, 8);
       _kochSeq         = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
-      _customKochChars = p.getString('customKochChars') ?? '';
+      _customKochChars = (p.getString('customKochChars') ?? '').isNotEmpty
+          ? p.getString('customKochChars')!
+          : 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
       _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
       _practiceChars   = p.getString('practiceChars') ?? '';
       _boostLevel      = (p.getInt('boostLevel') ?? 0).clamp(0, 2);
@@ -172,8 +174,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _acs              = (p.getInt('acs') ?? 0).clamp(0, 3);
       _toneShift        = (p.getInt('toneShift') ?? 1).clamp(0, 2);
       // clamp() guards against stale values from the old 1..8 multiplier scale
-      _interCharSpace = (p.getInt('interCharSpace') ?? 3).clamp(3, 45);
-      _interWordSpace = (p.getInt('interWordSpace') ?? 7).clamp(6, 105);
+      _interCharSpace = (p.getInt('interCharSpace') ?? 28).clamp(3, 45);
+      _interWordSpace = (p.getInt('interWordSpace') ?? 40).clamp(6, 105);
       // genDisplayMode/echoDisplayMode: new int-valued keys (old genDisplay/echoPrompt
       // keys were bool — renamed to avoid a SharedPreferences type-cast crash on upgrade)
       _genDisplay     = (p.getInt('genDisplayMode') ?? 1).clamp(0, 2);
@@ -528,7 +530,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ]),
           const SizedBox(height: 8),
-          _KochLevelPreview(level: _kochLevel, sequence: _activeKochChars),
+          _KochLevelPreview(level: _kochLevel, sequence: _activeKochChars, outputCase: _outputCase),
 
           const SizedBox(height: 24),
 
@@ -644,13 +646,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
           const SizedBox(height: 12),
           _SettingsCard(children: [
+            // Coupled like the Adaptive Mode success-threshold range below:
+            // InterWord Spc may never drop below InterChar Spc (a word gap
+            // shorter than the char gap it's built from doesn't make sense,
+            // and CwGenerator.wordGapExtra() already floors it at +1 dit).
+            // Raising InterChar Spc past the current InterWord Spc carries
+            // InterWord Spc up with it; lowering InterWord Spc below the
+            // current InterChar Spc clamps it there instead of going lower.
             _LabeledSlider(label: 'Interchar Spc', value: _interCharSpace.toDouble(),
                 min: 3, max: 45, divisions: 42, display: '$_interCharSpace dits',
-                onChanged: (v) { setState(() => _interCharSpace = v.round()); _saveLive(); }),
+                onChanged: (v) {
+                  final newChar = v.round();
+                  setState(() {
+                    _interCharSpace = newChar;
+                    if (_interWordSpace < newChar) _interWordSpace = newChar.clamp(6, 105);
+                  });
+                  _saveLive();
+                }),
             const _Div(),
             _LabeledSlider(label: 'InterWord Spc', value: _interWordSpace.toDouble(),
                 min: 6, max: 105, divisions: 99, display: '$_interWordSpace dits',
-                onChanged: (v) { setState(() => _interWordSpace = v.round()); _saveLive(); }),
+                onChanged: (v) {
+                  final newWord = v.round().clamp(_interCharSpace, 105);
+                  setState(() => _interWordSpace = newWord);
+                  _saveLive();
+                }),
           ]),
 
           const SizedBox(height: 24),
@@ -1052,7 +1072,9 @@ class _ToggleRow extends StatelessWidget {
 class _KochLevelPreview extends StatelessWidget {
   final int level;
   final List<String> sequence;
-  const _KochLevelPreview({required this.level, required this.sequence});
+  // 0=lower, 1=UPPER — display only, matches the "Output Case" setting.
+  final int outputCase;
+  const _KochLevelPreview({required this.level, required this.sequence, this.outputCase = 1});
 
   @override
   Widget build(BuildContext context) {
@@ -1083,7 +1105,8 @@ class _KochLevelPreview extends StatelessWidget {
               border: Border.all(color: isNewest
                   ? c.warning : c.accent.withOpacity(0.4)),
             ),
-            child: Text(ch, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+            child: Text(outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase(),
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
                 fontWeight: isNewest ? FontWeight.bold : FontWeight.normal,
                 color: isNewest ? c.warning : c.accent)),
           );

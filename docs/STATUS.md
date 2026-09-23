@@ -34,36 +34,80 @@ Latest tagged build: v0.1.0.
 Everything above, tested on 63061JEBF01551.
 
 ## Next steps — requested by user (2026-09-23), to be done one per session
-1. **Output Case lower/UPPER setting not applied in Adaptive Copy mode.**
-   The existing lower/UPPER output-case setting (Settings screen) works in
-   Classic mode but isn't applied to the text shown in Adaptive Copy — needs
-   the same case transform wired into `adaptive_copy_body.dart`'s
-   rendering.
-2. **Change default Custom Koch Sequence** to
-   `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?` (currently something else —
-   check current default in Settings/`cw_content.dart` and replace).
-3. **Change InterCharSpc/InterWordSpc defaults to 28/40** (currently
-   different values — find in Settings defaults and update).
-4. **Couple the InterCharSpc/InterWordSpc sliders** so InterWordSpc can never
-   be set below InterCharSpc, the same way the low/high success-threshold
-   sliders in Adaptive Mode settings already constrain each other (find that
-   existing low/high slider-pairing logic in `settings_screen.dart` and
-   reuse the same pattern for the spacing sliders).
+1. ~~Output Case lower/UPPER setting not applied in Adaptive Copy mode.~~
+   **Done, user-confirmed working on-device (2026-09-23).**
+2. ~~Change default Custom Koch Sequence.~~ **Done, user-confirmed working
+   on-device (2026-09-23)** — needed a second fix, see below.
+3. ~~Change InterCharSpc/InterWordSpc defaults to 28/40.~~ **Done,
+   user-confirmed working on-device (2026-09-23).**
+4. ~~Couple the InterCharSpc/InterWordSpc sliders.~~ **Done, user-confirmed
+   working on-device (2026-09-23).**
 5. **Simplify the Adaptive Copy error-marking flow after a block.** Currently
    fiddly; user wants: tap the word that had an error → that word's
    characters are shown individually → tap the wrong character(s) in it →
    back out to the block overview, which then shows the marked/wrong
    characters highlighted in place. Needs a new per-word drill-down screen/
    state in `adaptive_copy_body.dart`'s result/marking flow, replacing
-   however errors are currently selected there.
-6. **Weak-character boost after a single miss is far too aggressive.** User
-   observed: in a 9-character Koch lesson, marking one character wrong once
-   caused it to make up ~80% of the very next block. Should instead be a
-   moderate boost sustained over several following blocks, not a single
-   massive spike. Look at the lifetime weak-char boost logic (see
-   `docs/DECISIONS.md` "lifetime weak-char boost" entry and
-   `char_stats.dart`/`CwGenerator.kt`'s practice-set/boost weighting) and
-   flatten the boost curve/spread it across more blocks.
+   however errors are currently selected there. **Not started.**
+6. ~~Weak-character boost after a single miss is far too aggressive.~~
+   **Done (2026-09-23), installed on-device.** Not separately called out
+   by the user during the "passt jetzt überall" confirmation, which was
+   about the output-case follow-up — not yet explicitly re-confirmed
+   through a real Adaptive Copy session with a miss.
+
+**2026-09-23, follow-up to item 1 — user-confirmed working on-device:**
+lower/UPPER Output Case now also applies to raw-character chip displays it
+had missed — the Koch Trainer/Echo Trainer start screens' active-sequence
+row, the Koch Trainer weak-characters chips, the Koch level preview in
+Settings, and the Preview Char picker sheet. Fixed: `generator_screen.dart`
+gained its own `_displayChar()` helper (mirroring `AdaptiveCopyBody`'s)
+applied to its weak-chars chips and `_PreviewCharSheet`; `_KochCharsRow`
+(duplicated in `generator_screen.dart` and `echo_trainer_screen.dart`) and
+`_KochLevelPreview` (`settings_screen.dart`) each gained an `outputCase`
+param threaded from their screen's own `_outputCase` field.
+
+**2026-09-23 session: items 1, 2, 3, 4, 6 implemented, `flutter build apk
+--debug` succeeded and installed on `63061JEBF01551`.** User confirmed on
+first on-device check: output case (1), InterChar/InterWord defaults +
+coupling (3, 4) all working. Custom Koch Sequence default (2) was **not**
+visible — Settings field stayed empty and Koch Trainer's Custom set still
+drew what looked like a random sequence. Root cause: the `??` fallback only
+fires on `null`, but this already-installed app had persisted the *old*
+default (`''`) as a real stored value in an earlier session, so the new
+code default was unreachable. Fixed by treating an empty stored string the
+same as absent in all three load sites — see docs/DECISIONS.md "Changing a
+`?? default` doesn't reach a pref already persisted as ''" — rebuilt,
+reinstalled. Not yet re-checked by the user. Details of the original
+changes:
+1. `AdaptiveCopyBody` now loads the `outputCase` pref (same key Settings/
+   Generator use) and applies it via a new `_displayChar()` helper to every
+   place a raw character reaches the screen: the revealed-groups tiles, the
+   marking grid, the weak-characters chips, and the Koch-unlock suggestion
+   label. Underlying data (comparisons, `charTypeColor`, wrong-position
+   keys) stays uppercase internally — display-only change.
+2. Default Custom Koch Sequence changed from `''` to
+   `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?` in all three places it's loaded
+   (`settings_screen.dart`, `generator_screen.dart`,
+   `echo_trainer_screen.dart`) plus their field initializers.
+3. `_interCharSpace`/`_interWordSpace` defaults changed from 3/7 to 28/40 in
+   `settings_screen.dart` and `generator_screen.dart` (field initializers +
+   `getInt(...) ?? ...` fallbacks). Left the native `CwGenerator.kt`/
+   `MainActivity.kt` 3/7 fallbacks alone — those mirror the firmware's own
+   documented defaults (`MorsePreferences.cpp` comment) and are always
+   overridden by whichever screen pushes its config on entry anyway (rule
+   2), so changing them would be a fidelity regression, not a UI default.
+4. `settings_screen.dart`'s Interchar Spc / InterWord Spc sliders now cross-
+   clamp each other's `onChanged`: raising Interchar Spc above the current
+   InterWord Spc carries InterWord Spc up with it; lowering InterWord Spc
+   clamps it at the current Interchar Spc instead of going below. Kept as
+   two separate sliders (not a single `RangeSlider` like the threshold pair)
+   since their min/max/units genuinely differ (3–45 vs 6–105 dits).
+6. `AdaptiveCopyBody._startBlock()`'s auto-boost for weak characters now
+   pushes `boostLevel` 1 (Moderate, 3 draw attempts) instead of 2 (Strong, 8
+   attempts) — see `docs/DECISIONS.md` for the reasoning. Scoped to Adaptive
+   Copy's automatic boost only; `generator_screen.dart`'s manual Koch
+   weak-chars panel (Classic mode) still uses Strong, unchanged, since that
+   wasn't part of this request.
 
 ## In design: Adaptive Copy Mode
 New listen-and-copy-on-paper mode with per-character stats driving

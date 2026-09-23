@@ -94,6 +94,12 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   static const _weakCharThreshold = 0.12;
   static const _weakCharMaxShown = 5;
 
+  // outputCase: 0=lower, 1=UPPER — display only, matches GeneratorScreen's
+  // setting (generator_screen.dart); content/comparisons stay uppercase
+  // internally.
+  int _outputCase = 0;
+  String _displayChar(String ch) => _outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase();
+
   final CharStatsStore _charStats = CharStatsStore();
   AdaptiveCopyEngine? _engine;
   // Floor for the spacing "step down" direction — never make spacing wider
@@ -172,6 +178,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     await _charStats.load(p);
     if (!mounted) return;
     setState(() {
+      _outputCase = (p.getInt('outputCase') ?? 0).clamp(0, 1);
       _weakChars = weakCharsLifetime(
           _charStats, kochActiveChars(widget.kochLevel, widget.activeKochChars),
           minAttempts: _weakCharMinAttempts, threshold: _weakCharThreshold, maxShown: _weakCharMaxShown);
@@ -358,11 +365,17 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // boostLevel mechanism as CW Generator's "Practice Set" + Boost
     // (CwGenerator.kt randomKochChars() already consults both). Empty/off
     // when there's no accepted weak char, e.g. the very first block.
+    // Level 1 (Moderate, 3 draw attempts), not 2 (Strong, 8 attempts): user
+    // feedback 2026-09-23 — Strong pushed one missed char to ~80% of the
+    // very next block, far too extreme a spike; weak chars already stay
+    // boosted across several following blocks (lifetime EMA-based, not
+    // cleared after one block), so a gentler per-block rate spread over
+    // that whole stretch is enough without dominating any single block.
     final boostChars = _weakChars.keys
         .where((ch) => !_excludedBoostChars.contains(ch))
         .toList();
     await _genChannel.invokeMethod('setPracticeChars', boostChars);
-    await _genChannel.invokeMethod('setBoostLevel', boostChars.isEmpty ? 0 : 2);
+    await _genChannel.invokeMethod('setBoostLevel', boostChars.isEmpty ? 0 : 1);
     final pitch = p.getInt('pitch') ?? 600;
     final toneSoftness = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
     await _toneChannel.invokeMethod('setFreq', pitch);
@@ -661,7 +674,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                 border: Border.all(
                     color: included ? c.danger.withOpacity(0.4) : c.border),
               ),
-              child: Text('${e.key}  ${(e.value * 100).round()}%',
+              child: Text('${_displayChar(e.key)}  ${(e.value * 100).round()}%',
                   style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
                       color: included ? c.danger : c.textDisabled,
                       decoration: included ? null : TextDecoration.lineThrough)),
@@ -860,7 +873,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 6,
-          children: group.split('').map((ch) => Text(ch,
+          children: group.split('').map((ch) => Text(_displayChar(ch),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 22,
                   fontWeight: FontWeight.bold, color: charTypeColor(ch, c)))).toList(),
         ),
@@ -902,7 +915,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: wrong ? c.danger : c.border),
                       ),
-                      child: Text(group[i], style: TextStyle(fontFamily: 'CwMono',
+                      child: Text(_displayChar(group[i]), style: TextStyle(fontFamily: 'CwMono',
                           fontSize: 18, fontWeight: FontWeight.bold,
                           color: wrong ? c.danger : charTypeColor(group[i], c))),
                     ),
@@ -999,7 +1012,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         onToggle: (v) => setState(() => _acceptUnlock = v),
         label: nextChar == null
             ? Strings.t('ac_char_unlocked')
-            : '${Strings.t('ac_char_unlocked')}: "$nextChar"',
+            : '${Strings.t('ac_char_unlocked')}: "${_displayChar(nextChar)}"',
         highlight: true,
         // Lets the user hear the brand-new character right here, without
         // leaving Adaptive Copy for the separate Learn New Chr screen — user
