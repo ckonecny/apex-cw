@@ -7,6 +7,7 @@ import '../content/cw_content.dart';
 import '../theme/app_colors.dart';
 import '../theme/theme_controller.dart';
 import '../l10n/strings.dart';
+import 'char_stats_screen.dart';
 
 enum _LearnState { idle, waitDit, waitDah, done }
 
@@ -799,6 +800,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ]),
           const SizedBox(height: 12),
           _ActionButton(
+            label: Strings.t('settings_view_char_stats'),
+            icon: Icons.bar_chart_outlined,
+            color: c.accent,
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const CharStatsScreen())),
+          ),
+          const SizedBox(height: 8),
+          _ActionButton(
             label: Strings.t('settings_reset_char_stats'),
             icon: Icons.delete_sweep_outlined,
             color: c.danger,
@@ -1063,6 +1072,14 @@ class _ToggleRow extends StatelessWidget {
         onChanged: onChanged,
         activeColor: c.accent,
         inactiveTrackColor: c.border,
+        // Default Material off-thumb is near-white — glares against the dark
+        // background/border, looking like an accidentally-highlighted control.
+        inactiveThumbColor: c.textMuted,
+        // Material 3 also draws a separate track outline around the off
+        // state, defaulting to a light neutral that inactiveTrackColor above
+        // doesn't touch — same glare, needs its own override.
+        trackOutlineColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected) ? c.accent : c.border),
       ),
     ]),
   );

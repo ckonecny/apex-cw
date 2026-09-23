@@ -60,6 +60,15 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   bool _callCommonOnly  = true;
   int  _interCharSpace = 28;
   int  _interWordSpace = 40;
+
+  // Farnsworth text speed implied by char speed + spacing — same formula
+  // and status-line format as AdaptiveCopyBody's result screen (minus the
+  // Trend/EMA figure, which only exists once the adaptive engine has scored
+  // a block; nothing has been sent yet on this start screen).
+  int get _effectiveTextWpm {
+    final unitsPerWord = 31 + 4 * _interCharSpace + _interWordSpace;
+    return (50 * _wpm / unitsPerWord).round();
+  }
   int    _kochSeq         = 0;
   String _customKochChars = 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
   int    _licwCarouselStart = 0;
@@ -717,19 +726,27 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   // result-screen chips (docs/ADAPTIVE-COPY.md).
   Widget _buildKochWeakCharsPanel(AppColors c) {
     if (_kochWeakChars.isEmpty) {
-      return Align(alignment: Alignment.center, child: Text(Strings.t('press_start'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 20,
-              color: c.textDisabled, fontStyle: FontStyle.italic)));
+      return Center(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(Strings.t('press_start'),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 20,
+                  color: c.textMuted, fontStyle: FontStyle.italic)),
+          const SizedBox(height: 10),
+          _buildGenStatusLine(c),
+        ]),
+      );
     }
     return Center(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
+        _buildGenStatusLine(c),
+        const SizedBox(height: 16),
         Text(Strings.t('ac_weak_chars'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
-                fontWeight: FontWeight.bold, color: c.textDisabled)),
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
+                fontWeight: FontWeight.bold, color: c.textMuted)),
         const SizedBox(height: 2),
         Text(Strings.t('gen_boost_hint'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
-                color: c.textDisabled, fontStyle: FontStyle.italic),
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+                color: c.textMuted, fontStyle: FontStyle.italic),
             textAlign: TextAlign.center),
         const SizedBox(height: 12),
         Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
@@ -753,8 +770,8 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                       color: included ? c.danger.withOpacity(0.4) : c.border),
                 ),
                 child: Text('${_displayChar(e.key)}  ${(e.value * 100).round()}%',
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-                        color: included ? c.danger : c.textDisabled,
+                    style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
+                        color: included ? c.danger : c.textMuted,
                         decoration: included ? null : TextDecoration.lineThrough)),
               ),
             );
@@ -762,6 +779,18 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
         ),
       ]),
     );
+  }
+
+  // Same status-line format as AdaptiveCopyBody's result screen (see
+  // gen_status_line), shown here too so WPM/spacing read the same way
+  // whether you're looking at the start screen or a finished block.
+  Widget _buildGenStatusLine(AppColors c) {
+    return Text(Strings.t('gen_status_line')
+            .replaceFirst('{wpm}', '$_wpm')
+            .replaceFirst('{ewpm}', '$_effectiveTextWpm')
+            .replaceFirst('{ic}', '$_interCharSpace')
+            .replaceFirst('{iw}', '$_interWordSpace'),
+        style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted));
   }
 }
 
@@ -878,7 +907,7 @@ class _KochCharsRow extends StatelessWidget {
         children: active.map((ch) => Text(outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase(),
             style: TextStyle(
                 fontFamily: 'CwMono', fontSize: 13,
-                color: c.accent))).toList(),
+                color: charTypeColor(ch, c)))).toList(),
       ),
     );
   }

@@ -17,7 +17,7 @@ import '../theme/app_colors.dart';
 import '../util/char_color.dart';
 import '../l10n/strings.dart';
 
-enum _Phase { idle, sending, revealed, marking, result }
+enum _Phase { idle, sending, revealed, result }
 
 // Lets the parent (GeneratorScreen) reset an in-progress session back to
 // the idle/start phase — e.g. from the app bar back button, which during
@@ -151,6 +151,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   int _currentGroupIndex = 0;
   // "$groupIndex:$charIndex" keys of characters tapped as wrong.
   final Set<String> _wrongPositions = {};
+  // Word tapped open for character-level marking on the combined
+  // sent/marking screen; null shows the word-tile overview.
+  int? _markingWordIndex;
   int _resultCorrect = 0;
   int _resultTotal = 0;
 
@@ -234,6 +237,15 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       (_acceptSpacing && _pendingInterChar != null) ? _pendingInterChar! : widget.interCharSpace;
   int get _effectiveInterWord =>
       (_acceptSpacing && _pendingInterWord != null) ? _pendingInterWord! : widget.interWordSpace;
+
+  // Farnsworth text speed implied by char speed + spacing: PARIS at
+  // standard timing is 50 dit units/word, 31 of which are the marks
+  // themselves (tied to char speed) — swap in the actual inter-char/
+  // inter-word counts for the rest to get the real words-per-minute rate.
+  int get _effectiveTextWpm {
+    final unitsPerWord = 31 + 4 * _effectiveInterChar + _effectiveInterWord;
+    return (50 * _effectiveWpm / unitsPerWord).round();
+  }
 
   void _stepPendingWpm(int delta) {
     if (_pendingWpm == null) return;
@@ -342,6 +354,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _preparing = true;
       _sentGroups = [];
       _wrongPositions.clear();
+      _markingWordIndex = null;
       _currentGroupIndex = 0;
       _paused = false;
     });
@@ -427,11 +440,6 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
 
   void _revealBlock() {
     if (mounted) setState(() => _phase = _Phase.revealed);
-  }
-
-  void _markAllCorrect() {
-    _wrongPositions.clear();
-    _finishBlock();
   }
 
   void _toggleWrong(int groupIndex, int charIndex) {
@@ -590,7 +598,6 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _Phase.idle => _buildIdle(context),
       _Phase.sending => _buildSending(context),
       _Phase.revealed => _buildRevealed(context),
-      _Phase.marking => _buildMarking(context),
       _Phase.result => _buildResult(context),
     };
   }
@@ -609,14 +616,24 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
           child: Center(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Text(Strings.t('ac_idle_hint'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
                       color: c.textMuted, fontStyle: FontStyle.italic),
                   textAlign: TextAlign.center),
+              const SizedBox(height: 10),
+              // Same status-line format as the result screen (gen_status_line),
+              // minus Trend/EMA — that's only meaningful once a block has been
+              // scored, and none has run yet on this start screen.
+              Text(Strings.t('gen_status_line')
+                      .replaceFirst('{wpm}', '$_effectiveWpm')
+                      .replaceFirst('{ewpm}', '$_effectiveTextWpm')
+                      .replaceFirst('{ic}', '$_effectiveInterChar')
+                      .replaceFirst('{iw}', '$_effectiveInterWord'),
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
               const SizedBox(height: 24),
-              _buildSpacingControl(context),
+              _buildSpacingControl(context, scale: 1.2),
               if (_weakChars.isNotEmpty) ...[
                 const SizedBox(height: 24),
-                _buildWeakCharsSection(context),
+                _buildWeakCharsSection(context, scale: 1.2),
               ],
               const SizedBox(height: 28),
               ElevatedButton(
@@ -643,15 +660,18 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // draw — shared between the idle/start screen (boosts the next block
   // about to start) and the result screen (boosts the block after that
   // one), see docs/ADAPTIVE-COPY.md.
-  Widget _buildWeakCharsSection(BuildContext context) {
+  // scale bumps text size for the result screen ("der komplette text beim
+  // resultat screen könnte ruhig größer sein") without also growing this
+  // section where it's reused on the idle screen.
+  Widget _buildWeakCharsSection(BuildContext context, {double scale = 1}) {
     final c = AppColors.of(context);
     return Column(mainAxisSize: MainAxisSize.min, children: [
       Text(Strings.t('ac_weak_chars'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 11 * scale, color: c.textMuted)),
       const SizedBox(height: 2),
       Text(Strings.t('ac_boost_hint'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
-              color: c.textDisabled, fontStyle: FontStyle.italic),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 10 * scale,
+              color: c.textMuted, fontStyle: FontStyle.italic),
           textAlign: TextAlign.center),
       const SizedBox(height: 8),
       Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
@@ -675,8 +695,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                     color: included ? c.danger.withOpacity(0.4) : c.border),
               ),
               child: Text('${_displayChar(e.key)}  ${(e.value * 100).round()}%',
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-                      color: included ? c.danger : c.textDisabled,
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13 * scale,
+                      color: included ? c.danger : c.textMuted,
                       decoration: included ? null : TextDecoration.lineThrough)),
             ),
           );
@@ -700,25 +720,25 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     widget.onSpacingChanged?.call(ic, iw);
   }
 
-  Widget _buildSpacingControl(BuildContext context) {
+  Widget _buildSpacingControl(BuildContext context, {double scale = 1}) {
     final c = AppColors.of(context);
     return Column(mainAxisSize: MainAxisSize.min, children: [
       Text(Strings.t('ac_spacing_control_title'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 11 * scale, color: c.textMuted)),
       const SizedBox(height: 2),
       Text(Strings.t('ac_spacing_control_hint'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
-              color: c.textDisabled, fontStyle: FontStyle.italic),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 10 * scale,
+              color: c.textMuted, fontStyle: FontStyle.italic),
           textAlign: TextAlign.center),
       const SizedBox(height: 6),
       Row(mainAxisSize: MainAxisSize.min, children: [
         _TapTarget(onTap: () => _adjustSpacing(-1),
             child: Icon(Icons.remove, size: 20, color: c.accent)),
         SizedBox(
-          width: 84,
+          width: 84 * scale,
           child: Text('${widget.interCharSpace}/${widget.interWordSpace}',
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 15,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 15 * scale,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
         ),
         _TapTarget(onTap: () => _adjustSpacing(1),
@@ -796,7 +816,14 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     ]);
   }
 
+  // Combines the old separate "sent" and "marking" screens: the word tiles
+  // double as the error-marking overview (tap a word to drill into its
+  // characters), so there's a single flow instead of two screens plus a
+  // "mark errors" hand-off button.
   Widget _buildRevealed(BuildContext context) {
+    if (_markingWordIndex != null) {
+      return _buildWordMarking(context, _markingWordIndex!);
+    }
     final c = AppColors.of(context);
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Padding(
@@ -835,17 +862,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        child: Row(children: [
-          Expanded(child: _SecondaryButton(
-            label: Strings.t('ac_all_correct'),
-            onTap: _markAllCorrect,
-          )),
-          const SizedBox(width: 12),
-          Expanded(child: _PrimaryButton(
-            label: Strings.t('ac_mark_errors'),
-            onTap: () => setState(() => _phase = _Phase.marking),
-          )),
-        ]),
+        child: _PrimaryButton(
+          label: Strings.t('ac_done_errors').replaceFirst('{n}', '${_wrongPositions.length}'),
+          onTap: _finishBlock,
+        ),
       ),
     ]);
   }
@@ -854,40 +874,55 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // wrap into as many columns as fit, instead of a single left-stuck
   // column with the rest of the middle area left empty. Characters are
   // colored by type (letter/digit/other) so mixed-content groups are
-  // easier to scan.
+  // easier to scan. Tapping the tile opens the per-word marking screen;
+  // any characters already marked wrong in it show red right here too.
   Widget _buildRevealedTile(BuildContext context, int i) {
     final c = AppColors.of(context);
     final group = _sentGroups[i];
-    return Container(
-      width: 150,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: c.surfaceAlt,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: c.border),
-      ),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Text('${i + 1}',
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
-        const SizedBox(height: 2),
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 6,
-          children: group.split('').map((ch) => Text(_displayChar(ch),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 22,
-                  fontWeight: FontWeight.bold, color: charTypeColor(ch, c)))).toList(),
+    final hasError =
+        Iterable.generate(group.length).any((k) => _wrongPositions.contains('$i:$k'));
+    return InkWell(
+      onTap: () => setState(() => _markingWordIndex = i),
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        width: 150,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: hasError ? c.danger.withOpacity(0.13) : c.surfaceAlt,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: hasError ? c.danger : c.border),
         ),
-      ]),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text('${i + 1}',
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+          const SizedBox(height: 2),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 6,
+            children: List.generate(group.length, (k) {
+              final wrong = _wrongPositions.contains('$i:$k');
+              return Text(_displayChar(group[k]),
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: wrong ? c.danger : charTypeColor(group[k], c)));
+            }),
+          ),
+        ]),
+      ),
     );
   }
 
-  Widget _buildMarking(BuildContext context) {
+  // Per-word drill-down: only this word's characters, large tap targets,
+  // so marking errors doesn't mean hunting a small target among every
+  // character of every word on screen at once.
+  Widget _buildWordMarking(BuildContext context, int wordIndex) {
     final c = AppColors.of(context);
+    final group = _sentGroups[wordIndex];
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(Strings.t('ac_mark_title'),
+          Text(Strings.t('ac_word_title').replaceFirst('{n}', '${wordIndex + 1}'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 18,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
           Text(Strings.t('ac_mark_desc'),
@@ -895,50 +930,39 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         ]),
       ),
       Expanded(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(children: List.generate(_sentGroups.length, (g) {
-            final group = _sentGroups[g];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Wrap(spacing: 8, runSpacing: 8,
-                children: List.generate(group.length, (i) {
-                  final wrong = _wrongPositions.contains('$g:$i');
-                  return InkWell(
-                    onTap: () => _toggleWrong(g, i),
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      width: 48, height: 48,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: wrong ? c.danger.withOpacity(0.18) : c.surfaceAlt,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: wrong ? c.danger : c.border),
-                      ),
-                      child: Text(_displayChar(group[i]), style: TextStyle(fontFamily: 'CwMono',
-                          fontSize: 18, fontWeight: FontWeight.bold,
-                          color: wrong ? c.danger : charTypeColor(group[i], c))),
-                    ),
-                  );
-                }),
-              ),
-            );
-          })),
+        child: Center(
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 10,
+            runSpacing: 10,
+            children: List.generate(group.length, (i) {
+              final wrong = _wrongPositions.contains('$wordIndex:$i');
+              return InkWell(
+                onTap: () => _toggleWrong(wordIndex, i),
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  width: 56, height: 56,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: wrong ? c.danger.withOpacity(0.18) : c.surfaceAlt,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: wrong ? c.danger : c.border),
+                  ),
+                  child: Text(_displayChar(group[i]), style: TextStyle(fontFamily: 'CwMono',
+                      fontSize: 24, fontWeight: FontWeight.bold,
+                      color: wrong ? c.danger : charTypeColor(group[i], c))),
+                ),
+              );
+            }),
+          ),
         ),
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        child: Row(children: [
-          Expanded(child: _SecondaryButton(
-            label: Strings.t('ac_back'),
-            onTap: () => setState(() => _phase = _Phase.revealed),
-          )),
-          const SizedBox(width: 12),
-          Expanded(child: _PrimaryButton(
-            label: Strings.t('ac_done_errors').replaceFirst('{n}', '${_wrongPositions.length}'),
-            onTap: _finishBlock,
-          )),
-        ]),
+        child: _SecondaryButton(
+          label: Strings.t('ac_back'),
+          onTap: () => setState(() => _markingWordIndex = null),
+        ),
       ),
     ]);
   }
@@ -957,25 +981,26 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                 color: pct >= 90 ? c.accent : pct >= 70 ? c.warning : c.danger)),
             Text(Strings.t('ac_correct_of')
                     .replaceFirst('{c}', '$_resultCorrect').replaceFirst('{t}', '$_resultTotal'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textMuted)),
             const SizedBox(height: 10),
             Text(Strings.t('ac_status_line')
                     .replaceFirst('{wpm}', '$_effectiveWpm')
+                    .replaceFirst('{ewpm}', '$_effectiveTextWpm')
                     .replaceFirst('{ic}', '$_effectiveInterChar')
                     .replaceFirst('{iw}', '$_effectiveInterWord')
                     .replaceFirst('{ema}', '${(_displayEma * 100).round()}')
                     .replaceFirst('{trend}', _displayEmaTrend > 0 ? '▲' : _displayEmaTrend < 0 ? '▼' : '='),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
             const SizedBox(height: 20),
-            _buildSpacingControl(context),
+            _buildSpacingControl(context, scale: 1.2),
             if (weak.isNotEmpty) ...[
               const SizedBox(height: 20),
-              _buildWeakCharsSection(context),
+              _buildWeakCharsSection(context, scale: 1.2),
             ],
             if (_hasSuggestions) ...[
               const SizedBox(height: 20),
               Text(Strings.t('ac_suggestions_title'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
               const SizedBox(height: 8),
               ..._buildSuggestionRows(context),
             ],
@@ -1110,7 +1135,7 @@ class _SuggestionRow extends StatelessWidget {
             if (highlight) const SizedBox(width: 4),
             Expanded(
               child: Text(label,
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: highlight ? 13 : 12,
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: highlight ? 15 : 14,
                       fontWeight: highlight ? FontWeight.bold : FontWeight.normal,
                       color: accepted ? c.accent : c.textMuted,
                       decoration: accepted ? null : TextDecoration.lineThrough)),

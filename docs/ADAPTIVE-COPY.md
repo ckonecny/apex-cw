@@ -450,3 +450,31 @@ the intended design (see "Decisions: weighting/recency questions" above),
 not a bug. No code change made. Offered a stricter "never propose a
 speed-up if the immediately preceding block had any error" rule as an
 option; user hasn't asked for it — still open if wanted later.
+
+## Also investigated this session, not a bug (2026-09-23)
+User report: thresholds at 70%/90%/30% EMA smoothing/20 occurrences, "große
+Anzahl an Durchläufen mit 0 Fehlern", the most-recently-learned character
+alone well past 20 correct — yet the next Koch character never unlocks.
+Root cause, confirmed by pulling `FlutterSharedPreferences.xml` off
+`63061JEBF01551` and inspecting `charStats` directly (`run-as
+at.oe1cko.nextcwtrainer cat .../shared_prefs/FlutterSharedPreferences.xml`):
+user was at `kochLevel=12` with a custom sequence (`kochSeq=4`), so
+`shouldUnlockNextChar()` requires **all 12** active characters to individually
+clear `attempts >= 20` *and* `1 - emaErrorRate >= 0.90` (per
+`kochActiveChars(kochLevel, activeKochChars)` — every char active so far, not
+just the newest one, see `AdaptiveCopyEngine.shouldUnlockNextChar` in
+`adaptive_copy_engine.dart`). Actual data: the 4 most recently learned chars
+(`5`, `U`, `C`, `D`) were all well past 20 attempts with ~0 error rate, but
+8 earlier chars (`E`, `S`, `N`, `O`, `0`, `T`, `Q`, `R`) sat at 9–19 lifetime
+attempts each, despite 0–1 errors — below the occurrence floor, not the
+error-rate one. Exactly the effect already flagged under "Decisions:
+weighting/recency questions" point 2: content selection is a uniform draw
+over all *N* active chars, so at N=12 each gets roughly 1/12 of a block's
+draws, and the slowest of 12 characters to individually clear a 20-occurrence
+floor can take many blocks purely from binomial spread — nothing is stuck or
+broken, it just looks that way if you're only watching the newest character.
+No code change made. If this keeps surprising users at high Koch levels,
+worth a follow-up: showing each active character's own attempts/EMA on the
+result or Settings screen (ties into the still-open "Surface adaptive state
+in Settings" TODO above), so the *actual* blocker is visible without pulling
+prefs off the device by hand.

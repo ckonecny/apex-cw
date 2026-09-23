@@ -123,6 +123,9 @@ class Strings {
     'gen_boost_hint': [
       'Tippen zum Aus-/Einschließen — bevorzugt abgefragt ab dem Start',
       'Tap to include/exclude — practiced more from Start'],
+    'gen_status_line': [
+      'WPM {wpm} (eff. {ewpm}) · Abstand {ic}/{iw}',
+      'WPM {wpm} (eff. {ewpm}) · Spacing {ic}/{iw}'],
 
     // ── Echo Trainer screen ──────────────────────────────────────────────
     'echo_trainer_title': ['Echo Trainer', 'Echo Trainer'],
@@ -144,10 +147,9 @@ class Strings {
     'ac_resume': ['Weiter', 'Resume'],
     'ac_reveal': ['Aufdecken', 'Reveal'],
     'ac_sent_title': ['Gesendet', 'Sent'],
-    'ac_sent_desc': ['Vergleiche mit deiner Mitschrift.', 'Compare with what you copied.'],
-    'ac_all_correct': ['Alles richtig', 'All correct'],
-    'ac_mark_errors': ['Fehler markieren', 'Mark errors'],
-    'ac_mark_title': ['Was war falsch?', 'What was wrong?'],
+    'ac_sent_desc': ['Vergleiche mit deiner Mitschrift. Tippe ein Wort mit Fehler an.',
+        'Compare with what you copied. Tap a word you got wrong.'],
+    'ac_word_title': ['Wort {n}', 'Word {n}'],
     'ac_mark_desc': ['Tippe die Zeichen an, die du nicht richtig hattest.', 'Tap the characters you got wrong.'],
     'ac_back': ['Zurück', 'Back'],
     'ac_done_errors': ['Fertig · {n} Fehler', 'Done · {n} errors'],
@@ -165,8 +167,8 @@ class Strings {
     'ac_char_unlocked': ['Neues Zeichen freigeschaltet', 'New character unlocked'],
     'ac_suggestions_title': ['VORSCHLÄGE · ANTIPPEN ZUM ÄNDERN', 'SUGGESTIONS · TAP TO TOGGLE'],
     'ac_status_line': [
-      'WPM {wpm} · Abstand {ic}/{iw} · Trend {ema}% {trend}',
-      'WPM {wpm} · Spacing {ic}/{iw} · Trend {ema}% {trend}'],
+      'WPM {wpm} (eff. {ewpm}) · Abstand {ic}/{iw} · Trend {ema}% {trend}',
+      'WPM {wpm} (eff. {ewpm}) · Spacing {ic}/{iw} · Trend {ema}% {trend}'],
     'ac_spacing_control_title': ['ABSTAND ANPASSEN', 'ADJUST SPACING'],
     'ac_spacing_control_hint': [
       'Zeichen/Wort (dits) — größer = mehr Pause',
@@ -186,5 +188,15 @@ class Strings {
       'Löscht die gesamte gelernte Zeichenstatistik (Fehlerrate, Übungsgewicht) für alle Zeichen, unwiderruflich. Betrifft Adaptiv Copy (schwache Zeichen, Freischaltung) und den Echo Trainer ("Adapt. Zufall").',
       'Deletes all learned per-character statistics (error rate, practice weight) for every character, permanently. Affects Adaptive Copy (weak characters, unlocking) and Echo Trainer ("Adapt. Random").'],
     'settings_reset_char_stats_done': ['Zeichenstatistik zurückgesetzt.', 'Character statistics reset.'],
+    'settings_view_char_stats': ['Zeichen-Statistik anzeigen', 'View Character Statistics'],
+
+    // ── Character statistics screen ──────────────────────────────────────
+    'char_stats_title': ['Zeichen-Statistik', 'Character Statistics'],
+    'char_stats_desc': [
+      'Übungsstand jedes aktiven Koch-Zeichens. Alle Zeichen müssen die Freischalt-Schwelle erreichen, bevor das nächste Zeichen freigeschaltet wird — nicht nur das zuletzt gelernte.',
+      'Practice status of every active Koch character. All of them must clear the unlock threshold before the next character unlocks — not just the most recently learned one.'],
+    'char_stats_ready_summary': ['{ready} von {total} Zeichen bereit', '{ready} of {total} characters ready'],
+    'char_stats_attempts': ['{n}/{floor} Versuche', '{n}/{floor} attempts'],
+    'char_stats_empty': ['Noch keine aktiven Zeichen.', 'No active characters yet.'],
   };
 }

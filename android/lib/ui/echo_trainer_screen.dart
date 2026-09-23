@@ -9,6 +9,7 @@ import '../content/char_stats.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
+import '../util/char_color.dart';
 import '../util/keep_screen_on.dart';
 import '../l10n/strings.dart';
 
@@ -906,7 +907,7 @@ class _KochCharsRow extends StatelessWidget {
       child: Wrap(spacing: 6, children: active.map((ch) =>
           Text(outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase(),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-              color: c.accent))).toList()),
+              color: charTypeColor(ch, c)))).toList()),
     );
   }
 }

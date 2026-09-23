@@ -178,3 +178,73 @@ submodule (still the real `oe1wkl/Morserino-32` firmware, pinned per rule 6),
 and all README/docs attribution language crediting Willi Kraml/OE1WKL for
 the original design/curriculum — that credit is accurate and stays, it's
 only the implied *project* affiliation that was misleading.
+
+## `textDisabled` reserved for actually-disabled UI, not secondary text
+`AppColors.textDisabled` (`#3A4A60` dark) is nearly invisible against
+`background` (`#111827`) — fine for a genuinely disabled control, unreadable
+for informational secondary text. Several places (Adaptive Copy's status
+line, spacing control, weak-chars section, Koch Trainer panels) had been
+using it for text that's always meant to be read. Systematically switched
+those to `textMuted` (`#7A8FB5` dark) instead, which is the theme's actual
+"secondary but legible" token. Rule of thumb going forward: `textDisabled`
+only for controls/values that are truly inactive right now, `textMuted` for
+anything the user is expected to read.
+
+## Effective (Farnsworth) WPM shown alongside character WPM
+Users set character speed and inter-char/inter-word spacing independently,
+but only the character speed number was ever shown — the actual net word
+rate (what matters for real-world copy) was invisible. Added
+`effWPM = 50 * charWPM / (31 + 4*interCharSpace + interWordSpace)` (PARIS at
+standard timing = 50 dit units/word, of which 31 are the marks themselves;
+swap in the real spacing counts to get the true word rate). Reduces to
+exactly `charWPM` at standard spacing (31+12+7=50), so it's a strict
+generalization, not a separate approximation. Shown as "(eff. {ewpm})" next
+to the raw WPM everywhere a status line already exists (Adaptive Copy result
++ idle screens, Koch Trainer Classic + Adaptiv start screens) via one shared
+`gen_status_line` / `ac_status_line` string pair — no new formula duplicated
+per screen. Not present in `reference/` firmware — confirmed via grep before
+adding, so this is a net-new app feature, not a porting-fidelity gap.
+
+## `scale` parameter on shared widget-builders instead of forking them
+The Adaptive Copy result screen needed larger text than other screens that
+reuse the same `_buildSpacingControl()`/`_buildWeakCharsSection()` methods.
+Rather than duplicating the widgets or adding a screen-specific font-size
+constant, both methods took an optional `double scale = 1` multiplying every
+internal `fontSize`; call sites that want the bump pass `scale: 1.2`,
+everyone else is unaffected by default. Reused verbatim for the Koch
+Trainer's Classic and Adaptiv start screens once those needed the same
+treatment — one pattern, three call sites, no drift between them.
+
+## Adaptive Copy's per-character unlock gate: all active chars, not just the newest
+`AdaptiveCopyEngine.shouldUnlockNextChar()` requires *every* character in
+`kochActiveChars(kochLevel, activeKochChars)` — i.e. every character learned
+so far, not just the most recently added one — to individually clear the
+occurrences floor and error-rate threshold before the next Koch character
+unlocks. This is intentional (docs/ADAPTIVE-COPY.md, "N=20 for character
+unlock"), but easy to misread as "stuck"/buggy once the active set gets
+large: content selection is a uniform draw over all active chars, so at
+Koch level 12 each character gets on average 1/12 of a block's draws, and
+the slowest of 12 to individually clear a 20-occurrence floor can
+legitimately take many blocks (see docs/ADAPTIVE-COPY.md, "Also investigated
+this session, not a bug", 2026-09-23, for a real on-device case diagnosed by
+pulling `charStats` off the device). Rather than changing the gate itself
+(no evidence it's wrong), added a read-only **Character Statistics screen**
+(`lib/ui/char_stats_screen.dart`, linked from Settings → Adaptive Mode) that
+lists every active character's attempts/error-rate/ready-state, sorted
+least-ready-first, so the actual blocker is visible in-app instead of
+requiring a manual SharedPreferences pull to diagnose.
+
+## Switch: Material defaults need explicit theme overrides, not just `activeColor`
+Flutter's Material 3 `Switch` has three separately-themed layers — thumb,
+track fill, and track outline — and only the thumb dims by default when
+disabled; the *off-state* thumb and the track outline both default to a
+near-white neutral that doesn't adapt to dark backgrounds on its own.
+Setting `activeColor`/`inactiveTrackColor` alone (already in place) left the
+off-thumb and the outline still near-white — reported twice by the user
+before the outline layer was found. Fixed by also setting
+`inactiveThumbColor` and `trackOutlineColor` (the latter via
+`WidgetStateProperty.resolveWith`, since the outline needs its own
+active/inactive color pair, not a single value) to theme tokens. Worth
+remembering for any future `Switch`/`Checkbox`/`Radio` usage in dark theme —
+Material's "off" state is not automatically theme-aware just because the
+"on" state is.

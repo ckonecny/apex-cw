@@ -217,6 +217,45 @@ session's debugging (see "Known issues" below) with no problems noticed —
 user said it "sieht gut aus bis hier her" (looks good so far). Not a
 per-change checklist verification, just general confirmation nothing broke.
 
+## UI polish: dark-theme contrast, effective WPM, Koch coloring, Character Statistics screen (2026-09-23)
+Series of on-device UI reports acted on this session, all built and
+installed on `63061JEBF01551`, user-confirmed working:
+1. **Dark-theme contrast fix:** Adaptive Copy's status line and "Abstand
+   anpassen" spacing block were using `c.textDisabled` (near-invisible on
+   dark background) for text meant to be read. Swapped to `c.textMuted`
+   everywhere this pattern showed up (status line, spacing control, weak-
+   chars section, Koch Trainer panels) — see docs/DECISIONS.md.
+2. **Effective (Farnsworth) WPM:** new `{ewpm}` figure derived from char WPM
+   + inter-char/inter-word spacing (`50 * charWPM / (31 + 4*ic + iw)`),
+   shown next to the raw WPM in the shared status-line strings
+   (`gen_status_line`/`ac_status_line`) on the Adaptive Copy result + idle
+   screens and both Koch Trainer start-screen variants (Classic and
+   Adaptiv). Net-new feature, no `reference/` equivalent — see
+   docs/DECISIONS.md.
+3. **Larger text on the Adaptive Copy result screen** (status line,
+   suggestions, spacing control, weak-chars section all bumped, big "100%"
+   left as-is) via a new `scale` parameter on the shared widget-builders,
+   reused for the Koch Trainer's Classic and Adaptiv start screens once
+   those needed the same treatment.
+4. **Koch-sequence digit coloring:** the active-characters row (`_KochCharsRow`,
+   duplicated in `generator_screen.dart` and `echo_trainer_screen.dart`) now
+   colors digits differently from letters via the existing `charTypeColor()`
+   helper, matching the rest of the app instead of a flat single color.
+5. **New Character Statistics screen** (`lib/ui/char_stats_screen.dart`,
+   linked from Settings → Adaptive Mode → "Zeichen-Statistik anzeigen"):
+   lists every active Koch character's attempts/occurrences floor, lifetime
+   error rate, and unlock-readiness, sorted least-ready-first. Added after
+   diagnosing a user report ("next character never unlocks despite lots of
+   correct reps") that turned out not to be a bug — see docs/DECISIONS.md
+   "Adaptive Copy's per-character unlock gate" and docs/ADAPTIVE-COPY.md
+   "Also investigated this session, not a bug (2026-09-23)" for the full
+   on-device diagnosis (pulled `charStats` off `63061JEBF01551` directly).
+6. **Dark-theme Switch styling:** the Settings screen's toggle switches had
+   a near-white off-state thumb and track outline that didn't follow the
+   theme (Material 3 defaults, not previously overridden). Added
+   `inactiveThumbColor`/`trackOutlineColor` to `_ToggleRow`'s `Switch` — see
+   docs/DECISIONS.md.
+
 ## Known issues
 - **Intermittent dark/locked screen during practice — root cause not
   found, not reproduced.** User report: screen went dark mid-practice once
