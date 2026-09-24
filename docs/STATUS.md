@@ -124,11 +124,11 @@ changes:
 Phased rollout, one phase at a time: spec → user approval → implement →
 install → user test → next phase. **Entry point for every session on this:
 `docs/training/README.md`** (phase table + status + spec template); target
-picture: `docs/TRAINING-CONCEPT.md`. Current: **Phase 1 spec awaiting
+picture: `docs/TRAINING-CONCEPT.md`. Current: **Phase 1 spec approved, not yet implemented
 approval** (`docs/training/P1-echo-grundlagen.md`): fixes Echo Trainer never
 pushing spacing/Practice Set/Boost to the generator and never setting the
 keyer WPM (rule 2), adds a firmware-style answer speed cap ("Gebe-Tempo"),
-and makes Adaptive Speed ±1 per word like the firmware. File Player is last
+(Adaptive Speed deliberately untouched until phases 5/6). File Player is last
 (phase 9, low priority).
 
 ## In design: Adaptive Copy Mode

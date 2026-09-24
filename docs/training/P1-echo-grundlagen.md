@@ -1,46 +1,39 @@
 # Phase 1: Echo-Grundlagen
 
-Status: **Spec zur Freigabe** · Stand: 2026-09-23
+Status: **Spec freigegeben** · Stand: 2026-09-24
 
 ## Ziel
 
 Im Echo Trainer kann man schneller hören als geben: Das Wort wird mit dem
 Hör-Tempo vorgespielt, die Antwort gibt man mit einem eigenen, langsameren
 Gebe-Tempo. Außerdem klingt das Vorspiel immer gleich, egal welcher Screen
-vorher offen war. Adaptive Speed arbeitet wie am Morserino.
+vorher offen war.
 
 ## Nicht in dieser Phase
 
-- Keine getrennten Profile. Hör-Tempo, Lektion und Gruppenlänge bleiben
-  vorerst gemeinsam mit dem Generator (kommt in Phase 2).
-- Keine neue Oberfläche im Echo-Screen außer der Tempo-Anzeige (Phase 3).
-- Keine Änderung an Zeichenstatistik, Blöcken oder Adaptiv-Ablauf (Phase 4–6).
-- Denkzeit-Berechnung bleibt, wie sie ist (siehe "Später prüfen").
+- Keine getrennten Profile (Phase 2). Hör-Tempo, Lektion, Gruppenlänge
+  bleiben vorerst gemeinsam mit dem Generator.
+- **Keine Änderung an Adaptive Speed.** Es soll später wie beim CW
+  Generator arbeiten (Blöcke, gleiche Einstellungen, getrennt vom Hören,
+  eigene Speicherung): Phase 5/6. Die bestehende Adaptive-Speed-Logik und
+  ihr Regler "Max. Speed" bleiben unangetastet, es gibt keinen Zwischenumbau.
+- Keine neue Oberfläche außer dem Gebe-Tempo-Regler und der Tempo-Anzeige.
+- Denkzeit-Berechnung bleibt (siehe "Später prüfen").
 
-## Entscheidungen
+## Entscheidungen (getroffen 2026-09-24)
 
-Noch offen, die Empfehlung steht jeweils zuerst:
+- **E1** Gebe-Tempo ist eine Obergrenze wie in der Firmware:
+  Antwort-Tempo = min(Hör-Tempo, Gebe-Tempo).
+- **E2** Schrittweite 1 WPM, Bereich 5–50. Der Ausgangswert bedeutet
+  "wie Hören": Die Antwort wird im selben Tempo erwartet wie das
+  Vorspiel. Im Regler als "wie Hören" beschriftet, nicht "Aus". Intern 0.
+- **E3** Eigener Speicherschlüssel `echoAnswerWpmMax` (Rein technisch,
+  keine Auswirkung für den User: der alte Wert von Adaptive Speed wird
+  nicht umgedeutet).
+- **E4/E5** entfallen in Phase 1 (siehe oben). Adaptive Speed und dessen
+  Speicherung kommen in Phase 5/6 mit eigenem Echo-Profil.
 
-- **E1 Gebe-Tempo-Semantik** (Konzept §9 Frage 2): Obergrenze wie in der
-  Firmware: Antwort-Tempo = min(Hör-Tempo, Gebe-Tempo). *Alternative:*
-  ein fester Wert, der auch über dem Hör-Tempo liegen darf.
-- **E2 Wertebereich:** "Aus" oder 5–50 WPM in 1er-Schritten. Die Firmware
-  hat nur 5er-Schritte. 1er-Schritte sind feiner und ändern nichts am
-  Ablauf. Standard ist "Aus", wie in der Firmware.
-- **E3 Neuer Speicher-Schlüssel** `echoAnswerWpmMax` (0 = Aus). Der alte
-  Schlüssel `echoSpeedMax` war bisher die Obergrenze für Adaptive Speed und
-  steht bei den meisten auf 35. Würde man ihn weiterverwenden, bekäme er
-  stillschweigend eine neue Bedeutung. Der alte Schlüssel wird nicht mehr
-  gelesen.
-- **E4 Adaptive Speed** wie Firmware: nach *jeder* Auswertung (auch bei
-  Wiederholungen) ±1 WPM auf das Hör-Tempo, Grenzen 5–60. Die bisherige
-  Obergrenze entfällt.
-- **E5 Adaptiv verändertes Tempo speichern?** Empfehlung: **nein, nur für
-  die laufende Sitzung** (wie heute). Die Firmware speichert es global. In
-  der App würde das den CW Generator mitverstellen, solange Phase 2 fehlt.
-  Ab Phase 2 wird es im Echo-Profil gespeichert.
-
-Nach Freigabe: E1–E5 als ein Eintrag in `docs/DECISIONS.md`.
+Nach Abschluss: E1–E3 als ein Eintrag in `docs/DECISIONS.md`.
 
 ## Firmware-Referenz
 
@@ -116,14 +109,13 @@ Jeder Schritt wird einzeln gebaut und installiert.
   18 WPM erkannt.
 
 **1b: Gebe-Tempo**
-- Neuer Wert `_answerWpmMax` aus `echoAnswerWpmMax` (Std. 0 = Aus).
+- Neuer Wert `_answerWpmMax` aus `echoAnswerWpmMax` (Std. 0 = wie Hören).
 - `_answerWpm = (_answerWpmMax > 0) ? min(_currentWpm, _answerWpmMax) :
   _currentWpm`, genutzt in `_applyAnswerConfig()`. Vor dem nächsten
   Vorspiel setzt `_applyPromptConfig()` wieder das Hör-Tempo, also ist
   kein eigenes Zurücksetzen nötig.
 - Einstellungen, Abschnitt Echo Trainer: Regler **"Gebe-Tempo (max.)"**,
-  0–50, 0 wird als "Aus" angezeigt, immer sichtbar (nicht mehr unter
-  Adaptive Speed). Hilfetext: "Deine Antwort wird mit höchstens diesem
+  0–50, 0 wird als "wie Hören" angezeigt, immer sichtbar, unabhängig von Adaptive Speed. Hilfetext: "Deine Antwort wird mit höchstens diesem
   Tempo erwartet. Vorgespielt wird weiter mit dem normalen Tempo."
   Texte DE/EN in `strings.dart`.
 - Echo-Screen: Die Statuszeile zeigt `Hören 22 · Geben 15 WPM`, sobald
@@ -131,19 +123,8 @@ Jeder Schritt wird einzeln gebaut und installiert.
 - *Prüfen:* 22 WPM und Gebe-Tempo 15: Das Vorspiel läuft schnell, und
   langsam gegebene Antworten werden sauber erkannt.
 
-**1c: Adaptive Speed wie Firmware**
-- In `_evaluate()`: nach jeder Auswertung (richtig +1, falsch −1, auch bei
-  Wiederholungen) `_currentWpm = (_currentWpm ± 1).clamp(5, 60)`. Nicht
-  bei Learn New/Preview ohne Antwort, denn das wird schon vorher
-  übersprungen.
-- Die Obergrenze `_echoSpeedMax` entfällt, der alte Regler verschwindet
-  aus den Einstellungen.
-- Nicht speichern (E5).
-- *Prüfen:* Adaptive Speed an, 3× richtig ergibt +3, 1× falsch ergibt −1.
-  Die Anzeige folgt.
-
 **Abschluss:** DECISIONS.md-Eintrag, STATUS.md, `PORTING-MAP.md`-Zeile
-"echoTrainerEval()" um "Echo Speed Max, Adaptive Speed ±1" ergänzen.
+"echoTrainerEval()" um "Echo Speed Max" ergänzen.
 
 ## Testplan (User, auf dem Gerät)
 
@@ -152,14 +133,11 @@ Jeder Schritt wird einzeln gebaut und installiert.
       eingestellt).
 - [ ] Echo Trainer mit Practice Set (nicht Koch): Es kommen nur Zeichen
       aus der eigenen Liste, auch direkt nach Adaptive Copy.
-- [ ] Hör-Tempo 22, Gebe-Tempo Aus: Die Antwort mit 22 WPM wird erkannt.
+- [ ] Hör-Tempo 22, Gebe-Tempo "wie Hören": Die Antwort mit 22 WPM wird erkannt.
 - [ ] Hör-Tempo 22, Gebe-Tempo 15: Das Vorspiel läuft mit 22, die Antwort
       mit 15 wird sauber erkannt, und die Anzeige zeigt beide Werte.
 - [ ] Hör-Tempo 12, Gebe-Tempo 15: Die Antwort wird mit 12 erwartet
       (Obergrenze, nicht schneller).
-- [ ] Adaptive Speed an: Das Tempo geht pro richtigem Wort hoch und pro
-      falschem runter. Nach dem Verlassen und erneuten Öffnen steht
-      wieder das eingestellte Tempo.
 - [ ] Learn New Chr / Preview Char funktionieren unverändert.
 - [ ] Der CW Generator klingt danach unverändert.
 

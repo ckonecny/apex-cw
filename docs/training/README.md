@@ -31,7 +31,7 @@ Phasen: eine Session für die Spec und eine oder mehrere für die Umsetzung.
 
 | # | Phase | Status | Spec | Konzept-Abschnitte | Offene Fragen (Konzept §9) |
 |---|---|---|---|---|---|
-| 1 | Echo-Grundlagen: Singleton-Fehler, Gebe-Tempo, Adaptive Speed wie Firmware | **Spec zur Freigabe** | [P1](P1-echo-grundlagen.md) | 1, 5.2 | 2 |
+| 1 | Echo-Grundlagen: Singleton-Fehler, Gebe-Tempo (Adaptive Speed bewusst nicht) | **Spec freigegeben** | [P1](P1-echo-grundlagen.md) | 1, 5.2 | 2 |
 | 2 | Trainingsprofile (nur Datenebene, Oberfläche bleibt) | offen | – | 4.1 | 3, 4, 8 |
 | 3 | Einstellungen in die Screens (Chips, Sheet), globale Seite schrumpft | offen | – | 4.2 | – |
 | 4 | Getrennte Zeichenstatistik Hören/Geben | offen | – | 5.3, 5.6 | 5 |
