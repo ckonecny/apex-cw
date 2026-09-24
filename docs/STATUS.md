@@ -120,6 +120,17 @@ changes:
    weak-chars panel (Classic mode) still uses Strong, unchanged, since that
    wasn't part of this request.
 
+## In progress: Trainings-Umbau Hören/Echo/Einstellungen (2026-09-23)
+Phased rollout, one phase at a time: spec → user approval → implement →
+install → user test → next phase. **Entry point for every session on this:
+`docs/training/README.md`** (phase table + status + spec template); target
+picture: `docs/TRAINING-CONCEPT.md`. Current: **Phase 1 spec awaiting
+approval** (`docs/training/P1-echo-grundlagen.md`): fixes Echo Trainer never
+pushing spacing/Practice Set/Boost to the generator and never setting the
+keyer WPM (rule 2), adds a firmware-style answer speed cap ("Gebe-Tempo"),
+and makes Adaptive Speed ±1 per word like the firmware. File Player is last
+(phase 9, low priority).
+
 ## In design: Adaptive Copy Mode
 New listen-and-copy-on-paper mode with per-character stats driving
 speed/spacing/Koch-level adaptation. Not a firmware port — net-new concept.
