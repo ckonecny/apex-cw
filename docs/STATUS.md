@@ -481,7 +481,7 @@ Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitl
   mismatch on Intermediate/Advanced, the typed-text input.
 
 
-## Memory Chain (backlog #2, 2026-09-25), installed on 63061JEBF01551, not yet user-tested
+## Memory Chain (backlog #2, 2026-09-25), user-tested OK
 
 - Third card in the games hub -> `MemoryChainScreen`
   (`lib/ui/memory_chain_screen.dart`), 1:1 port of `MorseMemoryChain.cpp`:
@@ -504,3 +504,6 @@ Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitl
 - The small grey hint line under each home tile is removed (plus its
   `home_*_hint` strings); with six tiles the column overflowed by ~10 px.
   Tiles show title + subtitle only.
+
+## Ausblick auf das nächste Zeichen (Hören, Ergebnis-Seite)
+Neue Karte "Auf dem Weg zu X" mit Fortschrittsbalken und den Zeichen, die noch fehlen (Anzahl Übungen bzw. Trefferquote unter Schwelle). Spiegelt `shouldUnlockNextChar`. Nur bei Koch und noch nicht freigeschaltet. Installiert, vom User noch nicht getestet.
