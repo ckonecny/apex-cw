@@ -450,7 +450,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
     // Koch-level-limited, not boosted — matches getRandomChars()'s usePracticeChars path).
     private fun randomPracticeGroup(): String {
         if (practiceChars.isEmpty()) return randomCharGroup()
-        val len = groupLength.coerceIn(2, 8)
+        val len = (if (wordLengthMax > 0) minOf(groupLength, wordLengthMax) else groupLength).coerceIn(1, 8)
         return (1..len).map { practiceChars.random() }.joinToString("")
     }
 

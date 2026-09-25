@@ -33,7 +33,7 @@ Phasen: eine Session für die Spec und eine oder mehrere für die Umsetzung.
 |---|---|---|---|---|---|
 | 1 | Echo-Grundlagen: Singleton-Fehler, Gebe-Tempo (Adaptive Speed bewusst nicht) | abgeschlossen | [P1](P1-echo-grundlagen.md) | 1, 5.2 | 2 |
 | 2 | Trainingsprofile (nur Datenebene, Oberfläche bleibt) | abgeschlossen | [P2](P2-trainingsprofile.md) | 4.1 | 3, 4, 8 |
-| 3 | Einstellungen in die Screens (Chips, Sheet), globale Seite schrumpft | offen | – | 4.2 | – |
+| 3 | Einstellungen in die Screens (⚙-Sheet, globale Seite schrumpft; Chips später) | **abgeschlossen** | [P3](P3-einstellungen-in-screens.md) | 4.2 | – |
 | 4 | Getrennte Zeichenstatistik Hören/Geben | offen | – | 5.3, 5.6 | 5 |
 | 5 | Adaptiver Echo-Ablauf, nur Anzeige (Blöcke, Ergebnis-Seite) | offen | – | 5.1, 5.5 | 7 |
 | 6 | Adaptive Vorschläge beim Echo | offen | – | 5.4 | 6 |

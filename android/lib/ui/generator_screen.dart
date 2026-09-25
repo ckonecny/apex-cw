@@ -13,6 +13,7 @@ import '../util/char_color.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../l10n/strings.dart';
 import '../content/training_profile.dart';
+import 'widgets/training_settings_sheet.dart';
 
 class GeneratorScreen extends StatefulWidget {
   final bool kochMode;  // true = Koch Trainer, false = CW Generator
@@ -176,6 +177,28 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     await _toneChannel.invokeMethod('setFreq', pitch);
     await _toneChannel.invokeMethod('setEnvelopeMs', (toneSoftness + 1).toDouble());
     await _loadKochWeakChars();
+  }
+
+  // Per-training settings (docs/training/P3). The sheet only saves; reloading
+  // re-reads the profile and pushes practice set/boost to the shared native
+  // generator (rule 2). Spacing, wpm etc. are pushed when a run starts.
+  Future<void> _openSettingsSheet() async {
+    await showTrainingSettingsSheet(context,
+        profile: TrainingProfile.hear,
+        sections: [
+          // Koch-specific and global: lives only in the Koch Trainer's sheet.
+          if (widget.kochMode) TrainingSection.kochSequence,
+          TrainingSection.content,
+          TrainingSection.spacing,
+          TrainingSection.wordSelection,
+          // Adaptive Copy has its own flow: no display/stop/twice options,
+          // but the adaptive thresholds.
+          if (widget.kochMode && _flow == 1)
+            TrainingSection.adaptive
+          else
+            TrainingSection.generatorFlow,
+        ]);
+    if (mounted) await _loadPrefs();
   }
 
   Future<void> _loadKochWeakChars() async {
@@ -474,6 +497,14 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () => Navigator.maybePop(context),
         ),
+        actions: [
+          if (!_practiceActive)
+            IconButton(
+              icon: Icon(Icons.settings, color: c.textMuted),
+              tooltip: Strings.t('settings_title'),
+              onPressed: _openSettingsSheet,
+            ),
+        ],
       ),
       body: Column(
         children: [

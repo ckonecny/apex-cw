@@ -57,7 +57,6 @@ class Strings {
     'settings_language': ['Sprache', 'Language'],
     'settings_general': ['Allgemein', 'General'],
     'settings_default_wpm': ['Standard-WPM', 'Default WPM'],
-    'settings_default_koch_level': ['Standard Koch-Level', 'Default Koch Level'],
     'settings_pitch': ['Tonhöhe (Hz)', 'Pitch (Hz)'],
     'settings_tone_softness': ['Ton-Weichheit', 'Tone Softness'],
     'settings_sequence': ['Reihenfolge', 'Sequence'],
@@ -91,9 +90,9 @@ class Strings {
     'settings_think_time': ['Denkzeit', 'Think Time'],
     'settings_repeats': ['Wiederholungen', 'Repeats'],
     'settings_max_speed': ['Max. Speed', 'Max Speed'],
-    'settings_profile': ['Einstellungen für', 'Settings for'],
     'settings_profile_hear': ['Hören', 'Listening'],
     'settings_profile_echo': ['Geben (Echo)', 'Sending (Echo)'],
+    'settings_word_selection': ['Wortauswahl', 'Word selection'],
     'settings_answer_wpm': ['Gebe-Tempo (max.)', 'Answer speed (max)'],
     'settings_answer_wpm_same': ['wie Hören', 'same as prompt'],
     'settings_answer_wpm_help': ['Deine Antwort wird mit höchstens diesem Tempo erwartet. Vorgespielt wird weiter mit dem normalen Tempo.', 'Your answer is expected at this speed at most. The prompt still plays at the normal speed.'],
@@ -183,6 +182,10 @@ class Strings {
       'Char/word (dits) — higher = more pause'],
 
     // ── Adaptive Mode settings ───────────────────────────────────────────
+    'settings_koch_sequence_desc': [
+      'Gilt für alle Trainings, die die Koch-Methode nutzen (auch Echo und Adaptiv).',
+      'Applies to every training that uses the Koch method (Echo and Adaptive too).'],
+    'settings_char_stats': ['Zeichenstatistik', 'Character statistics'],
     'settings_adaptive_mode': ['Adaptiver Modus', 'Adaptive Mode'],
     'settings_adaptive_mode_desc': [
       'Schwellenwerte, die steuern, wie Adaptiv Copy Tempo/Abstand anpasst und wann das nächste Koch-Zeichen freigeschaltet wird.',

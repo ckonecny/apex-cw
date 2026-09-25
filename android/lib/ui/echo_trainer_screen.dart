@@ -14,6 +14,7 @@ import '../theme/app_colors.dart';
 import '../util/char_color.dart';
 import '../util/keep_screen_on.dart';
 import '../l10n/strings.dart';
+import 'widgets/training_settings_sheet.dart';
 
 enum _State { idle, playing, receiving, correct, wrong }
 
@@ -87,6 +88,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   List<String> get _activeKochChars =>
       kochSequenceChars(_kochSeq, _customKochChars, licwCarouselStart: _licwCarouselStart);
   int  _abbrevLengthMax = 0;
+  int  _wordLengthMax = 0;
   int  _callLengthOpt   = 0;
   int  _callRegionOpt   = 0;
   bool _callCommonOnly  = true;
@@ -188,6 +190,21 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _loadPrefs();
   }
 
+  // Per-training settings (docs/training/P3). The sheet only saves; reloading
+  // picks the values up. Prompt/answer config is pushed at every session and
+  // word start (_applyPromptConfig/_applyAnswerConfig), so nothing else to do.
+  Future<void> _openSettingsSheet() async {
+    await showTrainingSettingsSheet(context,
+        profile: TrainingProfile.echo,
+        sections: const [
+          TrainingSection.content,
+          TrainingSection.spacing,
+          TrainingSection.wordSelection,
+          TrainingSection.echoFlow,
+        ]);
+    if (mounted) await _loadPrefs();
+  }
+
   Future<void> _loadPrefs() async {
     final p = await SharedPreferences.getInstance();
     final pf = await TrainingProfile.open(TrainingProfile.echo);
@@ -220,6 +237,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           : 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
       _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
       _abbrevLengthMax = (pf.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
+      _wordLengthMax   = (pf.getInt('wordLengthMax') ?? 0).clamp(0, 8);
       _callLengthOpt   = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
       _callRegionOpt   = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
@@ -617,6 +635,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             'mode': _kochModeOrdinals[_kochModeIndex],
             'kochLevel': _kochLevel,
             'kochActive': true,
+            'wordLengthMax': _wordLengthMax,
             'abbrevLengthMax': _abbrevLengthMax,
           });
           return (result as String?) ?? '';
@@ -642,6 +661,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       'mode': _modeIndex,
       'kochLevel': _kochLevel,
       'kochActive': false,
+      'groupLength': _groupLength,
+      'wordLengthMax': _wordLengthMax,
       'abbrevLengthMax': _abbrevLengthMax,
       'callLengthOpt': _callLengthOpt,
       'callRegionOpt': _callRegionOpt,
@@ -670,6 +691,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () { _stopSession(); Navigator.pop(context); },
         ),
+        actions: [
+          if (!_sessionActive)
+            IconButton(
+              icon: Icon(Icons.settings, color: c.textMuted),
+              tooltip: Strings.t('settings_title'),
+              onPressed: _openSettingsSheet,
+            ),
+        ],
       ),
       body: Column(
         children: [
