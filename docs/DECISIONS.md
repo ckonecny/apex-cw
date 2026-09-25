@@ -450,3 +450,24 @@ Flache Karten ohne Rahmen, getönte Buttons (`widgets/app_ui.dart`), Space-Grote
   `memChainHiCalls`.
 - Undecodable patterns and `<err>` count as a wrong answer (any keyed
   character is judged, as in the firmware).
+
+## 2026-09-25: CW decoder via microphone — deviations from goertzel.cpp / MorseDecoder.cpp
+
+- **Split:** Kotlin only captures PCM (`MicInput.kt`); Goertzel and the
+  decoder run in Dart on sample time, so they are unit-testable with
+  synthesized audio and behave the same live and in tests.
+- **Sample rate 16 kHz** instead of 11905 Hz; block length chosen to keep the
+  firmware bandwidths (Wide ~700 Hz = 23 samples, Narrow ~175 Hz = 91).
+- **Adjustable pitch** (firmware: fixed 698 Hz, the line input is tuned to
+  it). The Goertzel uses the exact frequency, not the nearest integer bin.
+- **Normalized magnitudes + user threshold:** the firmware's fixed ADC-scale
+  `magnitudelimit_low` becomes a floor in dBFS (default -40) with a level
+  meter; a phone microphone's level varies far more than the device's line
+  input. The automatic limit itself is unchanged, so with constant noise
+  above the floor it follows the noise (as on the device).
+- **Monitor tone default off:** the device always plays the decoded tone on
+  its speaker; on a phone the microphone would pick it up again (feedback).
+- **Audio decoder only:** the firmware's decoder mode also decodes a straight
+  key on the paddle jack (keyDecoder); not ported, the keyer is stopped on
+  this screen. Output is always uppercase (the app's convention), prosigns
+  as the tree shows them (`<KA>`), `<err>` is shown, not applied.

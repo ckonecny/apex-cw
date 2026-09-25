@@ -1,6 +1,8 @@
 package at.oe1cko.nextcwtrainer
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.view.KeyEvent
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
@@ -21,6 +23,8 @@ class MainActivity : FlutterActivity() {
     private lateinit var keyer:       CwKeyer
     private lateinit var generator:   CwGenerator
     private lateinit var audioRouteManager: AudioRouteManager
+    private lateinit var micInput:    MicInput
+    private var micPermissionResult: MethodChannel.Result? = null
 
     // Paddle configuration — loaded from SharedPreferences
     private var ditChar = 0xFC  // 'ü' (self-built vband default)
@@ -45,6 +49,9 @@ class MainActivity : FlutterActivity() {
         private const val PREFS_NAME       = "next_cw_trainer_prefs"
         private const val PREF_DIT         = "paddle_dit"
         private const val PREF_DAH         = "paddle_dah"
+        private const val MIC_CHANNEL      = "at.oe1cko.nextcwtrainer/cw_mic"
+        private const val MIC_PCM_CHANNEL  = "at.oe1cko.nextcwtrainer/cw_mic_pcm"
+        private const val REQ_MIC          = 4711
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -289,7 +296,45 @@ class MainActivity : FlutterActivity() {
                 }
             }
 
+        // ── Microphone (CW decoder) ──────────────────────────────────────────
+        micInput = MicInput(this)
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, MIC_PCM_CHANNEL)
+            .setStreamHandler(object : EventChannel.StreamHandler {
+                override fun onListen(args: Any?, events: EventChannel.EventSink) {
+                    micInput.onPcm = { bytes -> runOnUiThread { events.success(bytes) } }
+                }
+                override fun onCancel(args: Any?) { micInput.onPcm = null }
+            })
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, MIC_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "hasPermission" -> result.success(hasMicPermission())
+                    "requestPermission" -> {
+                        if (hasMicPermission()) { result.success(true); return@setMethodCallHandler }
+                        micPermissionResult?.success(false)
+                        micPermissionResult = result
+                        requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MIC)
+                    }
+                    "start" -> result.success(if (hasMicPermission()) micInput.start() else 0)
+                    "stop"  -> { micInput.stop(); result.success(null) }
+                    else    -> result.notImplemented()
+                }
+            }
+
         keyer.start()
+    }
+
+    private fun hasMicPermission() =
+        checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQ_MIC) {
+            micPermissionResult?.success(
+                grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            micPermissionResult = null
+        }
     }
 
     // ── Key event interception ────────────────────────────────────────────────
@@ -410,6 +455,7 @@ class MainActivity : FlutterActivity() {
         keyer.stop()
         generator.stop()
         audioRouteManager.stop()
+        micInput.stop()
         CwAudioNative.stopStream()
         super.onDestroy()
     }

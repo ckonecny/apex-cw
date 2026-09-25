@@ -10,6 +10,7 @@ import 'settings_screen.dart';
 import 'wifi_trx_screen.dart';
 import 'qso_bot_screen.dart';
 import 'games_screen.dart';
+import 'decoder_screen.dart';
 import '../theme/app_colors.dart';
 import '../l10n/strings.dart';
 
@@ -115,6 +116,14 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
             const SizedBox(height: 8),
             Expanded(child: _ModeCard(
+              icon: Icons.hearing,
+              title: Strings.t('dec_title'),
+              subtitle: Strings.t('home_decoder_subtitle'),
+              color: c.accentPurple,
+              onTap: () => _open(const DecoderScreen()),
+            )),
+            const SizedBox(height: 8),
+            Expanded(child: _ModeCard(
               icon: Icons.wifi,
               title: 'WiFi Trx',
               subtitle: Strings.t('home_wifitrx_subtitle'),
@@ -185,12 +194,12 @@ class _ModeCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 56, height: 56,
+                width: 48, height: 48,
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: Icon(icon, color: color, size: 30),
+                child: Icon(icon, color: color, size: 26),
               ),
               const SizedBox(width: 16),
               Expanded(child: Column(

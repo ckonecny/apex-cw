@@ -325,7 +325,7 @@ DECISIONS.md.
 | 5 | **Radio Cave** (`MorseRadioCave.cpp`, ~2.65k) | Text adventure, every command keyed in Morse. 12 rooms, items, puzzles. | L | Mostly content and a state machine, UI is simple. Keep the English texts. |
 | 6 | **Fight the Pileup** (`MorsePileup.cpp`, ~1.8k) | Work a pileup of call signs. | M–L | Single player only; the multiplayer part is ESP-NOW. |
 | 7 | **QSO Bot** (`MorseQsoBot.cpp` ~1.2k + match/content) — ported 2026-09-25, see below | Simulated QSO, the bot answers to what was keyed. | L | The most valuable training module still missing. |
-| 8 | **CW decoder via mic** (`goertzel.cpp`, ~160) | Decode CW from the microphone (Goertzel). | M–L | The algorithm is small. The work is a native audio input (AAudio), mic permission and robustness against noise. |
+| 8 | **CW decoder via mic** (`goertzel.cpp`, ~160) — ported 2026-09-25, see below | Decode CW from the microphone (Goertzel). | M–L | The algorithm is small. The work is a native audio input (AAudio), mic permission and robustness against noise. |
 | 9 | **File Player** | Play your own text files as practice content. | S | File picker plus the existing generator. |
 | 10 | **Snapshots** | Saved sets of settings. | S | Overlaps with the named presets (Phase 8d); check before starting whether they merge. |
 
@@ -507,3 +507,31 @@ Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitl
 
 ## Ausblick auf das nächste Zeichen (Hören, Ergebnis-Seite)
 Neue Karte "Auf dem Weg zu X" mit Fortschrittsbalken und den Zeichen, die noch fehlen (Anzahl Übungen bzw. Trefferquote unter Schwelle). Balken = Summe der bisherigen Übungen / geforderte Übungen, nur über Zeichen mit fehlenden Wiederholungen (User-Feedback: Gesamtdurchschnitt war irreführend); fehlt nur die Quote, zeigt er die Quote des schwächsten Zeichens gegen die Schwelle. Spiegelt `shouldUnlockNextChar`. Nur bei Koch und noch nicht freigeschaltet. Installiert, vom User noch nicht getestet.
+
+## CW decoder via microphone (backlog #8, 2026-09-25), user-tested OK
+
+- New home tile "CW-Decoder" (after CW Keyer) -> `DecoderScreen`
+  (`lib/ui/decoder_screen.dart`). Home icon boxes 56 -> 48 px so seven
+  tiles fit without overflow (not yet visually checked on the device, the
+  screen was off).
+- `lib/keyer/cw_audio_decoder.dart`: 1:1 port of `goertzel.cpp`
+  (`GoertzelDetector`: block Goertzel, automatic magnitude limit, 0.6
+  factor) and the `Decoder` class of `MorseDecoder.cpp` (`AudioCwDecoder`:
+  noise blanker, LOW/HIGH/INTERELEMENT/INTERCHAR state machine, ditAvg/dahAvg
+  adaptation incl. C integer arithmetic, d_wpm, the CWtree with ä/ö/ü/<ch>/
+  <err>/<bk>/`*`). Runs on sample time, not the wall clock.
+- Native: `MicInput.kt` (AudioRecord 16 kHz mono PCM16, source UNPROCESSED >
+  VOICE_RECOGNITION > MIC, 20 ms chunks) on `cw_mic` (hasPermission /
+  requestPermission / start / stop) + EventChannel `cw_mic_pcm`;
+  RECORD_AUDIO permission requested at runtime; `cw_tone` got `setPlaying`
+  for the monitor tone.
+- Screen: tone LED, decoded WPM, level meter (level, automatic threshold,
+  floor), scrolling uppercase text, clear, Start/Stop. Settings sheet:
+  Bandwidth Wide/Narrow (firmware option), pitch 300–1200 Hz (default 698),
+  threshold floor -65…-10 dBFS (default -40), monitor tone (off; headphones
+  only). Keyer stopped on entry; mic stops when the app goes to background.
+- Tests: `test/cw_audio_decoder_test.dart` (synthesized CW: 12/20/30 WPM,
+  wide/narrow, noise, below-floor, other pitch, <ka>/<err>).
+- To test: a CW signal from a radio/other phone at ~700 Hz, threshold vs.
+  room noise, narrow vs. wide, speed display, monitor with headphones,
+  permission denial message, home screen fits.

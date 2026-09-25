@@ -119,6 +119,8 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
                 result.success(null)
             }
             "stopEffect" -> { cancelEffect(); result.success(null) }
+            // CW decoder monitor tone: follows the decoded tone on/off.
+            "setPlaying" -> { setPlaying(call.arguments as? Boolean ?: false); result.success(null) }
             else        -> result.notImplemented()
         }
     }

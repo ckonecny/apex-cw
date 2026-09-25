@@ -28,7 +28,7 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | `MorsePileup.cpp` (Fight the Pileup) | — | Backlog #6, single player only |
 | Multiplayer of all games (`MorseGridNet.cpp`, ESP-NOW parts of Morsel/Pileup) | — | N/A: ESP-NOW does not exist on a phone |
 | `MorseQsoBot.cpp`, `MorseQsoBotMatch.h`, `qso_content.h` | `lib/content/qso_bot.dart`, `lib/ui/qso_bot_screen.dart`, call zones in `CallsignData.kt` | Ported (2026-09-25), user-tested OK |
-| `goertzel.cpp` (mic CW decode) | — | Backlog #8 |
+| `goertzel.cpp` (mic CW decode) | `lib/keyer/cw_audio_decoder.dart`, `MicInput.kt`, `lib/ui/decoder_screen.dart` | Ported (2026-09-25), user-tested OK |
 | File Player / multi-part file builder | — | Backlog #9 |
 | Snapshots (doWriteSnapshot/doReadSnapshot) | — | Backlog #10 (overlaps with named presets, Phase 8d) |
 | CW Memories (config tool) | — | Not started, not in the backlog yet |
