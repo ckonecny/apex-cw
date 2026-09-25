@@ -535,3 +535,16 @@ Neue Karte "Auf dem Weg zu X" mit Fortschrittsbalken und den Zeichen, die noch f
 - To test: a CW signal from a radio/other phone at ~700 Hz, threshold vs.
   room noise, narrow vs. wide, speed display, monitor with headphones,
   permission denial message, home screen fits.
+
+## Fix: CW Keyer output limited to ~4 lines (2026-09-25), user-tested OK
+
+- Cause: `keyer_screen.dart` kept only the last 80 decoded characters, so at
+  the default 28 pt font the text started shifting after ~4 lines even with
+  free space in the output box.
+- Fix: buffer capped at 4000 chars (memory bound only); output is now a
+  `SingleChildScrollView(reverse: true)` — bottom-anchored, newest text
+  always visible, older lines scrollable back.
+- Follow-up audit of all other text outputs (Decoder, WiFi Trx, QSO Bot,
+  Echo, Hören/Adaptive Copy, games): no other display-size truncation found.
+  Decoder caps at 3000 chars and scrolls; WiFi Trx/QSO Bot cap the number
+  of segments (200/300) and scroll; the others show one word/block at a time.

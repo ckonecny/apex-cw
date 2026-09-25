@@ -28,6 +28,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
   // dit/dah symbols — see doPaddleIambic()'s IDLE_STATE in m32_v6.ino).
   late final MorseDecoder _decoder;
   String _decodedText = '';
+  static const _maxText = 4000;
   int    _outputCase  = 0;   // 0=lower, 1=UPPER — display only
   bool   _ready    = false;
   int    _wpm      = 20;
@@ -42,8 +43,11 @@ class _KeyerScreenState extends State<KeyerScreen> {
     KeepScreenOn.enable();
     _decoder = MorseDecoder(onChar: (ch) {
       if (mounted) setState(() {
-        _decodedText = (_decodedText + ch).characters.toList().reversed
-            .take(80).toList().reversed.join();
+        // Cap only to bound memory; the display scrolls, so this must be far
+        // more than fits on screen (a small cap here made the text shift
+        // after ~4 lines even with free space left).
+        final t = _decodedText + ch;
+        _decodedText = t.length > _maxText ? t.substring(t.length - _maxText) : t;
       });
     });
     _symbolStream.receiveBroadcastStream().listen((sym) => _decoder.add(sym as String));
@@ -145,16 +149,18 @@ class _KeyerScreenState extends State<KeyerScreen> {
                 color: c.surface,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Text(
+              // reverse: anchors the text at the bottom and keeps the newest
+              // characters in view; older lines can be scrolled back to.
+              child: SingleChildScrollView(
+                reverse: true,
+                child: SizedBox(width: double.infinity, child: Text(
                   _decodedText.isEmpty ? '·' :
                       (_outputCase == 1 ? _decodedText.toUpperCase() : _decodedText.toLowerCase()),
                   style: TextStyle(
                     fontFamily: 'CwMono', fontSize: fontSize,
                     color: c.accent, height: 1.4,
                   ),
-                ),
+                )),
               ),
             ),
           ),
