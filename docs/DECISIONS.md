@@ -320,3 +320,13 @@ Training rollout Phase 8. Reference for this spot is `origin/master` commit `f98
 
 ### Reaktionszeit dropped from Phase 8
 User decision 2026-09-25: no reaction-time measurement. Depends on too many unrelated factors, no firmware equivalent, and the think time already covers slow starts. Echo also shows "Versuch n von max" from the second attempt and clears stale word/attempt text when a block starts.
+
+## 2026-09-25: CW Keyer and WiFi Trx get their own word gap
+
+CW Keyer and WiFi Trx each keep a `profile.keyer|trx.interWordSpace` (⚙ in
+the app bar, section `wordSpacing`), default 7 dits (firmware default). The
+Echo/Hear value no longer leaks into them (it was 40, i.e. ~2 s at 20 WPM).
+Only the word gap is offered: the firmware keys with
+`interWordTimer = (InterWord Spc - 1) * dit` (m32_v6.ino:1857) and never uses
+InterChar Spc when keying; Trx playback spacing derives from the received
+speed. The status chips at the top of the CW Keyer were removed.

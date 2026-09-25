@@ -10,7 +10,7 @@ import 'setting_rows.dart';
 
 /// Parts of the per-training settings a screen can show, see
 /// docs/training/P3-einstellungen-in-screens.md.
-enum TrainingSection { content, spacing, wordSelection, echoFlow, hearFlow, adaptive, kochSequence }
+enum TrainingSection { content, spacing, wordSpacing, wordSelection, echoFlow, hearFlow, adaptive, kochSequence }
 
 /// Opens the settings sheet for one training profile ([TrainingProfile.hear]
 /// or [TrainingProfile.echo]). Every change is saved immediately; the screen
@@ -59,6 +59,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _boostLevel = 0;
   int _interCharSpace = 28;
   int _interWordSpace = 40;
+  int _wpm = 20;   // keyer / trx only: shows the word gap in seconds
   int _randomOption = 0;
   int _groupLength = 5;
   int _wordLengthMax = 0;
@@ -102,7 +103,12 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _practiceChars = (pc == null || pc.isEmpty) ? '' : pc;
       _boostLevel = (prof.getInt('boostLevel') ?? 0).clamp(0, 2);
       _interCharSpace = (prof.getInt('interCharSpace') ?? 28).clamp(3, 45);
-      _interWordSpace = (prof.getInt('interWordSpace') ?? 40).clamp(6, 105);
+      _interWordSpace = (prof.getInt('interWordSpace') ?? TrainingProfile.defaultInterWord(widget.profile)).clamp(6, 105);
+      _wpm = widget.profile == TrainingProfile.trx
+          ? (p.getInt('trxWpm') ?? p.getInt('wpm') ?? 20)
+          : widget.profile == TrainingProfile.keyer
+              ? (p.getInt('wpm') ?? 20)
+              : (prof.getInt('wpm') ?? p.getInt('wpm') ?? 20);
       _randomOption = (prof.getInt('randomOption') ?? 0).clamp(0, _randomOptionLabels.length - 1);
       _groupLength = (prof.getInt('groupLength') ?? 5).clamp(2, 8);
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);
@@ -177,13 +183,14 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   List<Widget> _spacing() {
     return [
       SettingsSectionHeader(Strings.t('settings_spacing')),
-      _hint(Strings.t('settings_spacing_desc')),
+      _hint(Strings.t(widget.profile == TrainingProfile.echo
+          ? 'settings_spacing_desc_echo' : 'settings_spacing_desc')),
       SettingsCard(children: [
         // InterWord Spc may never drop below InterChar Spc (see the note in
         // the Settings screen this was moved from).
         LabeledSlider(
             label: 'Interchar Spc', value: _interCharSpace.toDouble(),
-            min: 3, max: 45, divisions: 42, display: '$_interCharSpace dits',
+            min: 3, max: 45, divisions: 42, display: '$_interCharSpace dits · ${ditsToSeconds(_interCharSpace, _wpm)} @ $_wpm WPM',
             onChanged: (v) {
               final newChar = v.round();
               setState(() {
@@ -196,9 +203,30 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         const SettingsDivider(),
         LabeledSlider(
             label: 'InterWord Spc', value: _interWordSpace.toDouble(),
-            min: 6, max: 105, divisions: 99, display: '$_interWordSpace dits',
+            min: 6, max: 105, divisions: 99, display: '$_interWordSpace dits · ${ditsToSeconds(_interWordSpace, _wpm)} @ $_wpm WPM',
             onChanged: (v) {
               setState(() => _interWordSpace = v.round().clamp(_interCharSpace, 105));
+              _setInt('interWordSpace', _interWordSpace);
+            }),
+      ]),
+      const SizedBox(height: 24),
+    ];
+  }
+
+  // Keyer and WiFi Trx: only the word gap counts (firmware: interWordTimer =
+  // (InterWord Spc - 1) dits after the last element); InterChar Spc is not
+  // used when keying.
+  List<Widget> _wordSpacing() {
+    return [
+      SettingsSectionHeader(Strings.t('settings_spacing')),
+      _hint(Strings.t('settings_word_spacing_desc')),
+      SettingsCard(children: [
+        LabeledSlider(
+            label: 'InterWord Spc', value: _interWordSpace.toDouble(),
+            min: 6, max: 105, divisions: 99,
+            display: '$_interWordSpace dits · ${ditsToSeconds(_interWordSpace, _wpm)} @ $_wpm WPM',
+            onChanged: (v) {
+              setState(() => _interWordSpace = v.round());
               _setInt('interWordSpace', _interWordSpace);
             }),
       ]),
@@ -496,6 +524,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
           ...switch (s) {
             TrainingSection.content => _content(),
             TrainingSection.spacing => _spacing(),
+            TrainingSection.wordSpacing => _wordSpacing(),
             TrainingSection.wordSelection => _wordSelection(),
             TrainingSection.echoFlow => _echoFlow(),
             TrainingSection.hearFlow => _hearFlow(),

@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'widgets/paddle_widgets.dart';
+import '../content/training_profile.dart';
+import '../l10n/strings.dart';
 import '../net/mopp.dart';
+import 'widgets/training_settings_sheet.dart';
 import '../net/mopp_client.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
@@ -111,7 +114,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
       'dah': (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100),
     });
     await _keyerChannel.invokeMethod('setAcs', (p.getInt('acs') ?? 0).clamp(0, 3));
-    await _keyerChannel.invokeMethod('setInterWordSpace', (p.getInt('interWordSpace') ?? 40).clamp(6, 105));
+    await _keyerChannel.invokeMethod('setInterWordSpace', (p.getInt('profile.trx.interWordSpace') ?? TrainingProfile.defaultInterWord(TrainingProfile.trx)).clamp(6, 105));
     await _keyerChannel.invokeMethod('start');
     if (mounted) setState(() => _ready = true);
   }
@@ -372,6 +375,20 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings, color: c.textMuted),
+            tooltip: Strings.t('settings_title'),
+            onPressed: () async {
+              await showTrainingSettingsSheet(context,
+                  profile: TrainingProfile.trx,
+                  sections: const [TrainingSection.wordSpacing]);
+              final p = await SharedPreferences.getInstance();
+              await _keyerChannel.invokeMethod('setInterWordSpace',
+                  (p.getInt('profile.trx.interWordSpace') ?? 7).clamp(6, 105));
+            },
+          ),
+        ],
       ),
       body: _ready ? _body(c) : Center(child: CircularProgressIndicator(color: c.accent)),
     );

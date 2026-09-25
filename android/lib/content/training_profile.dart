@@ -9,6 +9,13 @@ import 'charset_content.dart';
 class TrainingProfile {
   static const hear = 'hear';
   static const echo = 'echo';
+  // CW Keyer and WiFi Trx keep only their own word gap (no migration needed:
+  // a missing value falls back to defaultInterWord).
+  static const keyer = 'keyer';
+  static const trx = 'trx';
+
+  /// Firmware default 7 dits for keying; the trainings keep the app's 40.
+  static int defaultInterWord(String kind) => (kind == keyer || kind == trx) ? 7 : 40;
 
   static const _intFields = [
     'wpm',

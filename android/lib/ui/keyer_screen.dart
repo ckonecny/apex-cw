@@ -3,7 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
+import '../content/training_profile.dart';
 import '../keyer/morse_decoder.dart';
+import '../l10n/strings.dart';
+import 'widgets/training_settings_sheet.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
 
@@ -65,7 +68,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
     await _keyerChannel.invokeMethod('setMode', _keyerMode);
     await _keyerChannel.invokeMethod('setCurtisBTiming', {'dit': curtisBDit, 'dah': curtisBDah});
     await _keyerChannel.invokeMethod('setAcs', acs);
-    await _keyerChannel.invokeMethod('setInterWordSpace', (prefs.getInt('interWordSpace') ?? 40).clamp(6, 105));
+    await _keyerChannel.invokeMethod('setInterWordSpace', (prefs.getInt('profile.keyer.interWordSpace') ?? TrainingProfile.defaultInterWord(TrainingProfile.keyer)).clamp(6, 105));
     await _keyerChannel.invokeMethod('start');
     if (mounted) setState(() => _ready = true);
   }
@@ -107,6 +110,20 @@ class _KeyerScreenState extends State<KeyerScreen> {
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings, color: c.textMuted),
+            tooltip: Strings.t('settings_title'),
+            onPressed: () async {
+              await showTrainingSettingsSheet(context,
+                  profile: TrainingProfile.keyer,
+                  sections: const [TrainingSection.wordSpacing]);
+              final p = await SharedPreferences.getInstance();
+              await _keyerChannel.invokeMethod('setInterWordSpace',
+                  (p.getInt('profile.keyer.interWordSpace') ?? 7).clamp(6, 105));
+            },
+          ),
+        ],
       ),
       body: _ready ? _buildBody() : Center(
         child: CircularProgressIndicator(color: c.accent),
@@ -116,11 +133,8 @@ class _KeyerScreenState extends State<KeyerScreen> {
 
   Widget _buildBody() {
     final c = AppColors.of(context);
-    final modeLabel = const ['Iambic A', 'Iambic B', 'Ultimatic', 'Non-Squeeze', 'Straight'][_keyerMode];
     return Column(
       children: [
-        _StatusBar(wpm: _wpm, modeLabel: modeLabel),
-
         Expanded(
           child: PinchZoomFontSize(
             prefsKey: 'keyerFontSize',
@@ -173,36 +187,6 @@ class _KeyerScreenState extends State<KeyerScreen> {
 }
 
 // ── Sub-widgets ──────────────────────────────────────────────────────────────
-
-class _StatusBar extends StatelessWidget {
-  final int wpm;
-  final String modeLabel;
-  const _StatusBar({required this.wpm, required this.modeLabel});
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: c.surfaceAlt,
-      child: Row(children: [
-        _chip('$wpm WPM', c.accent),
-        const SizedBox(width: 10),
-        _chip(modeLabel, c.textMuted),
-        const SizedBox(width: 10),
-        _chip('native keyer', c.accent),
-      ]),
-    );
-  }
-
-  Widget _chip(String text, Color color) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-    decoration: BoxDecoration(color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.3))),
-    child: Text(text, style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: color)),
-  );
-}
 
 class _SliderRow extends StatelessWidget {
   final String label;

@@ -35,10 +35,7 @@ class Strings {
     'cancel': ['Abbrechen', 'Cancel'],
     'opt_off': ['Aus', 'Off'],
     'opt_all': ['alle', 'all'],
-    'opt_unlimited': ['unbegrenzt', 'unlimited'],
     'opt_unlim_short': ['Unbegr.', 'Unlim.'],
-    'opt_by_char': ['Zeichenweise', 'By Character'],
-    'opt_by_word': ['Wortweise', 'By Word'],
     'opt_sound': ['Sound', 'Sound'],
     'opt_display': ['Anzeige', 'Display'],
     'opt_both': ['Beides', 'Both'],
@@ -54,7 +51,6 @@ class Strings {
     'theme_dark': ['Dunkel', 'Dark'],
     'settings_language': ['Sprache', 'Language'],
     'settings_general': ['Allgemein', 'General'],
-    'settings_default_wpm': ['Standard-WPM', 'Default WPM'],
     'settings_pitch': ['Tonhöhe (Hz)', 'Pitch (Hz)'],
     'settings_tone_softness': ['Ton-Weichheit', 'Tone Softness'],
     'settings_sequence': ['Reihenfolge', 'Sequence'],
@@ -71,6 +67,8 @@ class Strings {
     'settings_tone_shift': ['Ton-Versatz (Echo)', 'Tone Shift (Echo)'],
     'settings_acs': ['Auto-Zeichenabstand', 'AutoChar Spacing'],
     'settings_spacing': ['Abstände', 'Spacing'],
+    'settings_word_spacing_desc': ['Pause nach dem letzten Zeichen, ab der ein Leerzeichen gesendet wird, in Dit-Längen (normal = 7). Der Zeichenabstand wirkt beim Tasten nicht, wie am Morserino.', 'Pause after the last element before a space is sent, in dit lengths (normal = 7). Inter-char spacing has no effect when keying, as on the Morserino.'],
+    'settings_spacing_desc_echo': ['Gilt für das vorgespielte Wort, nicht für deine Antwort: Abstand in Dit-Längen zwischen den Zeichen bzw. Wörtern beim Abspielen (normal = 3 / 7). Größere Werte verlängern auch die Zeit, in der du mit der Antwort beginnen darfst. Deine Antwort wird mit 7 Dit Wortpause abgeschlossen.', 'Applies to the word played to you, not to your answer: spacing in dit lengths between characters / words during playback (normal = 3 / 7). Larger values also extend the time you have to start answering. Your answer is closed with a 7-dit word gap.'],
     'settings_spacing_desc': ['Abstand in Dit-Längen, wie am Morserino (normal = 3 / 7)', 'Spacing in dit lengths, as on the Morserino (normal = 3 / 7)'],
     'settings_audio_output': ['Audioausgabe', 'Audio Output'],
     'settings_audio_output_desc': ['Wird automatisch erkannt, wenn USB- oder Bluetooth-Geräte an-/abgesteckt werden.', 'Detected automatically as USB or Bluetooth devices connect and disconnect.'],
@@ -110,7 +108,6 @@ class Strings {
     'settings_press_dit_key': ['Dit-Taste drücken …', 'Press Dit key …'],
     'settings_press_dah_key': ['Dah-Taste drücken …', 'Press Dah key …'],
     'settings_saved': ['Gespeichert: {val}', 'Saved: {val}'],
-    'settings_level_includes_chars': ['Level {level} umfasst {n} Zeichen:', 'Level {level} includes {n} characters:'],
     'settings_char_hint_default': ['z.B. KMRSUAPTLO...', 'e.g. KMRSUAPTLO...'],
 
     // ── Content mode names (CW Generator / Echo Trainer / Koch Trainer) ────
@@ -153,7 +150,6 @@ class Strings {
     // ── Adaptive Copy mode (Koch Trainer "Adaptiv" flow) ─────────────────
     'ac_block_label': ['BLOCK {n}', 'BLOCK {n}'],
     'ac_idle_hint': ['Zuhören und auf Papier mitschreiben.', 'Listen and copy on paper.'],
-    'ac_start_block': ['Block starten', 'Start Block'],
     'ac_listening': ['Zuhören', 'Listening'],
     'ac_group_of': ['Gruppe {n} von {total}', 'Group {n} of {total}'],
     'ac_pause': ['Pause', 'Pause'],
@@ -173,7 +169,6 @@ class Strings {
     'trend_line': ['Trend {pct} % {arrow}', 'Trend {pct} % {arrow}'],
     'ac_paddle_hint': ['Paddle: Dit = wiederholen, Dah = weiter', 'Paddle: dit = repeat, dah = next'],
     'ac_done_errors': ['Fertig · {n} Fehler', 'Done · {n} errors'],
-    'ac_result_title': ['Ergebnis', 'Result'],
     'ac_correct_of': ['{c} von {t} richtig', '{c} of {t} correct'],
     'ac_weak_chars': ['SCHWACHE ZEICHEN', 'WEAK CHARACTERS'],
     'ac_boost_hint': [
@@ -188,9 +183,6 @@ class Strings {
     'ac_char_speed_up': ['Zeichentempo erhöht', 'Char speed increased'],
     'ac_char_unlocked': ['Neues Zeichen freigeschaltet', 'New character unlocked'],
     'ac_suggestions_title': ['VORSCHLÄGE · ANTIPPEN ZUM ÄNDERN', 'SUGGESTIONS · TAP TO TOGGLE'],
-    'ac_status_line': [
-      'WPM {wpm} (eff. {ewpm}) · Abstand {ic}/{iw} · Trend {ema}% {trend}',
-      'WPM {wpm} (eff. {ewpm}) · Spacing {ic}/{iw} · Trend {ema}% {trend}'],
     'ac_spacing_control_title': ['ABSTAND ANPASSEN', 'ADJUST SPACING'],
     'ac_spacing_control_hint': [
       'Zeichen/Wort (dits) — größer = mehr Pause',

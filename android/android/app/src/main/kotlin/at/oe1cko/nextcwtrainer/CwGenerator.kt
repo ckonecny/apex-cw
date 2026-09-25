@@ -188,7 +188,6 @@ class CwGenerator(private val tone: CwTonePlugin) {
     private var thread: Thread? = null
     @Volatile var running = false
         private set
-    @Volatile private var paused  = false
 
     // Bumped on every stop()/start()/playOne() call. A thread only fires its
     // callbacks (onWord/onChar/onWaiting/onDone) while its OWN snapshot still
@@ -278,13 +277,9 @@ class CwGenerator(private val tone: CwTonePlugin) {
     fun stop() {
         generation++
         running = false
-        paused  = false
         thread?.interrupt()
         CwAudioNative.setPlaying(false)
     }
-
-    fun pause()  { paused = true }
-    fun resume() { paused = false }
 
     /** Called from a dit/dah key press while awaitingChoice: dit(repeat=true)=same word, dah(repeat=false)=next word. */
     fun choosePaddle(repeat: Boolean) {
@@ -301,9 +296,6 @@ class CwGenerator(private val tone: CwTonePlugin) {
             var repeatNext = false
             var wordCount = 0
             while (running) {
-                while (paused && running) Thread.sleep(50)
-                if (!running) break
-
                 val text = if (repeatNext && lastText != null) lastText!! else nextContent()
                 lastText = text
                 repeatNext = false

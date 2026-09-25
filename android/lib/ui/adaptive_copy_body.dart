@@ -8,6 +8,7 @@
 // state, shared with the Classic flow) and persisting the blockquote EMA.
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'widgets/setting_rows.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
@@ -1135,6 +1136,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       ));
     }
     if (_pendingInterChar != null) {
+      final spacingWpm = (_acceptCharSpeed && _pendingWpm != null) ? _pendingWpm! : (_wpmBefore ?? widget.wpm);
       final label = _lastDecision!.spacingStep == TempoStep.up
           ? Strings.t('ac_spacing_up')
           : Strings.t('ac_spacing_down');
@@ -1142,8 +1144,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         width: rowWidth,
         accepted: _acceptSpacing,
         onToggle: (v) => setState(() => _acceptSpacing = v),
-        label: '$label: $_interCharBefore→${_acceptSpacing ? _pendingInterChar : _interCharBefore} / '
-            '$_interWordBefore→${_acceptSpacing ? _pendingInterWord : _interWordBefore}',
+        label: '$label: $_interCharBefore→${_acceptSpacing ? _pendingInterChar : _interCharBefore} '
+            '(${ditsToSeconds(_acceptSpacing ? _pendingInterChar! : _interCharBefore!, spacingWpm)}) / '
+            '$_interWordBefore→${_acceptSpacing ? _pendingInterWord : _interWordBefore} '
+            '(${ditsToSeconds(_acceptSpacing ? _pendingInterWord! : _interWordBefore!, spacingWpm)})',
         onDecrement: _acceptSpacing ? () => _stepPendingSpacing(-1) : null,
         onIncrement: _acceptSpacing ? () => _stepPendingSpacing(1) : null,
       ));

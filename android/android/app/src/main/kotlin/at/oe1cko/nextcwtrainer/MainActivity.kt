@@ -166,8 +166,6 @@ class MainActivity : FlutterActivity() {
                         result.success(null)
                     }
                     "stop"    -> { generator.stop(); keyer.start(); result.success(null) }
-                    "pause"   -> { generator.pause();  result.success(null) }
-                    "resume"  -> { generator.resume(); result.success(null) }
                     "playOne" -> {
                         generator.playOne(call.arguments as? String ?: "")
                         result.success(null)
@@ -190,11 +188,6 @@ class MainActivity : FlutterActivity() {
                         paddleChoiceActive = call.arguments as? Boolean ?: false
                         result.success(null)
                     }
-                    "choosePaddle" -> {
-                        generator.choosePaddle(call.arguments as? Boolean ?: false)
-                        result.success(null)
-                    }
-                    "getKochChars" -> result.success(generator.kochChars)
                     "setKochChars" -> {
                         @Suppress("UNCHECKED_CAST")
                         val chars = call.arguments as? List<String>

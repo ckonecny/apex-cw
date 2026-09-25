@@ -47,8 +47,6 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "keyOn"     -> { CwAudioNative.setPlaying(true);  result.success(null) }
-            "keyOff"    -> { CwAudioNative.setPlaying(false); result.success(null) }
             "setFreq"   -> {
                 lastFreqHz = (call.arguments as? Number)?.toDouble() ?: 600.0
                 CwAudioNative.setFreqHz(lastFreqHz)
@@ -66,7 +64,6 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
                 playConfirmTone(call.arguments as? Boolean ?: true)
                 result.success(null)
             }
-            "dispose"   -> { CwAudioNative.stopStream(); result.success(null) }
             else        -> result.notImplemented()
         }
     }

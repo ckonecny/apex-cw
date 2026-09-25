@@ -37,6 +37,9 @@ Latest tagged build: v0.1.0.
   RX/TX log), send via keyer/touch paddles (per word) or typed text, macros
   CQ / Call+Name / `:usr`. New prefs in Settings > WiFi Trx: Callsign, Name.
   Uses system WLAN/mobile data (no SSID/password). See DECISIONS.md.
+  *(2026-09-25: the macros no longer exist in `wifi_trx_screen.dart`, and
+  Callsign/Name were never read anywhere, so both prefs and the Settings >
+  WiFi Trx section were removed; see "Dead-code cleanup" below.)*
   Next: test against cq.morserino.info (registration "hi" @20 WPM assumed
   from the chatserver README, not verified against that exact server),
   multiple endpoints (add/edit/delete), maybe a foreground service.
@@ -329,3 +332,45 @@ installed on `63061JEBF01551`, user-confirmed working:
 ## Trainings-Umbau Phase 8 (2026-09-25)
 Done (installed, partly user-confirmed): Paddle choice per group (Hören), block trend, think-time fix, Echo confirm tones, speed controls, 2 s wait, attempt indicator, stale-text fix. Reaktionszeit dropped. Next: 8c Verwechslungspaare, 8d benannte Presets, then Phase 8 test. Phase 5-7 testplans still with the user. See docs/training/P8-extras.md.
 Verwechslungspaare done (Geben stats + result page). Benannte Presets deferred by user.
+
+## Dead-code cleanup (2026-09-25), installed on 63061JEBF01551, not yet user-tested
+Removed code that nothing uses:
+- Settings > WiFi Trx (Callsign/Name) plus `_TextPrefField`, which was used
+  only there. The stored prefs `callsign`/`opName` are left orphaned on
+  existing installs, which does no harm.
+- `genModeNames()` (cw_content.dart), `_dispCodeAndDisp` (echo trainer), and
+  8 unused l10n keys (`opt_unlimited`, `opt_by_char`, `opt_by_word`,
+  `settings_default_wpm`, `settings_level_includes_chars`, `ac_start_block`,
+  `ac_result_title`, `ac_status_line`).
+- Native channel handlers that Dart never calls: generator `pause`/`resume`/
+  `choosePaddle`/`getKochChars`, tone `keyOn`/`keyOff`/`dispose`, plus
+  `CwGenerator.pause()/resume()` and the `paused` wait loop. The paddle
+  choice still runs internally via `generator.choosePaddle()` from the
+  keyer callback in MainActivity.
+flutter analyze: no warnings. flutter test: all 42 pass. Next: install on
+63061JEBF01551 and do a quick check of Settings, Echo, the Koch generator
+with Stop<Next>Rep, and WiFi Trx.
+
+## Upstream check (2026-09-25)
+Compared firmware commits V9.0..origin/master (V9.0.1 + 9.1 beta):
+- f98a409 (Echo Think T.) has already been ported.
+- 9aae6f6 (the eeee error sign no longer fires on valid e's): not applicable
+  yet, because the error-sign reset of the echo answer (8 dits or "eeee"
+  clears the answer) was never ported. Open item: port it, using the
+  fixed logic.
+- Everything else (settings pause, Koch menu nav, TFT repaint, Pocket click)
+  does not apply to the app.
+
+
+## CW Keyer / WiFi Trx word gap, seconds display (2026-09-25), installed on 63061JEBF01551, not yet user-tested
+- CW Keyer: status chips at the top removed.
+- CW Keyer and WiFi Trx: ⚙ in the app bar with their own InterWord Spc
+  (`profile.keyer|trx.interWordSpace`, default 7 dits instead of the Echo
+  value 40). InterChar Spc deliberately not offered: the firmware does not
+  use it when keying (see DECISIONS.md).
+- Every place where InterChar/InterWord can be set (⚙ sheets of Hören/Geben/
+  Keyer/Trx, adaptive suggestion rows) now shows the time in seconds at the
+  current WPM next to the dits (`ditsToSeconds`, dit = 1.2/wpm).
+- Echo ⚙: hint text says the spacing applies to the played word (and the
+  start deadline for the answer), not to the answer itself.
+- Open: none new. Upstream item (echo error-sign reset) still open.

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'widgets/setting_rows.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
@@ -63,7 +64,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   static const _dispCodeOnly    = 1;  // Sound only
   static const _dispDispOnly    = 2;  // Display only (no audio)
-  static const _dispCodeAndDisp = 3;  // Sound & Display
+  // 3 = Sound & Display: the default, needs no special handling
 
   _State _state    = _State.idle;
   int    _wpm      = 20;
@@ -494,8 +495,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         accepted: _accSpacing,
         onToggle: (v) => setState(() => _accSpacing = v),
         label: '${Strings.t(tighter ? 'ac_spacing_up' : 'ac_spacing_down')}: '
-            '$_interCharSpace→${_accSpacing ? _pendIC : _interCharSpace} / '
-            '$_interWordSpace→${_accSpacing ? _pendIW : _interWordSpace}',
+            '$_interCharSpace→${_accSpacing ? _pendIC : _interCharSpace} '
+            '(${ditsToSeconds(_accSpacing ? _pendIC! : _interCharSpace, _wpm)}) / '
+            '$_interWordSpace→${_accSpacing ? _pendIW : _interWordSpace} '
+            '(${ditsToSeconds(_accSpacing ? _pendIW! : _interWordSpace, _wpm)})',
         onDecrement: _accSpacing ? () => _stepSpacing(-1) : null,
         onIncrement: _accSpacing ? () => _stepSpacing(1) : null,
       ));

@@ -242,3 +242,6 @@ class SegmentRow extends StatelessWidget {
   }
 }
 
+
+/// Length of [dits] dit lengths at [wpm] (PARIS: dit = 1.2 / wpm s), e.g. "0.4 s".
+String ditsToSeconds(int dits, int wpm) => '${(dits * 1.2 / wpm).toStringAsFixed(1)} s';
