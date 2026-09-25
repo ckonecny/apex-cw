@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
+import 'invaders_screen.dart';
 import 'morsel_screen.dart';
 import 'widgets/app_ui.dart';
 
@@ -35,6 +36,16 @@ class GamesScreen extends StatelessWidget {
               color: c.info,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const MorselScreen())),
+            ),
+            const SizedBox(height: 12),
+            _GameCard(
+              icon: Icons.rocket_launch_outlined,
+              title: 'Morse Invaders',
+              subtitle: Strings.t('inv_subtitle'),
+              hint: Strings.t('inv_hint'),
+              color: c.accentPurple,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const InvadersScreen())),
             ),
           ],
         ),

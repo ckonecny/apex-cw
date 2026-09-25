@@ -387,3 +387,23 @@ Flache Karten ohne Rahmen, getönte Buttons (`widgets/app_ui.dart`), Space-Grote
   start-speed slider 10..48 (default 48, `morselStartWpm`). Schedule stays
   -5 WPM per miss down to 18; a start below 18 stays at the start speed.
   High-score rows store the start speed and show it as a WPM column.
+
+## 2026-09-25: Morse Invaders port — deviations from MorseGame.cpp
+
+- Koch lesson: the sending lesson (Echo Trainer profile), since the game is
+  pure keying (user's call). The firmware has only one global `kochFilter`.
+- Extra life: the firmware keeps `nextLifeAt` in a function-static that is
+  never reset, so later games in one session earn their first extra life
+  late. Reset per game here.
+- Start level is persisted; the firmware resets it to 1 on every entry.
+- No character rotation option (`posInvaderOrient`): it exists for holding
+  the Pocket sideways, irrelevant on a phone.
+- Drawing is scaled: x from the 170 px width, y maps the fall path onto the
+  available height, so fall times match the device. Game logic keeps the
+  firmware units.
+- Sound effects: new `playEffect` on the tone channel; keying cancels them in
+  `CwTonePlugin.setPlaying`, like `updateSound()` dropping the effect when the
+  keyer leaves IDLE.
+- Game over offers "Play again" / "To menu"; exiting the whole game is the
+  normal back navigation from the menu.
+

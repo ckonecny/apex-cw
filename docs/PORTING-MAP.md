@@ -23,7 +23,7 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | `MorseMorsel.cpp` (Morsel, word guessing) | `lib/ui/morsel_screen.dart` (via `games_screen.dart`) | Ported, single player (2026-09-25), not yet user-tested |
 | `MorseMemoryChain.cpp` (Memory Chain) | — | Backlog #2 |
 | `MorseGridEngine.cpp`, `MorseGridScore.cpp`, `MorseTrailblazer.cpp`, `MorseFoxHunt.cpp` (grid games) | — | Backlog #3 |
-| `MorseGame.cpp`, `MorseGameMode.cpp`, `GameSprite.cpp` (Morse Invaders) | — | Backlog #4 |
+| `MorseGame.cpp`, `MorseGameMode.cpp`, `GameSprite.cpp` (Morse Invaders) | `lib/ui/invaders_screen.dart` (via `games_screen.dart`), effects in `CwTonePlugin.kt` | Ported (2026-09-25), user-tested OK |
 | `MorseRadioCave.cpp` (Radio Cave, text adventure) | — | Backlog #5 |
 | `MorsePileup.cpp` (Fight the Pileup) | — | Backlog #6, single player only |
 | Multiplayer of all games (`MorseGridNet.cpp`, ESP-NOW parts of Morsel/Pileup) | — | N/A: ESP-NOW does not exist on a phone |

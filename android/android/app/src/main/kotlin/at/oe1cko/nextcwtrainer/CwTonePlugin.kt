@@ -21,8 +21,51 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
         else Log.i(TAG, "AAudio started — hw latency ~${CwAudioNative.getLatencyMs()} ms")
     }
 
-    // Called directly by CwKeyer (no MethodChannel in the hot path)
-    fun setPlaying(on: Boolean) = CwAudioNative.setPlaying(on)
+    // Called directly by CwKeyer/CwGenerator (no MethodChannel in the hot
+    // path). Keying owns the audio: a running game sound effect stops at once
+    // (MorseGame.cpp updateSound() drops its effect when the keyer leaves IDLE).
+    fun setPlaying(on: Boolean) {
+        if (on) cancelEffect()
+        CwAudioNative.setPlaying(on)
+    }
+
+    // Game sound effects (Morse Invaders): a short note sequence, back to back
+    // like MorseGame.cpp's startSound()/updateSound(). A new effect replaces
+    // a running one; keying cancels it (setPlaying above).
+    private val effectLock = Any()
+    private var effectGen = 0
+    private var effectActive = false
+
+    fun playEffect(notes: List<Pair<Double, Long>>) {
+        if (notes.isEmpty()) return
+        val gen = synchronized(effectLock) { effectActive = true; ++effectGen }
+        Thread({
+            for ((f, ms) in notes) {
+                synchronized(effectLock) {
+                    if (effectGen != gen) return@Thread
+                    CwAudioNative.setFreqHz(f)
+                    CwAudioNative.setPlaying(true)
+                }
+                Thread.sleep(ms)
+            }
+            synchronized(effectLock) {
+                if (effectGen != gen) return@Thread
+                effectActive = false
+                CwAudioNative.setPlaying(false)
+                CwAudioNative.setFreqHz(lastFreqHz)
+            }
+        }, "game-effect").apply { isDaemon = true; start() }
+    }
+
+    fun cancelEffect() {
+        synchronized(effectLock) {
+            if (!effectActive) return
+            effectActive = false
+            effectGen++
+            CwAudioNative.setPlaying(false)
+            CwAudioNative.setFreqHz(lastFreqHz)
+        }
+    }
 
     /**
      * Echo Trainer "Confrm. Tone" — mirrors MorseOutput::soundSignalOK/ERR exactly:
@@ -64,6 +107,18 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
                 playConfirmTone(call.arguments as? Boolean ?: true)
                 result.success(null)
             }
+            "playEffect" -> {
+                // [[freqHz, ms], ...]
+                val notes = (call.arguments as? List<*>).orEmpty().mapNotNull { n ->
+                    val l = n as? List<*> ?: return@mapNotNull null
+                    val f = (l.getOrNull(0) as? Number)?.toDouble() ?: return@mapNotNull null
+                    val ms = (l.getOrNull(1) as? Number)?.toLong() ?: return@mapNotNull null
+                    f to ms
+                }
+                playEffect(notes)
+                result.success(null)
+            }
+            "stopEffect" -> { cancelEffect(); result.success(null) }
             else        -> result.notImplemented()
         }
     }

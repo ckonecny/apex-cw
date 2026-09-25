@@ -321,7 +321,7 @@ DECISIONS.md.
 | 1 | **Morsel** (`MorseMorsel.cpp`, ~1.8k lines) — ported 2026-09-25, see below | Word guessing like Wordle: the word is played in CW and keyed back; letter boxes turn green/red. Words and abbreviations from the Koch lesson. | M | Word lists, Koch set, keyer and decoder already exist. Needs the `<err>` prosign (8 dits = delete the last char); build it together with the error-sign item from the upstream check. |
 | 2 | **Memory Chain** (`MorseMemoryChain.cpp`, ~830) | One new char per round, the whole chain is keyed from memory. Modes: Koch characters / call signs. | S–M | Call signs come from `CallsignData.kt`. High scores per mode. |
 | 3 | **Trailblazer + Fox Hunt** (grid engine ~400, score ~300, games ~360 + ~440) | Maze: Trailblazer shows the next letter (keying), Fox Hunt only plays it and you key the direction (hearing). | M | Build the grid engine once for both games. |
-| 4 | **Morse Invaders** (`MorseGame.cpp` ~1.1k + game mode/sprites) | Arcade: falling characters get "shot" by keying them. | L | Real-time game loop plus graphics (CustomPainter/Ticker), timing against the native keyer. |
+| 4 | **Morse Invaders** (`MorseGame.cpp` ~1.1k + game mode/sprites) — ported 2026-09-25, see below | Arcade: falling characters get "shot" by keying them. | L | Real-time game loop plus graphics (CustomPainter/Ticker), timing against the native keyer. |
 | 5 | **Radio Cave** (`MorseRadioCave.cpp`, ~2.65k) | Text adventure, every command keyed in Morse. 12 rooms, items, puzzles. | L | Mostly content and a state machine, UI is simple. Keep the English texts. |
 | 6 | **Fight the Pileup** (`MorsePileup.cpp`, ~1.8k) | Work a pileup of call signs. | M–L | Single player only; the multiplayer part is ESP-NOW. |
 | 7 | **QSO Bot** (`MorseQsoBot.cpp` ~1.2k + match/content) | Simulated QSO, the bot answers to what was keyed. | L | The most valuable training module still missing. |
@@ -436,3 +436,24 @@ Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitl
   K A as letters, consistent with how it is shown and graded.
 - To test: Words/Abbrevs with START, PARTY, AS, BK; Random Groups "Pro" in
   CW Generator and Echo (prosign audible, Echo accepts keyed prosign).
+
+## Morse Invaders (backlog #4, 2026-09-25), user-tested OK
+
+- Done out of backlog order at the user's request. Second tile in `GamesScreen`
+  -> `InvadersScreen` (`lib/ui/invaders_screen.dart`).
+- Koch lesson = the sending lesson (`profile.echo.kochLevel`), read-only in the
+  game menu (firmware: `kochFilter`, also not changeable there). Keying speed =
+  global `wpm` (firmware: `MorsePreferences::wpm`), +/- in menu and in game.
+- Game logic 1:1 from `MorseGame.cpp` in firmware units (33 ms frames, 170 px
+  field, y 24..262): spawn interval, speeds, max invaders, lane blocking,
+  lowest-match rule, score formula (wpm/10 x urgency x streak), extra life
+  every 1000, 10 hits per level, +5 per invader cleared at level up, 5 high
+  scores (score, Koch, level, wpm). Start level 1..50 (persisted here).
+- Sound effects via new `cw_tone` methods `playEffect`/`stopEffect`
+  (`CwTonePlugin.kt`); keying cancels a running effect.
+- Pause via the app bar or the back button, also when the app goes to the
+  background.
+- To test: fall speed/feel at level 1 and higher levels, sound effects vs.
+  keying, hit detection with the touch paddles, prosign `<AR>` (+) invaders,
+  high score table.
+
