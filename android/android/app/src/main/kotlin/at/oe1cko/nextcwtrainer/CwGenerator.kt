@@ -378,15 +378,13 @@ class CwGenerator(private val tone: CwTonePlugin) {
     // Master alphabet for "Random Groups" (mirrors CWchars[0..50] in m32_v6.ino,
     // minus the trailing äöüH it never actually draws from). The six single-
     // letter prosign codes there (S,A,N,K,E,B at indices 45..50) are
-    // represented here by their two-letter mnemonics ("AS","KA","KN","SK",
-    // "VE","BK") instead: playWord() upper-cases all generated text before
-    // parsing, so — unlike the firmware, which tells a prosign code from the
-    // real letter by case — this app can only recognize a prosign via its
-    // two-character lookahead (see morseTable), the same convention already
-    // used by the start/end session markers.
+    // represented here by their bracketed mnemonics ("<AS>","<KA>",...) —
+    // the same form the firmware's cleanUpProSigns() displays. playWord()
+    // only plays a prosign for an explicit <XX> token, so letter pairs in
+    // words/abbrevs/groups ("START", "AS", "KAS") stay plain letters.
     private val randomCharsAlphabet: List<String> =
         "abcdefghijklmnopqrstuvwxyz0123456789.,:-/=?@+".map { it.toString() } +
-        listOf("AS", "KA", "KN", "SK", "VE", "BK")
+        listOf("<AS>", "<KA>", "<KN>", "<SK>", "<VE>", "<BK>")
 
     // "Random Groups" pool ranges into randomCharsAlphabet — matches
     // getRandomChars()'s option table in m32_v6.ino exactly (half-open [s,e)
@@ -492,15 +490,18 @@ class CwGenerator(private val tone: CwTonePlugin) {
     private fun playWord(text: String, myGen: Int, trailingGap: Boolean = true) {
         if (myGen == generation) onWord?.invoke(text)
         val upper = text.uppercase()
+        // A prosign must be written as an explicit <XX> token; a plain letter
+        // pair is always two letters (START used to play as S T <AR> T, the
+        // word AS and the abbreviation BK as prosigns).
         var i = 0
         while (i < upper.length && running) {
-            // Check for two-char prosigns
-            val twoChar = if (i + 1 < upper.length) upper.substring(i, i + 2) else null
-            val consumesTwo = twoChar != null && morseTable.containsKey(twoChar)
-            val nextIndex = i + (if (consumesTwo) 2 else 1)
+            val close = if (upper[i] == '<') upper.indexOf('>', i) else -1
+            val prosign = if (close > i) upper.substring(i + 1, close) else null
+            val isProsign = prosign != null && prosign.length >= 2 && morseTable.containsKey(prosign)
+            val nextIndex = if (isProsign) close + 1 else i + 1
             val isLastToken = nextIndex >= upper.length
-            if (consumesTwo) {
-                playChar(twoChar!!, myGen, trailingGap || !isLastToken)
+            if (isProsign) {
+                playChar(prosign!!, myGen, trailingGap || !isLastToken)
             } else {
                 val c = upper[i].toString()
                 if (c == " ") {

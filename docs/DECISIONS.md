@@ -24,6 +24,13 @@ letter = prosign). `playWord()` here uppercases all text before parsing, so
 that trick isn't available; prosigns are instead keyed as two-letter mnemonics
 ("KA", "KN", "SK", "AS", "VE", "BK") recognized via lookahead in `morseTable`.
 
+**Changed 2026-09-25:** the bare two-letter lookahead also matched ordinary
+letter pairs (START played as S T <ar> T; the word AS and abbrev BK as
+prosigns). In text passed to `playWord()`, a prosign must now be an explicit
+`<KA>` token — the firmware's own display form (`cleanUpProSigns()` in
+m32_v6.ino). The mnemonic keys stay as they are in `morseTable` and the
+decoder (which still emits "KA"); Echo strips the brackets before comparing.
+
 ## Generation-token counter to kill stale async callbacks
 `CwGenerator.generation` is bumped on every `stop()`; every callback checks it
 before firing. Root-fix for a race where a just-stopped generator thread's

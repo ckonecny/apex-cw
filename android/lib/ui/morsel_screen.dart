@@ -73,8 +73,8 @@ class _MorselScreenState extends State<MorselScreen> {
   static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
   static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
-  // Letter -> dit/dah pattern. The clue goes out as patterns, not text:
-  // playWord() would read letter pairs like "AR" or "KN" as prosigns.
+  // Letter -> dit/dah pattern. The clue goes out as exact patterns, not
+  // text, so it never depends on playWord()'s prosign parsing.
   static final _patterns = {
     for (final e in MorseDecoder.table.entries)
       if (e.value.length == 1) e.value: e.key,

@@ -420,5 +420,19 @@ Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitl
 - Added: clue start speed slider in the lobby (10..48 WPM), see DECISIONS.md.
 - To test: clue audio, submit pause, `<err>` in Morsel and Echo, skip,
   results/high scores, back button during play, start page layout with 5 cards.
-- Known, not fixed: `playWord()` merges letter pairs that equal a prosign
-  mnemonic (AR, KN, AS, SK, VE, BK, KA, BT) inside generated words.
+- Fixed separately (see next section): `playWord()` merged prosign letter pairs.
+
+## Fix: prosign merging in generated text (2026-09-25), user-tested OK
+
+- `playWord()` used to play any letter pair equal to a prosign mnemonic as
+  that prosign: START as S T <ar> T, the word AS and abbrev BK as prosigns,
+  Koch groups like KAS as <ka> S. Affected CW Generator/Koch Trainer, Echo
+  targets and previews (WiFi Trx and Morsel use `playPatterns`, unaffected).
+- Now a prosign is played only for an explicit `<XX>` token. Random Groups
+  (Pro options) generate `<AS>`, `<KA>`, `<KN>`, `<SK>`, `<VE>`, `<BK>`.
+- Echo compares/grades against the target without brackets (decoder emits
+  "KA"); the target display shows `<ka>` like the firmware. Adaptive Copy
+  strips the brackets (per-character display), so a Pro group there now plays
+  K A as letters, consistent with how it is shown and graded.
+- To test: Words/Abbrevs with START, PARTY, AS, BK; Random Groups "Pro" in
+  CW Generator and Echo (prosign audible, Echo accepts keyed prosign).

@@ -326,7 +326,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       // that don't consume it.
       if (ordinal != 0 && ordinal != 4) 'abbrevLengthMax': widget.abbrevLengthMax,
     });
-    return ((result as String?) ?? '').toUpperCase();
+    // Groups are shown and graded per character, so a "<KA>" prosign token
+    // from Random Groups is sent as the plain letters K A here.
+    return ((result as String?) ?? '').replaceAll(RegExp('[<>]'), '').toUpperCase();
   }
 
   void _onGenEvent(dynamic raw) {

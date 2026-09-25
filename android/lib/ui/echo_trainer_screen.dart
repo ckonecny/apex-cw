@@ -152,6 +152,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _toneSoftness  = 4;   // M32 "Tone Softness" (0..8 -> 1..9 ms attack/release)
 
   String _target  = '';
+  // Random groups carry prosigns as "<KA>" (so playWord() can tell them from
+  // the letters K A); the decoder emits "KA", so compare without brackets.
+  String get _targetPlain => _target.replaceAll(RegExp('[<>]'), '');
   String _attempt = '';
 
   int _correct = 0;
@@ -653,7 +656,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (mounted) setState(() => _state = _State.idle);
   }
 
-  /// Plays a marker string (start "VVVKA" / end "+") via the native playOne()
+  /// Plays a marker string (start "VVV<KA>" / end "+") via the native playOne()
   /// and waits for its genuine completion.
   Future<void> _playSignal(String morse) async {
     final completer = Completer<void>();
@@ -754,7 +757,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // the target word (displayDecodedMorse() in m32_v6.ino, with the upstream
     // fix 9aae6f6 for words with four or more e's).
     if (ch == 'E' && _attempt.toUpperCase().endsWith('EEE') &&
-        !_target.toUpperCase().startsWith('${_attempt.toUpperCase()}E')) {
+        !_targetPlain.toUpperCase().startsWith('${_attempt.toUpperCase()}E')) {
       ch = MorseDecoder.err;
     }
     // <err> clears the answer so far (echoResponse = "").
@@ -788,9 +791,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     _total++;
 
-    final ok = _attempt.trim().toUpperCase() == _target.toUpperCase();
+    final ok = _attempt.trim().toUpperCase() == _targetPlain.toUpperCase();
     if (_repeats == 1) _firstAttempt = _attempt.trim();
-    if (_blockActive && _repeats == 1) _applyBlockFeedback(_target, _attempt);
+    if (_blockActive && _repeats == 1) _applyBlockFeedback(_targetPlain, _attempt);
 
     setState(() => _state = ok ? _State.correct : _State.wrong);
     if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', ok);
@@ -826,13 +829,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   void _recordWord(WordOutcome outcome) {
     if (widget.fixedTarget != null) return;
-    final t = _target.toUpperCase(), a = _firstAttempt.toUpperCase();
+    final t = _targetPlain.toUpperCase(), a = _firstAttempt.toUpperCase();
     var wrong = -1;
     if (a != t) {
       wrong = 0;
       while (wrong < t.length && wrong < a.length && t[wrong] == a[wrong]) wrong++;
     }
-    _blockResults.add(WordResult(_target, _firstAttempt, _repeats, outcome, wrong));
+    _blockResults.add(WordResult(_targetPlain, _firstAttempt, _repeats, outcome, wrong));
   }
 
   // Moves on to the next word, or ends the session if Max # of Words has

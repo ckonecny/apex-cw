@@ -36,7 +36,8 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
 3. **Prosigns are two-character mnemonic keys** ("KA", "KN", "SK", "AS",
    "VE", "BK"), not the firmware's single-uppercase-letter convention —
    `playWord()` uppercases all text before parsing, so the firmware's
-   case-based trick isn't available here.
+   case-based trick isn't available here. In text to be played they must be
+   bracketed (`<KA>`); a bare letter pair is always two letters.
 4. **Rebuild and reinstall on-device before calling a fix done.** A code
    change with no reinstall has burned real user time before; say
    explicitly if a fix is pending install.
