@@ -109,6 +109,39 @@ class CharStatsStore {
     s.lastBlock = block;
     s.weight = (correct ? s.weight - 1 : s.weight + 2).clamp(1, 20);
   }
+
+  // Books one Echo word after its FIRST attempt (docs/training/P6). Weights
+  // follow Koch::increaseWordProbability / decreaseWordProbability in
+  // MorsePreferences.cpp: first wrong char +4, its neighbours +2 (only if a
+  // different char), a fully right word -1 per char. Attempts/errors/EMA:
+  // chars before the first wrong one count as right, the wrong one as an
+  // error, chars after it are not counted (unknown whether heard).
+  void recordWord(String target, String received, {int block = 0}) {
+    final t = target.toUpperCase(), r = received.trim().toUpperCase();
+    var failed = -1;
+    for (var i = 0; i < t.length; i++) {
+      if (i >= r.length || t[i] != r[i]) { failed = i; break; }
+    }
+    void bump(String ch, {bool? correct, int weight = 0}) {
+      if (ch.trim().isEmpty) return;
+      final s = stats.putIfAbsent(ch, () => CharStat());
+      if (correct != null) {
+        s.attempts++;
+        if (!correct) s.errors++;
+        s.emaErrorRate = _emaAlpha * (correct ? 0 : 1) + (1 - _emaAlpha) * s.emaErrorRate;
+        s.lastBlock = block;
+      }
+      s.weight = (s.weight + weight).clamp(1, 20);
+    }
+    if (failed == -1) {
+      for (final ch in t.split('')) { bump(ch, correct: true, weight: -1); }
+      return;
+    }
+    for (var i = 0; i < failed; i++) { bump(t[i], correct: true); }
+    bump(t[failed], correct: false, weight: 4);
+    if (failed > 0 && t[failed - 1] != t[failed]) bump(t[failed - 1], weight: 2);
+    if (failed + 1 < t.length && t[failed + 1] != t[failed]) bump(t[failed + 1], weight: 2);
+  }
 }
 
 // Lifetime-EMA weak characters among `activeChars`, worst first — shared

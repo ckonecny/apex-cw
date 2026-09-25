@@ -6,6 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
 import '../content/cw_content.dart';
 import '../content/char_stats.dart';
+import '../content/adaptive_copy_engine.dart';
+import '../content/echo_suggestions.dart';
+import 'adaptive_copy_body.dart' show SuggestionRow;
 import 'char_stats_screen.dart';
 import '../content/training_profile.dart';
 
@@ -150,6 +153,16 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Pushed to the shared generator singleton on every prompt (CLAUDE.md rule 2).
   int  _interCharSpace = 28;
   int  _interWordSpace = 40;
+  // Widening cap for block suggestions: spacing as loaded/set in the sheet.
+  int  _capInterChar = 28, _capInterWord = 40;
+  EchoSuggestions? _suggestions;
+  // Proposals shown on the result page. Accepting has no effect yet (6d).
+  int? _pendWpm, _pendAnswer, _pendIC, _pendIW;
+  bool _accUnlock = true, _accWpm = true, _accSpacing = true, _accAnswer = false;
+  final Set<String> _excludedBoost = {};
+  bool _previewing = false;
+  // Weak chars boosted in the block after the result page (accepted chips).
+  List<String> _boostChars = [];
   List<String> _practiceChars = const [];
   int  _boostLevel = 0;
   int  _pitch         = 600;  // base sidetone pitch (M32 "Tone Pitch")
@@ -243,6 +256,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _answerWpmMax   = (p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
       _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
       _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
+      _capInterChar = _interCharSpace;
+      _capInterWord = _interWordSpace;
       _practiceChars  = parsePracticeChars(pf.getString('practiceChars') ?? '');
       _boostLevel     = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
       _modeIndex      = (p.getInt('echoModeIndex') ?? 0).clamp(0, 5);
@@ -290,7 +305,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // defaults to 1 (never drawn yet / already mastered back down to baseline).
   String _pickAdaptiveChar() {
     final active = kochActiveChars(_kochLevel, _activeKochChars);
-    final weights = active.map((c) => _charStats.weightFor(c)).toList();
+    final weights = active
+        .map((c) => _charStats.weightFor(c) * (_boostChars.contains(c) ? 2 : 1))
+        .toList();
     final total = weights.fold<int>(0, (a, b) => a + b);
     var r = _random.nextInt(total);
     for (var i = 0; i < active.length; i++) {
@@ -304,6 +321,205 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // getRandomChars(posRandomLength, OPT_KOCH_ADAPTIVE) in m32_v6.ino.
   String _pickAdaptiveGroup() =>
       List.generate(_groupLength.clamp(2, 8), (_) => _pickAdaptiveChar()).join();
+
+  // Block flow: every echo content feeds the Geben track, once per word
+  // after the first attempt (docs/training/P6-echo-vorschlaege.md).
+  Future<void> _applyBlockFeedback(String target, String received) async {
+    _charStats.recordWord(target, received);
+    final p = await SharedPreferences.getInstance();
+    await _charStats.save(p);
+  }
+
+  // Block end: feed the first-try results to the adaptive engine and keep
+  // the proposals for the result page (docs/training/P6). Nothing is applied.
+  Future<void> _computeSuggestions() async {
+    _boostChars = [];   // a boost lasts one block
+    final p = await SharedPreferences.getInstance();
+    _echoEngine ??= AdaptiveCopyEngine(
+      thresholds: AdaptiveCopyThresholds(
+        highThreshold: ((p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99)) / 100,
+        lowThreshold: (p.getInt('adaptiveLowThresholdPct') ?? 70) / 100,
+        blockEmaAlpha: (p.getInt('adaptiveEmaAlphaPct') ?? 30) / 100,
+        unlockOccurrences: p.getInt('adaptiveUnlockOccurrences') ?? 20,
+      ),
+      initialBlockEma: p.getDouble('echoBlockEma') ?? 1.0,
+    );
+    await _charStats.load(p);
+    // Char-based content only: unlock check and weak chars need a char set.
+    final charContent = widget.kochMode && (_kochModeIndex == 0 || _kochModeIndex == 4);
+    final s = evaluateEchoBlock(
+      _echoEngine!,
+      EchoSuggestionInput(
+        firstTry: _blockResults.map((r) => r.outcome == WordOutcome.first).toList(),
+        wpm: _wpm,
+        answerWpmMax: _answerWpmMax,
+        interCharSpace: _interCharSpace,
+        interWordSpace: _interWordSpace,
+        maxInterCharSpace: max(_capInterChar, _interCharSpace),
+        maxInterWordSpace: max(_capInterWord, _interWordSpace),
+        kochLevel: widget.kochMode ? _kochLevel : 0,
+        kochTotal: widget.kochMode ? _activeKochChars.length : 0,
+        activeChars: charContent ? kochActiveChars(_kochLevel, _activeKochChars) : const [],
+        stats: _charStats,
+      ),
+    );
+    await p.setDouble('echoBlockEma', s.blockEma);
+    _suggestions = s;
+    _pendWpm = s.newWpm;
+    _pendAnswer = s.newAnswerWpmMax;
+    _pendIC = s.newInterChar;
+    _pendIW = s.newInterWord;
+    _accUnlock = _accWpm = _accSpacing = true;
+    _accAnswer = false;
+    _excludedBoost.clear();
+  }
+
+  AdaptiveCopyEngine? _echoEngine;
+
+  // Result page -> next block: writes what is still ticked into the profile
+  // / prefs and sets the boost set (docs/training/P6, step 6d). Native
+  // values are pushed by _applyPromptConfig/_applyAnswerConfig at start.
+  Future<void> _applyAccepted({required bool boost}) async {
+    final s = _suggestions;
+    if (s == null) return;
+    final p = await SharedPreferences.getInstance();
+    final pf = await TrainingProfile.open(TrainingProfile.echo);
+    if (s.unlockNext && _accUnlock && _kochLevel < _activeKochChars.length) _kochLevel++;
+    if (_pendWpm != null && _accWpm) _wpm = _pendWpm!;
+    if (_pendIC != null && _pendIW != null && _accSpacing) {
+      _interCharSpace = _pendIC!;
+      _interWordSpace = _pendIW!;
+      await pf.setInt('interCharSpace', _interCharSpace);
+      await pf.setInt('interWordSpace', _interWordSpace);
+    }
+    if (_pendAnswer != null && _accAnswer) {
+      _answerWpmMax = _pendAnswer!;
+      await p.setInt('echoAnswerWpmMax', _answerWpmMax);
+    }
+    _currentWpm = _wpm;
+    await _savePrefs();
+    _boostChars = boost
+        ? s.weakChars.keys.where((ch) => !_excludedBoost.contains(ch)).toList()
+        : [];
+    _suggestions = null;
+    _pendWpm = _pendAnswer = _pendIC = _pendIW = null;
+  }
+
+  // Plays the proposed new Koch char twice, in place (like Adaptive Copy).
+  Future<void> _previewChar(String ch) async {
+    if (_previewing) return;
+    setState(() => _previewing = true);
+    final hadSub = _genSub != null;
+    _genSub ??= _genEvents.receiveBroadcastStream().listen(_onGenEvent);
+    try {
+      await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});
+      for (var i = 0; i < 2; i++) {
+        await _playSignal(ch);
+        if (i == 0) await Future.delayed(const Duration(milliseconds: 500));
+      }
+    } finally {
+      if (!hadSub) { _genSub?.cancel(); _genSub = null; }
+      if (mounted) setState(() => _previewing = false);
+    }
+  }
+
+  void _stepSpacing(int d) => setState(() {
+        _pendIC = (_pendIC! + d).clamp(3, max(_capInterChar, _interCharSpace));
+        _pendIW = (_pendIW! + d).clamp(7, max(_capInterWord, _interWordSpace));
+      });
+
+  List<Widget> _buildSuggestionRows(AppColors c, double width, String Function(String) cs) {
+    final s = _suggestions;
+    if (s == null) return const [];
+    final rows = <Widget>[];
+    if (s.unlockNext && _kochLevel < _activeKochChars.length) {
+      final next = _activeKochChars[_kochLevel];
+      rows.add(SuggestionRow(
+        width: width,
+        accepted: _accUnlock,
+        onToggle: (v) => setState(() => _accUnlock = v),
+        label: '${Strings.t('ac_char_unlocked')}: "${cs(next)}"',
+        highlight: true,
+        onPreview: _previewing ? null : () => _previewChar(next),
+      ));
+    }
+    if (_pendWpm != null) {
+      rows.add(SuggestionRow(
+        width: width,
+        accepted: _accWpm,
+        onToggle: (v) => setState(() => _accWpm = v),
+        label: '${Strings.t('echo_hear_speed_up')}: $_wpm→${_accWpm ? _pendWpm : _wpm}',
+        onDecrement: _accWpm ? () => setState(() => _pendWpm = max(_wpm, _pendWpm! - 1)) : null,
+        onIncrement: _accWpm ? () => setState(() => _pendWpm = min(_wpm + 5, _pendWpm! + 1)) : null,
+      ));
+    }
+    if (_pendIC != null && _pendIW != null) {
+      final tighter = _pendIC! < _interCharSpace;
+      rows.add(SuggestionRow(
+        width: width,
+        accepted: _accSpacing,
+        onToggle: (v) => setState(() => _accSpacing = v),
+        label: '${Strings.t(tighter ? 'ac_spacing_up' : 'ac_spacing_down')}: '
+            '$_interCharSpace→${_accSpacing ? _pendIC : _interCharSpace} / '
+            '$_interWordSpace→${_accSpacing ? _pendIW : _interWordSpace}',
+        onDecrement: _accSpacing ? () => _stepSpacing(-1) : null,
+        onIncrement: _accSpacing ? () => _stepSpacing(1) : null,
+      ));
+    }
+    if (_pendAnswer != null) {
+      rows.add(SuggestionRow(
+        width: width,
+        accepted: _accAnswer,
+        onToggle: (v) => setState(() => _accAnswer = v),
+        label: '${Strings.t('echo_give_speed_up')}: $_answerWpmMax→${_accAnswer ? _pendAnswer : _answerWpmMax}',
+        onDecrement: _accAnswer ? () => setState(() => _pendAnswer = max(_answerWpmMax, _pendAnswer! - 1)) : null,
+        onIncrement: _accAnswer ? () => setState(() => _pendAnswer = min(_wpm, _pendAnswer! + 1)) : null,
+      ));
+    }
+    if (s.weakChars.isNotEmpty) {
+      rows.add(Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Column(children: [
+          Text(Strings.t('ac_weak_chars'),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+          Text(Strings.t('ac_boost_hint'), textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textMuted,
+                  fontStyle: FontStyle.italic)),
+          const SizedBox(height: 6),
+          Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
+            for (final e in s.weakChars.entries)
+              InkWell(
+                onTap: () => setState(() {
+                  if (!_excludedBoost.remove(e.key)) _excludedBoost.add(e.key);
+                }),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: _excludedBoost.contains(e.key) ? c.surfaceAlt : c.danger.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                        color: _excludedBoost.contains(e.key) ? c.border : c.danger.withOpacity(0.4)),
+                  ),
+                  child: Text('${cs(e.key)}  ${(e.value * 100).round()}%',
+                      style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+                          color: _excludedBoost.contains(e.key) ? c.textMuted : c.danger)),
+                ),
+              ),
+          ]),
+        ]),
+      ));
+    }
+    if (rows.isNotEmpty) {
+      rows.insert(0, Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(Strings.t('ac_suggestions_title'), textAlign: TextAlign.center,
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+      ));
+      rows.add(const Divider());
+    }
+    return rows;
+  }
 
   Future<void> _applyAdaptiveFeedback(String target, bool correct) async {
     if (!widget.kochMode || _kochModeIndex != 4) return;
@@ -349,8 +565,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _genChannel.invokeMethod('setWpm', _currentWpm).catchError((_) {});
     await _genChannel.invokeMethod('setInterCharSpace', _interCharSpace).catchError((_) {});
     await _genChannel.invokeMethod('setInterWordSpace', _interWordSpace).catchError((_) {});
-    await _genChannel.invokeMethod('setPracticeChars', _practiceChars).catchError((_) {});
-    await _genChannel.invokeMethod('setBoostLevel', _boostLevel).catchError((_) {});
+    final practice = {..._practiceChars, ..._boostChars}.toList();
+    await _genChannel.invokeMethod('setPracticeChars', practice).catchError((_) {});
+    await _genChannel.invokeMethod('setBoostLevel',
+        _boostChars.isEmpty ? _boostLevel : max(_boostLevel, 1)).catchError((_) {});
     await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});   // base pitch
   }
 
@@ -563,7 +781,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     final ok = _attempt.trim().toUpperCase() == _target.toUpperCase();
     if (_repeats == 1) _firstAttempt = _attempt.trim();
-    _applyAdaptiveFeedback(_target, ok);
+    if (_blockActive) {
+      if (_repeats == 1) _applyBlockFeedback(_target, _attempt);
+    } else {
+      _applyAdaptiveFeedback(_target, ok);
+    }
 
     setState(() {
       _state = ok ? _State.correct : _State.wrong;
@@ -629,6 +851,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _wordCounter++;
       final limit = _blockActive ? _blockSize : _maxWords;
       if (limit > 0 && _wordCounter >= limit) {
+        if (_blockActive) await _computeSuggestions();
         await _playEndSignal();
         if (mounted) setState(() {
           _state = _State.idle;
@@ -923,6 +1146,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               border: Border.all(color: c.border),
             ),
             child: ListView(children: [
+              ..._buildSuggestionRows(c, MediaQuery.of(context).size.width - 56, cs),
               for (final r in _blockResults)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -963,13 +1187,20 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           style: ElevatedButton.styleFrom(
               backgroundColor: c.accent.withOpacity(0.2), foregroundColor: c.accent,
               minimumSize: const Size.fromHeight(56)),
-          onPressed: _startSession,
+          onPressed: () async {
+            await _applyAccepted(boost: true);
+            if (mounted) setState(() {});
+            await _startSession();
+          },
           child: Text(Strings.t('block_next')),
         ),
         const SizedBox(height: 12),
         OutlinedButton(
           style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(56)),
-          onPressed: () => setState(() => _showResult = false),
+          onPressed: () async {
+            await _applyAccepted(boost: false);
+            if (mounted) setState(() => _showResult = false);
+          },
           child: Text(Strings.t('block_end')),
         ),
       ]),

@@ -36,8 +36,8 @@ Phasen: eine Session für die Spec und eine oder mehrere für die Umsetzung.
 | 3 | Einstellungen in die Screens (⚙-Sheet, globale Seite schrumpft; Chips später) | **abgeschlossen** | [P3](P3-einstellungen-in-screens.md) | 4.2 | – |
 | 4 | Getrennte Zeichenstatistik Hören/Geben | **abgeschlossen** | [P4](P4-zeichenstatistik.md) | 5.3, 5.6 | 5 |
 | 5 | Adaptiver Echo-Ablauf, nur Anzeige (Blöcke, Ergebnis-Seite) | **abgeschlossen** | [P5](P5-echo-bloecke.md) | 5.1, 5.5 | 7 |
-| 6 | Adaptive Vorschläge beim Echo | offen | – | 5.4 | 6 |
-| 7 | Koch als Zeichenvorrat, neue Startseite | offen | – | 3 | 1 |
+| 6 | Adaptive Vorschläge beim Echo (nur Blockablauf) | **abgeschlossen** | [P6](P6-echo-vorschlaege.md) | 5.4 | 6, 7, 8 |
+| 7 | Koch als Zeichenvorrat, neue Startseite; **Klassisch-Ablauf überall entfernen, Adaptiv wird Standard** | offen | – | 3 | 1 |
 | 8 | Extras: Reaktionszeit, benannte Presets, Trend, Verwechslungspaare | offen | – | 7 (Phase 8) | – |
 | 9 | Eigener Text (File Player) als weiterer Zeichenvorrat | offen, niedrige Priorität | – | – | – |
 
@@ -57,6 +57,7 @@ nicht vermischt (CLAUDE.md Regel 7).
   (Phase 2) und getrennte Statistik-Spuren (Phase 4).
 - Adaptives Steigern beim Echo funktioniert wie beim CW Generator (gleiche
   Einstellungen, getrennt gespeichert): Phase 5/6.
+- **Klassisch entfällt (User, 2026-09-25):** Der klassische Ablauf wird nicht mehr weiterentwickelt und in Phase 7 in allen Abschnitten (Echo, Generator, Einstellungen) entfernt. Adaptiv/Blockweise wird der Standard. Bis dahin kein Aufwand mehr in Klassisch.
 - Was eine spätere Phase ohnehin ersetzt, wird in der Zwischenzeit weder
   konzipiert, gebaut noch getestet.
 - Reihenfolge Phase 4 vs. 3 kann nach dem Test von Phase 1 getauscht werden.

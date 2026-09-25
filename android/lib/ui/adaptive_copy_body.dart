@@ -1032,7 +1032,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       final nextChar = widget.kochLevel < widget.activeKochChars.length
           ? widget.activeKochChars[widget.kochLevel]
           : null;
-      rows.add(_SuggestionRow(
+      rows.add(SuggestionRow(
         width: rowWidth,
         accepted: _acceptUnlock,
         onToggle: (v) => setState(() => _acceptUnlock = v),
@@ -1048,7 +1048,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       ));
     }
     if (_pendingWpm != null) {
-      rows.add(_SuggestionRow(
+      rows.add(SuggestionRow(
         width: rowWidth,
         accepted: _acceptCharSpeed,
         onToggle: (v) => setState(() => _acceptCharSpeed = v),
@@ -1061,7 +1061,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       final label = _lastDecision!.spacingStep == TempoStep.up
           ? Strings.t('ac_spacing_up')
           : Strings.t('ac_spacing_down');
-      rows.add(_SuggestionRow(
+      rows.add(SuggestionRow(
         width: rowWidth,
         accepted: _acceptSpacing,
         onToggle: (v) => setState(() => _acceptSpacing = v),
@@ -1079,7 +1079,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
 // accept/reject it, and (when it carries a magnitude) +/- steppers to
 // adjust it before it's applied. See docs/ADAPTIVE-COPY.md "User override
 // on the result screen".
-class _SuggestionRow extends StatelessWidget {
+class SuggestionRow extends StatelessWidget {
   final double width;
   final bool accepted;
   final ValueChanged<bool> onToggle;
@@ -1094,7 +1094,7 @@ class _SuggestionRow extends StatelessWidget {
   // is already in flight, or when there's no next character to preview.
   final VoidCallback? onPreview;
 
-  const _SuggestionRow({
+  const SuggestionRow({
     required this.width,
     required this.accepted,
     required this.onToggle,

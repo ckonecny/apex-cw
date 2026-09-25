@@ -300,3 +300,11 @@ Training rollout Phase 4 (`docs/training/P4-zeichenstatistik.md`). `CharStatsSto
 
 ### Echo Trainer: optional block flow with result page (display only)
 Training rollout Phase 5 (`docs/training/P5-echo-bloecke.md`). Profile field `profile.echo.blockFlow` (0 = classic, default; 1 = blocks), chosen in the Echo ⚙ sheet. Block size is the profile's `maxWords` (0 → 10, sheet label "Wörter pro Block", 1..50); learn/preview targets (`fixedTarget`) never use blocks. Per word the screen records `WordResult` (target, first attempt, attempts, outcome first/afterRepeat/failed, first wrong index). The result page shows the first-try rate only (● counts, ◐ "right after repeat" is shown separately and not folded into the percentage — whether it becomes a half hit is decided in Phase 6; failed/revealed words count as wrong). `+` is played at block end; stopping mid-block discards the block. No suggestions, trend or stats changes yet.
+
+
+### Classic flow is retired: adaptive becomes the default
+User decision 2026-09-25 (training rollout, before Phase 6). The classic (firmware-style endless) flow gets no more work. From Phase 6 on, new features (suggestions, stats weighting) apply to the block flow only. Phase 7 removes the classic flow in all sections (Echo, Generator, settings, Adaptive Speed pref) and makes the adaptive/block flow the default. Until then classic stays as is.
+
+
+### Echo Trainer: adaptive suggestions on the block result page
+Training rollout Phase 6 (`docs/training/P6-echo-vorschlaege.md`). Block flow only. Stats "Geben" are booked once per word after the first attempt in all echo contents except learn/preview (`CharStatsStore.recordWord`: first wrong char +4, neighbours +2, right word -1 per char, weights 1..20; chars before the error count right, after it not counted). Suggestions come from `evaluateEchoBlock` on top of `AdaptiveCopyEngine`, using the first-try rate only (right-after-repeat is not a hit) and the shared global adaptive thresholds: new Koch char, spacing tighter/wider, Hör-WPM +1, Gebe-Tempo +1 (only with a cap below Hör-Tempo, default unticked), weak-char chips (boost for one block). Tempo rises are blocked while Koch chars are still open and in the block that adds a char; widening is not. Block EMA is stored globally as `echoBlockEma`. Accepted values are applied on "Nächster Block"/"Beenden".
