@@ -311,11 +311,31 @@ installed on `63061JEBF01551`, user-confirmed working:
   doesn't require a USB tether to the Mac.
 
 ## Backlog (later iteration, not urgent)
-(nothing currently queued here)
+Firmware modules still to port, in this order, one per session (a larger
+module takes several sessions in a row). Effort: S = 1 session,
+M = 2–3, L = 3–5. Multiplayer (ESP-NOW) is left out everywhere, see
+DECISIONS.md.
+
+| # | Module | What it is | Effort | Notes |
+|---|---|---|---|---|
+| 1 | **Morsel** (`MorseMorsel.cpp`, ~1.8k lines) | Word guessing like Wordle: the word is played in CW and keyed back; letter boxes turn green/red. Words and abbreviations from the Koch lesson. | M | Word lists, Koch set, keyer and decoder already exist. Needs the `<err>` prosign (8 dits = delete the last char); build it together with the error-sign item from the upstream check. |
+| 2 | **Memory Chain** (`MorseMemoryChain.cpp`, ~830) | One new char per round, the whole chain is keyed from memory. Modes: Koch characters / call signs. | S–M | Call signs come from `CallsignData.kt`. High scores per mode. |
+| 3 | **Trailblazer + Fox Hunt** (grid engine ~400, score ~300, games ~360 + ~440) | Maze: Trailblazer shows the next letter (keying), Fox Hunt only plays it and you key the direction (hearing). | M | Build the grid engine once for both games. |
+| 4 | **Morse Invaders** (`MorseGame.cpp` ~1.1k + game mode/sprites) | Arcade: falling characters get "shot" by keying them. | L | Real-time game loop plus graphics (CustomPainter/Ticker), timing against the native keyer. |
+| 5 | **Radio Cave** (`MorseRadioCave.cpp`, ~2.65k) | Text adventure, every command keyed in Morse. 12 rooms, items, puzzles. | L | Mostly content and a state machine, UI is simple. Keep the English texts. |
+| 6 | **Fight the Pileup** (`MorsePileup.cpp`, ~1.8k) | Work a pileup of call signs. | M–L | Single player only; the multiplayer part is ESP-NOW. |
+| 7 | **QSO Bot** (`MorseQsoBot.cpp` ~1.2k + match/content) | Simulated QSO, the bot answers to what was keyed. | L | The most valuable training module still missing. |
+| 8 | **CW decoder via mic** (`goertzel.cpp`, ~160) | Decode CW from the microphone (Goertzel). | M–L | The algorithm is small. The work is a native audio input (AAudio), mic permission and robustness against noise. |
+| 9 | **File Player** | Play your own text files as practice content. | S | File picker plus the existing generator. |
+| 10 | **Snapshots** | Saved sets of settings. | S | Overlaps with the named presets (Phase 8d); check before starting whether they merge. |
+
+Separately, a small open item (not a module): the echo answer reset by the
+error sign, see "Upstream check" below. It is needed for Morsel anyway.
+
 
 ## Open questions
-- QSO Bot (~1800 LOC in firmware): worth doing at all, and if so, SOTA-only
-  first rather than all 4 types?
+- QSO Bot: in the backlog (#7) as of 2026-09-25. Still open: port all 4 QSO
+  types, or SOTA-only first?
 - WiFi Transceiver / online relay (cq.morserino.info): background UDP socket
   reliability on Android not yet validated.
 - iOS port: keep timing engine native per-platform, or move it into Dart for

@@ -20,21 +20,27 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | `MorseTextEntry.cpp` (on-device char picker) | Flutter native text fields | N/A — superseded by touch keyboard |
 | Display layer (`DisplayWrapper`, `M32OledLGFX`) | Flutter widgets | N/A — superseded |
 | `MorseWiFi.cpp` / cwForTx() (WiFi Trx UDP protocol) | `lib/net/mopp.dart`, `lib/net/mopp_client.dart`, `lib/ui/wifi_trx_screen.dart` | First version: single server/peer, send + receive, in foreground only. Not yet tested against a real server. ESP-NOW/LoRa: N/A |
-| `MorseQsoBot.cpp`, `MorseQsoBotMatch.h`, `qso_content.h` | — | Not started |
-| `goertzel.cpp` (mic CW decode) | — | Not started |
-| File Player / multi-part file builder | — | Not started |
-| CW Memories (config tool) | — | Not started |
-| Snapshots (doWriteSnapshot/doReadSnapshot) | — | Not started |
-| Practice Stats (`CONFIG_PRACTICE_STATS`) | — | Not started (no tracking layer exists yet) |
-| Games (`MorseGame`, `MorsePileup`, `MorseRadioCave`, `MorseMorsel`) | — | N/A — out of scope |
-| Grid games (`MorseGridScore`, Trailblazer/Fox Hunt) | — | N/A — out of scope |
+| `MorseMorsel.cpp` (Morsel, word guessing) | — | Backlog #1 |
+| `MorseMemoryChain.cpp` (Memory Chain) | — | Backlog #2 |
+| `MorseGridEngine.cpp`, `MorseGridScore.cpp`, `MorseTrailblazer.cpp`, `MorseFoxHunt.cpp` (grid games) | — | Backlog #3 |
+| `MorseGame.cpp`, `MorseGameMode.cpp`, `GameSprite.cpp` (Morse Invaders) | — | Backlog #4 |
+| `MorseRadioCave.cpp` (Radio Cave, text adventure) | — | Backlog #5 |
+| `MorsePileup.cpp` (Fight the Pileup) | — | Backlog #6, single player only |
+| Multiplayer of all games (`MorseGridNet.cpp`, ESP-NOW parts of Morsel/Pileup) | — | N/A: ESP-NOW does not exist on a phone |
+| `MorseQsoBot.cpp`, `MorseQsoBotMatch.h`, `qso_content.h` | — | Backlog #7 |
+| `goertzel.cpp` (mic CW decode) | — | Backlog #8 |
+| File Player / multi-part file builder | — | Backlog #9 |
+| Snapshots (doWriteSnapshot/doReadSnapshot) | — | Backlog #10 (overlaps with named presets, Phase 8d) |
+| CW Memories (config tool) | — | Not started, not in the backlog yet |
+| Practice Stats (`MorsePracticeStats.cpp`) | — | Will not be ported: the app has its own statistics (see DECISIONS.md) |
 | LoRa (RadioLib) | — | N/A — no hardware |
 | Bluetooth (`MorseBluetooth.cpp`) | — | N/A — Android handles BT/HID natively |
 | Accessibility voice clips (`CONFIG_AUDIO_A11Y`) | — | N/A — not evaluated |
 | — (no firmware equivalent) | `lib/l10n/strings.dart` | Done — app-only DE/EN switch |
 | — (no firmware equivalent) | `lib/theme/*`, `lib/ui/widgets/pinch_zoom_text.dart` | Done — app-only theme/text-size |
 
-## Dead code (not wired up, safe to delete)
-`android/lib/audio/tone_synth.dart`, `android/lib/input/paddle_input.dart`,
-`android/lib/keyer/iambic_keyer.dart` — early pure-Dart prototype, superseded
-by the native Kotlin/C++ engine, unimported.
+Order and effort for the backlog rows: `docs/STATUS.md`, section "Backlog".
+
+## Dead code
+None known. The Dart prototype files (commit 85cfd8f) and unused handlers,
+strings and prefs (2026-09-25) have been removed.

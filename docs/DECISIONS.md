@@ -321,6 +321,23 @@ Training rollout Phase 8. Reference for this spot is `origin/master` commit `f98
 ### Reaktionszeit dropped from Phase 8
 User decision 2026-09-25: no reaction-time measurement. Depends on too many unrelated factors, no firmware equivalent, and the think time already covers slow starts. Echo also shows "Versuch n von max" from the second attempt and clears stale word/attempt text when a block starts.
 
+## 2026-09-25: Firmware games are in scope (single player)
+User decision: the games get ported, which reverses the earlier "out of scope"
+in PORTING-MAP.md. They train the same skills (hearing, keying, Koch set),
+and most of them build on parts the app already has: word lists, the Koch
+set, the keyer, the decoder. Their multiplayer runs over ESP-NOW, which does
+not exist on a phone, so it is left out. A replacement via our own server
+would be a separate project. High scores go to SharedPreferences instead of
+NVS. Order: Backlog in docs/STATUS.md.
+
+## 2026-09-25: Practice Stats are not ported
+The firmware's `MorsePracticeStats` (listen/send statistics) is not ported,
+and it stays that way. The app has its own statistics, built for the block
+flows: per-character stats for Hören/Geben with firmware weighting (Phase 6),
+block result, block trend and confusion pairs (Phase 8). In this form they
+fit the app better. A second, firmware-like stats layer would duplicate them
+without adding anything.
+
 ## 2026-09-25: CW Keyer and WiFi Trx get their own word gap
 
 CW Keyer and WiFi Trx each keep a `profile.keyer|trx.interWordSpace` (⚙ in
