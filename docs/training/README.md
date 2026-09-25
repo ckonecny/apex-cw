@@ -35,7 +35,7 @@ Phasen: eine Session für die Spec und eine oder mehrere für die Umsetzung.
 | 2 | Trainingsprofile (nur Datenebene, Oberfläche bleibt) | abgeschlossen | [P2](P2-trainingsprofile.md) | 4.1 | 3, 4, 8 |
 | 3 | Einstellungen in die Screens (⚙-Sheet, globale Seite schrumpft; Chips später) | **abgeschlossen** | [P3](P3-einstellungen-in-screens.md) | 4.2 | – |
 | 4 | Getrennte Zeichenstatistik Hören/Geben | **abgeschlossen** | [P4](P4-zeichenstatistik.md) | 5.3, 5.6 | 5 |
-| 5 | Adaptiver Echo-Ablauf, nur Anzeige (Blöcke, Ergebnis-Seite) | offen | – | 5.1, 5.5 | 7 |
+| 5 | Adaptiver Echo-Ablauf, nur Anzeige (Blöcke, Ergebnis-Seite) | **abgeschlossen** | [P5](P5-echo-bloecke.md) | 5.1, 5.5 | 7 |
 | 6 | Adaptive Vorschläge beim Echo | offen | – | 5.4 | 6 |
 | 7 | Koch als Zeichenvorrat, neue Startseite | offen | – | 3 | 1 |
 | 8 | Extras: Reaktionszeit, benannte Presets, Trend, Verwechslungspaare | offen | – | 7 (Phase 8) | – |

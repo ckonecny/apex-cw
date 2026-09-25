@@ -61,6 +61,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _wordLengthMax = 0;
   int _abbrevLengthMax = 0;
   int _maxWords = 0;
+  bool _blockFlow = false;
   // Global (not per-profile) generator flow prefs, as in Settings before.
   int _genDisplay = 1;
   bool _stopAfterItem = false;
@@ -108,6 +109,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);
       _abbrevLengthMax = (prof.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _maxWords = (prof.getInt('maxWords') ?? 0).clamp(0, 250);
+      _blockFlow = widget.profile == TrainingProfile.echo && (prof.getInt('blockFlow') ?? 0) == 1;
       _genDisplay = (p.getInt('genDisplayMode') ?? 1).clamp(0, 2);
       _stopAfterItem = p.getBool('stopAfterItem') ?? false;
       _eachWordTwice = p.getBool('eachWordTwice') ?? false;
@@ -395,6 +397,17 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               _setInt('abbrevLengthMax', _abbrevLengthMax);
             }),
         const SettingsDivider(),
+        if (_blockFlow)
+          LabeledSlider(
+              label: Strings.t('settings_words_per_block'),
+              value: (_maxWords == 0 ? 10 : _maxWords).clamp(1, 50).toDouble(),
+              min: 1, max: 50, divisions: 49,
+              display: '${_maxWords == 0 ? 10 : _maxWords.clamp(1, 50)}',
+              onChanged: (v) {
+                setState(() => _maxWords = v.round());
+                _setInt('maxWords', _maxWords);
+              })
+        else
         LabeledSlider(
             label: 'Max # of Words', value: _maxWords.toDouble(),
             min: 0, max: 250, divisions: 50,
@@ -414,6 +427,16 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       SettingsSectionHeader('Echo Trainer'),
       const SizedBox(height: 12),
       SettingsCard(children: [
+        SegmentRow(
+          label: Strings.t('settings_flow'),
+          options: [Strings.t('settings_flow_classic'), Strings.t('settings_flow_block')],
+          selected: _blockFlow ? 1 : 0,
+          onChanged: (v) {
+            setState(() => _blockFlow = v == 1);
+            _setInt('blockFlow', v);
+          },
+        ),
+        const SettingsDivider(),
         LabeledSlider(
             label: Strings.t('settings_think_time'), value: _echoThinkTime.toDouble(),
             min: 1, max: 20, divisions: 19, display: '${_echoThinkTime}s',

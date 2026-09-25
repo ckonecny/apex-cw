@@ -25,6 +25,21 @@ enum _State { idle, playing, receiving, correct, wrong }
 // for a given-up word's reveal, REGULAR/keyed for the operator's own keying).
 enum _Role { marker, target, attempt, ok, err, reveal }
 
+/// Outcome of one word in block mode (docs/training/P5-echo-bloecke.md):
+/// first try right, right after a repeat, or given up (revealed).
+enum WordOutcome { first, afterRepeat, failed }
+
+class WordResult {
+  final String target;
+  final String firstAttempt;
+  final int attempts;
+  final WordOutcome outcome;
+  /// Index of the first wrong character of the first attempt, or -1.
+  final int firstWrongIndex;
+  const WordResult(this.target, this.firstAttempt, this.attempts, this.outcome,
+      this.firstWrongIndex);
+}
+
 class _LogSpan {
   String text;
   final _Role role;
@@ -102,6 +117,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _randomOption = 0;
   // "Max # of Words" (posMaxSequence) — shared with the CW Generator; 0 = unlimited.
   int  _maxWords = 0;
+  // Block flow (P5): per-word results of the current block.
+  bool _blockFlow = false;
+  final List<WordResult> _blockResults = [];
+  String _firstAttempt = '';
+  bool _showResult = false;
+  int get _blockSize => _maxWords == 0 ? 10 : _maxWords.clamp(1, 50);
+  bool get _blockActive => _blockFlow && widget.fixedTarget == null;
 
   // Touch paddle: 0=Iambic A, 1=Iambic B, 2=Ultimatic, 3=Non-Squeeze, 4=Straight
   int _keyerMode = 0;
@@ -246,6 +268,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _groupLength     = pf.getInt('groupLength')    ?? 5;
       _randomOption    = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
       _maxWords        = pf.getInt('maxWords')        ?? 0;
+      _blockFlow       = (pf.getInt('blockFlow') ?? 0) == 1;
       _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
       _currentWpm     = _wpm;
     });
@@ -341,6 +364,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<void> _startSession() async {
     if (_state != _State.idle) return;   // guard against a double-tap racing two sessions
     _correct = 0; _total = 0; _wordCounter = 0;
+    _blockResults.clear();
+    _showResult = false;
     _currentWpm = _wpm;
     _sessionActive = true;
 
@@ -537,6 +562,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _total++;
 
     final ok = _attempt.trim().toUpperCase() == _target.toUpperCase();
+    if (_repeats == 1) _firstAttempt = _attempt.trim();
     _applyAdaptiveFeedback(_target, ok);
 
     setState(() {
@@ -547,6 +573,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', ok);
 
     if (ok) {
+      _recordWord(_repeats == 1 ? WordOutcome.first : WordOutcome.afterRepeat);
       _correct++;
       // Adaptive speed: every 10 correct, bump by 1 WPM up to max
       if (_adaptiveSpeed && _correct % 10 == 0) {
@@ -564,6 +591,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     final alwaysRepeat = _echoRepeats == 7;
     final exhausted = widget.fixedTarget == null && !alwaysRepeat && _repeats > _echoRepeats;
     if (exhausted) {
+      _recordWord(WordOutcome.failed);
       // Reveal the word, then move on — matches the REPEAT_WORD "goto
       // randomGenerate" branch's displayGeneratedMorse(INVERSE_REGULAR, ...).
       // The separating space stays ERR-styled (regular, not inverse) —
@@ -583,14 +611,29 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
   }
 
+  void _recordWord(WordOutcome outcome) {
+    if (widget.fixedTarget != null) return;
+    final t = _target.toUpperCase(), a = _firstAttempt.toUpperCase();
+    var wrong = -1;
+    if (a != t) {
+      wrong = 0;
+      while (wrong < t.length && wrong < a.length && t[wrong] == a[wrong]) wrong++;
+    }
+    _blockResults.add(WordResult(_target, _firstAttempt, _repeats, outcome, wrong));
+  }
+
   // Moves on to the next word, or ends the session if Max # of Words has
   // been reached — matches fetchNewWord()'s posMaxSequence handling.
   Future<void> _advance() async {
     if (widget.fixedTarget == null) {
       _wordCounter++;
-      if (_maxWords > 0 && _wordCounter >= _maxWords) {
+      final limit = _blockActive ? _blockSize : _maxWords;
+      if (limit > 0 && _wordCounter >= limit) {
         await _playEndSignal();
-        if (mounted) setState(() => _state = _State.idle);
+        if (mounted) setState(() {
+          _state = _State.idle;
+          if (_blockActive) _showResult = true;
+        });
         _sessionActive = false;
         _genSub?.cancel(); _genSub = null;
         _keyerChannel.invokeMethod('stop');
@@ -728,6 +771,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               _KochCharsRow(level: _kochLevel, sequence: _activeKochChars, outputCase: _outputCase),
           ],
 
+          if (_showResult) Expanded(child: _buildBlockResult(c)) else ...[
+          if (_blockActive && _sessionActive) _buildBlockProgress(c),
           // ── Scrolling transcript (target/attempt/verdict/markers) ───────
           Expanded(child: PinchZoomFontSize(
             prefsKey: 'echoLogFontSize',
@@ -769,6 +814,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             ]),
           ),
 
+          ],
+          if (!_showResult) ...[
           // ── Touch paddle ─────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
@@ -802,9 +849,130 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               ),
             ),
           ),
+          ],
         ],
       ),
       ),
+    );
+  }
+
+  Widget _buildBlockProgress(AppColors c) {
+    final n = (_blockResults.length + 1).clamp(1, _blockSize);
+    final dots = List.generate(_blockSize, (i) {
+      if (i >= _blockResults.length) return '·';
+      return switch (_blockResults[i].outcome) {
+        WordOutcome.first => '●',
+        WordOutcome.afterRepeat => '◐',
+        WordOutcome.failed => '○',
+      };
+    }).join(' ');
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(children: [
+        Text(Strings.t('block_word_of').replaceFirst('{n}', '$n').replaceFirst('{t}', '$_blockSize'),
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.textMuted)),
+        const SizedBox(height: 2),
+        Text(dots, style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
+      ]),
+    );
+  }
+
+  Widget _buildBlockResult(AppColors c) {
+    final first = _blockResults.where((r) => r.outcome == WordOutcome.first).length;
+    final again = _blockResults.where((r) => r.outcome == WordOutcome.afterRepeat).length;
+    final failed = _blockResults.where((r) => r.outcome == WordOutcome.failed).length;
+    final total = _blockResults.length;
+    final pct = total == 0 ? 0 : first * 100 ~/ total;
+    final status = [
+      '${Strings.t('block_hear')} $_wpm WPM',
+      if (_answerWpmMax > 0 && _answerWpm < _wpm) '${Strings.t('block_give')} $_answerWpm WPM',
+      if (widget.kochMode) '${Strings.t('block_lesson')} $_kochLevel',
+    ].join(' · ');
+    String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text('$pct %',
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 48, fontWeight: FontWeight.bold,
+                  color: pct >= 90 ? c.accent : pct >= 70 ? c.warning : c.danger)),
+          const SizedBox(width: 20),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('● ${Strings.t('block_right')} $first',
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.accent)),
+            Text('◐ ${Strings.t('block_after')} $again',
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.warning)),
+            Text('○ ${Strings.t('block_wrong')} $failed',
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.danger)),
+          ]),
+        ]),
+        const SizedBox(height: 6),
+        Text(status, textAlign: TextAlign.center,
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+        const SizedBox(height: 10),
+        Expanded(child: PinchZoomFontSize(
+          prefsKey: 'echoResultFontSize',
+          initialSize: 20,
+          minSize: 12,
+          maxSize: 40,
+          builder: (context, fontSize) => Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: c.surface,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: c.border),
+            ),
+            child: ListView(children: [
+              for (final r in _blockResults)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(switch (r.outcome) {
+                      WordOutcome.first => '● ',
+                      WordOutcome.afterRepeat => '◐ ',
+                      WordOutcome.failed => '○ ',
+                    }, style: TextStyle(fontFamily: 'CwMono', fontSize: fontSize,
+                        color: switch (r.outcome) {
+                          WordOutcome.first => c.accent,
+                          WordOutcome.afterRepeat => c.warning,
+                          WordOutcome.failed => c.danger,
+                        })),
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(cs(r.target), style: TextStyle(fontFamily: 'CwMono',
+                          fontSize: fontSize, fontWeight: FontWeight.bold, color: c.textPrimary)),
+                      if (r.outcome != WordOutcome.first || r.firstWrongIndex >= 0)
+                        RichText(text: TextSpan(children: [
+                          for (var i = 0; i < r.firstAttempt.length; i++)
+                            TextSpan(text: cs(r.firstAttempt[i]), style: TextStyle(
+                                fontFamily: 'CwMono', fontSize: fontSize * 0.85,
+                                color: i == r.firstWrongIndex ? c.danger : c.textMuted,
+                                fontWeight: i == r.firstWrongIndex ? FontWeight.bold : FontWeight.normal)),
+                          if (r.firstWrongIndex >= r.firstAttempt.length)
+                            TextSpan(text: r.firstAttempt.isEmpty ? '–' : '_', style: TextStyle(
+                                fontFamily: 'CwMono', fontSize: fontSize * 0.85,
+                                color: c.danger, fontWeight: FontWeight.bold)),
+                        ])),
+                    ])),
+                  ]),
+                ),
+            ]),
+          ),
+        )),
+        const SizedBox(height: 12),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: c.accent.withOpacity(0.2), foregroundColor: c.accent,
+              minimumSize: const Size.fromHeight(56)),
+          onPressed: _startSession,
+          child: Text(Strings.t('block_next')),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(56)),
+          onPressed: () => setState(() => _showResult = false),
+          child: Text(Strings.t('block_end')),
+        ),
+      ]),
     );
   }
 
