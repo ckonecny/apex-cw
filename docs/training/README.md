@@ -34,7 +34,7 @@ Phasen: eine Session für die Spec und eine oder mehrere für die Umsetzung.
 | 1 | Echo-Grundlagen: Singleton-Fehler, Gebe-Tempo (Adaptive Speed bewusst nicht) | abgeschlossen | [P1](P1-echo-grundlagen.md) | 1, 5.2 | 2 |
 | 2 | Trainingsprofile (nur Datenebene, Oberfläche bleibt) | abgeschlossen | [P2](P2-trainingsprofile.md) | 4.1 | 3, 4, 8 |
 | 3 | Einstellungen in die Screens (⚙-Sheet, globale Seite schrumpft; Chips später) | **abgeschlossen** | [P3](P3-einstellungen-in-screens.md) | 4.2 | – |
-| 4 | Getrennte Zeichenstatistik Hören/Geben | offen | – | 5.3, 5.6 | 5 |
+| 4 | Getrennte Zeichenstatistik Hören/Geben | **abgeschlossen** | [P4](P4-zeichenstatistik.md) | 5.3, 5.6 | 5 |
 | 5 | Adaptiver Echo-Ablauf, nur Anzeige (Blöcke, Ergebnis-Seite) | offen | – | 5.1, 5.5 | 7 |
 | 6 | Adaptive Vorschläge beim Echo | offen | – | 5.4 | 6 |
 | 7 | Koch als Zeichenvorrat, neue Startseite | offen | – | 3 | 1 |
@@ -53,8 +53,8 @@ nicht vermischt (CLAUDE.md Regel 7).
 - Hören und Geben werden **vollständig getrennt** geführt: eigene Lektion,
   Tempo, Gruppenlänge, Wörter pro Block, **Practice Set, Boost und
   Schwachzeichen** (Geben-Schwächen sind nicht Hör-Schwächen und umgekehrt).
-  Datenebene: Phase 2 (Profil) und Phase 4 (Statistik-Spuren). Bis dahin
-  teilen sich beide die Werte, das ist eine bekannte Zwischenlösung.
+  Datenebene: Phase 2 (Profil) und Phase 4 (Statistik-Spuren). Umgesetzt: Profile
+  (Phase 2) und getrennte Statistik-Spuren (Phase 4).
 - Adaptives Steigern beim Echo funktioniert wie beim CW Generator (gleiche
   Einstellungen, getrennt gespeichert): Phase 5/6.
 - Was eine spätere Phase ohnehin ersetzt, wird in der Zwischenzeit weder

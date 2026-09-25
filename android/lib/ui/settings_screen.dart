@@ -2,11 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../content/char_stats.dart';
 import '../theme/app_colors.dart';
 import '../theme/theme_controller.dart';
 import '../l10n/strings.dart';
-import 'char_stats_screen.dart';
 import 'widgets/setting_rows.dart';
 
 enum _LearnState { idle, waitDit, waitDah, done }
@@ -224,37 +222,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() { _learnState = _LearnState.idle; _learnMessage = ''; });
   }
 
-  // Resets the per-character learning history shared by Echo Trainer's
-  // "Adapt. Rand." weighting and Adaptive Copy's weak-character/unlock/boost
-  // logic. Irreversible, so a short confirmation guards against a stray tap
-  // wiping out weeks of accumulated stats.
-  Future<void> _confirmResetCharStats() async {
-    final c = AppColors.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(Strings.t('settings_reset_char_stats_confirm_title')),
-        content: Text(Strings.t('settings_reset_char_stats_confirm_body')),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(Strings.t('cancel'))),
-          TextButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: Text(Strings.t('settings_reset_char_stats'),
-                  style: TextStyle(color: c.danger))),
-        ],
-      ),
-    );
-    if (confirmed != true) return;
-    final p = await SharedPreferences.getInstance();
-    await CharStatsStore().reset(p);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(Strings.t('settings_reset_char_stats_done'))));
-    }
-  }
-
   Future<void> _toggleKeyDiag() async {
     if (_keyDiagActive) {
       await _settingsChannel.invokeMethod('stopKeyDiag');
@@ -425,26 +392,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: (i) => _applyOutputKind(_outputKindsAvailable[i]),
             ),
           ]),
-
-          const SizedBox(height: 24),
-
-          // ── Zeichenstatistik ──────────────────────────────────────────────────
-          SettingsSectionHeader(Strings.t('settings_char_stats')),
-          const SizedBox(height: 12),
-          _ActionButton(
-            label: Strings.t('settings_view_char_stats'),
-            icon: Icons.bar_chart_outlined,
-            color: c.accent,
-            onTap: () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const CharStatsScreen())),
-          ),
-          const SizedBox(height: 8),
-          _ActionButton(
-            label: Strings.t('settings_reset_char_stats'),
-            icon: Icons.delete_sweep_outlined,
-            color: c.danger,
-            onTap: _confirmResetCharStats,
-          ),
 
           const SizedBox(height: 24),
 

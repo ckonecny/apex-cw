@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
 import '../content/cw_content.dart';
 import '../content/char_stats.dart';
+import 'char_stats_screen.dart';
 import 'echo_trainer_screen.dart';
 import 'adaptive_copy_body.dart';
 import '../theme/app_colors.dart';
@@ -498,6 +499,13 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
+          if (!_practiceActive && widget.kochMode)
+            IconButton(
+              icon: Icon(Icons.bar_chart_outlined, color: c.textMuted),
+              tooltip: Strings.t('char_stats_title_hear'),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const CharStatsScreen(track: CharStatsStore.hear))),
+            ),
           if (!_practiceActive)
             IconButton(
               icon: Icon(Icons.settings, color: c.textMuted),

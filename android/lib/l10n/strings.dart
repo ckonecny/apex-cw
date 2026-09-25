@@ -185,7 +185,6 @@ class Strings {
     'settings_koch_sequence_desc': [
       'Gilt für alle Trainings, die die Koch-Methode nutzen (auch Echo und Adaptiv).',
       'Applies to every training that uses the Koch method (Echo and Adaptive too).'],
-    'settings_char_stats': ['Zeichenstatistik', 'Character statistics'],
     'settings_adaptive_mode': ['Adaptiver Modus', 'Adaptive Mode'],
     'settings_adaptive_mode_desc': [
       'Schwellenwerte, die steuern, wie Adaptiv Copy Tempo/Abstand anpasst und wann das nächste Koch-Zeichen freigeschaltet wird.',
@@ -195,14 +194,20 @@ class Strings {
     'settings_adaptive_unlock_occurrences': ['Vorkommen für Freischaltung', 'Occurrences for Unlock'],
     'settings_reset_char_stats': ['Zeichenstatistik zurücksetzen', 'Reset Character Statistics'],
     'settings_reset_char_stats_confirm_title': ['Wirklich zurücksetzen?', 'Really reset?'],
-    'settings_reset_char_stats_confirm_body': [
-      'Löscht die gesamte gelernte Zeichenstatistik (Fehlerrate, Übungsgewicht) für alle Zeichen, unwiderruflich. Betrifft Adaptiv Copy (schwache Zeichen, Freischaltung) und den Echo Trainer ("Adapt. Zufall").',
-      'Deletes all learned per-character statistics (error rate, practice weight) for every character, permanently. Affects Adaptive Copy (weak characters, unlocking) and Echo Trainer ("Adapt. Random").'],
+    'settings_reset_char_stats_confirm_body_hear': [
+      'Löscht die gesamte Hör-Statistik (Fehlerquote und Übungsgewicht je Zeichen) unwiderruflich. Betrifft Adaptive Copy (Schwachzeichen, Freischalten) und die Schwachzeichen im Koch Trainer. Die Geben-Statistik bleibt.',
+      'Permanently deletes all hearing statistics (error rate and practice weight per character). Affects Adaptive Copy (weak characters, unlocking) and the Koch Trainer weak characters. Sending statistics stay.'],
+    'settings_reset_char_stats_confirm_body_echo': [
+      'Löscht die gesamte Geben-Statistik (Fehlerquote und Übungsgewicht je Zeichen) unwiderruflich. Betrifft „Adapt. Rand.“ im Echo Trainer. Die Hör-Statistik bleibt.',
+      'Permanently deletes all sending statistics (error rate and practice weight per character). Affects "Adapt. Random" in the Echo Trainer. Hearing statistics stay.'],
     'settings_reset_char_stats_done': ['Zeichenstatistik zurückgesetzt.', 'Character statistics reset.'],
-    'settings_view_char_stats': ['Zeichen-Statistik anzeigen', 'View Character Statistics'],
 
     // ── Character statistics screen ──────────────────────────────────────
-    'char_stats_title': ['Zeichen-Statistik', 'Character Statistics'],
+    'char_stats_title_hear': ['Statistik Hören', 'Statistics: hearing'],
+    'char_stats_title_echo': ['Statistik Geben', 'Statistics: sending'],
+    'char_stats_desc_echo': [
+      'Wie sicher du jedes aktive Koch-Zeichen gibst. Die Zeichen mit den meisten Fehlern stehen oben und kommen bei „Adapt. Rand.“ öfter dran.',
+      'How reliably you send each active Koch character. The characters with the most errors are on top and come up more often in "Adapt. Random".'],
     'char_stats_desc': [
       'Übungsstand jedes aktiven Koch-Zeichens. Alle Zeichen müssen die Freischalt-Schwelle erreichen, bevor das nächste Zeichen freigeschaltet wird — nicht nur das zuletzt gelernte.',
       'Practice status of every active Koch character. All of them must clear the unlock threshold before the next character unlocks — not just the most recently learned one.'],

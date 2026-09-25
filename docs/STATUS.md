@@ -124,7 +124,7 @@ changes:
 Phased rollout, one phase at a time: spec → user approval → implement →
 install → user test → next phase. **Entry point for every session on this:
 `docs/training/README.md`** (phase table + status + spec template); target
-picture: `docs/TRAINING-CONCEPT.md`. Current: **Phases 1 and 2 done and device-tested 2026-09-25; Phase 3 done and device-tested (3a–3e); next: Phase 4 spec (P2 spec: `docs/training/P2-trainingsprofile.md`)
+picture: `docs/TRAINING-CONCEPT.md`. Current: **Phases 1 and 2 done and device-tested 2026-09-25; Phase 3 done and device-tested (3a–3e); Phase 4 (char stats split hear/echo, 📊 in each training) done and device-tested; next: Phase 5 spec (P2 spec: `docs/training/P2-trainingsprofile.md`)
 approval** (`docs/training/P1-echo-grundlagen.md`): fixes Echo Trainer never
 pushing spacing/Practice Set/Boost to the generator and never setting the
 keyer WPM (rule 2), adds a firmware-style answer speed cap ("Gebe-Tempo"),

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
 import '../content/cw_content.dart';
 import '../content/char_stats.dart';
+import 'char_stats_screen.dart';
 import '../content/training_profile.dart';
 
 import 'widgets/paddle_widgets.dart';
@@ -79,9 +80,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int    _kochModeIndex = 0;
   // "Adapt. Rand." (KOCH_ADAPTIVE): weighted-random character draw — wrong
   // answers raise a character's weight (drawn more often), right answers
-  // lower it, within [1,20]. Backed by CharStatsStore, shared with the
-  // (planned) Adaptive Copy mode — see docs/ADAPTIVE-COPY.md.
-  final CharStatsStore _charStats = CharStatsStore();
+  // lower it, within [1,20]. Backed by CharStatsStore's own
+  // echo track (separate from hearing, docs/training/P4-zeichenstatistik.md).
+  final CharStatsStore _charStats = CharStatsStore(CharStatsStore.echo);
   int    _kochSeq         = 0;
   String _customKochChars = 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
   int    _licwCarouselStart = 0;
@@ -692,6 +693,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           onPressed: () { _stopSession(); Navigator.pop(context); },
         ),
         actions: [
+          if (!_sessionActive && widget.kochMode)
+            IconButton(
+              icon: Icon(Icons.bar_chart_outlined, color: c.textMuted),
+              tooltip: Strings.t('char_stats_title_echo'),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const CharStatsScreen(track: CharStatsStore.echo))),
+            ),
           if (!_sessionActive)
             IconButton(
               icon: Icon(Icons.settings, color: c.textMuted),

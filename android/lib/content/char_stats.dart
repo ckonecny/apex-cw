@@ -1,6 +1,5 @@
-// Shared per-character learning statistics, used by both the Echo Trainer's
-// "Adapt. Rand." weighting and (planned) the Adaptive Copy mode's character
-// selection / speed adaptation. See docs/ADAPTIVE-COPY.md for the design.
+// Per-character learning statistics, one track for hearing (Adaptive Copy,
+// Koch generator) and one for sending (Echo Trainer "Adapt. Rand."). See docs/ADAPTIVE-COPY.md for the design.
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,44 +33,65 @@ class CharStat {
 }
 
 class CharStatsStore {
+  static const hear = 'hear';
+  static const echo = 'echo';
+
+  // Two separate tracks (docs/training/P4-zeichenstatistik.md): what is
+  // heard wrongly is not what is sent wrongly. Stored as `charStats.<track>`.
+  final String track;
+  CharStatsStore([this.track = hear]);
+
   final Map<String, CharStat> stats = {};
 
+  String get _key => '$_prefsKey.$track';
+
+  // Moves the old single store (and the even older Echo "char:weight" list)
+  // into the hearing track, once. The echo track starts empty.
+  static Future<void> migrateIfNeeded(SharedPreferences p) async {
+    final old = p.getString(_prefsKey);
+    if (old != null) {
+      if (old.isNotEmpty && p.getString('$_prefsKey.$hear') == null) {
+        await p.setString('$_prefsKey.$hear', old);
+      }
+      await p.remove(_prefsKey);
+    }
+    final legacy = p.getString(_legacyWeightsKey);
+    if (legacy != null) {
+      if (legacy.isNotEmpty && p.getString('$_prefsKey.$hear') == null) {
+        final store = CharStatsStore(hear);
+        for (final part in legacy.split(',')) {
+          final kv = part.split(':');
+          if (kv.length != 2) continue;
+          final w = int.tryParse(kv[1]);
+          if (w == null) continue;
+          store.stats[kv[0]] = CharStat()..weight = w.clamp(1, 20);
+        }
+        await store.save(p);
+      }
+      await p.remove(_legacyWeightsKey);
+    }
+  }
+
   Future<void> load(SharedPreferences p) async {
+    await migrateIfNeeded(p);
     stats.clear();
-    final raw = p.getString(_prefsKey);
+    final raw = p.getString(_key);
     if (raw != null && raw.isNotEmpty) {
       final decoded = jsonDecode(raw) as Map<String, dynamic>;
       decoded.forEach((k, v) => stats[k] = CharStat.fromJson(v as Map<String, dynamic>));
-      return;
-    }
-    // Migrate the Echo Trainer's old "char:weight,char:weight" format, if
-    // present, so existing users don't lose their learned weights.
-    final legacy = p.getString(_legacyWeightsKey);
-    if (legacy != null && legacy.isNotEmpty) {
-      for (final part in legacy.split(',')) {
-        final kv = part.split(':');
-        if (kv.length != 2) continue;
-        final w = int.tryParse(kv[1]);
-        if (w == null) continue;
-        stats[kv[0]] = CharStat()..weight = w.clamp(1, 20);
-      }
-      await save(p);
-      await p.remove(_legacyWeightsKey);
     }
   }
 
   Future<void> save(SharedPreferences p) async {
     final encoded = <String, dynamic>{};
     stats.forEach((k, v) => encoded[k] = v.toJson());
-    await p.setString(_prefsKey, jsonEncode(encoded));
+    await p.setString(_key, jsonEncode(encoded));
   }
 
-  // Wipes all per-character history (Settings "Reset Character Statistics").
-  // Affects both Echo Trainer's "Adapt. Rand." weighting and Adaptive Copy's
-  // weak-character/unlock/boost logic, since they share this store.
+  // Wipes this track's per-character history only.
   Future<void> reset(SharedPreferences p) async {
     stats.clear();
-    await p.remove(_prefsKey);
+    await p.remove(_key);
   }
 
   // Draw weight for a character — defaults to 1 (never drawn / already

@@ -40,7 +40,7 @@ confusion-pair matrix.
   - **Priority: build the Koch Trainer (`kochMode: true`) side first.** The
     non-Koch CW Generator and later Echo Trainer reuse of the same flow are
     explicitly follow-ups, not part of the first working version.
-- **Character stats: shared with Echo Trainer, not a separate model.**
+- **Character stats: same model as the Echo Trainer, one track each (hear/echo since Phase 4, see docs/training/P4-zeichenstatistik.md).**
   New `CharStatsStore` (attempts, errors, moving error rate, last-seen
   block) replaces Echo Trainer's current ad-hoc `Map<String,int>`
   `_adaptiveWeight` (`adaptiveWeights` SharedPreferences key, used only by

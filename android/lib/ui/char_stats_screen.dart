@@ -18,7 +18,9 @@ import '../theme/app_colors.dart';
 import '../util/char_color.dart';
 
 class CharStatsScreen extends StatefulWidget {
-  const CharStatsScreen({super.key});
+  // `track`: CharStatsStore.hear or .echo — each training shows its own.
+  final String track;
+  const CharStatsScreen({super.key, required this.track});
 
   @override
   State<CharStatsScreen> createState() => _CharStatsScreenState();
@@ -27,7 +29,8 @@ class CharStatsScreen extends StatefulWidget {
 class _CharStatsScreenState extends State<CharStatsScreen> {
   bool _loading = true;
   List<String> _active = [];
-  final CharStatsStore _store = CharStatsStore();
+  late final CharStatsStore _store = CharStatsStore(widget.track);
+  bool get _isHear => widget.track == CharStatsStore.hear;
   int _unlockOccurrences = 20;
   double _highThreshold = 0.90;
   int _outputCase = 0;
@@ -41,7 +44,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
   Future<void> _load() async {
     final p = await SharedPreferences.getInstance();
     await _store.load(p);
-    final kochLevel = (await TrainingProfile.open(TrainingProfile.hear)).getInt('kochLevel') ?? 5;
+    final kochLevel = (await TrainingProfile.open(widget.track)).getInt('kochLevel') ?? 5;
     final kochSeq = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
     final customKochChars = (p.getString('customKochChars') ?? '').isNotEmpty
         ? p.getString('customKochChars')!
@@ -59,6 +62,36 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
     });
   }
 
+  // Irreversible, so a short confirmation guards against a stray tap.
+  Future<void> _confirmReset() async {
+    final c = AppColors.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(Strings.t('settings_reset_char_stats_confirm_title')),
+        content: Text(Strings.t(_isHear
+            ? 'settings_reset_char_stats_confirm_body_hear'
+            : 'settings_reset_char_stats_confirm_body_echo')),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(Strings.t('cancel'))),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(Strings.t('settings_reset_char_stats'),
+                  style: TextStyle(color: c.danger))),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final p = await SharedPreferences.getInstance();
+    await _store.reset(p);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(Strings.t('settings_reset_char_stats_done'))));
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
@@ -66,12 +99,19 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
       backgroundColor: c.background,
       appBar: AppBar(
         backgroundColor: c.surface,
-        title: Text(Strings.t('char_stats_title'),
+        title: Text(Strings.t(_isHear ? 'char_stats_title_hear' : 'char_stats_title_echo'),
             style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete_sweep_outlined, color: c.danger),
+            tooltip: Strings.t('settings_reset_char_stats'),
+            onPressed: _confirmReset,
+          ),
+        ],
       ),
       body: _loading
           ? Center(child: CircularProgressIndicator(color: c.accent))
@@ -90,12 +130,14 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
       final s = _store.stats[ch] ?? CharStat();
       final attemptsOk = s.attempts >= _unlockOccurrences;
       final emaOk = (1 - s.emaErrorRate) >= _highThreshold;
-      return (ch: ch, stat: s, ready: attemptsOk && emaOk);
+      return (ch: ch, stat: s, ready: _isHear && attemptsOk && emaOk);
     }).toList();
     // Not-ready characters first (least attempts first within that group) —
     // whatever's actually blocking the unlock surfaces at the top instead of
     // being buried among characters that are already long since mastered.
     rows.sort((a, b) {
+      // Sending has no unlock rule: weakest characters first.
+      if (!_isHear) return b.stat.emaErrorRate.compareTo(a.stat.emaErrorRate);
       if (a.ready != b.ready) return a.ready ? 1 : -1;
       return a.stat.attempts.compareTo(b.stat.attempts);
     });
@@ -104,10 +146,10 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        Text(Strings.t('char_stats_desc'),
+        Text(Strings.t(_isHear ? 'char_stats_desc' : 'char_stats_desc_echo'),
             style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint)),
         const SizedBox(height: 12),
-        Container(
+        if (_isHear) Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
@@ -122,7 +164,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
               style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
         ),
-        const SizedBox(height: 16),
+        if (_isHear) const SizedBox(height: 16),
         for (final r in rows)
           _CharStatRow(
             ch: r.ch,
