@@ -506,4 +506,4 @@ Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitl
   Tiles show title + subtitle only.
 
 ## Ausblick auf das nächste Zeichen (Hören, Ergebnis-Seite)
-Neue Karte "Auf dem Weg zu X" mit Fortschrittsbalken und den Zeichen, die noch fehlen (Anzahl Übungen bzw. Trefferquote unter Schwelle). Spiegelt `shouldUnlockNextChar`. Nur bei Koch und noch nicht freigeschaltet. Installiert, vom User noch nicht getestet.
+Neue Karte "Auf dem Weg zu X" mit Fortschrittsbalken und den Zeichen, die noch fehlen (Anzahl Übungen bzw. Trefferquote unter Schwelle). Balken = Summe der bisherigen Übungen / geforderte Übungen, nur über Zeichen mit fehlenden Wiederholungen (User-Feedback: Gesamtdurchschnitt war irreführend); fehlt nur die Quote, zeigt er die Quote des schwächsten Zeichens gegen die Schwelle. Spiegelt `shouldUnlockNextChar`. Nur bei Koch und noch nicht freigeschaltet. Installiert, vom User noch nicht getestet.

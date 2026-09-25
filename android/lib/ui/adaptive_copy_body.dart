@@ -1079,6 +1079,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
               const SizedBox(height: 20),
               _buildWeakCharsSection(context, scale: 1.2),
             ],
+            if (_buildUnlockOutlook(context) case final outlook?) ...[
+              const SizedBox(height: 20),
+              outlook,
+            ],
             if (_hasSuggestions) ...[
               const SizedBox(height: 20),
               Text(Strings.t('ac_suggestions_title'),
@@ -1098,6 +1102,80 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         ]),
       ),
     ]);
+  }
+
+  // Motivation: what is still missing before the next Koch character
+  // unlocks (mirrors AdaptiveCopyEngine.shouldUnlockNextChar: every active
+  // char needs enough attempts AND accuracy >= high threshold).
+  Widget? _buildUnlockOutlook(BuildContext context) {
+    if (!widget.kochLesson ||
+        widget.kochLevel >= widget.activeKochChars.length ||
+        _unlockedThisBlock) {
+      return null;
+    }
+    final c = AppColors.of(context);
+    final th = _engine!.thresholds;
+    final chars = kochActiveChars(widget.kochLevel, widget.activeKochChars);
+    if (chars.isEmpty) return null;
+    final needAttempts = <String, int>{};
+    final lowAcc = <String, int>{};
+    var doneAttempts = 0, wantAttempts = 0;
+    for (final ch in chars) {
+      final st = _charStats.stats[ch] ?? CharStat();
+      final acc = 1 - st.emaErrorRate;
+      if (st.attempts < th.unlockOccurrences) {
+        doneAttempts += st.attempts;
+        wantAttempts += th.unlockOccurrences;
+        needAttempts[ch] = th.unlockOccurrences - st.attempts;
+      } else if (acc < th.highThreshold) {
+        lowAcc[ch] = (acc * 100).round();
+      }
+    }
+    // Bar = repetitions still owed, summed over the chars that lack them;
+    // if only accuracy is missing, it shows accuracy vs. threshold.
+    double progress;
+    if (wantAttempts > 0) {
+      progress = doneAttempts / wantAttempts;
+    } else {
+      final worst = lowAcc.values.fold<int>(100, (m, v) => v < m ? v : m);
+      progress = (worst / 100 / th.highThreshold).clamp(0.0, 1.0);
+    }
+    final next = _displayChar(widget.activeKochChars[widget.kochLevel]);
+    final lines = <String>[];
+    if (needAttempts.isNotEmpty) {
+      lines.add(Strings.t('ac_outlook_attempts').replaceFirst('{list}',
+          needAttempts.entries.map((e) => '${_displayChar(e.key)} (${e.value})').join('  ')));
+    }
+    if (lowAcc.isNotEmpty) {
+      lines.add(Strings.t('ac_outlook_accuracy')
+          .replaceFirst('{pct}', '${(th.highThreshold * 100).round()}')
+          .replaceFirst('{list}',
+              lowAcc.entries.map((e) => '${_displayChar(e.key)} (${e.value} %)').join('  ')));
+    }
+    final mono = TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted);
+    return SizedBox(
+      width: double.infinity,
+      child: AppCard(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(Strings.t('ac_outlook_title').replaceFirst('{ch}', next),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
+                  fontWeight: FontWeight.bold, color: c.textPrimary)),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 8,
+              backgroundColor: c.background,
+              valueColor: AlwaysStoppedAnimation(c.accent),
+            ),
+          ),
+          const SizedBox(height: 8),
+          for (final l in lines) Padding(
+            padding: const EdgeInsets.only(top: 2), child: Text(l, style: mono)),
+        ]),
+      ),
+    );
   }
 
   // Result screen sits in a mainAxisSize.min Center column, so rows here
