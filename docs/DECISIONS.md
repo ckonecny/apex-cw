@@ -434,3 +434,19 @@ Flache Karten ohne Rahmen, getönte Buttons (`widgets/app_ui.dart`), Space-Grote
 - Bot callsigns come from a small prefetched pool (native call is async);
   if it is empty, a plain random EU call is used.
 
+
+## 2026-09-25: Memory Chain port — deviations from MorseMemoryChain.cpp
+
+- Koch lesson starts at the Geben (echo profile) lesson; lobby changes apply
+  to this visit only, like Morsel (the firmware writes `kochFilter` back).
+- Lobby uses chips and a Start button instead of encoder/FN and the
+  "key to start" gesture; speed is a +/- in the play screen (firmware:
+  encoder). No in-game volume control (system volume).
+- Sound prompt: the keyer is stopped while the prompt plays and restarted on
+  the generator's 'done' (shared sidetone), which also discards keying during
+  playback like the firmware's `clearPaddleLatches()`.
+- Settings persisted as `memChainOpt` (bit 0 calls, bit 1 sound, as the
+  firmware's `mcopt`); high scores as JSON in `memChainHi` /
+  `memChainHiCalls`.
+- Undecodable patterns and `<err>` count as a wrong answer (any keyed
+  character is judged, as in the firmware).

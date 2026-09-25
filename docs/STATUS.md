@@ -319,7 +319,7 @@ DECISIONS.md.
 | # | Module | What it is | Effort | Notes |
 |---|---|---|---|---|
 | 1 | **Morsel** (`MorseMorsel.cpp`, ~1.8k lines) — ported 2026-09-25, see below | Word guessing like Wordle: the word is played in CW and keyed back; letter boxes turn green/red. Words and abbreviations from the Koch lesson. | M | Word lists, Koch set, keyer and decoder already exist. Needs the `<err>` prosign (8 dits = delete the last char); build it together with the error-sign item from the upstream check. |
-| 2 | **Memory Chain** (`MorseMemoryChain.cpp`, ~830) | One new char per round, the whole chain is keyed from memory. Modes: Koch characters / call signs. | S–M | Call signs come from `CallsignData.kt`. High scores per mode. |
+| 2 | **Memory Chain** (`MorseMemoryChain.cpp`, ~830) — ported 2026-09-25, see below | One new char per round, the whole chain is keyed from memory. Modes: Koch characters / call signs. | S–M | Call signs come from `CallsignData.kt`. High scores per mode. |
 | 3 | **Trailblazer + Fox Hunt** (grid engine ~400, score ~300, games ~360 + ~440) | Maze: Trailblazer shows the next letter (keying), Fox Hunt only plays it and you key the direction (hearing). | M | Build the grid engine once for both games. |
 | 4 | **Morse Invaders** (`MorseGame.cpp` ~1.1k + game mode/sprites) — ported 2026-09-25, see below | Arcade: falling characters get "shot" by keying them. | L | Real-time game loop plus graphics (CustomPainter/Ticker), timing against the native keyer. |
 | 5 | **Radio Cave** (`MorseRadioCave.cpp`, ~2.65k) | Text adventure, every command keyed in Morse. 12 rooms, items, puzzles. | L | Mostly content and a state machine, UI is simple. Keep the English texts. |
@@ -480,3 +480,27 @@ Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitl
   opening, word-gap/over-end timing at your speed, agn/rpt/qrs/qrq, bot speed
   mismatch on Intermediate/Advanced, the typed-text input.
 
+
+## Memory Chain (backlog #2, 2026-09-25), installed on 63061JEBF01551, not yet user-tested
+
+- Third card in the games hub -> `MemoryChainScreen`
+  (`lib/ui/memory_chain_screen.dart`), 1:1 port of `MorseMemoryChain.cpp`:
+  one new character per round, key the whole chain from memory, boxes as the
+  only feedback (no OK/ERR sounds), 12 boxes per row, cap 48 = "Perfect!".
+- Modes Characters (Koch lesson, prosigns filtered out, no immediate
+  repeat, one tolerated error per round) and Call Signs (random call via
+  `randomCallInfo`, revealed letter by letter, completed call shown green
+  for 900 ms, any error ends). Prompt Display (big character until the first
+  answer) or Sound (at the keyer speed, pitch shifted by Tone Shift like the
+  firmware). Pauses 600/900 ms as in the firmware.
+- Game-over reveal (fatal box red, rest of the call dimmed), high scores per
+  mode (7 rows, rank by primary then secondary), same fields as the firmware.
+- Home games tile subtitle now lists Morsel · Invaders · Memory Chain.
+- To test: both modes and both prompts, tolerated error vs. second error,
+  call with "/", high-score tables, keying during a Sound prompt is ignored.
+
+## Home tiles without hint line (2026-09-25), user-tested OK
+
+- The small grey hint line under each home tile is removed (plus its
+  `home_*_hint` strings); with six tiles the column overflowed by ~10 px.
+  Tiles show title + subtitle only.

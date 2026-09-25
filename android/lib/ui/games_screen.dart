@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import 'invaders_screen.dart';
+import 'memory_chain_screen.dart';
 import 'morsel_screen.dart';
 import 'widgets/app_ui.dart';
 
@@ -46,6 +47,16 @@ class GamesScreen extends StatelessWidget {
               color: c.accentPurple,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const InvadersScreen())),
+            ),
+            const SizedBox(height: 12),
+            _GameCard(
+              icon: Icons.link_rounded,
+              title: 'Memory Chain',
+              subtitle: Strings.t('mc_subtitle'),
+              hint: Strings.t('mc_hint'),
+              color: c.warning,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const MemoryChainScreen())),
             ),
           ],
         ),

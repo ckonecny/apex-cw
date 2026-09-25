@@ -93,7 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
               subtitle: _hearInfo.isEmpty
                   ? Strings.t('home_hear_subtitle') : _hearInfo,
               color: c.accent,
-              hint: Strings.t('home_hear_hint'),
               onTap: () => _open(const GeneratorScreen()),
             )),
             const SizedBox(height: 8),
@@ -103,7 +102,6 @@ class _HomeScreenState extends State<HomeScreen> {
               subtitle: _giveInfo.isEmpty
                   ? Strings.t('home_give_subtitle') : _giveInfo,
               color: c.accent,
-              hint: Strings.t('home_give_hint'),
               onTap: () => _open(const EchoTrainerScreen()),
             )),
             const SizedBox(height: 16),
@@ -113,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
               title: 'CW Keyer',
               subtitle: Strings.t('home_keyer_subtitle'),
               color: c.accentPurple,
-              hint: Strings.t('home_keyer_hint'),
               onTap: () => _open(const KeyerScreen()),
             )),
             const SizedBox(height: 8),
@@ -122,7 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
               title: 'WiFi Trx',
               subtitle: Strings.t('home_wifitrx_subtitle'),
               color: c.warning,
-              hint: Strings.t('home_wifitrx_hint'),
               onTap: () => _open(const WifiTrxScreen()),
             )),
             const SizedBox(height: 8),
@@ -131,7 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
               title: 'QSO Bot',
               subtitle: Strings.t('home_qso_subtitle'),
               color: c.warning,
-              hint: Strings.t('home_qso_hint'),
               onTap: () => _open(const QsoBotScreen()),
             )),
             const SizedBox(height: 16),
@@ -141,7 +136,6 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Strings.t('games_title'),
               subtitle: Strings.t('home_games_subtitle'),
               color: c.info,
-              hint: Strings.t('home_games_hint'),
               onTap: () => _open(const GamesScreen()),
             )),
           ],
@@ -170,12 +164,12 @@ class _SectionLabel extends StatelessWidget {
 
 class _ModeCard extends StatelessWidget {
   final IconData icon;
-  final String title, subtitle, hint;
+  final String title, subtitle;
   final Color color;
   final VoidCallback onTap;
 
   const _ModeCard({required this.icon, required this.title, required this.subtitle,
-      required this.hint, required this.color, required this.onTap});
+      required this.color, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -208,9 +202,6 @@ class _ModeCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(subtitle, style: TextStyle(
                       fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
-                  const SizedBox(height: 6),
-                  Text(hint, style: TextStyle(
-                      fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
                 ],
               )),
               Icon(Icons.chevron_right, color: c.textFaint),
