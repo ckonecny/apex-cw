@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'charset_content.dart';
 
 /// Per-training settings ("profiles"), see docs/training/P2-trainingsprofile.md.
 ///
@@ -13,7 +14,7 @@ class TrainingProfile {
     'wpm',
     'kochLevel', 'groupLength', 'randomOption', 'maxWords', 'wordLengthMax',
     'abbrevLengthMax', 'interCharSpace', 'interWordSpace', 'boostLevel',
-    'blockFlow',
+    'blockFlow', 'charset', 'content',
   ];
   static const _stringFields = ['practiceChars'];
   static const _versionKey = 'profileVersion';
@@ -23,7 +24,23 @@ class TrainingProfile {
   /// values stay missing so the readers' defaults apply; an empty string is
   /// treated as missing too (a stored '' defeats `?? default`).
   static Future<void> migrateIfNeeded(SharedPreferences p) async {
-    if ((p.getInt(_versionKey) ?? 0) >= 1) return;
+    final version = p.getInt(_versionKey) ?? 0;
+    if (version >= 2) return;
+    if (version < 1) await _migrateV1(p);
+    // v2 (Phase 7): character set + content from the old content positions.
+    for (final kind in [hear, echo]) {
+      final choice = migrateCharsetChoice(kind,
+          kochContent: p.getInt(kind == hear ? 'kochModeIndex' : 'kochEchoModeIndex'),
+          oldEchoMode: p.getInt('echoModeIndex'));
+      if (p.getInt('profile.$kind.charset') == null) {
+        await p.setInt('profile.$kind.charset', choice.set.index);
+        await p.setInt('profile.$kind.content', choice.content.index);
+      }
+    }
+    await p.setInt(_versionKey, 2);
+  }
+
+  static Future<void> _migrateV1(SharedPreferences p) async {
     for (final kind in [hear, echo]) {
       for (final f in _intFields) {
         final v = p.getInt(f);
@@ -34,7 +51,6 @@ class TrainingProfile {
         if (v != null && v.isNotEmpty) await p.setString('profile.$kind.$f', v);
       }
     }
-    await p.setInt(_versionKey, 1);
   }
 
   final SharedPreferences _p;

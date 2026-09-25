@@ -11,22 +11,18 @@ import '../content/echo_suggestions.dart';
 import 'adaptive_copy_body.dart' show SuggestionRow;
 import 'char_stats_screen.dart';
 import '../content/training_profile.dart';
+import '../content/charset_content.dart';
+import 'widgets/charset_header.dart';
+import 'widgets/char_actions_sheet.dart';
 
 import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
-import '../util/char_color.dart';
 import '../util/keep_screen_on.dart';
 import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
 
 enum _State { idle, playing, receiving, correct, wrong }
-
-// Log span roles — mirrors the distinct FONT_ATTRIBs the real device uses in
-// this same scrolling log (m32_v6.ino: frameWordForDisplay/BOLD for the
-// vvv<ka>/+ markers, OK_RESULT/ERR_RESULT for the verdict, INVERSE_REGULAR
-// for a given-up word's reveal, REGULAR/keyed for the operator's own keying).
-enum _Role { marker, target, attempt, ok, err, reveal }
 
 /// Outcome of one word in block mode (docs/training/P5-echo-bloecke.md):
 /// first try right, right after a repeat, or given up (revealed).
@@ -43,12 +39,6 @@ class WordResult {
       this.firstWrongIndex);
 }
 
-class _LogSpan {
-  String text;
-  final _Role role;
-  _LogSpan(this.text, this.role);
-}
-
 class EchoTrainerScreen extends StatefulWidget {
   // When set, locks onto this single character instead of picking a random
   // target: the same char repeats every round (M32 Koch Trainer "Learn New
@@ -57,12 +47,7 @@ class EchoTrainerScreen extends StatefulWidget {
   // markers and no Max # of Words in this mode, matching KOCH_LEARN/PREVIEW.
   final String? fixedTarget;
   final String? title;
-  // Koch Trainer's own Echo Trainer branch (MorseMenu.cpp: "Koch Trainer >
-  // Echo Trainer" — Random/CW Abbrevs/English Words/Mixed/Adapt. Rand.):
-  // a separate, Koch-filtered content mode selector from the standalone
-  // top-level Echo Trainer's own (Random/Words/Calls/Mixed/PracticeSet/Abbrevs).
-  final bool kochMode;
-  const EchoTrainerScreen({super.key, this.fixedTarget, this.title, this.kochMode = false});
+  const EchoTrainerScreen({super.key, this.fixedTarget, this.title});
 
   @override
   State<EchoTrainerScreen> createState() => _EchoTrainerScreenState();
@@ -82,20 +67,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   _State _state    = _State.idle;
   int    _wpm      = 20;
   int    _kochLevel = 5;
-  // Content mode: 0=Random (single active Koch char), 1..5 map 1:1 onto
-  // CwGenerator.Mode's WORDS/CALLSIGNS/MIXED/PRACTICE_SET/ABBREVS ordinals
-  int    _modeIndex = 0;
-  // Koch Trainer's own Echo submenu (widget.kochMode only): position ->
-  // CwGenerator.Mode ordinal, matching MorseMenu.cpp's "Koch Trainer > Echo
-  // Trainer" list (Random/CW Abbrevs/English Words/Mixed/Adapt. Rand. — no
-  // Call Signs, no File Player). Random(0) and Adapt. Rand.(4) are handled
-  // locally in Dart (see _fetchTarget()), so their ordinals here are unused.
-  static const _kochModeOrdinals = [0, 5, 1, 3, 0];
-  static List<String> get _kochModeLabels => [
-    Strings.t('mode_random'), Strings.t('mode_abbrevs'), Strings.t('mode_words'),
-    Strings.t('mode_mixed'), 'Adapt. Rand.',
-  ];
-  int    _kochModeIndex = 0;
+  // Character set + content (docs/training/P7), stored in the Geben profile.
+  CharsetChoice _choice = const CharsetChoice(CharSet.koch, ContentKind.random);
+  bool get _koch => _choice.set == CharSet.koch;
   // "Adapt. Rand." (KOCH_ADAPTIVE): weighted-random character draw — wrong
   // answers raise a character's weight (drawn more often), right answers
   // lower it, within [1,20]. Backed by CharStatsStore's own
@@ -121,12 +95,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // "Max # of Words" (posMaxSequence) — shared with the CW Generator; 0 = unlimited.
   int  _maxWords = 0;
   // Block flow (P5): per-word results of the current block.
-  bool _blockFlow = false;
   final List<WordResult> _blockResults = [];
   String _firstAttempt = '';
   bool _showResult = false;
   int get _blockSize => _maxWords == 0 ? 10 : _maxWords.clamp(1, 50);
-  bool get _blockActive => _blockFlow && widget.fixedTarget == null;
+  // The single-character drill (fixedTarget) runs endless, without blocks.
+  bool get _blockActive => widget.fixedTarget == null;
 
   // Touch paddle: 0=Iambic A, 1=Iambic B, 2=Ultimatic, 3=Non-Squeeze, 4=Straight
   int _keyerMode = 0;
@@ -145,8 +119,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _echoRepeats   = 3;   // M32 "Echo Repeats": 0..6, or 7 = "Forever"
   int  _echoDisplay   = _dispCodeOnly;  // matches M32 "Echo Prompt": sound/display/both
   bool _confirmTone   = false;
-  bool _adaptiveSpeed = false;
-  int  _echoSpeedMax  = 35;
   // "Gebe-Tempo" (M32 "Echo Speed Max"): cap on the tempo the ANSWER is
   // expected at; 0 = same as the prompt. Answer tempo = min(prompt, cap).
   int  _answerWpmMax  = 0;
@@ -187,15 +159,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int _wordCounter = 0;
   bool _sessionActive = false;   // guards against a stale target fetch after Stop
 
-  // Adaptive speed tracking
   int _currentWpm = 20;
 
-  // Scrolling transcript — matches the CW Generator's log concept exactly
-  // (m32_v6.ino has no separate "big flashcard" UI for Echo Trainer either;
-  // target/attempt/verdict/reveal all interleave into one continuous scroll).
-  final List<_LogSpan> _log = [];
-  final ScrollController _logScroll = ScrollController();
-  bool _stickToBottom = true;
+  // What the practice view shows for the current word (same idea as the
+  // Hören block view: one word at a time, no scrolling transcript).
+  bool _targetVisible = false;   // the prompt was revealed (Echo Prompt != Sound)
+  bool _revealVisible = false;   // given up: the word is shown after the last try
   // True while a start/end marker is being played via playOne() — the 'done'
   // event it produces must not be mistaken for the target word finishing.
   bool _awaitingSignal = false;
@@ -219,10 +188,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     super.initState();
     KeepScreenOn.enable();
     _decoder = MorseDecoder(onChar: _onDecodedChar);
-    _logScroll.addListener(() {
-      if (!_logScroll.hasClients) return;
-      _stickToBottom = _logScroll.position.pixels >= _logScroll.position.maxScrollExtent - 4;
-    });
     _loadPrefs();
   }
 
@@ -232,7 +197,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<void> _openSettingsSheet() async {
     await showTrainingSettingsSheet(context,
         profile: TrainingProfile.echo,
-        sections: const [
+        sections: [
+          // Koch sequence is global; only shown with the Koch lesson.
+          if (_koch) TrainingSection.kochSequence,
           TrainingSection.content,
           TrainingSection.spacing,
           TrainingSection.wordSelection,
@@ -251,8 +218,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _echoRepeats    = (p.getInt('echoRepeats')   ?? 3).clamp(0, 7);
       _echoDisplay    = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _confirmTone    = p.getBool('confirmTone')   ?? false;
-      _adaptiveSpeed  = p.getBool('adaptiveSpeed') ?? false;
-      _echoSpeedMax   = p.getInt('echoSpeedMax')   ?? 35;
       _answerWpmMax   = (p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
       _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
       _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
@@ -260,8 +225,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _capInterWord = _interWordSpace;
       _practiceChars  = parsePracticeChars(pf.getString('practiceChars') ?? '');
       _boostLevel     = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
-      _modeIndex      = (p.getInt('echoModeIndex') ?? 0).clamp(0, 5);
-      _kochModeIndex  = (p.getInt('kochEchoModeIndex') ?? 0).clamp(0, _kochModeLabels.length - 1);
+      _choice         = CharsetChoice.load(pf);
       _keyerMode      = p.getInt('keyerMode')      ?? 0;
       _curtisBDitTiming = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
       _curtisBDahTiming = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
@@ -283,7 +247,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _groupLength     = pf.getInt('groupLength')    ?? 5;
       _randomOption    = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
       _maxWords        = pf.getInt('maxWords')        ?? 0;
-      _blockFlow       = (pf.getInt('blockFlow') ?? 0) == 1;
       _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
       _currentWpm     = _wpm;
     });
@@ -293,12 +256,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   }
 
   Future<void> _savePrefs() async {
-    final p = await SharedPreferences.getInstance();
     final pf = await TrainingProfile.open(TrainingProfile.echo);
     await pf.setInt('wpm',       _wpm);
     await pf.setInt('kochLevel', _kochLevel);
-    await p.setInt('echoModeIndex', _modeIndex);
-    await p.setInt('kochEchoModeIndex', _kochModeIndex);
+    await _choice.save(pf);
   }
 
   // Weighted-random single character from the active Koch set — weight
@@ -346,7 +307,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     );
     await _charStats.load(p);
     // Char-based content only: unlock check and weak chars need a char set.
-    final charContent = widget.kochMode && (_kochModeIndex == 0 || _kochModeIndex == 4);
+    final charContent = _koch && _choice.content == ContentKind.random;
     final s = evaluateEchoBlock(
       _echoEngine!,
       EchoSuggestionInput(
@@ -357,8 +318,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         interWordSpace: _interWordSpace,
         maxInterCharSpace: max(_capInterChar, _interCharSpace),
         maxInterWordSpace: max(_capInterWord, _interWordSpace),
-        kochLevel: widget.kochMode ? _kochLevel : 0,
-        kochTotal: widget.kochMode ? _activeKochChars.length : 0,
+        kochLevel: _koch ? _kochLevel : 0,
+        kochTotal: _koch ? _activeKochChars.length : 0,
         activeChars: charContent ? kochActiveChars(_kochLevel, _activeKochChars) : const [],
         stats: _charStats,
       ),
@@ -521,15 +482,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     return rows;
   }
 
-  Future<void> _applyAdaptiveFeedback(String target, bool correct) async {
-    if (!widget.kochMode || _kochModeIndex != 4) return;
-    for (final ch in target.split('')) {
-      _charStats.record(ch, correct);
-    }
-    final p = await SharedPreferences.getInstance();
-    await _charStats.save(p);
-  }
-
   @override
   void dispose() {
     KeepScreenOn.disable();
@@ -538,23 +490,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _symbolSub?.cancel();
     _genChannel.invokeMethod('stop');
     _keyerChannel.invokeMethod('stop');
-    _logScroll.dispose();
     super.dispose();
-  }
-
-  // ── Log ──────────────────────────────────────────────────────────────────
-
-  void _appendLog(String text, _Role role) {
-    if (text.isEmpty) return;
-    if (_log.isNotEmpty && _log.last.role == role) {
-      _log.last.text += text;
-    } else {
-      _log.add(_LogSpan(text, role));
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_stickToBottom || !_logScroll.hasClients) return;
-      _logScroll.jumpTo(_logScroll.position.maxScrollExtent);
-    });
   }
 
   int get _answerWpm =>
@@ -619,10 +555,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       await _applyPromptConfig();
       await _playSignal('VVVKA');
       if (!mounted || !_sessionActive) return;
-      setState(() {
-        if (_log.isNotEmpty) _appendLog('\n', _Role.marker);
-        _appendLog('vvv<ka>', _Role.marker);
-      });
     }
 
     await _playWord(fresh: true);
@@ -658,10 +590,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<void> _playEndSignal() async {
     await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});   // base pitch, not the shifted echo tone
     await _playSignal('+');
-    if (mounted) setState(() {
-      if (_log.isNotEmpty) _appendLog(' ', _Role.marker);
-      _appendLog('+', _Role.marker);
-    });
   }
 
   // Fetches (unless repeating the same word) and plays the next target,
@@ -680,19 +608,16 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _repeats++;
     _attempt = '';
 
-    // Every word (fresh or a repeat) starts its own line, whatever the
-    // previous verdict was — keeps each round scannable at a glance.
     if (mounted) setState(() {
-      if (_log.isNotEmpty) _appendLog('\n', _Role.attempt);
+      _targetVisible = false;
+      _revealVisible = false;
+      _state = _State.playing;
     });
-    if (mounted) setState(() => _state = _State.playing);
 
     // Echo Prompt = Display only: no audio at all, just show the target briefly
     // (mirrors the real device's "silentEcho": genTimer skips almost instantly).
     if (_echoDisplay == _dispDispOnly) {
-      if (mounted) setState(() {
-        _appendLog(_target, _Role.target);
-      });
+      if (mounted) setState(() => _targetVisible = true);
       Future.delayed(const Duration(milliseconds: 400), () {
         if (_state == _State.playing && mounted) _beginReceive();
       });
@@ -714,9 +639,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
     if (!mounted) return;
     if (type == 'done' && _state == _State.playing) {
-      if (_revealOnDone) {
-        setState(() => _appendLog(_target, _Role.target));
-      }
+      if (_revealOnDone) setState(() => _targetVisible = true);
       _beginReceive();
     }
   }
@@ -748,7 +671,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (_state != _State.receiving) return;
     if (ch == ' ') return;  // ignore word-gap spaces mid-attempt
     _attempt += ch;
-    setState(() => _appendLog(ch, _Role.attempt));
+    setState(() {});
     _resetSilenceTimer();
   }
 
@@ -781,26 +704,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     final ok = _attempt.trim().toUpperCase() == _target.toUpperCase();
     if (_repeats == 1) _firstAttempt = _attempt.trim();
-    if (_blockActive) {
-      if (_repeats == 1) _applyBlockFeedback(_target, _attempt);
-    } else {
-      _applyAdaptiveFeedback(_target, ok);
-    }
+    if (_blockActive && _repeats == 1) _applyBlockFeedback(_target, _attempt);
 
-    setState(() {
-      _state = ok ? _State.correct : _State.wrong;
-      if (_log.isNotEmpty) _appendLog(' ', ok ? _Role.ok : _Role.err);
-      _appendLog(ok ? 'OK' : 'ERR', ok ? _Role.ok : _Role.err);
-    });
+    setState(() => _state = ok ? _State.correct : _State.wrong);
     if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', ok);
 
     if (ok) {
       _recordWord(_repeats == 1 ? WordOutcome.first : WordOutcome.afterRepeat);
       _correct++;
-      // Adaptive speed: every 10 correct, bump by 1 WPM up to max
-      if (_adaptiveSpeed && _correct % 10 == 0) {
-        _currentWpm = (_currentWpm + 1).clamp(_wpm, _echoSpeedMax);
-      }
       Timer(const Duration(milliseconds: 1200), () {
         if (mounted && _sessionActive) _advance();
       });
@@ -816,13 +727,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _recordWord(WordOutcome.failed);
       // Reveal the word, then move on — matches the REPEAT_WORD "goto
       // randomGenerate" branch's displayGeneratedMorse(INVERSE_REGULAR, ...).
-      // The separating space stays ERR-styled (regular, not inverse) —
-      // only the revealed word itself gets the inverse block, same as the
-      // firmware's own trailing displayGeneratedMorse(REGULAR, " ").
-      setState(() {
-        if (_log.isNotEmpty) _appendLog(' ', _Role.err);
-        _appendLog(_target, _Role.reveal);
-      });
+      setState(() => _revealVisible = true);
       Timer(const Duration(milliseconds: 2000), () {
         if (mounted && _sessionActive) _advance();
       });
@@ -849,13 +754,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<void> _advance() async {
     if (widget.fixedTarget == null) {
       _wordCounter++;
-      final limit = _blockActive ? _blockSize : _maxWords;
-      if (limit > 0 && _wordCounter >= limit) {
-        if (_blockActive) await _computeSuggestions();
+      if (_wordCounter >= _blockSize) {
+        await _computeSuggestions();
         await _playEndSignal();
         if (mounted) setState(() {
           _state = _State.idle;
-          if (_blockActive) _showResult = true;
+          _showResult = true;
         });
         _sessionActive = false;
         _genSub?.cancel(); _genSub = null;
@@ -883,52 +787,17 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<String> _fetchTarget() async {
     if (widget.fixedTarget != null) return widget.fixedTarget!;
 
-    if (widget.kochMode) {
-      switch (_kochModeIndex) {
-        case 0: // Zufall — a GROUP of active Koch characters, matching
-                // getRandomChars(posRandomLength, ...)'s kochActive branch
-                // (koch.getRandomChar(maxLength)) in m32_v6.ino, not one char.
-          final result = await _genChannel.invokeMethod('getNextContent', {
-            'mode': 0,   // CwGenerator.Mode.RANDOM_CHARS
-            'kochLevel': _kochLevel,
-            'kochActive': true,
-            'groupLength': _groupLength,
-          });
-          return (result as String?) ?? '';
-        case 4: // Adapt. Rand. — also a group (getRandomChars(..., OPT_KOCH_ADAPTIVE))
-          return _pickAdaptiveGroup();
-        default: // Abkürzungen/Wörter/Gemischt — Koch-filtered (kochActive: true)
-          final result = await _genChannel.invokeMethod('getNextContent', {
-            'mode': _kochModeOrdinals[_kochModeIndex],
-            'kochLevel': _kochLevel,
-            'kochActive': true,
-            'wordLengthMax': _wordLengthMax,
-            'abbrevLengthMax': _abbrevLengthMax,
-          });
-          return (result as String?) ?? '';
-      }
-    }
-
-    if (_modeIndex == 0) {
-      // Random — a GROUP of characters from the "Random Groups" pool, same
-      // shared prefs and Kotlin path as the CW Generator's Random Chars mode
-      // (getRandomChars(posRandomLength, posRandomOption) in m32_v6.ino).
-      final result = await _genChannel.invokeMethod('getNextContent', {
-        'mode': 0,   // CwGenerator.Mode.RANDOM_CHARS
-        'kochLevel': _kochLevel,
-        'kochActive': false,
-        'groupLength': _groupLength,
-        'randomOption': _randomOption,
-      });
-      return (result as String?) ?? '';
-    }
-    // Words/Callsigns/Mixed/Practice Set/Abbrevs: generated Kotlin-side from the
-    // same content pools as the CW Generator (mode ordinals 1..5 line up directly).
+    final e = _choice.engine;
+    // Koch + random: weighted draw by weak chars (former "Adapt. Rand."),
+    // a GROUP like getRandomChars(posRandomLength, ...) in m32_v6.ino.
+    if (_koch && _choice.content == ContentKind.random) return _pickAdaptiveGroup();
+    // Everything else is generated Kotlin-side from the shared content pools.
     final result = await _genChannel.invokeMethod('getNextContent', {
-      'mode': _modeIndex,
+      'mode': e.mode,
       'kochLevel': _kochLevel,
-      'kochActive': false,
+      'kochActive': e.kochActive,
       'groupLength': _groupLength,
+      if (e.usesRandomOption) 'randomOption': _randomOption,
       'wordLengthMax': _wordLengthMax,
       'abbrevLengthMax': _abbrevLengthMax,
       'callLengthOpt': _callLengthOpt,
@@ -947,7 +816,15 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // matching comment in settings_screen.dart's build().
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => Scaffold(
+      builder: (context, _, __) => PopScope(
+      // While a block runs, back returns to the idle view instead of leaving
+      // (same as the Hören block view). The single-char drill just leaves.
+      canPop: _state == _State.idle || widget.fixedTarget != null,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _stopSession();
+      },
+      child: Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
         backgroundColor: c.surface,
@@ -956,17 +833,17 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                 color: c.textPrimary)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
-          onPressed: () { _stopSession(); Navigator.pop(context); },
+          onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
-          if (!_sessionActive && widget.kochMode)
+          if (_state == _State.idle && widget.fixedTarget == null)
             IconButton(
               icon: Icon(Icons.bar_chart_outlined, color: c.textMuted),
               tooltip: Strings.t('char_stats_title_echo'),
               onPressed: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const CharStatsScreen(track: CharStatsStore.echo))),
             ),
-          if (!_sessionActive)
+          if (_state == _State.idle)
             IconButton(
               icon: Icon(Icons.settings, color: c.textMuted),
               tooltip: Strings.t('settings_title'),
@@ -976,64 +853,65 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       ),
       body: Column(
         children: [
-          // ── Content mode (hidden when locked to a fixed target) ─────────
-          if (widget.fixedTarget == null) ...[
-            widget.kochMode
-                ? _EchoModeSelector(
-                    labels: _kochModeLabels,
-                    selected: _kochModeIndex,
-                    enabled: _state == _State.idle,
-                    onChanged: (i) { setState(() => _kochModeIndex = i); _savePrefs(); },
-                  )
-                : _EchoModeSelector(
-                    selected: _modeIndex,
-                    enabled: _state == _State.idle,
-                    onChanged: (i) { setState(() => _modeIndex = i); _savePrefs(); },
-                  ),
-            if (widget.kochMode)
-              _KochCharsRow(level: _kochLevel, sequence: _activeKochChars, outputCase: _outputCase),
-          ],
+          // ── Character set + content (hidden while running or when locked
+          // to a fixed target) ─────────────────────────────────────────────
+          if (widget.fixedTarget == null && _state == _State.idle && !_showResult)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: CharsetHeader(
+                choice: _choice,
+                onChanged: (v) { setState(() => _choice = v); _savePrefs(); },
+                kochLevel: _kochLevel,
+                kochSequence: _activeKochChars,
+                onKochLevelChanged: (v) { setState(() => _kochLevel = v); _savePrefs(); },
+                outputCase: _outputCase,
+                practiceChars: _practiceChars.join(),
+                onPracticeCharsChanged: (v) async {
+                  _practiceChars = parsePracticeChars(v);
+                  final pf = await TrainingProfile.open(TrainingProfile.echo);
+                  await pf.setString('practiceChars', v);
+                },
+                onCharTap: (ch) => showCharActionsSheet(context,
+                    ch: ch, outputCase: _outputCase,
+                    onListen: () async {
+                      await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});
+                      await playCharThrice(ch, wpm: _wpm, interWordSpace: _interWordSpace);
+                    },
+                    onEcho: () => Navigator.push(context, MaterialPageRoute(builder: (_) => EchoTrainerScreen(
+                      fixedTarget: ch,
+                      title: Strings.t('char_echo_title').replaceFirst('{ch}', ch.toUpperCase()),
+                    )))),
+              ),
+            ),
 
           if (_showResult) Expanded(child: _buildBlockResult(c)) else ...[
           if (_blockActive && _sessionActive) _buildBlockProgress(c),
-          // ── Scrolling transcript (target/attempt/verdict/markers) ───────
-          Expanded(child: PinchZoomFontSize(
-            prefsKey: 'echoLogFontSize',
-            initialSize: 26,
-            minSize: 14,
-            maxSize: 48,
-            builder: (context, fontSize) => Container(
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: c.surface,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: c.border),
-              ),
-              child: _buildLog(fontSize),
-            ),
-          )),
+          // ── One word at a time: idle hint or practice view ──────────────
+          Expanded(child: _state == _State.idle
+              ? _buildIdle(c)
+              : PinchZoomFontSize(
+                  prefsKey: 'echoLogFontSize',
+                  initialSize: 40,
+                  minSize: 20,
+                  maxSize: 72,
+                  builder: (context, fontSize) => _buildPracticeView(c, fontSize),
+                )),
 
           // ── Stats bar ────────────────────────────────────────────────────
           if (_total > 0) _StatsBar(correct: _correct, total: _total,
-              currentWpm: _adaptiveSpeed ? _currentWpm : null,
               answerWpm: (_answerWpmMax > 0 && _answerWpm < _currentWpm) ? _answerWpm : null),
 
           // ── Status label ─────────────────────────────────────────────────
           _StatusLabel(state: _state),
 
           // ── Sliders ──────────────────────────────────────────────────────
+          if (_state == _State.idle)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(children: [
               _SliderRow(label: 'WPM',  value: _wpm.toDouble(),
                   min: 5, max: 60, divisions: 55,
                   onChanged: (v) { setState(() => _wpm = v.round()); _savePrefs(); }),
-              if (widget.fixedTarget == null && widget.kochMode)
-                _SliderRow(label: 'KOCH', value: _kochLevel.toDouble(),
-                    min: 2, max: _activeKochChars.length.toDouble(),
-                    divisions: _activeKochChars.length - 2,
-                    onChanged: (v) { setState(() => _kochLevel = v.round()); _savePrefs(); }),
             ]),
           ),
 
@@ -1076,6 +954,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         ],
       ),
       ),
+      ),
     );
   }
 
@@ -1109,7 +988,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     final status = [
       '${Strings.t('block_hear')} $_wpm WPM',
       if (_answerWpmMax > 0 && _answerWpm < _wpm) '${Strings.t('block_give')} $_answerWpm WPM',
-      if (widget.kochMode) '${Strings.t('block_lesson')} $_kochLevel',
+      if (_koch) '${Strings.t('block_lesson')} $_kochLevel',
     ].join(' · ');
     String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
     return Padding(
@@ -1207,37 +1086,56 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     );
   }
 
-  Widget _buildLog(double fontSize) {
-    final c = AppColors.of(context);
-    if (_log.isEmpty) {
-      return Align(alignment: Alignment.bottomLeft, child: Text(Strings.t('press_start'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 20,
-              color: c.textDisabled, fontStyle: FontStyle.italic)));
-    }
-    return Scrollbar(
-      controller: _logScroll,
+  // Idle: hint and the current tempo/spacing, like the Hören block view.
+  Widget _buildIdle(AppColors c) {
+    final ewpm = (50 * _wpm / (31 + 4 * _interCharSpace + _interWordSpace)).round();
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(Strings.t('echo_idle_hint'), textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
+                  color: c.textMuted, fontStyle: FontStyle.italic)),
+          const SizedBox(height: 10),
+          Text(Strings.t('gen_status_line')
+                  .replaceFirst('{wpm}', '$_wpm')
+                  .replaceFirst('{ewpm}', '$ewpm')
+                  .replaceFirst('{ic}', '$_interCharSpace')
+                  .replaceFirst('{iw}', '$_interWordSpace'),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+        ]),
+      ),
+    );
+  }
+
+  // Running: the current word centred — the prompt (if shown), what the
+  // operator keyed so far, and the verdict. Same one-thing-at-a-time layout
+  // as the Hören block view instead of a scrolling transcript.
+  Widget _buildPracticeView(AppColors c, double fontSize) {
+    String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
+    final showTarget = _targetVisible || _revealVisible;
+    final verdict = switch (_state) {
+      _State.correct => ('OK', c.accent),
+      _State.wrong => ('ERR', c.danger),
+      _ => ('', c.textPrimary),
+    };
+    return Center(
       child: SingleChildScrollView(
-        controller: _logScroll,
-        padding: const EdgeInsets.only(bottom: 2),
-        child: RichText(
-          text: TextSpan(children: _log.map((span) {
-            final text = _outputCase == 1 ? span.text.toUpperCase() : span.text.toLowerCase();
-            // "reveal" (the word given up on) is shown INVERSE — background/
-            // foreground swapped — matching the real device's
-            // displayGeneratedMorse(INVERSE_REGULAR, ...) for that word.
-            final (color, background, weight) = switch (span.role) {
-              _Role.marker  => (c.warning, null, FontWeight.bold),
-              _Role.target  => (c.accent, null, FontWeight.bold),
-              _Role.attempt => (c.textPrimary, null, FontWeight.normal),
-              _Role.ok      => (c.accent, null, FontWeight.bold),
-              _Role.err     => (c.danger, null, FontWeight.bold),
-              _Role.reveal  => (c.background, c.warning, FontWeight.bold),
-            };
-            return TextSpan(text: text, style: TextStyle(
-                fontFamily: 'CwMono', fontSize: fontSize, height: 1.5,
-                color: color, backgroundColor: background, fontWeight: weight));
-          }).toList()),
-        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(showTarget ? cs(_target) : '· · ·', textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: fontSize,
+                  fontWeight: FontWeight.bold, height: 1.3,
+                  color: _revealVisible ? c.warning : showTarget ? c.accent : c.textDisabled)),
+          const SizedBox(height: 12),
+          Text(_attempt.isEmpty ? ' ' : cs(_attempt), textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: fontSize * 0.8,
+                  height: 1.3, color: c.textPrimary)),
+          const SizedBox(height: 12),
+          Text(verdict.$1.isEmpty ? ' ' : verdict.$1,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: fontSize * 0.6,
+                  fontWeight: FontWeight.bold, color: verdict.$2)),
+        ]),
       ),
     );
   }
@@ -1269,9 +1167,8 @@ class _StatusLabel extends StatelessWidget {
 
 class _StatsBar extends StatelessWidget {
   final int correct, total;
-  final int? currentWpm;
   final int? answerWpm;   // shown only when the answer is capped below the prompt tempo
-  const _StatsBar({required this.correct, required this.total, this.currentWpm, this.answerWpm});
+  const _StatsBar({required this.correct, required this.total, this.answerWpm});
 
   @override
   Widget build(BuildContext context) {
@@ -1292,10 +1189,6 @@ class _StatsBar extends StatelessWidget {
               pct >= 90 ? c.accent
             : pct >= 70 ? c.warning
                         : c.danger),
-          if (currentWpm != null) ...[
-            const SizedBox(width: 12),
-            _chip('⚡ $currentWpm WPM', c.info),
-          ],
           if (answerWpm != null) ...[
             const SizedBox(width: 12),
             _chip('${Strings.t('echo_answer_wpm')} $answerWpm', c.info),
@@ -1313,81 +1206,6 @@ class _StatsBar extends StatelessWidget {
     ),
     child: Text(t, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c)),
   );
-}
-
-class _EchoModeSelector extends StatelessWidget {
-  final List<String>? labels;
-  final int selected;
-  final bool enabled;
-  final ValueChanged<int> onChanged;
-  const _EchoModeSelector({required this.selected, required this.enabled, required this.onChanged,
-      this.labels});
-
-  static List<String> _defaultLabels() => [
-    Strings.t('mode_random'), Strings.t('mode_words'), Strings.t('mode_callsigns'),
-    Strings.t('mode_mixed'), 'Practice Set', Strings.t('mode_abbrevs'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    final effectiveLabels = labels ?? _defaultLabels();
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-      child: LayoutBuilder(builder: (context, constraints) {
-        const perRow = 3;
-        const gap = 6.0;
-        final itemWidth = (constraints.maxWidth - gap * (perRow - 1)) / perRow;
-        return Wrap(
-          spacing: gap, runSpacing: gap,
-          children: List.generate(effectiveLabels.length, (i) {
-            final active = i == selected;
-            return SizedBox(width: itemWidth, child: GestureDetector(
-              onTap: enabled ? () => onChanged(i) : null,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: active ? c.accentPurple.withOpacity(0.15) : c.surface,
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: active ? c.accentPurple : c.border),
-                ),
-                child: Text(effectiveLabels[i], textAlign: TextAlign.center,
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
-                        color: !enabled
-                            ? c.textDisabled
-                            : active ? c.accentPurple : c.textMuted)),
-              ),
-            ));
-          }),
-        );
-      }),
-    );
-  }
-}
-
-class _KochCharsRow extends StatelessWidget {
-  final int level;
-  final List<String> sequence;
-  // 0=lower, 1=UPPER — display only, matches the screen's outputCase setting.
-  final int outputCase;
-  const _KochCharsRow({required this.level, required this.sequence, this.outputCase = 1});
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    final active = kochActiveChars(level, sequence);
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: c.surfaceAlt, borderRadius: BorderRadius.circular(8),
-      ),
-      child: Wrap(spacing: 6, children: active.map((ch) =>
-          Text(outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase(),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-              color: charTypeColor(ch, c)))).toList()),
-    );
-  }
 }
 
 class _SliderRow extends StatelessWidget {

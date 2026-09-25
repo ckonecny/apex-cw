@@ -26,10 +26,17 @@ enum _Phase { idle, sending, revealed, result }
 // leaving the screen entirely. Bound in _AdaptiveCopyBodyState.initState().
 class AdaptiveCopyController {
   VoidCallback? _resetToIdle;
+  VoidCallback? _start;
   void resetToIdle() => _resetToIdle?.call();
+  void start() => _start?.call();
 }
 
 class AdaptiveCopyBody extends StatefulWidget {
+  // true = Koch lesson; false = all characters / practice set (Phase 7):
+  // no unlock, no tempo lock, weak-char boost only for random groups.
+  final bool kochLesson;
+  final int randomOption;
+  final int wordLengthMax;
   final int kochLevel;
   final List<String> activeKochChars;
   // Content mode within the Koch-nested selector (Random/Abbrevs/Words/Mixed
@@ -59,6 +66,9 @@ class AdaptiveCopyBody extends StatefulWidget {
 
   const AdaptiveCopyBody({
     super.key,
+    this.kochLesson = true,
+    this.randomOption = 0,
+    this.wordLengthMax = 0,
     required this.kochLevel,
     required this.activeKochChars,
     required this.contentModeIndex,
@@ -171,21 +181,34 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   void initState() {
     super.initState();
     widget.controller?._resetToIdle = _resetToIdle;
+    widget.controller?._start = _startBlock;
     _loadInitialWeakChars();
   }
 
   // Populates _weakChars from lifetime stats right away, so the idle/start
   // screen's panel (and the boost it drives) is available from the very
   // first block, not only after _finishBlock() has run once.
+  // The native boost only works on random groups (Koch lesson or all
+  // characters); the practice-set pool and words are not boosted.
+  bool get _boostApplies =>
+      widget.kochLesson || widget.contentModeOrdinals[widget.contentModeIndex] == 0;
+
+  Map<String, double> _weakCharsNow() {
+    if (!_boostApplies) return {};
+    final chars = widget.kochLesson
+        ? kochActiveChars(widget.kochLevel, widget.activeKochChars)
+        : _charStats.stats.keys.toList();
+    return weakCharsLifetime(_charStats, chars,
+        minAttempts: _weakCharMinAttempts, threshold: _weakCharThreshold, maxShown: _weakCharMaxShown);
+  }
+
   Future<void> _loadInitialWeakChars() async {
     final p = await SharedPreferences.getInstance();
     await _charStats.load(p);
     if (!mounted) return;
     setState(() {
       _outputCase = (p.getInt('outputCase') ?? 0).clamp(0, 1);
-      _weakChars = weakCharsLifetime(
-          _charStats, kochActiveChars(widget.kochLevel, widget.activeKochChars),
-          minAttempts: _weakCharMinAttempts, threshold: _weakCharThreshold, maxShown: _weakCharMaxShown);
+      _weakChars = _weakCharsNow();
       _excludedBoostChars.removeWhere((ch) => !_weakChars.containsKey(ch));
     });
   }
@@ -282,12 +305,14 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final result = await _genChannel.invokeMethod('getNextContent', {
       'mode': ordinal,
       'kochLevel': widget.kochLevel,
-      'kochActive': true,
-      if (ordinal == 0) 'groupLength': widget.groupLength,
+      'kochActive': widget.kochLesson && ordinal != 2,
+      if (ordinal == 0 || ordinal == 4) 'groupLength': widget.groupLength,
+      if (ordinal == 0 && !widget.kochLesson) 'randomOption': widget.randomOption,
+      if (ordinal == 1 || ordinal == 3) 'wordLengthMax': widget.wordLengthMax,
       // Sent unconditionally for the non-Random modes, same as
       // echo_trainer_screen.dart's kochMode branch — harmless for modes
       // that don't consume it.
-      if (ordinal != 0) 'abbrevLengthMax': widget.abbrevLengthMax,
+      if (ordinal != 0 && ordinal != 4) 'abbrevLengthMax': widget.abbrevLengthMax,
     });
     return ((result as String?) ?? '').toUpperCase();
   }
@@ -388,8 +413,13 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final boostChars = _weakChars.keys
         .where((ch) => !_excludedBoostChars.contains(ch))
         .toList();
-    await _genChannel.invokeMethod('setPracticeChars', boostChars);
-    await _genChannel.invokeMethod('setBoostLevel', boostChars.isEmpty ? 0 : 1);
+    if (_boostApplies) {
+      await _genChannel.invokeMethod('setPracticeChars', boostChars);
+      await _genChannel.invokeMethod('setBoostLevel', boostChars.isEmpty ? 0 : 1);
+    } else {
+      // Practice set / words: the profile's own set (rule 2).
+      await _restorePracticeCharsAndBoost();
+    }
     final pitch = p.getInt('pitch') ?? 600;
     final toneSoftness = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
     await _toneChannel.invokeMethod('setFreq', pitch);
@@ -491,7 +521,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
         .map((ch) => _charStats.stats[ch] ?? CharStat())
         .toList();
-    final unlocked = widget.kochLevel < widget.activeKochChars.length &&
+    final unlocked = widget.kochLesson && widget.kochLevel < widget.activeKochChars.length &&
         _engine!.shouldUnlockNextChar(activeChars);
 
     // Proposals only — not applied here. The result screen shows them as
@@ -513,7 +543,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // Once the full sequence is unlocked, the (now hysteresis-gated, see
     // AdaptiveCopyThresholds.spacingUpConsecutiveBlocks) tighten/speed-up
     // proposals resume normally.
-    final rampingUpKoch = widget.kochLevel < widget.activeKochChars.length;
+    final rampingUpKoch = widget.kochLesson && widget.kochLevel < widget.activeKochChars.length;
     int? newInterChar, newInterWord, interCharBefore, interWordBefore;
     if (decision.spacingStep == TempoStep.up && !unlocked && !rampingUpKoch) {
       final ic = (widget.interCharSpace - 1).clamp(3, _startInterCharSpace);
@@ -543,9 +573,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       wpmBefore = widget.wpm;
       newWpm = widget.wpm + 1;
     }
-    final weakChars = weakCharsLifetime(
-        _charStats, kochActiveChars(widget.kochLevel, widget.activeKochChars),
-        minAttempts: _weakCharMinAttempts, threshold: _weakCharThreshold, maxShown: _weakCharMaxShown);
+    final weakChars = _weakCharsNow();
 
     if (!mounted) return;
     setState(() {
@@ -636,20 +664,6 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                 const SizedBox(height: 24),
                 _buildWeakCharsSection(context, scale: 1.2),
               ],
-              const SizedBox(height: 28),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: c.accent.withOpacity(0.2),
-                  foregroundColor: c.accent,
-                  side: BorderSide(color: c.accent),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                onPressed: _startBlock,
-                child: Text('▶  ${Strings.t('ac_start_block')}',
-                    style: const TextStyle(fontFamily: 'CwMono', fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-              ),
             ]),
           ),
         ),
@@ -756,7 +770,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         Text(Strings.t('ac_block_label').replaceFirst('{n}', '$_blockNumber'),
             style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
                 fontWeight: FontWeight.bold, color: c.textMuted)),
-        Text('${widget.contentModeLabels[widget.contentModeIndex]} · KOCH ${widget.kochLevel}',
+        Text('${widget.contentModeLabels[widget.contentModeIndex]}${widget.kochLesson ? ' · KOCH ${widget.kochLevel}' : ''}',
             style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
       ]),
     );

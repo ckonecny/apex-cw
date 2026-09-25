@@ -1,5 +1,7 @@
 # Adaptive Copy Mode — Design Notes
 
+> **Stand seit Phase 7:** Der Klassisch-Ablauf und der Klassisch/Adaptiv-Umschalter sind entfernt; Hören läuft immer als adaptiver Block, für Koch, Alle Zeichen und Übungsset (`docs/training/P7-zeichenvorrat-startseite.md`). Die Abschnitte unten beschreiben die Entstehung und nennen teils Klassisch, `kochMode` und die alten Home-Karten.
+
 Status: planned, not started. Not a firmware port — this concept has no
 `reference/` equivalent; it originates from a separate ESP32 CW-trainer
 project and is being added here as a net-new mode. Existing modes/data stay

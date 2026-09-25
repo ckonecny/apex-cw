@@ -29,9 +29,7 @@ class Strings {
   static const Map<String, List<String>> _map = {
     // ── Home ─────────────────────────────────────────────────────────────
     'home_keyer_subtitle':     ['Morsetaste · Iambic · Touch-Paddle', 'Morse Key · Iambic · Touch Paddle'],
-    'home_generator_subtitle': ['Zufallszeichen · Wörter · Rufzeichen', 'Random Chars · Words · Callsigns'],
     'home_wifitrx_subtitle':   ['CW über UDP · cq.morserino.info', 'CW over UDP · cq.morserino.info'],
-    'home_echo_subtitle':      ['Anhören · Nachsenden · Auswertung', 'Listen · Echo Back · Evaluation'],
 
     // ── Common ───────────────────────────────────────────────────────────
     'cancel': ['Abbrechen', 'Cancel'],
@@ -81,8 +79,6 @@ class Strings {
     'opt_audio_speaker': ['Lautsprecher', 'Speaker'],
     'opt_audio_wired': ['Kabel/USB', 'Wired/USB'],
     'opt_audio_bluetooth': ['Bluetooth', 'Bluetooth'],
-    'settings_stop_next_rep_desc': ['Pausiert nach jedem Wort: Dit = wiederholen, Dah = nächstes Wort', 'Pauses after each word: Dit = repeat, Dah = next word'],
-    'settings_each_word_twice': ['Jedes Wort 2×', 'Each Word 2×'],
     'settings_group_length': ['Gruppen-Länge (Zufall)', 'Group Length (random)'],
     'settings_max_word_length': ['Max. Wortlänge (nur Wörter)', 'Max Word Length (words only)'],
     'settings_max_abbrev_length': ['Max. Abkürzungslänge (nur Abkürzungen)', 'Max Abbreviation Length (abbreviations only)'],
@@ -97,12 +93,8 @@ class Strings {
     'block_wrong': ['falsch', 'wrong'],
     'block_next': ['Nächster Block', 'Next block'],
     'block_end': ['Beenden', 'Finish'],
-    'settings_flow': ['Ablauf', 'Flow'],
-    'settings_flow_classic': ['Klassisch', 'Classic'],
-    'settings_flow_block': ['Blockweise', 'In blocks'],
     'settings_words_per_block': ['Wörter pro Block', 'Words per block'],
     'settings_repeats': ['Wiederholungen', 'Repeats'],
-    'settings_max_speed': ['Max. Speed', 'Max Speed'],
     'settings_profile_hear': ['Hören', 'Listening'],
     'settings_profile_echo': ['Geben (Echo)', 'Sending (Echo)'],
     'settings_word_selection': ['Wortauswahl', 'Word selection'],
@@ -127,22 +119,22 @@ class Strings {
     'mode_callsigns': ['Rufzeichen', 'Callsigns'],
     'mode_mixed': ['Gemischt', 'Mixed'],
     'mode_abbrevs': ['Abkürzungen', 'Abbrevs'],
+    'settings_word_selection_for': ['Gilt für: {set} · {content}', 'Applies to: {set} · {content}'],
+    'charset_tap_hint': ['Zeichen antippen: anhören oder per Echo üben', 'Tap a character to listen to it or practise it with echo'],
+    'char_listen': ['Anhören', 'Listen'],
+    'char_echo_practice': ['Mit Echo üben', 'Practise with echo'],
+    'char_echo_title': ['Üben: {ch}', 'Practise: {ch}'],
+    'home_hear_subtitle': ['CW Generator · Koch Trainer', 'CW Generator · Koch Trainer'],
+    'home_give_subtitle': ['Echo Trainer · Nachsenden · Auswertung', 'Echo Trainer · Echo Back · Evaluation'],
+    'charset_koch': ['Koch-Lektion', 'Koch lesson'],
+    'charset_all': ['Alle Zeichen', 'All characters'],
+    'charset_practice': ['Übungsset', 'Practice set'],
 
     // ── CW Generator / Koch Trainer screen ───────────────────────────────
-    'gen_new_char_title': ['Neu: {ch}', 'New: {ch}'],
-    'gen_preview_char_title': ['Vorhören: {ch}', 'Preview: {ch}'],
-    'gen_learn_new': ['Neu lernen', 'Learn New'],
-    'gen_preview': ['Vorhören', 'Preview'],
-    'gen_practice_echo': ['Echo üben', 'Practice Echo'],
     'repeat_upper': ['WIEDERHOLEN', 'REPEAT'],
     'next_upper': ['WEITER', 'NEXT'],
-    'press_start': ['▶ START drücken', '▶ Press START'],
-    'gen_preview_chars_title': ['Zeichen vorhören', 'Preview Characters'],
-    'gen_preview_chars_desc': ['Ganze Kurs-Sequenz — auch noch nicht gelernte Zeichen', 'Whole course sequence — including not-yet-learned characters'],
+    'echo_idle_hint': ['Das Wort anhören und mit dem Paddle zurückgeben.', 'Listen to the word and key it back with the paddle.'],
     'get_ready': ['Bereit machen …', 'Get ready …'],
-    'gen_boost_hint': [
-      'Tippen zum Aus-/Einschließen — bevorzugt abgefragt ab dem Start',
-      'Tap to include/exclude — practiced more from Start'],
     'gen_status_line': [
       'WPM {wpm} (eff. {ewpm}) · Abstand {ic}/{iw}',
       'WPM {wpm} (eff. {ewpm}) · Spacing {ic}/{iw}'],
@@ -156,8 +148,6 @@ class Strings {
     'echo_status_wrong': ['✗ Falsch', '✗ Wrong'],
 
     // ── Adaptive Copy mode (Koch Trainer "Adaptiv" flow) ─────────────────
-    'flow_classic': ['Classic', 'Classic'],
-    'flow_adaptiv': ['Adaptiv', 'Adaptive'],
     'ac_block_label': ['BLOCK {n}', 'BLOCK {n}'],
     'ac_idle_hint': ['Zuhören und auf Papier mitschreiben.', 'Listen and copy on paper.'],
     'ac_start_block': ['Block starten', 'Start Block'],

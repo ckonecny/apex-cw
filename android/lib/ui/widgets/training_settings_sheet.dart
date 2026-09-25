@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../content/cw_content.dart';
 import '../../content/training_profile.dart';
+import '../../content/charset_content.dart';
+import 'charset_header.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import 'setting_rows.dart';
 
 /// Parts of the per-training settings a screen can show, see
 /// docs/training/P3-einstellungen-in-screens.md.
-enum TrainingSection { content, spacing, wordSelection, generatorFlow, echoFlow, adaptive, kochSequence }
+enum TrainingSection { content, spacing, wordSelection, echoFlow, adaptive, kochSequence }
 
 /// Opens the settings sheet for one training profile ([TrainingProfile.hear]
 /// or [TrainingProfile.echo]). Every change is saved immediately; the screen
@@ -49,6 +51,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   ];
 
   TrainingProfile? _prof;
+  CharsetChoice _choice = const CharsetChoice(CharSet.koch, ContentKind.random);
   SharedPreferences? _p;
 
   // Same defaults as the settings screen and the training screens.
@@ -61,18 +64,11 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _wordLengthMax = 0;
   int _abbrevLengthMax = 0;
   int _maxWords = 0;
-  bool _blockFlow = false;
-  // Global (not per-profile) generator flow prefs, as in Settings before.
-  int _genDisplay = 1;
-  bool _stopAfterItem = false;
-  bool _eachWordTwice = false;
   // Echo flow prefs (global keys, as in Settings before).
   int _echoThinkTime = 8;
   int _echoRepeats = 3;
   int _echoDisplay = 1;
   int _echoAnswerWpmMax = 0;
-  bool _adaptiveSpeed = false;
-  int _echoSpeedMax = 35;
   int _toneShift = 1;
   // Koch sequence (global keys, as in Settings before). 0=M32, 1=LCWO,
   // 2=CW Academy, 3=LICW, 4=Custom.
@@ -98,6 +94,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
     if (!mounted) return;
     setState(() {
       _prof = prof;
+      _choice = CharsetChoice.load(prof);
       _p = p;
       final pc = prof.getString('practiceChars');
       _practiceChars = (pc == null || pc.isEmpty) ? '' : pc;
@@ -109,16 +106,10 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);
       _abbrevLengthMax = (prof.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _maxWords = (prof.getInt('maxWords') ?? 0).clamp(0, 250);
-      _blockFlow = widget.profile == TrainingProfile.echo && (prof.getInt('blockFlow') ?? 0) == 1;
-      _genDisplay = (p.getInt('genDisplayMode') ?? 1).clamp(0, 2);
-      _stopAfterItem = p.getBool('stopAfterItem') ?? false;
-      _eachWordTwice = p.getBool('eachWordTwice') ?? false;
       _echoThinkTime = p.getInt('echoThinkTime') ?? 8;
       _echoRepeats = (p.getInt('echoRepeats') ?? 3).clamp(0, 7);
       _echoDisplay = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _echoAnswerWpmMax = (p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
-      _adaptiveSpeed = p.getBool('adaptiveSpeed') ?? false;
-      _echoSpeedMax = p.getInt('echoSpeedMax') ?? 35;
       _toneShift = (p.getInt('toneShift') ?? 1).clamp(0, 2);
       _kochSeq = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
       final ck = p.getString('customKochChars') ?? '';
@@ -317,50 +308,11 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
     ];
   }
 
-  List<Widget> _generatorFlow() {
-    return [
-      SettingsSectionHeader('CW Generator'),
-      const SizedBox(height: 12),
-      SettingsCard(children: [
-        SegmentRow(
-          label: 'CW Gen Displ',
-          options: [Strings.t('opt_off'), Strings.t('opt_by_char'), Strings.t('opt_by_word')],
-          selected: _genDisplay,
-          onChanged: (v) {
-            setState(() => _genDisplay = v);
-            _p?.setInt('genDisplayMode', v);
-          },
-        ),
-        const SettingsDivider(),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            ToggleRow(
-                label: 'Stop<Next>Rep', value: _stopAfterItem,
-                onChanged: (v) {
-                  setState(() => _stopAfterItem = v);
-                  _p?.setBool('stopAfterItem', v);
-                }),
-            _hint(Strings.t('settings_stop_next_rep_desc')),
-          ]),
-        ),
-        const SettingsDivider(),
-        ToggleRow(
-            label: Strings.t('settings_each_word_twice'), value: _eachWordTwice,
-            onChanged: (v) {
-              setState(() => _eachWordTwice = v);
-              _p?.setBool('eachWordTwice', v);
-            }),
-      ]),
-      const SizedBox(height: 24),
-    ];
-  }
-
   List<Widget> _wordSelection() {
-    return [
-      SettingsSectionHeader(Strings.t('settings_word_selection')),
-      const SizedBox(height: 12),
-      SettingsCard(children: [
+    final k = _choice.content;
+    // Only what fits the chosen content (docs/training/P7, decision 8).
+    final rows = <Widget>[
+      if (_choice.engine.usesRandomOption)
         SegmentRow(
           label: 'Random Groups',
           options: _randomOptionLabels,
@@ -370,7 +322,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             _setInt('randomOption', v);
           },
         ),
-        const SettingsDivider(),
+      if (k == ContentKind.random)
         LabeledSlider(
             label: Strings.t('settings_group_length'), value: _groupLength.toDouble(),
             min: 2, max: 8, divisions: 6, display: '$_groupLength',
@@ -378,7 +330,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               setState(() => _groupLength = v.round());
               _setInt('groupLength', _groupLength);
             }),
-        const SettingsDivider(),
+      if (k == ContentKind.words || k == ContentKind.mixed)
         LabeledSlider(
             label: Strings.t('settings_max_word_length'), value: _wordLengthMax.toDouble(),
             min: 0, max: 8, divisions: 8,
@@ -387,7 +339,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               setState(() => _wordLengthMax = v.round());
               _setInt('wordLengthMax', _wordLengthMax);
             }),
-        const SettingsDivider(),
+      if (k == ContentKind.abbrevs || k == ContentKind.mixed)
         LabeledSlider(
             label: Strings.t('settings_max_abbrev_length'), value: _abbrevLengthMax.toDouble(),
             min: 0, max: 5, divisions: 5,
@@ -396,27 +348,29 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               setState(() => _abbrevLengthMax = v.round());
               _setInt('abbrevLengthMax', _abbrevLengthMax);
             }),
-        const SettingsDivider(),
-        if (_blockFlow)
-          LabeledSlider(
-              label: Strings.t('settings_words_per_block'),
-              value: (_maxWords == 0 ? 10 : _maxWords).clamp(1, 50).toDouble(),
-              min: 1, max: 50, divisions: 49,
-              display: '${_maxWords == 0 ? 10 : _maxWords.clamp(1, 50)}',
-              onChanged: (v) {
-                setState(() => _maxWords = v.round());
-                _setInt('maxWords', _maxWords);
-              })
-        else
-        LabeledSlider(
-            label: 'Max # of Words', value: _maxWords.toDouble(),
-            min: 0, max: 250, divisions: 50,
-            display: _maxWords == 0 ? Strings.t('opt_unlimited') : '$_maxWords',
-            onChanged: (v) {
-              setState(() => _maxWords = (v / 5).round() * 5);
-              _setInt('maxWords', _maxWords);
-            }),
-      ]),
+    ];
+    final cards = <Widget>[
+      for (var i = 0; i < rows.length; i++) ...[
+        if (i > 0) const SettingsDivider(),
+        rows[i],
+      ],
+      if (rows.isNotEmpty) const SettingsDivider(),
+      LabeledSlider(
+          label: Strings.t('settings_words_per_block'),
+          value: (_maxWords == 0 ? 10 : _maxWords).clamp(1, 50).toDouble(),
+          min: 1, max: 50, divisions: 49,
+          display: '${_maxWords == 0 ? 10 : _maxWords.clamp(1, 50)}',
+          onChanged: (v) {
+            setState(() => _maxWords = v.round());
+            _setInt('maxWords', _maxWords);
+          }),
+    ];
+    return [
+      SettingsSectionHeader(Strings.t('settings_word_selection')),
+      _hint(Strings.t('settings_word_selection_for')
+          .replaceFirst('{set}', charSetLabel(_choice.set))
+          .replaceFirst('{content}', contentLabel(_choice.content))),
+      SettingsCard(children: cards),
       const SizedBox(height: 24),
     ];
   }
@@ -427,16 +381,6 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       SettingsSectionHeader('Echo Trainer'),
       const SizedBox(height: 12),
       SettingsCard(children: [
-        SegmentRow(
-          label: Strings.t('settings_flow'),
-          options: [Strings.t('settings_flow_classic'), Strings.t('settings_flow_block')],
-          selected: _blockFlow ? 1 : 0,
-          onChanged: (v) {
-            setState(() => _blockFlow = v == 1);
-            _setInt('blockFlow', v);
-          },
-        ),
-        const SettingsDivider(),
         LabeledSlider(
             label: Strings.t('settings_think_time'), value: _echoThinkTime.toDouble(),
             min: 1, max: 20, divisions: 19, display: '${_echoThinkTime}s',
@@ -478,23 +422,6 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
           child: Text(Strings.t('settings_answer_wpm_help'),
               style: TextStyle(fontSize: 12, color: c.textMuted)),
         ),
-        const SettingsDivider(),
-        ToggleRow(
-            label: 'Adaptive Speed', value: _adaptiveSpeed,
-            onChanged: (v) {
-              setState(() => _adaptiveSpeed = v);
-              _p?.setBool('adaptiveSpeed', v);
-            }),
-        if (_adaptiveSpeed) ...[
-          const SettingsDivider(),
-          LabeledSlider(
-              label: Strings.t('settings_max_speed'), value: _echoSpeedMax.toDouble(),
-              min: 10, max: 50, divisions: 40, display: '$_echoSpeedMax WPM',
-              onChanged: (v) {
-                setState(() => _echoSpeedMax = v.round());
-                _p?.setInt('echoSpeedMax', _echoSpeedMax);
-              }),
-        ],
         const SettingsDivider(),
         SegmentRow(
           label: Strings.t('settings_tone_shift'),
@@ -539,7 +466,6 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             TrainingSection.content => _content(),
             TrainingSection.spacing => _spacing(),
             TrainingSection.wordSelection => _wordSelection(),
-            TrainingSection.generatorFlow => _generatorFlow(),
             TrainingSection.echoFlow => _echoFlow(),
             TrainingSection.adaptive => _adaptive(),
             TrainingSection.kochSequence => _kochSequence(),
