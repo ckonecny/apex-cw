@@ -1,6 +1,6 @@
 # Phase 8: Extras
 
-Status: **teilweise umgesetzt (Punkte 1, 2 fertig, Reaktionszeit gestrichen; 4 und 5 offen)** · Stand: 2026-09-25
+Status: **teilweise umgesetzt (Paddle, Trend, Verwechslungspaare fertig; Reaktionszeit gestrichen; Presets zurückgestellt)** · Stand: 2026-09-25
 
 ## Ziel
 
@@ -88,7 +88,7 @@ Jeder Schritt: bauen, installieren, kurz prüfen, dann "passt".
   20). Ergebnis-Seiten von Hören und Geben zeigen die Trendzeile. Dateien:
   neue Datei `content/block_history.dart`, beide Ergebnis-Seiten.
   Prüfung: 6 Blöcke üben, Trend erscheint, Pfeil passt zur Entwicklung.
-- **8c Verwechslungspaare (offen).** Paare beim Geben mitzählen, in der Statistik
+- **8c Verwechslungspaare (umgesetzt).** Paare beim Geben mitzählen, in der Statistik
   "Geben" und auf der Ergebnis-Seite anzeigen. Dateien: `char_stats.dart`,
   `echo_trainer_screen.dart`, `char_stats_screen.dart`. Prüfung: bewusst
   ein falsches Zeichen geben, Paar erscheint mit Anzahl.
@@ -127,4 +127,8 @@ Zwischenstand (2026-09-25), noch nicht abgeschlossen:
   gelöscht.
 - **Reaktionszeit:** vom User gestrichen (geringer Nutzen, viele
   Störfaktoren, keine Firmware-Vorlage).
-- **Offen:** 8c Verwechslungspaare, 8d Presets.
+- **Verwechslungspaare:** `CharStatsStore.pairs` (`T>G`, "–" = ausgelassen),
+  gezählt beim ersten Versuch aus dem ersten falschen Zeichen, nur Geben.
+  Anzeige: Zeile auf der Ergebnis-Seite, Top 10 in der Statistik "Geben",
+  Zurücksetzen mit der Statistik.
+- **Zurückgestellt (User, 2026-09-25):** 8d Benannte Presets.

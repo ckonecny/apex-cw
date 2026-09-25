@@ -97,6 +97,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _maxWords = 0;
   // Block flow (P5): per-word results of the current block.
   final List<WordResult> _blockResults = [];
+  final List<String> _blockPairs = [];
   BlockTrend? _trend; // erst ab 6 Blöcken
   String _firstAttempt = '';
   bool _showResult = false;
@@ -301,7 +302,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Block flow: every echo content feeds the Geben track, once per word
   // after the first attempt (docs/training/P6-echo-vorschlaege.md).
   Future<void> _applyBlockFeedback(String target, String received) async {
-    _charStats.recordWord(target, received);
+    final pair = _charStats.recordWord(target, received);
+    if (pair != null) _blockPairs.add(pair);
     final p = await SharedPreferences.getInstance();
     await _charStats.save(p);
   }
@@ -590,6 +592,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (_state != _State.idle) return;   // guard against a double-tap racing two sessions
     _correct = 0; _total = 0; _wordCounter = 0;
     _blockResults.clear();
+    _blockPairs.clear();
     _showResult = false;
     _target = ''; _attempt = ''; _firstAttempt = '';
     _targetVisible = false; _revealVisible = false; _repeats = 0;
@@ -1086,6 +1089,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         const SizedBox(height: 6),
         Text(status, textAlign: TextAlign.center,
             style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+        if (_blockPairs.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+                '${Strings.t('pairs_block')}: ${_blockPairs.map((x) => cs(x.replaceFirst('>', ' → '))).join(', ')}',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.warning)),
+          ),
         _buildTempoControls(c),
         const SizedBox(height: 4),
         Expanded(child: PinchZoomFontSize(

@@ -59,7 +59,7 @@ Everything above, tested on 63061JEBF01551.
    back out to the block overview, which then shows the marked/wrong
    characters highlighted in place. Needs a new per-word drill-down screen/
    state in `adaptive_copy_body.dart`'s result/marking flow, replacing
-   however errors are currently selected there. **Not started.**
+   however errors are currently selected there. **Done/obsolete, user-confirmed 2026-09-25.**
 6. ~~Weak-character boost after a single miss is far too aggressive.~~
    **Done (2026-09-23), installed on-device.** Not separately called out
    by the user during the "passt jetzt überall" confirmation, which was
@@ -317,9 +317,8 @@ installed on `63061JEBF01551`, user-confirmed working:
   reliability on Android not yet validated.
 - iOS port: keep timing engine native per-platform, or move it into Dart for
   reuse (untested whether Dart timers are precise enough)?
-- `android/lib/audio/tone_synth.dart`, `android/lib/input/paddle_input.dart`,
-  `android/lib/keyer/iambic_keyer.dart` are unimported dead code from an early
-  pure-Dart prototype — safe to delete, not yet done.
+- ~~Dead prototype files `tone_synth.dart`, `paddle_input.dart`, `iambic_keyer.dart`~~ deleted 2026-09-25.
+- WiFi Trx: tested against several servers, works (user-confirmed 2026-09-25). Adaptive Copy leftovers (settings visibility, block log, stricter no-speedup rule) closed by the user 2026-09-25.
 
 - WiFi Trx v2: multiple services (add/edit/delete, dropdown), per-service persisted log (long-press to clear), WPM slider, no automatic "hi", quick chips removed. Verified on device.
 - Keyer/WiFi Trx word gap now follows InterWord Spc (was fixed 6 dits). Verified on device.
@@ -329,3 +328,4 @@ installed on `63061JEBF01551`, user-confirmed working:
 
 ## Trainings-Umbau Phase 8 (2026-09-25)
 Done (installed, partly user-confirmed): Paddle choice per group (Hören), block trend, think-time fix, Echo confirm tones, speed controls, 2 s wait, attempt indicator, stale-text fix. Reaktionszeit dropped. Next: 8c Verwechslungspaare, 8d benannte Presets, then Phase 8 test. Phase 5-7 testplans still with the user. See docs/training/P8-extras.md.
+Verwechslungspaare done (Geben stats + result page). Benannte Presets deferred by user.

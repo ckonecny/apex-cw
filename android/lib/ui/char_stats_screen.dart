@@ -174,6 +174,20 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
             ready: r.ready,
             outputCase: _outputCase,
           ),
+        if (!_isHear && _store.pairs.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Text(Strings.t('pairs_title'),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
+                  fontWeight: FontWeight.bold, color: c.textPrimary)),
+          const SizedBox(height: 8),
+          for (final e in _store.topPairs())
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                  '${(_outputCase == 1 ? e.key : e.key.toLowerCase()).replaceFirst('>', ' → ')}   ${e.value}×',
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.warning)),
+            ),
+        ],
       ],
     );
   }

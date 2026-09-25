@@ -142,7 +142,9 @@ class Strings {
     // ── Echo Trainer screen ──────────────────────────────────────────────
     'echo_trainer_title': ['Echo Trainer', 'Echo Trainer'],
     'echo_status_idle': ['Drücke START', 'Press START'],
-    'echo_attempt': ['Versuch {n} von {max}', 'Attempt {n} of {max}'],
+    'pairs_title': ['Häufige Verwechslungen (Soll → Gegeben)', 'Common mix-ups (target → given)'],
+  'pairs_block': ['Verwechslungen', 'Mix-ups'],
+  'echo_attempt': ['Versuch {n} von {max}', 'Attempt {n} of {max}'],
     'echo_status_playing': ['Anhören …', 'Listening …'],
     'echo_status_receiving': ['Senden …', 'Sending …'],
     'echo_status_correct': ['✓ Richtig!', '✓ Correct!'],

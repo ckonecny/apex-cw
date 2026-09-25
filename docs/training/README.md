@@ -38,7 +38,7 @@ Phasen: eine Session für die Spec und eine oder mehrere für die Umsetzung.
 | 5 | Adaptiver Echo-Ablauf, nur Anzeige (Blöcke, Ergebnis-Seite) | **abgeschlossen** | [P5](P5-echo-bloecke.md) | 5.1, 5.5 | 7 |
 | 6 | Adaptive Vorschläge beim Echo (nur Blockablauf) | **abgeschlossen** | [P6](P6-echo-vorschlaege.md) | 5.4 | 6, 7, 8 |
 | 7 | Koch als Zeichenvorrat, neue Startseite; **Klassisch-Ablauf überall entfernen, Adaptiv wird Standard, Übungsdarstellung überall wie Koch-Hören-Adaptiv** | **umgesetzt, Testplan durch User offen** | [P7](P7-zeichenvorrat-startseite.md) | 3 | 1, 3 |
-| 8 | Extras: benannte Presets, Verwechslungspaare, Trend, Paddle-Wahl (Reaktionszeit gestrichen) | **in Umsetzung** (Paddle, Trend fertig; Paare, Presets offen) | [P8](P8-extras.md) | 7 (Phase 8) | – |
+| 8 | Extras: benannte Presets, Verwechslungspaare, Trend, Paddle-Wahl (Reaktionszeit gestrichen) | **in Umsetzung** (Paddle, Trend, Paare fertig; Presets zurückgestellt) | [P8](P8-extras.md) | 7 (Phase 8) | – |
 | 9 | Eigener Text (File Player) als weiterer Zeichenvorrat | offen, niedrige Priorität | – | – | – |
 
 Status-Werte: offen → Spec in Arbeit → Spec zur Freigabe → Spec

@@ -42,6 +42,16 @@ class CharStatsStore {
   CharStatsStore([this.track = hear]);
 
   final Map<String, CharStat> stats = {};
+  // Confusions "T>G" (target > given, '–' = left out) → count, first wrong
+  // char of each first attempt only. Display only (docs/training/P8).
+  final Map<String, int> pairs = {};
+
+  String get _pairsKey => '$_key.pairs';
+
+  List<MapEntry<String, int>> topPairs([int n = 10]) {
+    final l = pairs.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    return l.take(n).toList();
+  }
 
   String get _key => '$_prefsKey.$track';
 
@@ -75,6 +85,11 @@ class CharStatsStore {
   Future<void> load(SharedPreferences p) async {
     await migrateIfNeeded(p);
     stats.clear();
+    pairs.clear();
+    final rp = p.getString(_pairsKey);
+    if (rp != null && rp.isNotEmpty) {
+      (jsonDecode(rp) as Map<String, dynamic>).forEach((k, v) => pairs[k] = v as int);
+    }
     final raw = p.getString(_key);
     if (raw != null && raw.isNotEmpty) {
       final decoded = jsonDecode(raw) as Map<String, dynamic>;
@@ -86,12 +101,15 @@ class CharStatsStore {
     final encoded = <String, dynamic>{};
     stats.forEach((k, v) => encoded[k] = v.toJson());
     await p.setString(_key, jsonEncode(encoded));
+    await p.setString(_pairsKey, jsonEncode(pairs));
   }
 
   // Wipes this track's per-character history only.
   Future<void> reset(SharedPreferences p) async {
     stats.clear();
+    pairs.clear();
     await p.remove(_key);
+    await p.remove(_pairsKey);
   }
 
   // Draw weight for a character — defaults to 1 (never drawn / already
@@ -116,7 +134,8 @@ class CharStatsStore {
   // different char), a fully right word -1 per char. Attempts/errors/EMA:
   // chars before the first wrong one count as right, the wrong one as an
   // error, chars after it are not counted (unknown whether heard).
-  void recordWord(String target, String received, {int block = 0}) {
+  // Returns the confusion pair "T>G" of the first wrong char, or null.
+  String? recordWord(String target, String received, {int block = 0}) {
     final t = target.toUpperCase(), r = received.trim().toUpperCase();
     var failed = -1;
     for (var i = 0; i < t.length; i++) {
@@ -135,12 +154,15 @@ class CharStatsStore {
     }
     if (failed == -1) {
       for (final ch in t.split('')) { bump(ch, correct: true, weight: -1); }
-      return;
+      return null;
     }
+    final pair = '${t[failed]}>${failed < r.length ? r[failed] : '–'}';
+    if (t[failed].trim().isNotEmpty) pairs[pair] = (pairs[pair] ?? 0) + 1;
     for (var i = 0; i < failed; i++) { bump(t[i], correct: true); }
     bump(t[failed], correct: false, weight: 4);
     if (failed > 0 && t[failed - 1] != t[failed]) bump(t[failed - 1], weight: 2);
     if (failed + 1 < t.length && t[failed + 1] != t[failed]) bump(t[failed + 1], weight: 2);
+    return pair;
   }
 }
 
