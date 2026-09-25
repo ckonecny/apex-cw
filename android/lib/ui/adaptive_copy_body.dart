@@ -17,6 +17,7 @@ import '../content/training_profile.dart';
 import '../content/cw_content.dart' show kochActiveChars, parsePracticeChars;
 import '../content/adaptive_copy_engine.dart';
 import '../theme/app_colors.dart';
+import 'widgets/app_ui.dart';
 import '../util/char_color.dart';
 import '../l10n/strings.dart';
 
@@ -727,7 +728,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // section where it's reused on the idle screen.
   Widget _buildWeakCharsSection(BuildContext context, {double scale = 1}) {
     final c = AppColors.of(context);
-    return Column(mainAxisSize: MainAxisSize.min, children: [
+    return SizedBox(width: double.infinity, child: AppCard(child: Column(mainAxisSize: MainAxisSize.min, children: [
       Text(Strings.t('ac_weak_chars'),
           style: TextStyle(fontFamily: 'CwMono', fontSize: 11 * scale, color: c.textMuted)),
       const SizedBox(height: 2),
@@ -751,20 +752,20 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: included ? c.danger.withOpacity(0.1) : c.surfaceAlt,
+                color: included ? c.warning.withOpacity(0.15) : c.surfaceAlt,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                    color: included ? c.danger.withOpacity(0.4) : c.border),
+                    color: included ? c.warning.withOpacity(0.5) : c.border),
               ),
               child: Text('${_displayChar(e.key)}  ${(e.value * 100).round()}%',
                   style: TextStyle(fontFamily: 'CwMono', fontSize: 13 * scale,
-                      color: included ? c.danger : c.textMuted,
+                      color: included ? c.warning : c.textMuted,
                       decoration: included ? null : TextDecoration.lineThrough)),
             ),
           );
         }).toList(),
       ),
-    ]);
+    ])));
   }
 
   // Manual spacing control, requested to be visible at every summary and at
@@ -784,7 +785,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
 
   Widget _buildSpacingControl(BuildContext context, {double scale = 1}) {
     final c = AppColors.of(context);
-    return Column(mainAxisSize: MainAxisSize.min, children: [
+    return SizedBox(width: double.infinity, child: AppCard(child: Column(mainAxisSize: MainAxisSize.min, children: [
       Text(Strings.t('ac_spacing_control_title'),
           style: TextStyle(fontFamily: 'CwMono', fontSize: 11 * scale, color: c.textMuted)),
       const SizedBox(height: 2),
@@ -806,7 +807,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         _TapTarget(onTap: () => _adjustSpacing(1),
             child: Icon(Icons.add, size: 20, color: c.accent)),
       ]),
-    ]);
+    ])));
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -1054,8 +1055,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       Expanded(
         child: Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Text('$pct %', style: TextStyle(fontFamily: 'CwMono', fontSize: 48,
-                fontWeight: FontWeight.bold,
+            Text('$pct %', style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 52,
+                fontVariations: const [FontVariation('wght', 600)],
                 color: pct >= 90 ? c.accent : pct >= 70 ? c.warning : c.danger)),
             Text(Strings.t('ac_correct_of')
                     .replaceFirst('{c}', '$_resultCorrect').replaceFirst('{t}', '$_resultTotal'),
@@ -1200,11 +1201,10 @@ class SuggestionRow extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
           decoration: BoxDecoration(
-            color: accepted ? c.accent.withOpacity(highlight ? 0.18 : 0.1) : c.surfaceAlt,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-                color: accepted ? c.accent.withOpacity(highlight ? 0.8 : 0.4) : c.border,
-                width: highlight ? 2 : 1),
+            color: accepted ? c.accent.withOpacity(highlight ? 0.2 : 0.12) : c.surface,
+            borderRadius: BorderRadius.circular(14),
+            border: highlight ? Border.all(
+                color: accepted ? c.accent.withOpacity(0.8) : c.border, width: 1.5) : null,
           ),
           child: Row(children: [
             _TapTarget(
@@ -1259,20 +1259,8 @@ class _PrimaryButton extends StatelessWidget {
   const _PrimaryButton({required this.label, required this.onTap});
 
   @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    return SizedBox(height: 48, child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: c.accent.withOpacity(0.2),
-        foregroundColor: c.accent,
-        side: BorderSide(color: c.accent),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-      onPressed: onTap,
-      child: Text(label, style: const TextStyle(fontFamily: 'CwMono', fontSize: 14,
-          fontWeight: FontWeight.bold)),
-    ));
-  }
+  Widget build(BuildContext context) =>
+      AppButton(label: label, onTap: onTap, color: AppColors.of(context).info);
 }
 
 class _SecondaryButton extends StatelessWidget {
@@ -1281,17 +1269,6 @@ class _SecondaryButton extends StatelessWidget {
   const _SecondaryButton({required this.label, required this.onTap});
 
   @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    return SizedBox(height: 48, child: OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: c.textMuted,
-        side: BorderSide(color: c.border),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-      onPressed: onTap,
-      child: Text(label, style: const TextStyle(fontFamily: 'CwMono', fontSize: 14,
-          fontWeight: FontWeight.bold)),
-    ));
-  }
+  Widget build(BuildContext context) => AppButton(
+      label: label, onTap: onTap, color: AppColors.of(context).info, primary: false);
 }

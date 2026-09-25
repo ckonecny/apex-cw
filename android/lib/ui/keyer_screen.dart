@@ -8,6 +8,7 @@ import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
 import '../theme/app_colors.dart';
+import 'widgets/app_ui.dart';
 import '../util/keep_screen_on.dart';
 
 class KeyerScreen extends StatefulWidget {
@@ -102,10 +103,8 @@ class _KeyerScreenState extends State<KeyerScreen> {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: c.surface,
-        title: Text('CW Keyer',
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
-                color: c.textPrimary)),
+        backgroundColor: c.background,
+        title: appBarTitle(c, 'CW Keyer'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () => Navigator.pop(context),
@@ -144,8 +143,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: c.surface,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: c.border),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Align(
                 alignment: Alignment.bottomLeft,
@@ -163,14 +161,17 @@ class _KeyerScreenState extends State<KeyerScreen> {
         ),
 
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _SliderRow(
-            label: 'WPM', value: _wpm.toDouble(), min: 5, max: 60, divisions: 55,
-            onChanged: (v) {
-              setState(() => _wpm = v);
-              _keyerChannel.invokeMethod('setWpm', v);
-              _saveWpm();
-            },
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: AppCard(
+            padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
+            child: _SliderRow(
+              label: 'WPM', value: _wpm.toDouble(), min: 5, max: 60, divisions: 55,
+              onChanged: (v) {
+                setState(() => _wpm = v);
+                _keyerChannel.invokeMethod('setWpm', v);
+                _saveWpm();
+              },
+            ),
           ),
         ),
 

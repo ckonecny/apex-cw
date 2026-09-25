@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../content/block_history.dart';
+import '../content/charset_content.dart';
+import '../content/training_profile.dart';
 import 'keyer_screen.dart';
 import 'generator_screen.dart';
 import 'echo_trainer_screen.dart';
@@ -7,8 +11,50 @@ import 'wifi_trx_screen.dart';
 import '../theme/app_colors.dart';
 import '../l10n/strings.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String _hearInfo = '';
+  String _giveInfo = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInfo();
+  }
+
+  String _profileInfo(TrainingProfile pf) {
+    final wpm = pf.getInt('wpm') ?? 20;
+    final cs = pf.getInt('charset');
+    final koch = cs == null || cs == CharSet.koch.index;
+    final lesson = pf.getInt('kochLevel');
+    return koch && lesson != null
+        ? '${Strings.t('block_lesson')} $lesson · $wpm WPM'
+        : '$wpm WPM';
+  }
+
+  Future<void> _loadInfo() async {
+    final p = await SharedPreferences.getInstance();
+    final hear = await TrainingProfile.open(TrainingProfile.hear);
+    final echo = await TrainingProfile.open(TrainingProfile.echo);
+    final trend = trendOf(await const BlockHistory('echo').load(p));
+    if (!mounted) return;
+    setState(() {
+      _hearInfo = _profileInfo(hear);
+      _giveInfo = _profileInfo(echo) +
+          (trend != null ? ' · ${trend.percent} % ${trend.arrow}' : '');
+    });
+  }
+
+  Future<void> _open(Widget screen) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+    _loadInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,109 +64,137 @@ class HomeScreen extends StatelessWidget {
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
       builder: (context, _, __) => Scaffold(
-      backgroundColor: c.background,
-      appBar: AppBar(
-        backgroundColor: c.surface,
-        title: Text('Next CW Trainer',
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 18,
-                color: c.textPrimary)),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings, color: c.textMuted),
-            onPressed: () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const SettingsScreen())),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 16),
-            _ModeCard(
-              icon: Icons.settings_input_component,
-              title: 'CW Keyer',
-              subtitle: Strings.t('home_keyer_subtitle'),
-              color: c.accent,
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const KeyerScreen())),
-            ),
-            const SizedBox(height: 16),
-            _ModeCard(
-              icon: Icons.graphic_eq,
-              title: Strings.t('block_hear'),
-              subtitle: Strings.t('home_hear_subtitle'),
-              color: c.info,
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const GeneratorScreen())),
-            ),
-            const SizedBox(height: 16),
-            _ModeCard(
-              icon: Icons.repeat,
-              title: Strings.t('block_give'),
-              subtitle: Strings.t('home_give_subtitle'),
-              color: c.accentPurple,
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const EchoTrainerScreen())),
-            ),
-            const SizedBox(height: 16),
-            _ModeCard(
-              icon: Icons.wifi,
-              title: 'WiFi Trx',
-              subtitle: Strings.t('home_wifitrx_subtitle'),
-              color: c.danger,
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const WifiTrxScreen())),
+        backgroundColor: c.background,
+        appBar: AppBar(
+          backgroundColor: c.background,
+          title: Text('Next CW Trainer',
+              style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 22,
+                  letterSpacing: 0.3, color: c.textPrimary,
+                  fontVariations: const [FontVariation('wght', 600)])),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.settings, color: c.textMuted),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const SettingsScreen())),
             ),
           ],
         ),
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _SectionLabel(Strings.t('home_section_practice')),
+            Expanded(child: _ModeCard(
+              icon: Icons.headphones,
+              title: Strings.t('block_hear'),
+              subtitle: _hearInfo.isEmpty
+                  ? Strings.t('home_hear_subtitle') : _hearInfo,
+              color: c.accent,
+              hint: Strings.t('home_hear_hint'),
+              onTap: () => _open(const GeneratorScreen()),
+            )),
+            const SizedBox(height: 8),
+            Expanded(child: _ModeCard(
+              icon: Icons.keyboard,
+              title: Strings.t('block_give'),
+              subtitle: _giveInfo.isEmpty
+                  ? Strings.t('home_give_subtitle') : _giveInfo,
+              color: c.accent,
+              hint: Strings.t('home_give_hint'),
+              onTap: () => _open(const EchoTrainerScreen()),
+            )),
+            const SizedBox(height: 16),
+            _SectionLabel(Strings.t('home_section_free')),
+            Expanded(child: _ModeCard(
+              icon: Icons.tune,
+              title: 'CW Keyer',
+              subtitle: Strings.t('home_keyer_subtitle'),
+              color: c.accentPurple,
+              hint: Strings.t('home_keyer_hint'),
+              onTap: () => _open(const KeyerScreen()),
+            )),
+            const SizedBox(height: 8),
+            Expanded(child: _ModeCard(
+              icon: Icons.wifi,
+              title: 'WiFi Trx',
+              subtitle: Strings.t('home_wifitrx_subtitle'),
+              color: c.warning,
+              hint: Strings.t('home_wifitrx_hint'),
+              onTap: () => _open(const WifiTrxScreen()),
+            )),
+          ],
+          ),
+        ),
       ),
-      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  final String text;
+  const _SectionLabel(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+      child: Text(text.toUpperCase(), style: TextStyle(
+          fontFamily: 'CwMono', fontSize: 11, letterSpacing: 1,
+          color: c.textMuted)),
     );
   }
 }
 
 class _ModeCard extends StatelessWidget {
   final IconData icon;
-  final String title, subtitle;
+  final String title, subtitle, hint;
   final Color color;
   final VoidCallback onTap;
 
   const _ModeCard({required this.icon, required this.title, required this.subtitle,
-      required this.color, required this.onTap});
+      required this.hint, required this.color, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.07),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withOpacity(0.3)),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: color, size: 36),
-            const SizedBox(width: 16),
-            Expanded(child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: TextStyle(
-                    fontFamily: 'CwMono', fontSize: 18,
-                    fontWeight: FontWeight.bold, color: color)),
-                const SizedBox(height: 4),
-                Text(subtitle, style: TextStyle(
-                    fontFamily: 'CwMono', fontSize: 12,
-                    color: c.textMuted)),
-              ],
-            )),
-            Icon(Icons.chevron_right, color: color.withOpacity(0.5)),
-          ],
+    return Material(
+      color: c.surface,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            children: [
+              Container(
+                width: 56, height: 56,
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(icon, color: color, size: 30),
+              ),
+              const SizedBox(width: 16),
+              Expanded(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: TextStyle(
+                      fontFamily: 'CwMono', fontSize: 20, color: c.textPrimary)),
+                  const SizedBox(height: 4),
+                  Text(subtitle, style: TextStyle(
+                      fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                  const SizedBox(height: 6),
+                  Text(hint, style: TextStyle(
+                      fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+                ],
+              )),
+              Icon(Icons.chevron_right, color: c.textFaint),
+            ],
+          ),
         ),
       ),
     );

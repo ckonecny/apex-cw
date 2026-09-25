@@ -20,6 +20,7 @@ import 'widgets/char_actions_sheet.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
+import 'widgets/app_ui.dart';
 import '../util/keep_screen_on.dart';
 import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
@@ -899,10 +900,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       child: Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: c.surface,
-        title: Text(widget.title ?? Strings.t('echo_trainer_title'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
-                color: c.textPrimary)),
+        backgroundColor: c.background,
+        title: appBarTitle(c, widget.title ?? Strings.t('block_give')),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () => Navigator.maybePop(context),
@@ -1008,22 +1007,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             padding: const EdgeInsets.all(16),
             child: SizedBox(
               width: double.infinity, height: 56,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: (_state != _State.idle)
-                      ? c.danger.withOpacity(0.2)
-                      : c.accent.withOpacity(0.2),
-                  foregroundColor: (_state != _State.idle)
-                      ? c.danger
-                      : c.accent,
-                  side: BorderSide(color: (_state != _State.idle)
-                      ? c.danger : c.accent),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                onPressed: (_state == _State.idle) ? _startSession : _stopSession,
-                child: Text((_state == _State.idle) ? '▶  START' : '■  STOP',
-                    style: const TextStyle(fontFamily: 'CwMono', fontSize: 18,
-                        fontWeight: FontWeight.bold)),
+              child: AppButton(
+                height: 56,
+                label: (_state == _State.idle) ? '▶  START' : '■  STOP',
+                color: (_state != _State.idle) ? c.warning : c.accent,
+                onTap: (_state == _State.idle) ? _startSession : _stopSession,
               ),
             ),
           ),
@@ -1077,7 +1065,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text('$pct %',
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 48, fontWeight: FontWeight.bold,
+              style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 52,
+                  fontVariations: const [FontVariation('wght', 600)],
                   color: pct >= 90 ? c.accent : pct >= 70 ? c.warning : c.danger)),
           const SizedBox(width: 20),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1111,8 +1100,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: c.surface,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: c.border),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: ListView(children: [
               ..._buildSuggestionRows(c, MediaQuery.of(context).size.width - 56, cs),
@@ -1152,25 +1140,26 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           ),
         )),
         const SizedBox(height: 12),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              backgroundColor: c.accent.withOpacity(0.2), foregroundColor: c.accent,
-              minimumSize: const Size.fromHeight(56)),
-          onPressed: () async {
+        AppButton(
+          height: 56,
+          label: Strings.t('block_next'),
+          color: c.accent,
+          onTap: () async {
             await _applyAccepted(boost: true);
             if (mounted) setState(() {});
             await _startSession();
           },
-          child: Text(Strings.t('block_next')),
         ),
-        const SizedBox(height: 12),
-        OutlinedButton(
-          style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(56)),
-          onPressed: () async {
+        const SizedBox(height: 8),
+        AppButton(
+          height: 56,
+          primary: false,
+          label: Strings.t('block_end'),
+          color: c.accent,
+          onTap: () async {
             await _applyAccepted(boost: false);
             if (mounted) setState(() => _showResult = false);
           },
-          child: Text(Strings.t('block_end')),
         ),
       ]),
     );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_colors.dart';
+import 'widgets/app_ui.dart';
 import '../theme/theme_controller.dart';
 import '../l10n/strings.dart';
 import 'widgets/setting_rows.dart';
@@ -273,9 +274,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (context, _, __) => Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: c.surface,
-        title: Text(Strings.t('settings_title'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
+        backgroundColor: c.background,
+        title: appBarTitle(c, Strings.t('settings_title')),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () { _save(); Navigator.pop(context); },

@@ -95,3 +95,6 @@ flutter:
         - asset: assets/fonts/AnonymousPro-Regular.ttf
         - asset: assets/fonts/AnonymousPro-Bold.ttf
           weight: 700
+    - family: SpaceGrotesk
+      fonts:
+        - asset: assets/fonts/SpaceGrotesk.ttf

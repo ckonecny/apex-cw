@@ -15,6 +15,7 @@ import '../content/char_stats.dart';
 import '../content/cw_content.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
+import 'widgets/app_ui.dart';
 import '../util/char_color.dart';
 
 class CharStatsScreen extends StatefulWidget {
@@ -98,9 +99,8 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: c.surface,
-        title: Text(Strings.t(_isHear ? 'char_stats_title_hear' : 'char_stats_title_echo'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
+        backgroundColor: c.background,
+        title: appBarTitle(c, Strings.t(_isHear ? 'char_stats_title_hear' : 'char_stats_title_echo')),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () => Navigator.pop(context),

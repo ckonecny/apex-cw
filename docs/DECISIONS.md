@@ -347,3 +347,7 @@ Only the word gap is offered: the firmware keys with
 `interWordTimer = (InterWord Spc - 1) * dit` (m32_v6.ino:1857) and never uses
 InterChar Spc when keying; Trx playback spacing derives from the received
 speed. The status chips at the top of the CW Keyer were removed.
+
+## 2026-09-25: Einheitliche Optik (Startseite Variante A)
+
+Flache Karten ohne Rahmen, getönte Buttons (`widgets/app_ui.dart`), Space-Grotesk nur für Titel (OFL, `assets/fonts/SpaceGrotesk.ttf`), Monospace für Inhalte. Farben: Hören/Geben Teal, Keyer Violett, WiFi Trx Amber. Rot bleibt Fehlern vorbehalten (Grund: Rot wirkt wie ein Fehler).

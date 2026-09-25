@@ -11,6 +11,7 @@ import '../net/mopp.dart';
 import 'widgets/training_settings_sheet.dart';
 import '../net/mopp_client.dart';
 import '../theme/app_colors.dart';
+import 'widgets/app_ui.dart';
 import '../util/keep_screen_on.dart';
 
 /// WiFi Trx: send/receive Morse over UDP (MOPP) to a server such as
@@ -368,9 +369,8 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: c.surface,
-        title: Text('WiFi Trx',
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
+        backgroundColor: c.background,
+        title: appBarTitle(c, 'WiFi Trx'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () => Navigator.pop(context),

@@ -332,7 +332,6 @@ DECISIONS.md.
 Separately, a small open item (not a module): the echo answer reset by the
 error sign, see "Upstream check" below. It is needed for Morsel anyway.
 
-
 ## Open questions
 - QSO Bot: in the backlog (#7) as of 2026-09-25. Still open: port all 4 QSO
   types, or SOTA-only first?
@@ -394,3 +393,15 @@ Compared firmware commits V9.0..origin/master (V9.0.1 + 9.1 beta):
 - Echo ⚙: hint text says the spacing applies to the played word (and the
   start deadline for the answer), not to the answer itself.
 - Open: none new. Upstream item (echo error-sign reset) still open.
+
+## Startseite neu gestaltet, Variante A (2026-09-25)
+
+`home_screen.dart`: ruhige Karten ohne farbige Rahmen (Icon-Chip, neutrale Fläche), Abschnitte "Üben" (Hören, Geben) und "Frei" (CW Keyer, WiFi Trx als Mini-Kacheln). Untertitel zeigt Lektion, Tempo und bei Geben den Trend (aus den Profilen bzw. `BlockHistory`), Aktualisierung nach Rückkehr. WiFi Trx in Amber statt Rot (Rot wirkt wie ein Fehler). Installiert, Test durch User offen. Nicht committet.
+
+## Optik der übrigen Screens angeglichen (2026-09-25)
+
+Neu: `widgets/app_ui.dart` (`AppCard`, `AppButton`, `appBarTitle`). Alle App-Bars flach in Hintergrundfarbe mit Space-Grotesk-Titel. Hören (`adaptive_copy_body.dart`): Karten für Abstand und Schwachzeichen, solide Buttons in Blau, Vorschlagszeilen abgerundet, Quote in Space Grotesk. Geben (`echo_trainer_screen.dart`): Start/Stop und Ergebnis-Buttons solide in Violett, Ergebnisliste als Karte. Keyer und Paddles (`paddle_widgets.dart`): Kartenoptik ohne Rahmen. Schwachzeichen in Amber statt Rot. Nicht umgesetzt aus den Mockups: Fortschrittsbalken, Pegelanimation, Dauer-Kachel. Installiert, Test durch User offen, nicht committet.
+
+### Nachtrag Optik (2026-09-25)
+
+Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitlich dezent (getönte Fläche, keine Umrandung, `AppButton`), Hören und Geben beide Teal; Keyer Violett, WiFi Trx Amber. Startseite: Space-Grotesk-Titel, Hinweiszeile je Kachel.

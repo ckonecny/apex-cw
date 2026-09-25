@@ -7,6 +7,7 @@ import 'char_stats_screen.dart';
 import 'echo_trainer_screen.dart';
 import 'adaptive_copy_body.dart';
 import '../theme/app_colors.dart';
+import 'widgets/app_ui.dart';
 import '../util/keep_screen_on.dart';
 import '../l10n/strings.dart';
 import '../content/training_profile.dart';
@@ -180,10 +181,8 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       child: Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: c.surface,
-        title: Text(title,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
-                color: c.textPrimary)),
+        backgroundColor: c.background,
+        title: appBarTitle(c, title),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () => Navigator.maybePop(context),
@@ -286,17 +285,11 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               child: SizedBox(
                 width: double.infinity,
                 height: 56,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: c.accent.withOpacity(0.2),
-                    foregroundColor: c.accent,
-                    side: BorderSide(color: c.accent),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  onPressed: _adaptiveController.start,
-                  child: const Text('▶  START',
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 18,
-                          fontWeight: FontWeight.bold)),
+                child: AppButton(
+                  height: 56,
+                  label: '▶  START',
+                  color: c.accent,
+                  onTap: _adaptiveController.start,
                 ),
               ),
             ),
