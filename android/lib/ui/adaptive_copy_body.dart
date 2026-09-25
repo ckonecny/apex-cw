@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/char_stats.dart';
+import '../content/training_profile.dart';
 import '../content/cw_content.dart' show kochActiveChars, parsePracticeChars;
 import '../content/adaptive_copy_engine.dart';
 import '../theme/app_colors.dart';
@@ -219,9 +220,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   }
 
   Future<void> _restorePracticeCharsAndBoost() async {
-    final p = await SharedPreferences.getInstance();
-    final practiceChars = parsePracticeChars(p.getString('practiceChars') ?? '');
-    final boostLevel = (p.getInt('boostLevel') ?? 0).clamp(0, 2);
+    final pf = await TrainingProfile.open(TrainingProfile.hear);
+    final practiceChars = parsePracticeChars(pf.getString('practiceChars') ?? '');
+    final boostLevel = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
     await _genChannel.invokeMethod('setPracticeChars', practiceChars);
     await _genChannel.invokeMethod('setBoostLevel', boostLevel);
   }

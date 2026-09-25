@@ -1,6 +1,6 @@
 # Phase 1: Echo-Grundlagen
 
-Status: **Spec freigegeben** · Stand: 2026-09-24
+Status: **abgeschlossen** · Stand: 2026-09-25
 
 ## Ziel
 
@@ -150,4 +150,6 @@ Jeder Schritt wird einzeln gebaut und installiert.
 
 ## Ergebnis
 
-(nach Abschluss ausfüllen)
+2026-09-24: 1a und 1b umgesetzt, Debug-APK gebaut, **noch nicht auf dem Gerät installiert/getestet** (Handy nicht angeschlossen). Abweichung: Kein `_beginReceive`-Pitch-Umbau nötig, Shift-Pitch blieb dort. Regler-Werte 1–4 werden als "wie Hören" (0) gespeichert. Nächster Schritt: Installieren und Testplan durchgehen.
+
+2026-09-25: Auf dem Gerät installiert, alle Tests (A–G, zusammen mit Phase 2) vom User bestanden. Hinweis vom User: Einstellungsmenü mit Hören/Geben-Umschalter ist unübersichtlich → wird in Phase 3 aufgeräumt.

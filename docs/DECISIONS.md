@@ -280,3 +280,11 @@ The automatic "hi" on connect was removed: other services use other commands. Us
 
 ### Keyer word gap follows the InterWord Spc pref
 Firmware keyer/Trx modes end a word (m32_v6.ino interWordTimer) (InterWord Spc − 1) dits after a character ends. The app hard-coded 6 dits. `CwKeyer.wordGapDits` is now set via `setInterWordSpace` (KeyerScreen, WiFi Trx; Echo Trainer pushes 7 = old behaviour). Straight key path unchanged (7 dits from key-up; firmware uses the decoder there). Note: app default for `interWordSpace` is 40, firmware default is 7.
+
+
+### Echo Trainer: Gebe-Tempo (Echo Speed Max) and self-synced prompt config
+Training rollout Phase 1 (`docs/training/P1-echo-grundlagen.md`). The answer is expected at min(prompt WPM, `echoAnswerWpmMax`); 0 = same as prompt. Firmware semantics (`m32_v6.ino` 2553-2561, 3166-3171) but 1 WPM steps and a new pref key, so the old `echoSpeedMax` (cap for Adaptive Speed) is not reinterpreted. The keyer WPM is now set per answer (`_applyAnswerConfig`), and the generator's WPM/spacing/Practice Set/Boost per prompt (`_applyPromptConfig`) — the Echo screen previously inherited them from whichever screen ran last (rule 2). Adaptive Speed is intentionally untouched until phases 5/6 (block-based like Adaptive Copy, own profile).
+
+
+### Training profiles: separate settings for Hören (`hear`) and Geben (`echo`)
+Training rollout Phase 2 (`docs/training/P2-trainingsprofile.md`). Per-training values (wpm, kochLevel, groupLength, randomOption, maxWords, wordLengthMax, abbrevLengthMax, interCharSpace, interWordSpace, practiceChars, boostLevel) are stored as `profile.<hear|echo>.<field>` (`lib/content/training_profile.dart`). One-time migration (`profileVersion=1`) copies the old globals into both profiles; the globals stay in prefs untouched (rollback) but are no longer read by the trainings. Keyer and WiFi Trx keep the global `wpm`. Koch sequence stays global, only the lesson is per profile; spacing is per profile. Settings screen has a temporary Hören|Geben switch for the profile-backed fields (to be removed in Phase 3 when settings move into the training screens). Auto-detected weak chars (`CharStatsStore`) are still shared until Phase 4.

@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../content/training_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +26,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   static const _toneChannel     = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
   // ── General ────────────────────────────────────────────────────────────────
-  int  _wpm       = 20;
+  // Which training's profile the profile-backed fields below edit (P2 D5;
+  // temporary switch until settings move into the training screens).
+  String _profile = TrainingProfile.hear;
   int  _kochLevel = 5;
   int  _pitch     = 600;
   // outputCase: 0=lower, 1=UPPER (matches M32 "Output Case"; applies to all
@@ -108,6 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   int  _echoDisplay    = 1;
   bool _adaptiveSpeed  = false;
   int  _echoSpeedMax   = 35;
+  int  _echoAnswerWpmMax = 0;   // 0 = same as prompt tempo
 
   // ── Adaptive Mode (Adaptive Copy engine thresholds) ─────────────────────
   // See docs/ADAPTIVE-COPY.md "Decisions: weighting/recency questions" and
@@ -155,9 +159,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _load() async {
     final p = await SharedPreferences.getInstance();
+    final pf = await TrainingProfile.open(_profile);
     setState(() {
-      _wpm            = p.getInt('wpm')            ?? 20;
-      _kochLevel      = p.getInt('kochLevel')      ?? 5;
+      _kochLevel      = pf.getInt('kochLevel')      ?? 5;
       _pitch          = p.getInt('pitch')          ?? 600;
       _outputCase     = (p.getInt('outputCase')    ?? 0).clamp(0, 1);
       _toneSoftness   = (p.getInt('toneSoftness')  ?? 4).clamp(0, 8);
@@ -166,8 +170,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ? p.getString('customKochChars')!
           : 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
       _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
-      _practiceChars   = p.getString('practiceChars') ?? '';
-      _boostLevel      = (p.getInt('boostLevel') ?? 0).clamp(0, 2);
+      _practiceChars   = pf.getString('practiceChars') ?? '';
+      _boostLevel      = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
       _keyerMode      = p.getInt('keyerMode')      ?? 0;
       _confirmTone    = p.getBool('confirmTone')   ?? false;
       _curtisBDitTiming = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
@@ -175,18 +179,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _acs              = (p.getInt('acs') ?? 0).clamp(0, 3);
       _toneShift        = (p.getInt('toneShift') ?? 1).clamp(0, 2);
       // clamp() guards against stale values from the old 1..8 multiplier scale
-      _interCharSpace = (p.getInt('interCharSpace') ?? 28).clamp(3, 45);
-      _interWordSpace = (p.getInt('interWordSpace') ?? 40).clamp(6, 105);
+      _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
+      _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
       // genDisplayMode/echoDisplayMode: new int-valued keys (old genDisplay/echoPrompt
       // keys were bool — renamed to avoid a SharedPreferences type-cast crash on upgrade)
       _genDisplay     = (p.getInt('genDisplayMode') ?? 1).clamp(0, 2);
       _stopAfterItem  = p.getBool('stopAfterItem') ?? false;
       _eachWordTwice  = p.getBool('eachWordTwice') ?? false;
-      _wordLengthMax  = p.getInt('wordLengthMax')  ?? 0;
-      _groupLength    = p.getInt('groupLength')    ?? 5;
-      _randomOption   = (p.getInt('randomOption')  ?? 0).clamp(0, 9);
-      _abbrevLengthMax = (p.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
-      _maxWords        = p.getInt('maxWords')        ?? 0;
+      _wordLengthMax  = pf.getInt('wordLengthMax')  ?? 0;
+      _groupLength    = pf.getInt('groupLength')    ?? 5;
+      _randomOption   = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
+      _abbrevLengthMax = (pf.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
+      _maxWords        = pf.getInt('maxWords')        ?? 0;
       _callLengthOpt   = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
       _callRegionOpt   = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
@@ -195,6 +199,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _echoDisplay    = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _adaptiveSpeed  = p.getBool('adaptiveSpeed') ?? false;
       _echoSpeedMax   = p.getInt('echoSpeedMax')   ?? 35;
+      _echoAnswerWpmMax = (p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
       // Capped below 100: the per-char EMA error rate only decays toward 0
       // asymptotically and a single historical error (ever, since it's never
       // reset) keeps it from hitting exact 0 again — a 100% threshold is a
@@ -211,32 +216,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _save() async {
     final p = await SharedPreferences.getInstance();
-    await p.setInt('wpm',            _wpm);
-    await p.setInt('kochLevel',      _kochLevel);
+    final pf = await TrainingProfile.open(_profile);
+    await pf.setInt('kochLevel',      _kochLevel);
     await p.setInt('pitch',          _pitch);
     await p.setInt('outputCase',     _outputCase);
     await p.setInt('toneSoftness',   _toneSoftness);
     await p.setInt('kochSeq',         _kochSeq);
     await p.setString('customKochChars', _customKochChars);
     await p.setInt('licwCarouselStart', _licwCarouselStart);
-    await p.setString('practiceChars', _practiceChars);
-    await p.setInt('boostLevel',     _boostLevel);
+    await pf.setString('practiceChars', _practiceChars);
+    await pf.setInt('boostLevel',     _boostLevel);
     await p.setInt('keyerMode',      _keyerMode);
     await p.setBool('confirmTone',   _confirmTone);
     await p.setInt('curtisBDitTiming', _curtisBDitTiming);
     await p.setInt('curtisBDahTiming', _curtisBDahTiming);
     await p.setInt('acs',            _acs);
     await p.setInt('toneShift',      _toneShift);
-    await p.setInt('interCharSpace', _interCharSpace);
-    await p.setInt('interWordSpace', _interWordSpace);
+    await pf.setInt('interCharSpace', _interCharSpace);
+    await pf.setInt('interWordSpace', _interWordSpace);
     await p.setInt('genDisplayMode', _genDisplay);
     await p.setBool('stopAfterItem', _stopAfterItem);
     await p.setBool('eachWordTwice', _eachWordTwice);
-    await p.setInt('wordLengthMax',  _wordLengthMax);
-    await p.setInt('groupLength',    _groupLength);
-    await p.setInt('randomOption',   _randomOption);
-    await p.setInt('abbrevLengthMax', _abbrevLengthMax);
-    await p.setInt('maxWords',        _maxWords);
+    await pf.setInt('wordLengthMax',  _wordLengthMax);
+    await pf.setInt('groupLength',    _groupLength);
+    await pf.setInt('randomOption',   _randomOption);
+    await pf.setInt('abbrevLengthMax', _abbrevLengthMax);
+    await pf.setInt('maxWords',        _maxWords);
     await p.setInt('callLengthOpt',   _callLengthOpt);
     await p.setInt('callRegionOpt',   _callRegionOpt);
     await p.setBool('callCommonOnly', _callCommonOnly);
@@ -245,11 +250,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setInt('echoDisplayMode', _echoDisplay);
     await p.setBool('adaptiveSpeed', _adaptiveSpeed);
     await p.setInt('echoSpeedMax',   _echoSpeedMax);
+    await p.setInt('echoAnswerWpmMax', _echoAnswerWpmMax);
     await p.setInt('adaptiveHighThresholdPct', _adaptiveHighThresholdPct);
     await p.setInt('adaptiveLowThresholdPct',  _adaptiveLowThresholdPct);
     await p.setInt('adaptiveEmaAlphaPct',      _adaptiveEmaAlphaPct);
     await p.setInt('adaptiveUnlockOccurrences', _adaptiveUnlockOccurrences);
   }
+
+  Widget _profileSwitch() => _SegmentRow(
+        label: Strings.t('settings_profile'),
+        options: [Strings.t('settings_profile_hear'), Strings.t('settings_profile_echo')],
+        selected: _profile == TrainingProfile.hear ? 0 : 1,
+        onChanged: (v) {
+          _profile = v == 0 ? TrainingProfile.hear : TrainingProfile.echo;
+          _load();
+        },
+      );
 
   void _saveLive() => _save();  // called on every interactive change
 
@@ -505,9 +521,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _SectionHeader(Strings.t('settings_general')),
           const SizedBox(height: 12),
           _SettingsCard(children: [
-            _LabeledSlider(label: Strings.t('settings_default_wpm'), value: _wpm.toDouble(),
-                min: 5, max: 60, divisions: 55, display: '$_wpm',
-                onChanged: (v) { setState(() => _wpm = v.round()); _saveLive(); }),
+            _profileSwitch(),
             const _Div(),
             _LabeledSlider(label: Strings.t('settings_default_koch_level'), value: _kochLevel.toDouble(),
                 min: 2, max: _activeKochChars.length.toDouble(),
@@ -575,6 +589,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
           const SizedBox(height: 12),
           _SettingsCard(children: [
+            _profileSwitch(),
+            const _Div(),
             _CharSetField(
               label: Strings.t('settings_characters'),
               initialValue: _practiceChars,
@@ -647,6 +663,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
           const SizedBox(height: 12),
           _SettingsCard(children: [
+            _profileSwitch(),
+            const _Div(),
             // Coupled like the Adaptive Mode success-threshold range below:
             // InterWord Spc may never drop below InterChar Spc (a word gap
             // shorter than the char gap it's built from doesn't make sense,
@@ -697,6 +715,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _SectionHeader('CW Generator'),
           const SizedBox(height: 12),
           _SettingsCard(children: [
+            _profileSwitch(),
+            const _Div(),
             _SegmentRow(
               label: 'CW Gen Displ',
               options: [Strings.t('opt_off'), Strings.t('opt_by_char'), Strings.t('opt_by_word')],
@@ -871,6 +891,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               options: [Strings.t('opt_sound'), Strings.t('opt_display'), Strings.t('opt_both')],
               selected: _echoDisplay - 1,
               onChanged: (v) { setState(() => _echoDisplay = v + 1); _saveLive(); },
+            ),
+            const _Div(),
+            _LabeledSlider(label: Strings.t('settings_answer_wpm'), value: _echoAnswerWpmMax.toDouble(),
+                min: 0, max: 50, divisions: 50,
+                display: _echoAnswerWpmMax == 0 ? Strings.t('settings_answer_wpm_same') : '$_echoAnswerWpmMax WPM',
+                onChanged: (v) { setState(() => _echoAnswerWpmMax = v < 5 ? 0 : v.round()); _saveLive(); }),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Text(Strings.t('settings_answer_wpm_help'),
+                  style: TextStyle(fontSize: 12, color: AppColors.of(context).textMuted)),
             ),
             const _Div(),
             _ToggleRow(label: 'Adaptive Speed', value: _adaptiveSpeed,

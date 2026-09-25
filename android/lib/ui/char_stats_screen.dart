@@ -8,6 +8,7 @@
 // that visible instead of requiring a manual SharedPreferences pull (see
 // docs/ADAPTIVE-COPY.md, "Also investigated this session, not a bug",
 // 2026-09-23).
+import '../content/training_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/char_stats.dart';
@@ -40,7 +41,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
   Future<void> _load() async {
     final p = await SharedPreferences.getInstance();
     await _store.load(p);
-    final kochLevel = p.getInt('kochLevel') ?? 5;
+    final kochLevel = (await TrainingProfile.open(TrainingProfile.hear)).getInt('kochLevel') ?? 5;
     final kochSeq = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
     final customKochChars = (p.getString('customKochChars') ?? '').isNotEmpty
         ? p.getString('customKochChars')!

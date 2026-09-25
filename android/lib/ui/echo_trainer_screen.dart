@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
 import '../content/cw_content.dart';
 import '../content/char_stats.dart';
+import '../content/training_profile.dart';
+
 import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
@@ -117,6 +119,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   bool _confirmTone   = false;
   bool _adaptiveSpeed = false;
   int  _echoSpeedMax  = 35;
+  // "Gebe-Tempo" (M32 "Echo Speed Max"): cap on the tempo the ANSWER is
+  // expected at; 0 = same as the prompt. Answer tempo = min(prompt, cap).
+  int  _answerWpmMax  = 0;
+  // Pushed to the shared generator singleton on every prompt (CLAUDE.md rule 2).
+  int  _interCharSpace = 28;
+  int  _interWordSpace = 40;
+  List<String> _practiceChars = const [];
+  int  _boostLevel = 0;
   int  _pitch         = 600;  // base sidetone pitch (M32 "Tone Pitch")
   // "Tone Shift" (M32 posEchoToneShift): 0=off, 1=up 1 half-tone, 2=down 1
   // half-tone — shifts the OPERATOR's own echoed-answer sidetone away from
@@ -180,15 +190,21 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   Future<void> _loadPrefs() async {
     final p = await SharedPreferences.getInstance();
+    final pf = await TrainingProfile.open(TrainingProfile.echo);
     if (mounted) setState(() {
-      _wpm            = p.getInt('wpm')            ?? 20;
-      _kochLevel      = p.getInt('kochLevel')      ?? 5;
+      _wpm            = pf.getInt('wpm')            ?? 20;
+      _kochLevel      = pf.getInt('kochLevel')      ?? 5;
       _echoThinkTime  = p.getInt('echoThinkTime')  ?? 8;
       _echoRepeats    = (p.getInt('echoRepeats')   ?? 3).clamp(0, 7);
       _echoDisplay    = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _confirmTone    = p.getBool('confirmTone')   ?? false;
       _adaptiveSpeed  = p.getBool('adaptiveSpeed') ?? false;
       _echoSpeedMax   = p.getInt('echoSpeedMax')   ?? 35;
+      _answerWpmMax   = (p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
+      _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
+      _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
+      _practiceChars  = parsePracticeChars(pf.getString('practiceChars') ?? '');
+      _boostLevel     = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
       _modeIndex      = (p.getInt('echoModeIndex') ?? 0).clamp(0, 5);
       _kochModeIndex  = (p.getInt('kochEchoModeIndex') ?? 0).clamp(0, _kochModeLabels.length - 1);
       _keyerMode      = p.getInt('keyerMode')      ?? 0;
@@ -203,14 +219,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           ? p.getString('customKochChars')!
           : 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
       _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
-      _abbrevLengthMax = (p.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
+      _abbrevLengthMax = (pf.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _callLengthOpt   = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
       _callRegionOpt   = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
       _outputCase      = (p.getInt('outputCase') ?? 0).clamp(0, 1);
-      _groupLength     = p.getInt('groupLength')    ?? 5;
-      _randomOption    = (p.getInt('randomOption')  ?? 0).clamp(0, 9);
-      _maxWords        = p.getInt('maxWords')        ?? 0;
+      _groupLength     = pf.getInt('groupLength')    ?? 5;
+      _randomOption    = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
+      _maxWords        = pf.getInt('maxWords')        ?? 0;
       _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
       _currentWpm     = _wpm;
     });
@@ -221,8 +237,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   Future<void> _savePrefs() async {
     final p = await SharedPreferences.getInstance();
-    await p.setInt('wpm',       _wpm);
-    await p.setInt('kochLevel', _kochLevel);
+    final pf = await TrainingProfile.open(TrainingProfile.echo);
+    await pf.setInt('wpm',       _wpm);
+    await pf.setInt('kochLevel', _kochLevel);
     await p.setInt('echoModeIndex', _modeIndex);
     await p.setInt('kochEchoModeIndex', _kochModeIndex);
   }
@@ -282,6 +299,24 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     });
   }
 
+  int get _answerWpm =>
+      _answerWpmMax > 0 ? min(_currentWpm, _answerWpmMax) : _currentWpm;
+
+  /// Everything the shared generator/tone need for playing the prompt.
+  Future<void> _applyPromptConfig() async {
+    await _genChannel.invokeMethod('setWpm', _currentWpm).catchError((_) {});
+    await _genChannel.invokeMethod('setInterCharSpace', _interCharSpace).catchError((_) {});
+    await _genChannel.invokeMethod('setInterWordSpace', _interWordSpace).catchError((_) {});
+    await _genChannel.invokeMethod('setPracticeChars', _practiceChars).catchError((_) {});
+    await _genChannel.invokeMethod('setBoostLevel', _boostLevel).catchError((_) {});
+    await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});   // base pitch
+  }
+
+  /// Keyer tempo for the answer (Echo Speed Max) and the shifted answer pitch.
+  Future<void> _applyAnswerConfig() async {
+    await _keyerChannel.invokeMethod('setWpm', _answerWpm).catchError((_) {});
+  }
+
   // ── Session control ────────────────────────────────────────────────────────
 
   Future<void> _startSession() async {
@@ -309,7 +344,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _keyerChannel.invokeMethod('setInterWordSpace', 7).catchError((_) {});
     // Base sidetone pitch for the target word; _beginReceive() shifts it for
     // the operator's own echoed answer (Tone Shift).
-    await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});
     await _toneChannel.invokeMethod('setEnvelopeMs', (_toneSoftness + 1).toDouble()).catchError((_) {});
 
     // Starting signal, sent at the start of every fresh session — same
@@ -320,7 +354,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       // Sync playback speed before the marker plays — otherwise it plays at
       // whatever wpm the native generator was left at by a previous session
       // (same fix as the CW Generator screen's start marker).
-      await _genChannel.invokeMethod('setWpm', _currentWpm).catchError((_) {});
+      await _applyPromptConfig();
       await _playSignal('VVVKA');
       if (!mounted || !_sessionActive) return;
       setState(() {
@@ -404,8 +438,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
 
     _revealOnDone = _echoDisplay != _dispCodeOnly;
-    await _genChannel.invokeMethod('setWpm', _currentWpm).catchError((_) {});
-    await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});   // base pitch — see _beginReceive() for the shifted one
+    await _applyPromptConfig();   // base pitch — see _beginReceive() for the shifted one
     await _genChannel.invokeMethod('playOne', _target);
   }
 
@@ -437,6 +470,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _ => _pitch,
     };
     _toneChannel.invokeMethod('setFreq', shifted);
+    _applyAnswerConfig();
     _keyerChannel.invokeMethod('start');
     setState(() => _state = _State.receiving);
     // Start the timeout immediately — otherwise it only ever gets (re)armed
@@ -677,7 +711,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
           // ── Stats bar ────────────────────────────────────────────────────
           if (_total > 0) _StatsBar(correct: _correct, total: _total,
-              currentWpm: _adaptiveSpeed ? _currentWpm : null),
+              currentWpm: _adaptiveSpeed ? _currentWpm : null,
+              answerWpm: (_answerWpmMax > 0 && _answerWpm < _currentWpm) ? _answerWpm : null),
 
           // ── Status label ─────────────────────────────────────────────────
           _StatusLabel(state: _state),
@@ -799,7 +834,8 @@ class _StatusLabel extends StatelessWidget {
 class _StatsBar extends StatelessWidget {
   final int correct, total;
   final int? currentWpm;
-  const _StatsBar({required this.correct, required this.total, this.currentWpm});
+  final int? answerWpm;   // shown only when the answer is capped below the prompt tempo
+  const _StatsBar({required this.correct, required this.total, this.currentWpm, this.answerWpm});
 
   @override
   Widget build(BuildContext context) {
@@ -823,6 +859,10 @@ class _StatsBar extends StatelessWidget {
           if (currentWpm != null) ...[
             const SizedBox(width: 12),
             _chip('⚡ $currentWpm WPM', c.info),
+          ],
+          if (answerWpm != null) ...[
+            const SizedBox(width: 12),
+            _chip('${Strings.t('echo_answer_wpm')} $answerWpm', c.info),
           ],
         ],
       ),

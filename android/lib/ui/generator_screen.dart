@@ -12,6 +12,7 @@ import '../util/keep_screen_on.dart';
 import '../util/char_color.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../l10n/strings.dart';
+import '../content/training_profile.dart';
 
 class GeneratorScreen extends StatefulWidget {
   final bool kochMode;  // true = Koch Trainer, false = CW Generator
@@ -136,25 +137,26 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
 
   Future<void> _loadPrefs() async {
     final p = await SharedPreferences.getInstance();
+    final pf = await TrainingProfile.open(TrainingProfile.hear);
     if (mounted) setState(() {
-      _wpm            = p.getInt('wpm')            ?? 20;
-      _kochLevel      = p.getInt('kochLevel')      ?? 5;
+      _wpm            = pf.getInt('wpm')            ?? 20;
+      _kochLevel      = pf.getInt('kochLevel')      ?? 5;
       _genDisplay     = (p.getInt('genDisplayMode') ?? 1).clamp(0, 2);
       _kochModeIndex  = (p.getInt('kochModeIndex')  ?? 0).clamp(0, _kochModeLabels.length - 1);
       _flow           = (p.getInt('kochFlow')       ?? 0).clamp(0, 1);
       _outputCase     = (p.getInt('outputCase')     ?? 0).clamp(0, 1);
       _stopAfterItem  = p.getBool('stopAfterItem') ?? false;
       _eachWordTwice  = p.getBool('eachWordTwice') ?? false;
-      _wordLengthMax  = p.getInt('wordLengthMax')  ?? 0;
-      _groupLength    = p.getInt('groupLength')    ?? 5;
-      _randomOption   = (p.getInt('randomOption')  ?? 0).clamp(0, 9);
-      _abbrevLengthMax = (p.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
-      _maxWords        = p.getInt('maxWords')        ?? 0;
+      _wordLengthMax  = pf.getInt('wordLengthMax')  ?? 0;
+      _groupLength    = pf.getInt('groupLength')    ?? 5;
+      _randomOption   = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
+      _abbrevLengthMax = (pf.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
+      _maxWords        = pf.getInt('maxWords')        ?? 0;
       _callLengthOpt   = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
       _callRegionOpt   = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
-      _interCharSpace = (p.getInt('interCharSpace') ?? 28).clamp(3, 45);
-      _interWordSpace = (p.getInt('interWordSpace') ?? 40).clamp(6, 105);
+      _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
+      _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
       _kochSeq         = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
       _customKochChars = (p.getString('customKochChars') ?? '').isNotEmpty
           ? p.getString('customKochChars')!
@@ -163,15 +165,14 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
     });
     _genChannel.invokeMethod('setKochChars', _activeKochChars);
-    final p2 = await SharedPreferences.getInstance();
-    final practiceChars = parsePracticeChars(p2.getString('practiceChars') ?? '');
-    final boostLevel    = (p2.getInt('boostLevel') ?? 0).clamp(0, 2);
+    final practiceChars = parsePracticeChars(pf.getString('practiceChars') ?? '');
+    final boostLevel    = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
     await _genChannel.invokeMethod('setPracticeChars', practiceChars);
     await _genChannel.invokeMethod('setBoostLevel', boostLevel);
     // Sidetone pitch/envelope: this screen never set these before, so they
     // were left at whatever the CW Keyer screen (or nothing) last configured.
-    final pitch = p2.getInt('pitch') ?? 600;
-    final toneSoftness = (p2.getInt('toneSoftness') ?? 4).clamp(0, 8);
+    final pitch = p.getInt('pitch') ?? 600;
+    final toneSoftness = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
     await _toneChannel.invokeMethod('setFreq', pitch);
     await _toneChannel.invokeMethod('setEnvelopeMs', (toneSoftness + 1).toDouble());
     await _loadKochWeakChars();
@@ -189,16 +190,17 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   }
 
   Future<void> _savePrefs() async {
+    final pf = await TrainingProfile.open(TrainingProfile.hear);
     final p = await SharedPreferences.getInstance();
-    await p.setInt('wpm',       _wpm);
-    await p.setInt('kochLevel', _kochLevel);
+    await pf.setInt('wpm',       _wpm);
+    await pf.setInt('kochLevel', _kochLevel);
     await p.setInt('kochModeIndex', _kochModeIndex);
     await p.setInt('kochFlow', _flow);
     // Only ever change here via AdaptiveCopyBody's onSpacingChanged, but
     // still worth persisting so the Settings screen reflects the adapted
     // value too (interCharSpace/interWordSpace are shared, global keys).
-    await p.setInt('interCharSpace', _interCharSpace);
-    await p.setInt('interWordSpace', _interWordSpace);
+    await pf.setInt('interCharSpace', _interCharSpace);
+    await pf.setInt('interWordSpace', _interWordSpace);
   }
 
   @override
@@ -216,9 +218,9 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   }
 
   Future<void> _restorePracticeCharsAndBoost() async {
-    final p = await SharedPreferences.getInstance();
-    final practiceChars = parsePracticeChars(p.getString('practiceChars') ?? '');
-    final boostLevel = (p.getInt('boostLevel') ?? 0).clamp(0, 2);
+    final pf = await TrainingProfile.open(TrainingProfile.hear);
+    final practiceChars = parsePracticeChars(pf.getString('practiceChars') ?? '');
+    final boostLevel = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
     await _genChannel.invokeMethod('setPracticeChars', practiceChars);
     await _genChannel.invokeMethod('setBoostLevel', boostLevel);
   }

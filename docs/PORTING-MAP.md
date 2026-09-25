@@ -9,7 +9,7 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 |---|---|---|
 | `m32_v6.ino` generateCW()/fetchNewWord() | `CwGenerator.kt` | Done |
 | `m32_v6.ino` doPaddleIambic() (keyer state machine, CurtisB, ACS) | `CwKeyer.kt` | Done |
-| `m32_v6.ino` echoTrainerEval() | `lib/ui/echo_trainer_screen.dart` | Done |
+| `m32_v6.ino` echoTrainerEval() | `lib/ui/echo_trainer_screen.dart` | Done (Echo Speed Max as "Gebe-Tempo"; Adaptive Speed differs, see DECISIONS) |
 | `MorseDecoder.cpp` (CWtree decode) | `lib/keyer/morse_decoder.dart` | Done (pattern-table lookup, not the literal tree) |
 | `MorsePreferences.cpp` Koch class / prefs | `lib/content/cw_content.dart`, `lib/ui/settings_screen.dart` | Done, except Koch prosign-tail extension |
 | `callsign_prefixes.h` / getRandomCall() | `CallsignData.kt` | Done |

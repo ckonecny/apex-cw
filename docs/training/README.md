@@ -31,8 +31,8 @@ Phasen: eine Session für die Spec und eine oder mehrere für die Umsetzung.
 
 | # | Phase | Status | Spec | Konzept-Abschnitte | Offene Fragen (Konzept §9) |
 |---|---|---|---|---|---|
-| 1 | Echo-Grundlagen: Singleton-Fehler, Gebe-Tempo (Adaptive Speed bewusst nicht) | **Spec freigegeben** | [P1](P1-echo-grundlagen.md) | 1, 5.2 | 2 |
-| 2 | Trainingsprofile (nur Datenebene, Oberfläche bleibt) | offen | – | 4.1 | 3, 4, 8 |
+| 1 | Echo-Grundlagen: Singleton-Fehler, Gebe-Tempo (Adaptive Speed bewusst nicht) | abgeschlossen | [P1](P1-echo-grundlagen.md) | 1, 5.2 | 2 |
+| 2 | Trainingsprofile (nur Datenebene, Oberfläche bleibt) | abgeschlossen | [P2](P2-trainingsprofile.md) | 4.1 | 3, 4, 8 |
 | 3 | Einstellungen in die Screens (Chips, Sheet), globale Seite schrumpft | offen | – | 4.2 | – |
 | 4 | Getrennte Zeichenstatistik Hören/Geben | offen | – | 5.3, 5.6 | 5 |
 | 5 | Adaptiver Echo-Ablauf, nur Anzeige (Blöcke, Ergebnis-Seite) | offen | – | 5.1, 5.5 | 7 |
@@ -47,6 +47,19 @@ abgeschlossen.
 
 Jede Phase lässt die App vollständig benutzbar zurück. Phasen werden
 nicht vermischt (CLAUDE.md Regel 7).
+
+## Festgelegte Grundsätze (User, 2026-09-24)
+
+- Hören und Geben werden **vollständig getrennt** geführt: eigene Lektion,
+  Tempo, Gruppenlänge, Wörter pro Block, **Practice Set, Boost und
+  Schwachzeichen** (Geben-Schwächen sind nicht Hör-Schwächen und umgekehrt).
+  Datenebene: Phase 2 (Profil) und Phase 4 (Statistik-Spuren). Bis dahin
+  teilen sich beide die Werte, das ist eine bekannte Zwischenlösung.
+- Adaptives Steigern beim Echo funktioniert wie beim CW Generator (gleiche
+  Einstellungen, getrennt gespeichert): Phase 5/6.
+- Was eine spätere Phase ohnehin ersetzt, wird in der Zwischenzeit weder
+  konzipiert, gebaut noch getestet.
+- Reihenfolge Phase 4 vs. 3 kann nach dem Test von Phase 1 getauscht werden.
 
 ## Vorlage für eine Phasen-Spec
 
