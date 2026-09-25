@@ -407,3 +407,30 @@ Flache Karten ohne Rahmen, getönte Buttons (`widgets/app_ui.dart`), Space-Grote
 - Game over offers "Play again" / "To menu"; exiting the whole game is the
   normal back navigation from the menu.
 
+## 2026-09-25: QSO Bot port — deviations from MorseQsoBot.cpp
+
+- Frontend is the WiFi Trx screen layout (user's call), not the firmware's
+  keyer scroll display: bot overs are RX lines (shown one character ahead of
+  the audio, like `emitNextBotChar`), keying is TX, status texts are info
+  lines.
+- Engine is UI-free Dart driven by a 20 ms timer (firmware: main loop with
+  `delay(2)`). Timeouts, retry budgets and difficulty scaling are unchanged.
+- Decoded input is converted to the firmware's `encodeProSigns()` form before
+  the matcher: letters lowercase, prosigns as uppercase codes (`<sk>` -> K,
+  `<err>` -> R, unknown -> U). Needed because the matcher tells `<err>` from
+  the letter r by case.
+- Sign-off `K` (uppercase = `<sk>` in the firmware) is written as `<sk>` in
+  the templates (CLAUDE.md rule 3). All other template texts are verbatim.
+- Bot playback via the generator's `playOne` at the bot's speed; no
+  Farnsworth (the app's generator has none in `playOne`). The user's keying
+  is not blocked while the bot sends; audio overlaps instead of the firmware
+  pausing the bot's tick-driven playback while a paddle element is keyed.
+- Own call: new pref `qsoMyCall` (the firmware reads `playerCall`, set in Fight
+  the Pileup, which is not ported yet). WPM: own `qsoBotWpm` (default global
+  `wpm`), like WiFi Trx's `trxWpm`. Word gap: the CW Keyer's
+  (`profile.keyer.interWordSpace`), as the firmware uses the global value.
+- Extra: a text field feeds typed words to the bot as if keyed (no audio),
+  kept from the WiFi Trx frontend.
+- Bot callsigns come from a small prefetched pool (native call is async);
+  if it is empty, a plain random EU call is used.
+

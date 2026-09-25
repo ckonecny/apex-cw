@@ -32,9 +32,13 @@ class MorseDecoder {
 
   final void Function(String char) onChar;
 
+  /// What an undecodable pattern yields. '?' by default; the QSO Bot passes
+  /// '*' (the firmware's form) so it is not mistaken for a keyed "?".
+  final String unknown;
+
   String _buf = '';
 
-  MorseDecoder({required this.onChar});
+  MorseDecoder({required this.onChar, this.unknown = '?'});
 
   void add(String symbol) {
     switch (symbol) {
@@ -57,7 +61,7 @@ class MorseDecoder {
     if (_buf.isEmpty) return;
     // Seven or more dits are the <err> prosign, as in the firmware's
     // decoder tree (MorseDecoder.h nodes 65/66 loop on further dits).
-    final ch = RegExp(r'^\.{7,}$').hasMatch(_buf) ? err : (table[_buf] ?? '?');
+    final ch = RegExp(r'^\.{7,}$').hasMatch(_buf) ? err : (table[_buf] ?? unknown);
     onChar(ch);
     _buf = '';
   }

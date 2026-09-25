@@ -8,6 +8,7 @@ import 'generator_screen.dart';
 import 'echo_trainer_screen.dart';
 import 'settings_screen.dart';
 import 'wifi_trx_screen.dart';
+import 'qso_bot_screen.dart';
 import 'games_screen.dart';
 import '../theme/app_colors.dart';
 import '../l10n/strings.dart';
@@ -123,6 +124,15 @@ class _HomeScreenState extends State<HomeScreen> {
               color: c.warning,
               hint: Strings.t('home_wifitrx_hint'),
               onTap: () => _open(const WifiTrxScreen()),
+            )),
+            const SizedBox(height: 8),
+            Expanded(child: _ModeCard(
+              icon: Icons.forum_outlined,
+              title: 'QSO Bot',
+              subtitle: Strings.t('home_qso_subtitle'),
+              color: c.warning,
+              hint: Strings.t('home_qso_hint'),
+              onTap: () => _open(const QsoBotScreen()),
             )),
             const SizedBox(height: 16),
             _SectionLabel(Strings.t('home_section_games')),

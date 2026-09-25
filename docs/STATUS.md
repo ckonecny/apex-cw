@@ -324,7 +324,7 @@ DECISIONS.md.
 | 4 | **Morse Invaders** (`MorseGame.cpp` ~1.1k + game mode/sprites) — ported 2026-09-25, see below | Arcade: falling characters get "shot" by keying them. | L | Real-time game loop plus graphics (CustomPainter/Ticker), timing against the native keyer. |
 | 5 | **Radio Cave** (`MorseRadioCave.cpp`, ~2.65k) | Text adventure, every command keyed in Morse. 12 rooms, items, puzzles. | L | Mostly content and a state machine, UI is simple. Keep the English texts. |
 | 6 | **Fight the Pileup** (`MorsePileup.cpp`, ~1.8k) | Work a pileup of call signs. | M–L | Single player only; the multiplayer part is ESP-NOW. |
-| 7 | **QSO Bot** (`MorseQsoBot.cpp` ~1.2k + match/content) | Simulated QSO, the bot answers to what was keyed. | L | The most valuable training module still missing. |
+| 7 | **QSO Bot** (`MorseQsoBot.cpp` ~1.2k + match/content) — ported 2026-09-25, see below | Simulated QSO, the bot answers to what was keyed. | L | The most valuable training module still missing. |
 | 8 | **CW decoder via mic** (`goertzel.cpp`, ~160) | Decode CW from the microphone (Goertzel). | M–L | The algorithm is small. The work is a native audio input (AAudio), mic permission and robustness against noise. |
 | 9 | **File Player** | Play your own text files as practice content. | S | File picker plus the existing generator. |
 | 10 | **Snapshots** | Saved sets of settings. | S | Overlaps with the named presets (Phase 8d); check before starting whether they merge. |
@@ -333,8 +333,8 @@ Separately, a small open item (not a module): the echo answer reset by the
 error sign, see "Upstream check" below. It is needed for Morsel anyway.
 
 ## Open questions
-- QSO Bot: in the backlog (#7) as of 2026-09-25. Still open: port all 4 QSO
-  types, or SOTA-only first?
+- ~~QSO Bot: port all QSO types, or SOTA-only first?~~ All three firmware
+  types (SOTA/POTA, Standard, Contest) ported 2026-09-25.
 - WiFi Transceiver / online relay (cq.morserino.info): background UDP socket
   reliability on Android not yet validated.
 - iOS port: keep timing engine native per-platform, or move it into Dart for
@@ -456,4 +456,27 @@ Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitl
 - To test: fall speed/feel at level 1 and higher levels, sound effects vs.
   keying, hit detection with the touch paddles, prosign `<AR>` (+) invaders,
   high score table.
+
+## QSO Bot (backlog #7, 2026-09-25), user-tested OK
+
+- New home tile "QSO Bot" under the free section, next to WiFi Trx ->
+  `QsoBotScreen` (`lib/ui/qso_bot_screen.dart`). Frontend = the WiFi Trx
+  layout (type dropdown instead of the service, Start/Stop instead of Connect,
+  status line, WPM slider, RX/TX log, text input, touch paddles).
+- Engine `lib/content/qso_bot.dart`: 1:1 port of `MorseQsoBot.cpp` (state
+  machine, the three descriptors SOTA/POTA, Standard, Contest), the matcher of
+  `MorseQsoBotMatch.h` and the content pools of `qso_content.h`. Difficulty
+  (Beginner/Intermediate/Advanced), contest type (CQ WW / WPX-Sprint), own
+  call (empty = OE1XXX) in the gear sheet.
+- Bot calls: new `randomCallInfo` on the generator channel;
+  `CallsignData.kt` now carries the CQ zone per prefix (table re-extracted by
+  script from `callsign_prefixes.h`, 973 entries, the old three fields
+  verified identical). Region/common-only from the generator's call prefs.
+- `MorseDecoder` takes an `unknown` char (QSO Bot: `*` -> `U`, as the
+  firmware), so an undecodable char is not a keyed `?` (= repeat request).
+- Engine tests: `test/qso_bot_test.dart` (8 simulated QSOs incl. repeat,
+  recovery, `<err>`, contest loop).
+- To test: full QSOs of all three types keyed with paddles, the 5 s CQ
+  opening, word-gap/over-end timing at your speed, agn/rpt/qrs/qrq, bot speed
+  mismatch on Intermediate/Advanced, the typed-text input.
 

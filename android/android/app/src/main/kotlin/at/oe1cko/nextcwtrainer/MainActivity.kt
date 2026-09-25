@@ -204,6 +204,18 @@ class MainActivity : FlutterActivity() {
                         result.success(null)
                     }
                     "getWordLists" -> result.success(generator.wordLists())
+                    "randomCallInfo" -> {
+                        // QSO Bot: a call plus the continent/CQ zone of its prefix
+                        // (getRandomCall() + lastGeneratedCallContinent/-CqZone).
+                        @Suppress("UNCHECKED_CAST")
+                        val args = call.arguments as? Map<String, Any>
+                        val info = CallsignData.randomCallInfo(
+                            (args?.get("callLengthOpt") as? Number)?.toInt() ?: 0,
+                            (args?.get("callRegionOpt") as? Number)?.toInt() ?: 0,
+                            args?.get("callCommonOnly") as? Boolean ?: false)
+                        result.success(mapOf("call" to info.call,
+                            "continent" to info.continent, "zone" to info.cqZone))
+                    }
                     "getNextContent" -> {
                         // Not running: safe to reuse the shared generator instance just for
                         // content generation (e.g. from Echo Trainer for Words/Calls/Mixed).
