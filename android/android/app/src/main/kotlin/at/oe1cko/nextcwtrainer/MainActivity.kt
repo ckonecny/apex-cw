@@ -203,6 +203,7 @@ class MainActivity : FlutterActivity() {
                         generator.boostLevel = (call.arguments as? Number)?.toInt() ?: 0
                         result.success(null)
                     }
+                    "getWordLists" -> result.success(generator.wordLists())
                     "getNextContent" -> {
                         // Not running: safe to reuse the shared generator instance just for
                         // content generation (e.g. from Echo Trainer for Words/Calls/Mixed).

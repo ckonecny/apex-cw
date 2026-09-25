@@ -318,7 +318,7 @@ DECISIONS.md.
 
 | # | Module | What it is | Effort | Notes |
 |---|---|---|---|---|
-| 1 | **Morsel** (`MorseMorsel.cpp`, ~1.8k lines) | Word guessing like Wordle: the word is played in CW and keyed back; letter boxes turn green/red. Words and abbreviations from the Koch lesson. | M | Word lists, Koch set, keyer and decoder already exist. Needs the `<err>` prosign (8 dits = delete the last char); build it together with the error-sign item from the upstream check. |
+| 1 | **Morsel** (`MorseMorsel.cpp`, ~1.8k lines) — ported 2026-09-25, see below | Word guessing like Wordle: the word is played in CW and keyed back; letter boxes turn green/red. Words and abbreviations from the Koch lesson. | M | Word lists, Koch set, keyer and decoder already exist. Needs the `<err>` prosign (8 dits = delete the last char); build it together with the error-sign item from the upstream check. |
 | 2 | **Memory Chain** (`MorseMemoryChain.cpp`, ~830) | One new char per round, the whole chain is keyed from memory. Modes: Koch characters / call signs. | S–M | Call signs come from `CallsignData.kt`. High scores per mode. |
 | 3 | **Trailblazer + Fox Hunt** (grid engine ~400, score ~300, games ~360 + ~440) | Maze: Trailblazer shows the next letter (keying), Fox Hunt only plays it and you key the direction (hearing). | M | Build the grid engine once for both games. |
 | 4 | **Morse Invaders** (`MorseGame.cpp` ~1.1k + game mode/sprites) | Arcade: falling characters get "shot" by keying them. | L | Real-time game loop plus graphics (CustomPainter/Ticker), timing against the native keyer. |
@@ -375,7 +375,7 @@ Compared firmware commits V9.0..origin/master (V9.0.1 + 9.1 beta):
 - f98a409 (Echo Think T.) has already been ported.
 - 9aae6f6 (the eeee error sign no longer fires on valid e's): not applicable
   yet, because the error-sign reset of the echo answer (8 dits or "eeee"
-  clears the answer) was never ported. Open item: port it, using the
+  clears the answer) was never ported. Done 2026-09-25 with Morsel, using the
   fixed logic.
 - Everything else (settings pause, Koch menu nav, TFT repaint, Pocket click)
   does not apply to the app.
@@ -405,3 +405,20 @@ Neu: `widgets/app_ui.dart` (`AppCard`, `AppButton`, `appBarTitle`). Alle App-Bar
 ### Nachtrag Optik (2026-09-25)
 
 Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitlich dezent (getönte Fläche, keine Umrandung, `AppButton`), Hören und Geben beide Teal; Keyer Violett, WiFi Trx Amber. Startseite: Space-Grotesk-Titel, Hinweiszeile je Kachel.
+
+## Morsel (backlog #1) + games tile (2026-09-25), installed on 63061JEBF01551, not yet user-tested
+
+- New "Spielen" section on the start page -> `GamesScreen` -> `MorselScreen`.
+- Morsel single player per `MorseMorsel.cpp`: 10 words, clue 48 WPM -5 per
+  miss (floor 18), reveal letter, green/red/grey boxes, +5 s per guess, skip
+  +60 s, idle replay 12 s / back to lobby 60 s, 7-entry high-score table,
+  word length options and suggested Koch minimum. Deviations: DECISIONS.md.
+- `<err>` (7+ dits) in `MorseDecoder`; Echo Trainer now clears the answer on
+  `<err>` and on "eeee" (with the 9aae6f6 fix) — the upstream check's open item.
+- New native method `getWordLists` (generator channel).
+- Fix: `getWordLists` first sat on the settings channel (Morsel hung on load).
+- Added: clue start speed slider in the lobby (10..48 WPM), see DECISIONS.md.
+- To test: clue audio, submit pause, `<err>` in Morsel and Echo, skip,
+  results/high scores, back button during play, start page layout with 5 cards.
+- Known, not fixed: `playWord()` merges letter pairs that equal a prosign
+  mnemonic (AR, KN, AS, SK, VE, BK, KA, BT) inside generated words.

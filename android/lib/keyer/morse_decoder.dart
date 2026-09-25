@@ -27,6 +27,9 @@ class MorseDecoder {
     '...-.': 'VE', '-...-.-': 'BK',
   };
 
+  /// Decoded error sign (`<err>`, 7+ dits): "delete what I just sent".
+  static const err = 'ERR';
+
   final void Function(String char) onChar;
 
   String _buf = '';
@@ -52,7 +55,9 @@ class MorseDecoder {
 
   void _flush() {
     if (_buf.isEmpty) return;
-    final ch = table[_buf] ?? '?';
+    // Seven or more dits are the <err> prosign, as in the firmware's
+    // decoder tree (MorseDecoder.h nodes 65/66 loop on further dits).
+    final ch = RegExp(r'^\.{7,}$').hasMatch(_buf) ? err : (table[_buf] ?? '?');
     onChar(ch);
     _buf = '';
   }

@@ -228,6 +228,10 @@ class CwGenerator(private val tone: CwTonePlugin) {
         }, "cw-gen-one").also { it.isDaemon = true; it.start() }
     }
 
+    /** The full word and abbreviation lists, for Morsel's own Koch/length pool. */
+    fun wordLists(): Map<String, List<String>> =
+        mapOf("words" to words, "abbrevs" to abbreviations)
+
     /**
      * Plays raw dit/dah patterns (e.g. ".-", "-...") one per character, with
      * standard inter-character spacing — for WiFi Trx receive, where the

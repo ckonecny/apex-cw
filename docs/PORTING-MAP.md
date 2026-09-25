@@ -20,7 +20,7 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | `MorseTextEntry.cpp` (on-device char picker) | Flutter native text fields | N/A — superseded by touch keyboard |
 | Display layer (`DisplayWrapper`, `M32OledLGFX`) | Flutter widgets | N/A — superseded |
 | `MorseWiFi.cpp` / cwForTx() (WiFi Trx UDP protocol) | `lib/net/mopp.dart`, `lib/net/mopp_client.dart`, `lib/ui/wifi_trx_screen.dart` | First version: single server/peer, send + receive, in foreground only. Not yet tested against a real server. ESP-NOW/LoRa: N/A |
-| `MorseMorsel.cpp` (Morsel, word guessing) | — | Backlog #1 |
+| `MorseMorsel.cpp` (Morsel, word guessing) | `lib/ui/morsel_screen.dart` (via `games_screen.dart`) | Ported, single player (2026-09-25), not yet user-tested |
 | `MorseMemoryChain.cpp` (Memory Chain) | — | Backlog #2 |
 | `MorseGridEngine.cpp`, `MorseGridScore.cpp`, `MorseTrailblazer.cpp`, `MorseFoxHunt.cpp` (grid games) | — | Backlog #3 |
 | `MorseGame.cpp`, `MorseGameMode.cpp`, `GameSprite.cpp` (Morse Invaders) | — | Backlog #4 |

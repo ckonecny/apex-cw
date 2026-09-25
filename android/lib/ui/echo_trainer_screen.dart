@@ -750,6 +750,18 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   void _onDecodedChar(String ch) {
     if (_state != _State.receiving) return;
     if (ch == ' ') return;  // ignore word-gap spaces mid-attempt
+    // A fourth "e" in a row also counts as <err> — unless it still continues
+    // the target word (displayDecodedMorse() in m32_v6.ino, with the upstream
+    // fix 9aae6f6 for words with four or more e's).
+    if (ch == 'E' && _attempt.toUpperCase().endsWith('EEE') &&
+        !_target.toUpperCase().startsWith('${_attempt.toUpperCase()}E')) {
+      ch = MorseDecoder.err;
+    }
+    // <err> clears the answer so far (echoResponse = "").
+    if (ch == MorseDecoder.err) {
+      setState(() => _attempt = '');
+      return;
+    }
     _attempt += ch;
     setState(() {});
   }

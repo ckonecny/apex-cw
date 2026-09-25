@@ -351,3 +351,32 @@ speed. The status chips at the top of the CW Keyer were removed.
 ## 2026-09-25: Einheitliche Optik (Startseite Variante A)
 
 Flache Karten ohne Rahmen, getönte Buttons (`widgets/app_ui.dart`), Space-Grotesk nur für Titel (OFL, `assets/fonts/SpaceGrotesk.ttf`), Monospace für Inhalte. Farben: Hören/Geben Teal, Keyer Violett, WiFi Trx Amber. Rot bleibt Fehlern vorbehalten (Grund: Rot wirkt wie ein Fehler).
+
+## 2026-09-25: Morsel port — deviations from MorseMorsel.cpp
+
+- **Games hub:** the start page gets a "Spielen" section with one "Spiele"
+  tile leading to `GamesScreen`; each ported game is a card there.
+- **Koch lesson:** starts at the Geben (echo profile) lesson; changes in the
+  lobby apply to this visit only, like the firmware restoring `kochFilter`
+  on exit. Koch sequence is the global one.
+- **Word pool:** only words of letters/digits (a guess can hold nothing else),
+  otherwise the same length and Koch filter.
+- **Clue audio:** sent as per-letter patterns (`playPatterns`), not text:
+  `playWord()` reads letter pairs such as AR/KN/AS inside a word as prosigns
+  and drops the letter gap. The keyer is off while the clue plays (shared
+  sidetone), so keying cannot cut the clue short as on the device.
+- **Submit pause:** max(1200 ms, (keyer word gap + 1) dits at the keyer speed),
+  the firmware's `interWordSpace + ditLength`, floor 1200 ms.
+- **`<err>`:** the app decoder now emits `MorseDecoder.err` for 7+ dits, as in
+  the firmware tree (`MorseDecoder.h` nodes 65/66). Morsel deletes the last
+  letter; the Echo Trainer clears the answer, and a fourth "e" in a row counts
+  as `<err>` unless it still continues the target (upstream fix 9aae6f6).
+- **Controls:** encoder speed/volume -> -/+ for the keyer speed (saved as the
+  global `wpm`), volume via the phone. Click = Skip button, long press = back.
+- **High scores:** 7 entries in SharedPreferences `morselHi` (JSON), word
+  length in `morselWlen`.
+- **Clue start speed (app only):** the firmware fixes it at 48 WPM
+  (`MSL_START_WPM`). The user found that far too fast, so the lobby has a
+  start-speed slider 10..48 (default 48, `morselStartWpm`). Schedule stays
+  -5 WPM per miss down to 18; a start below 18 stays at the start speed.
+  High-score rows store the start speed and show it as a WPM column.
