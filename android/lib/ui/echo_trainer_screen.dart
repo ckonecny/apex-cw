@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
 import '../content/cw_content.dart';
+import '../content/block_history.dart';
 import '../content/char_stats.dart';
 import '../content/adaptive_copy_engine.dart';
 import '../content/echo_suggestions.dart';
@@ -96,6 +97,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _maxWords = 0;
   // Block flow (P5): per-word results of the current block.
   final List<WordResult> _blockResults = [];
+  BlockTrend? _trend; // erst ab 6 Blöcken
   String _firstAttempt = '';
   bool _showResult = false;
   int get _blockSize => _maxWords == 0 ? 10 : _maxWords.clamp(1, 50);
@@ -118,7 +120,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _echoThinkTime = 8;   // seconds
   int  _echoRepeats   = 3;   // M32 "Echo Repeats": 0..6, or 7 = "Forever"
   int  _echoDisplay   = _dispCodeOnly;  // matches M32 "Echo Prompt": sound/display/both
-  bool _confirmTone   = false;
+  bool _confirmTone   = true;
   // "Gebe-Tempo" (M32 "Echo Speed Max"): cap on the tempo the ANSWER is
   // expected at; 0 = same as the prompt. Answer tempo = min(prompt, cap).
   int  _answerWpmMax  = 0;
@@ -168,6 +170,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // True while a start/end marker is being played via playOne() — the 'done'
   // event it produces must not be mistaken for the target word finishing.
   bool _awaitingSignal = false;
+  bool _preparing = false;   // the 2 s wait before the first word
   Completer<void>? _signalDone;
   // Set right before a target word's playOne() call so the 'done' handler
   // knows whether to reveal it (Echo Prompt != Sound only).
@@ -181,7 +184,19 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   final _random = Random();
 
-  int get _silenceMs => _echoThinkTime * 1000;
+  // Echo Think T., as in the firmware after its 2026-09-15 fix (origin/master
+  // f98a409, docs/DECISIONS.md): only a grace period for STARTING the answer.
+  // Deadline from the end of the prompt: 1400 ms + inter-char + inter-word/3
+  // (at the prompt speed) + think time. Once the answer has begun, it is
+  // evaluated at the word gap, without think time.
+  int get _startDeadlineMs {
+    final dit = 1200 / _currentWpm;
+    return (1400 + _interCharSpace * dit + _interWordSpace * dit / 3).round() +
+        _echoThinkTime * 1000;
+  }
+
+  // Safety net only: the keyer normally reports the word gap by itself.
+  int get _answerSafetyMs => max(3000, (20 * 1200 / _answerWpm).round());
 
   @override
   void initState() {
@@ -217,7 +232,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _echoThinkTime  = p.getInt('echoThinkTime')  ?? 8;
       _echoRepeats    = (p.getInt('echoRepeats')   ?? 3).clamp(0, 7);
       _echoDisplay    = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
-      _confirmTone    = p.getBool('confirmTone')   ?? false;
+      _confirmTone    = p.getBool('confirmTone')   ?? true;
       _answerWpmMax   = (p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
       _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
       _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
@@ -325,6 +340,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       ),
     );
     await p.setDouble('echoBlockEma', s.blockEma);
+    final n = _blockResults.length;
+    _trend = await const BlockHistory('echo').record(
+        p, n == 0 ? 0 : _blockResults.where((r) => r.outcome == WordOutcome.first).length / n);
     _suggestions = s;
     _pendWpm = s.newWpm;
     _pendAnswer = s.newAnswerWpmMax;
@@ -382,6 +400,59 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       if (!hadSub) { _genSub?.cancel(); _genSub = null; }
       if (mounted) setState(() => _previewing = false);
     }
+  }
+
+  // Manual tempo changes (idle slider / result page). They override the
+  // matching suggestion of the finished block.
+  Future<void> _setHearWpm(int v) async {
+    setState(() {
+      _wpm = v.clamp(5, 60);
+      _currentWpm = _wpm;
+      _pendWpm = null;
+    });
+    await _savePrefs();
+  }
+
+  Future<void> _setGiveWpm(int v) async {
+    setState(() {
+      _answerWpmMax = v.clamp(0, 60);
+      _pendAnswer = null;
+    });
+    final p = await SharedPreferences.getInstance();
+    await p.setInt('echoAnswerWpmMax', _answerWpmMax);
+  }
+
+  // Give speed 0 means "same as hearing"; stepping up to the hearing speed
+  // goes back to that, stepping down from it starts at hearing speed - 1.
+  void _stepGiveWpm(int d) {
+    final eff = _answerWpmMax == 0 ? _wpm : min(_answerWpmMax, _wpm);
+    final n = (eff + d).clamp(5, _wpm);
+    _setGiveWpm(n >= _wpm ? 0 : n);
+  }
+
+  Widget _tempoStepper(AppColors c, String label, String value,
+      VoidCallback onMinus, VoidCallback onPlus) {
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+      IconButton(
+          icon: const Icon(Icons.remove_circle_outline), color: c.accent,
+          visualDensity: VisualDensity.compact, onPressed: onMinus),
+      SizedBox(width: 62, child: Text(value, textAlign: TextAlign.center,
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent))),
+      IconButton(
+          icon: const Icon(Icons.add_circle_outline), color: c.accent,
+          visualDensity: VisualDensity.compact, onPressed: onPlus),
+    ]);
+  }
+
+  Widget _buildTempoControls(AppColors c) {
+    return Wrap(alignment: WrapAlignment.center, spacing: 8, children: [
+      _tempoStepper(c, Strings.t('block_hear'), '$_wpm WPM',
+          () => _setHearWpm(_wpm - 1), () => _setHearWpm(_wpm + 1)),
+      _tempoStepper(c, Strings.t('block_give'),
+          _answerWpmMax == 0 ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax WPM',
+          () => _stepGiveWpm(-1), () => _stepGiveWpm(1)),
+    ]);
   }
 
   void _stepSpacing(int d) => setState(() {
@@ -520,6 +591,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _correct = 0; _total = 0; _wordCounter = 0;
     _blockResults.clear();
     _showResult = false;
+    _target = ''; _attempt = ''; _firstAttempt = '';
+    _targetVisible = false; _revealVisible = false; _repeats = 0;
     _currentWpm = _wpm;
     _sessionActive = true;
 
@@ -544,17 +617,15 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // the operator's own echoed answer (Tone Shift).
     await _toneChannel.invokeMethod('setEnvelopeMs', (_toneSoftness + 1).toDouble()).catchError((_) {});
 
-    // Starting signal, sent at the start of every fresh session — same
-    // "vvv<ka>" marker as the CW Generator (m32_v6.ino: clearText = "vvvA";
-    // frameWordForDisplay = true), skipped for Learn New Chr/Preview Char
-    // (KOCH_LEARN/KOCH_PREVIEW set startFirst = false).
+    // Like the Hören block: wait 2 s before the first word so there is time to
+    // get ready (replaces the firmware's "vvv<ka>" start marker).
     if (widget.fixedTarget == null) {
-      // Sync playback speed before the marker plays — otherwise it plays at
-      // whatever wpm the native generator was left at by a previous session
-      // (same fix as the CW Generator screen's start marker).
       await _applyPromptConfig();
-      await _playSignal('VVVKA');
-      if (!mounted || !_sessionActive) return;
+      setState(() => _preparing = true);
+      await Future.delayed(const Duration(seconds: 2));
+      if (!mounted) return;
+      setState(() => _preparing = false);
+      if (!_sessionActive) return;
     }
 
     await _playWord(fresh: true);
@@ -562,6 +633,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   void _stopSession() {
     _sessionActive = false;
+    _preparing = false;
     _silenceTimer?.cancel();
     _genSub?.cancel();   _genSub   = null;
     _symbolSub?.cancel(); _symbolSub = null;
@@ -583,13 +655,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _genChannel.invokeMethod('playOne', morse);
     await completer.future;
     _awaitingSignal = false;
-  }
-
-  /// End signal, sent when "Max # of Words" is reached — matches the CW
-  /// Generator's "+" (=<ar>) marker, not sent on manual Stop.
-  Future<void> _playEndSignal() async {
-    await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});   // base pitch, not the shifted echo tone
-    await _playSignal('+');
   }
 
   // Fetches (unless repeating the same word) and plays the next target,
@@ -660,10 +725,18 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     setState(() => _state = _State.receiving);
     // Start the timeout immediately — otherwise it only ever gets (re)armed
     // reactively by an incoming symbol, so giving no echo at all waits forever.
-    _resetSilenceTimer();
+    _silenceTimer?.cancel();
+    _silenceTimer = Timer(Duration(milliseconds: _startDeadlineMs), _evaluate);
     _symbolSub = _symbolStream.receiveBroadcastStream().listen((sym) {
       _decoder.add(sym as String);
-      _resetSilenceTimer();
+      // The answer has begun: think time no longer applies. Evaluate at the
+      // word gap; the timer is just a fallback.
+      if (sym == '  ' && _attempt.trim().isNotEmpty) {
+        _evaluate();
+      } else {
+        _silenceTimer?.cancel();
+        _silenceTimer = Timer(Duration(milliseconds: _answerSafetyMs), _evaluate);
+      }
     });
   }
 
@@ -672,12 +745,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (ch == ' ') return;  // ignore word-gap spaces mid-attempt
     _attempt += ch;
     setState(() {});
-    _resetSilenceTimer();
-  }
-
-  void _resetSilenceTimer() {
-    _silenceTimer?.cancel();
-    _silenceTimer = Timer(Duration(milliseconds: _silenceMs), _evaluate);
   }
 
   void _evaluate() {
@@ -756,7 +823,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _wordCounter++;
       if (_wordCounter >= _blockSize) {
         await _computeSuggestions();
-        await _playEndSignal();
         if (mounted) setState(() {
           _state = _State.idle;
           _showResult = true;
@@ -902,16 +968,21 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               answerWpm: (_answerWpmMax > 0 && _answerWpm < _currentWpm) ? _answerWpm : null),
 
           // ── Status label ─────────────────────────────────────────────────
-          _StatusLabel(state: _state),
+          _StatusLabel(state: _state, preparing: _preparing),
 
           // ── Sliders ──────────────────────────────────────────────────────
           if (_state == _State.idle)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(children: [
-              _SliderRow(label: 'WPM',  value: _wpm.toDouble(),
+              _SliderRow(label: Strings.t('block_hear'), value: _wpm.toDouble(),
                   min: 5, max: 60, divisions: 55,
                   onChanged: (v) { setState(() => _wpm = v.round()); _savePrefs(); }),
+              _SliderRow(label: Strings.t('block_give'), value: _answerWpmMax.toDouble(),
+                  min: 0, max: 60, divisions: 60,
+                  display: _answerWpmMax == 0
+                      ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax',
+                  onChanged: (v) => _setGiveWpm(v < 5 ? 0 : v.round())),
             ]),
           ),
 
@@ -989,6 +1060,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       '${Strings.t('block_hear')} $_wpm WPM',
       if (_answerWpmMax > 0 && _answerWpm < _wpm) '${Strings.t('block_give')} $_answerWpm WPM',
       if (_koch) '${Strings.t('block_lesson')} $_kochLevel',
+      if (_trend != null)
+        Strings.t('trend_line')
+            .replaceFirst('{pct}', '${_trend!.percent}')
+            .replaceFirst('{arrow}', _trend!.arrow),
     ].join(' · ');
     String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
     return Padding(
@@ -1011,7 +1086,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         const SizedBox(height: 6),
         Text(status, textAlign: TextAlign.center,
             style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
-        const SizedBox(height: 10),
+        _buildTempoControls(c),
+        const SizedBox(height: 4),
         Expanded(child: PinchZoomFontSize(
           prefsKey: 'echoResultFontSize',
           initialSize: 20,
@@ -1123,10 +1199,19 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Text(showTarget ? cs(_target) : '· · ·', textAlign: TextAlign.center,
+          // Retry indicator: only for a word that did not pass on the first try.
+          Text(_repeats > 1 && _state != _State.idle
+                  ? Strings.t('echo_attempt')
+                      .replaceFirst('{n}', '$_repeats')
+                      .replaceFirst('{max}', _echoRepeats == 7 ? '∞' : '${_echoRepeats + 1}')
+                  : ' ',
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
+                  fontWeight: FontWeight.bold, color: c.warning)),
+          const SizedBox(height: 8),
+          Text(showTarget ? cs(_target) : ' ', textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'CwMono', fontSize: fontSize,
                   fontWeight: FontWeight.bold, height: 1.3,
-                  color: _revealVisible ? c.warning : showTarget ? c.accent : c.textDisabled)),
+                  color: _revealVisible ? c.warning : c.accent)),
           const SizedBox(height: 12),
           Text(_attempt.isEmpty ? ' ' : cs(_attempt), textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'CwMono', fontSize: fontSize * 0.8,
@@ -1145,14 +1230,17 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
 class _StatusLabel extends StatelessWidget {
   final _State state;
-  const _StatusLabel({required this.state});
+  final bool preparing;
+  const _StatusLabel({required this.state, this.preparing = false});
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final (text, color) = switch (state) {
       _State.idle      => (Strings.t('echo_status_idle'), c.textDisabled),
-      _State.playing   => (Strings.t('echo_status_playing'), c.warning),
+      _State.playing   => preparing
+          ? (Strings.t('get_ready'), c.warning)
+          : (Strings.t('echo_status_playing'), c.warning),
       _State.receiving => (Strings.t('echo_status_receiving'), c.info),
       _State.correct   => (Strings.t('echo_status_correct'), c.accent),
       _State.wrong     => (Strings.t('echo_status_wrong'), c.danger),
@@ -1213,15 +1301,17 @@ class _SliderRow extends StatelessWidget {
   final double value, min, max;
   final int divisions;
   final ValueChanged<double> onChanged;
+  final String? display;
   const _SliderRow({required this.label, required this.value, required this.min,
-      required this.max, required this.divisions, required this.onChanged});
+      required this.max, required this.divisions, required this.onChanged,
+      this.display});
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     return Row(
     children: [
-      SizedBox(width: 50, child: Text(label,
+      SizedBox(width: 56, child: Text(label,
           style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
               color: c.textMuted))),
       Expanded(child: SliderTheme(
@@ -1235,7 +1325,7 @@ class _SliderRow extends StatelessWidget {
         child: Slider(value: value, min: min, max: max,
             divisions: divisions, onChanged: onChanged),
       )),
-      SizedBox(width: 40, child: Text(value.round().toString(),
+      SizedBox(width: display == null ? 40 : 84, child: Text(display ?? value.round().toString(),
           textAlign: TextAlign.right,
           style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
               color: c.accent))),

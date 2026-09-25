@@ -10,7 +10,7 @@ import 'setting_rows.dart';
 
 /// Parts of the per-training settings a screen can show, see
 /// docs/training/P3-einstellungen-in-screens.md.
-enum TrainingSection { content, spacing, wordSelection, echoFlow, adaptive, kochSequence }
+enum TrainingSection { content, spacing, wordSelection, echoFlow, hearFlow, adaptive, kochSequence }
 
 /// Opens the settings sheet for one training profile ([TrainingProfile.hear]
 /// or [TrainingProfile.echo]). Every change is saved immediately; the screen
@@ -64,12 +64,14 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _wordLengthMax = 0;
   int _abbrevLengthMax = 0;
   int _maxWords = 0;
+  bool _stopEach = false;
   // Echo flow prefs (global keys, as in Settings before).
   int _echoThinkTime = 8;
   int _echoRepeats = 3;
   int _echoDisplay = 1;
   int _echoAnswerWpmMax = 0;
   int _toneShift = 1;
+  bool _confirmTone = true;
   // Koch sequence (global keys, as in Settings before). 0=M32, 1=LCWO,
   // 2=CW Academy, 3=LICW, 4=Custom.
   int _kochSeq = 0;
@@ -106,11 +108,13 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);
       _abbrevLengthMax = (prof.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _maxWords = (prof.getInt('maxWords') ?? 0).clamp(0, 250);
+      _stopEach = (prof.getInt('stopEach') ?? 0) == 1;
       _echoThinkTime = p.getInt('echoThinkTime') ?? 8;
       _echoRepeats = (p.getInt('echoRepeats') ?? 3).clamp(0, 7);
       _echoDisplay = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _echoAnswerWpmMax = (p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
       _toneShift = (p.getInt('toneShift') ?? 1).clamp(0, 2);
+      _confirmTone = p.getBool('confirmTone') ?? true;
       _kochSeq = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
       final ck = p.getString('customKochChars') ?? '';
       if (ck.isNotEmpty) _customKochChars = ck;
@@ -247,6 +251,24 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             countLabel: Strings.t('settings_unique_chars_detected').replaceFirst('{n}', '$n'),
           ),
         ],
+      ]),
+      const SizedBox(height: 24),
+    ];
+  }
+
+  List<Widget> _hearFlow() {
+    return [
+      SettingsSectionHeader(Strings.t('settings_hear_flow')),
+      _hint(Strings.t('settings_stop_each_desc')),
+      SettingsCard(children: [
+        ToggleRow(
+          label: Strings.t('settings_stop_each'),
+          value: _stopEach,
+          onChanged: (v) {
+            setState(() => _stopEach = v);
+            _setInt('stopEach', v ? 1 : 0);
+          },
+        ),
       ]),
       const SizedBox(height: 24),
     ];
@@ -433,6 +455,15 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             _p?.setInt('toneShift', v);
           },
         ),
+        const SettingsDivider(),
+        ToggleRow(
+          label: Strings.t('settings_confirm_tone'),
+          value: _confirmTone,
+          onChanged: (v) {
+            setState(() => _confirmTone = v);
+            _p?.setBool('confirmTone', v);
+          },
+        ),
       ]),
       const SizedBox(height: 24),
     ];
@@ -467,6 +498,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             TrainingSection.spacing => _spacing(),
             TrainingSection.wordSelection => _wordSelection(),
             TrainingSection.echoFlow => _echoFlow(),
+            TrainingSection.hearFlow => _hearFlow(),
             TrainingSection.adaptive => _adaptive(),
             TrainingSection.kochSequence => _kochSequence(),
           },

@@ -14,7 +14,7 @@ class TrainingProfile {
     'wpm',
     'kochLevel', 'groupLength', 'randomOption', 'maxWords', 'wordLengthMax',
     'abbrevLengthMax', 'interCharSpace', 'interWordSpace', 'boostLevel',
-    'blockFlow', 'charset', 'content',
+    'blockFlow', 'charset', 'content', 'stopEach',
   ];
   static const _stringFields = ['practiceChars'];
   static const _versionKey = 'profileVersion';

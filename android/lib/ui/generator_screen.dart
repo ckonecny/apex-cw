@@ -34,6 +34,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   bool get _koch => _choice.set == CharSet.koch;
   int  _outputCase = 0;   // 0=lower, 1=UPPER — display only, content stays uppercase internally
   int  _wordLengthMax  = 0;
+  bool _stopEach       = false;
   int  _groupLength    = 5;
   int  _randomOption   = 0;
   int  _abbrevLengthMax = 0;
@@ -71,6 +72,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _practiceChars  = pf.getString('practiceChars') ?? '';
       _outputCase     = (p.getInt('outputCase')     ?? 0).clamp(0, 1);
       _wordLengthMax  = pf.getInt('wordLengthMax')  ?? 0;
+      _stopEach       = (pf.getInt('stopEach') ?? 0) == 1;
       _groupLength    = pf.getInt('groupLength')    ?? 5;
       _randomOption   = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
       _abbrevLengthMax = (pf.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
@@ -105,6 +107,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           TrainingSection.content,
           TrainingSection.spacing,
           TrainingSection.wordSelection,
+          TrainingSection.hearFlow,
           TrainingSection.adaptive,
         ]);
     if (mounted) await _loadPrefs();
@@ -237,6 +240,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               kochLesson: _koch,
               randomOption: _randomOption,
               wordLengthMax: _wordLengthMax,
+              stopEachGroup: _stopEach,
               contentModeIndex: allowedContents(_choice.set).indexOf(_choice.content),
               contentModeOrdinals: [for (final k in allowedContents(_choice.set)) engineSelection(_choice.set, k).mode],
               contentModeLabels: [for (final k in allowedContents(_choice.set)) contentLabel(k)],

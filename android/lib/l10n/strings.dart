@@ -142,6 +142,7 @@ class Strings {
     // ── Echo Trainer screen ──────────────────────────────────────────────
     'echo_trainer_title': ['Echo Trainer', 'Echo Trainer'],
     'echo_status_idle': ['Drücke START', 'Press START'],
+    'echo_attempt': ['Versuch {n} von {max}', 'Attempt {n} of {max}'],
     'echo_status_playing': ['Anhören …', 'Listening …'],
     'echo_status_receiving': ['Senden …', 'Sending …'],
     'echo_status_correct': ['✓ Richtig!', '✓ Correct!'],
@@ -162,6 +163,13 @@ class Strings {
     'ac_word_title': ['Wort {n}', 'Word {n}'],
     'ac_mark_desc': ['Tippe die Zeichen an, die du nicht richtig hattest.', 'Tap the characters you got wrong.'],
     'ac_back': ['Zurück', 'Back'],
+    'settings_hear_flow': ['Ablauf', 'Flow'],
+    'settings_stop_each': ['Nach jeder Gruppe anhalten', 'Stop after each group'],
+    'settings_stop_each_desc': [
+      'Nach jeder Gruppe wartet die App. Dit (linkes Paddle) wiederholt die Gruppe, Dah (rechtes Paddle) spielt die nächste. Wie "Stop<Next>Rep" am Morserino.',
+      'After each group the app waits. Dit (left paddle) repeats the group, dah (right paddle) plays the next. Like "Stop<Next>Rep" on the Morserino.'],
+    'trend_line': ['Trend {pct} % {arrow}', 'Trend {pct} % {arrow}'],
+    'ac_paddle_hint': ['Paddle: Dit = wiederholen, Dah = weiter', 'Paddle: dit = repeat, dah = next'],
     'ac_done_errors': ['Fertig · {n} Fehler', 'Done · {n} errors'],
     'ac_result_title': ['Ergebnis', 'Result'],
     'ac_correct_of': ['{c} von {t} richtig', '{c} of {t} correct'],

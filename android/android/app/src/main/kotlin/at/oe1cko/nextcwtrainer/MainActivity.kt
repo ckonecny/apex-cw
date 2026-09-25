@@ -29,6 +29,10 @@ class MainActivity : FlutterActivity() {
     // Learn mode: 0=off, 1=waiting for dit, 2=waiting for dah
     private var learnStep = 0
     private var settingsEventSink: EventChannel.EventSink? = null
+    // Hören-Block, nach dem Aufdecken: Paddle wählt Wiederholen (Dit) / Weiter (Dah).
+    // Dart schaltet das ein; der Tastendruck geht dann als Event nach Dart, nicht in den Keyer.
+    @Volatile private var paddleChoiceActive = false
+    private var genEventSink: EventChannel.EventSink? = null
     @Volatile private var keyDiagMode = false
 
     companion object {
@@ -75,12 +79,14 @@ class MainActivity : FlutterActivity() {
         EventChannel(flutterEngine.dartExecutor.binaryMessenger, GEN_EV_CHANNEL)
             .setStreamHandler(object : EventChannel.StreamHandler {
                 override fun onListen(args: Any?, events: EventChannel.EventSink) {
+                    genEventSink = events
                     generator.onChar    = { ch -> runOnUiThread { events.success(mapOf("type" to "char",    "value" to ch)) } }
                     generator.onWord    = { w  -> runOnUiThread { events.success(mapOf("type" to "word",    "value" to w))  } }
                     generator.onDone    = { maxWords -> runOnUiThread { events.success(mapOf("type" to "done", "value" to (if (maxWords) "maxWords" else ""))) } }
                     generator.onWaiting = {      runOnUiThread { events.success(mapOf("type" to "waiting", "value" to ""))  } }
                 }
                 override fun onCancel(args: Any?) {
+                    genEventSink = null
                     generator.onChar = null; generator.onWord = null; generator.onDone = null; generator.onWaiting = null
                 }
             })
@@ -178,6 +184,10 @@ class MainActivity : FlutterActivity() {
                     }
                     "setInterWordSpace" -> {
                         generator.interWordSpace = (call.arguments as? Number)?.toInt() ?: 7
+                        result.success(null)
+                    }
+                    "setPaddleChoice" -> {
+                        paddleChoiceActive = call.arguments as? Boolean ?: false
                         result.success(null)
                     }
                     "choosePaddle" -> {
@@ -309,6 +319,14 @@ class MainActivity : FlutterActivity() {
             // the real device's paddle-driven autoStop, not the keyer.
             if (down && generator.awaitingChoice) {
                 generator.choosePaddle(isDit)
+                return true
+            }
+            if (paddleChoiceActive) {
+                if (down && event.repeatCount == 0) {
+                    runOnUiThread {
+                        genEventSink?.success(mapOf("type" to "paddle", "value" to (if (isDit) "dit" else "dah")))
+                    }
+                }
                 return true
             }
             keyer.setInputs(

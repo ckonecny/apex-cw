@@ -36,7 +36,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // ── Keyer ──────────────────────────────────────────────────────────────────
   int  _keyerMode   = 0;    // 0=Iambic A, 1=Iambic B, 2=Ultimatic, 3=Non-Squeeze, 4=Straight
-  bool _confirmTone = false;
   // "CurtisB DitT%"/"CurtisB DahT%" (M32 defaults 75/45): only meaningful in
   // Iambic B/Ultimatic — how far into the current element (as a % of its
   // length) the keyer starts looking ahead for the opposite paddle.
@@ -119,7 +118,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _outputCase     = (p.getInt('outputCase')    ?? 0).clamp(0, 1);
       _toneSoftness   = (p.getInt('toneSoftness')  ?? 4).clamp(0, 8);
       _keyerMode      = p.getInt('keyerMode')      ?? 0;
-      _confirmTone    = p.getBool('confirmTone')   ?? false;
       _curtisBDitTiming = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
       _curtisBDahTiming = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
       _acs              = (p.getInt('acs') ?? 0).clamp(0, 3);
@@ -142,7 +140,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setInt('outputCase',     _outputCase);
     await p.setInt('toneSoftness',   _toneSoftness);
     await p.setInt('keyerMode',      _keyerMode);
-    await p.setBool('confirmTone',   _confirmTone);
     await p.setInt('curtisBDitTiming', _curtisBDitTiming);
     await p.setInt('curtisBDahTiming', _curtisBDahTiming);
     await p.setInt('acs',            _acs);
@@ -371,9 +368,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               selected: _acs,
               onChanged: _applyAcs,
             ),
-            const SettingsDivider(),
-            ToggleRow(label: Strings.t('settings_confirm_tone'), value: _confirmTone,
-                onChanged: (v) { setState(() => _confirmTone = v); _saveLive(); }),
           ]),
 
           const SizedBox(height: 24),

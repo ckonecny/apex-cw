@@ -10,6 +10,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../content/block_history.dart';
 import '../content/char_stats.dart';
 import '../content/training_profile.dart';
 import '../content/cw_content.dart' show kochActiveChars, parsePracticeChars;
@@ -37,6 +38,8 @@ class AdaptiveCopyBody extends StatefulWidget {
   final bool kochLesson;
   final int randomOption;
   final int wordLengthMax;
+  // Firmware "Stop<Next>Rep": nach jeder Gruppe warten, Dit = Wiederholen, Dah = Weiter.
+  final bool stopEachGroup;
   final int kochLevel;
   final List<String> activeKochChars;
   // Content mode within the Koch-nested selector (Random/Abbrevs/Words/Mixed
@@ -69,6 +72,7 @@ class AdaptiveCopyBody extends StatefulWidget {
     this.kochLesson = true,
     this.randomOption = 0,
     this.wordLengthMax = 0,
+    this.stopEachGroup = false,
     required this.kochLevel,
     required this.activeKochChars,
     required this.contentModeIndex,
@@ -128,8 +132,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // Result-screen status line: the EMA the engine is actually reasoning
   // about, captured explicitly (not read back from `widget`, to not depend
   // on parent-rebuild timing).
-  double _displayEma = 1.0;
-  int _displayEmaTrend = 0; // -1/0/+1 vs. the previous block
+  BlockTrend? _trend; // Trend über die letzten Blöcke, erst ab 6 Blöcken
   // Before values for the change notices, only set on a block where that
   // value actually changed.
   int? _wpmBefore;
@@ -157,6 +160,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   int _activeWpm = 0;
 
   _Phase _phase = _Phase.idle;
+  // Stop<Next>Rep: true = Gruppe wiederholen, false = weiter.
+  Completer<bool>? _choiceGate;
+  bool _awaitingChoice = false;
   int _blockNumber = 1;
   List<String> _sentGroups = [];
   int _currentGroupIndex = 0;
@@ -218,6 +224,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     _sessionActive = false;
     _genSub?.cancel();
     _genChannel.invokeMethod('stop');
+    _genChannel.invokeMethod('setPaddleChoice', false);
     // The boost proposal pushes practiceChars/boostLevel to the shared
     // generator singleton (CLAUDE.md rule: nothing re-syncs this
     // automatically). Restore the Settings-persisted values on the way out
@@ -232,8 +239,11 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // screen, without tearing down this whole widget.
   void _resetToIdle() {
     _sessionActive = false;
+    _cancelChoice();
+    _awaitingChoice = false;
     _genSub?.cancel();
     _genChannel.invokeMethod('stop');
+    _genChannel.invokeMethod('setPaddleChoice', false);
     if (_pauseGate != null) {
       _pauseGate!.complete();
       _pauseGate = null;
@@ -320,6 +330,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   void _onGenEvent(dynamic raw) {
     final ev = raw as Map;
     if (ev['type'] == 'done') _doneCompleter?.complete();
+    if (ev['type'] == 'paddle') _choose(ev['value'] == 'dit');
   }
 
   Future<void> _waitIfPaused() async {
@@ -446,6 +457,19 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       await completer.future;
       if (!_sessionActive) return;
 
+      while (widget.stopEachGroup) {
+        final repeat = await _awaitGroupChoice();
+        if (!_sessionActive || !mounted) return;
+        if (!repeat) break;
+        await _waitIfPaused();
+        if (!_sessionActive) return;
+        final again = Completer<void>();
+        _doneCompleter = again;
+        await _genChannel.invokeMethod('playOne', group);
+        await again.future;
+        if (!_sessionActive) return;
+      }
+
       // playOne() plays with trailingGap=false (see CwGenerator.kt) — same
       // reasoning as the Classic flow's start-marker gap: insert the
       // inter-word gap ourselves between groups.
@@ -461,6 +485,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   Future<void> _revealNow() async {
     if (_phase != _Phase.sending) return;
     _sessionActive = false;
+    _cancelChoice();
     _pauseGate?.complete();
     _pauseGate = null;
     await _genChannel.invokeMethod('stop');
@@ -472,6 +497,27 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   void _revealBlock() {
     if (mounted) setState(() => _phase = _Phase.revealed);
   }
+
+  // Stop<Next>Rep (firmware autoStop): nach der Gruppe anhalten und auf die
+  // Wahl warten. Dit/Knopf = dieselbe Gruppe noch einmal, Dah/Knopf = weiter.
+  Future<bool> _awaitGroupChoice() async {
+    final gate = Completer<bool>();
+    _choiceGate = gate;
+    setState(() => _awaitingChoice = true);
+    _genChannel.invokeMethod('setPaddleChoice', true);
+    final repeat = await gate.future;
+    _genChannel.invokeMethod('setPaddleChoice', false);
+    if (mounted) setState(() => _awaitingChoice = false);
+    return repeat;
+  }
+
+  void _choose(bool repeat) {
+    final g = _choiceGate;
+    _choiceGate = null;
+    if (g != null && !g.isCompleted) g.complete(repeat);
+  }
+
+  void _cancelChoice() => _choose(false);
 
   void _toggleWrong(int groupIndex, int charIndex) {
     final key = '$groupIndex:$charIndex';
@@ -512,11 +558,12 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       ),
       initialBlockEma: p.getDouble('adaptiveBlockEma') ?? 1.0,
     );
-    final prevEma = _engine!.blockEma;
     final spacingAtCharSpeed = widget.interCharSpace <= 3 && widget.interWordSpace <= 7;
     final decision = _engine!.recordBlock(results, spacingAtCharSpeed: spacingAtCharSpeed);
     final newEma = _engine!.blockEma;
     await p.setDouble('adaptiveBlockEma', newEma);
+    final trend = await const BlockHistory('hear')
+        .record(p, total == 0 ? 0 : correct / total);
 
     final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
         .map((ch) => _charStats.stats[ch] ?? CharStat())
@@ -581,8 +628,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _resultTotal = total;
       _lastDecision = decision;
       _unlockedThisBlock = unlocked;
-      _displayEma = newEma;
-      _displayEmaTrend = (newEma - prevEma).abs() < 0.0001 ? 0 : (newEma > prevEma ? 1 : -1);
+      _trend = trend;
       _wpmBefore = wpmBefore;
       _interCharBefore = interCharBefore;
       _interWordBefore = interWordBefore;
@@ -811,6 +857,22 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
             const SizedBox(height: 6),
             Text('$_activeWpm WPM',
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textDisabled)),
+            if (_awaitingChoice) ...[
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(children: [
+                  Expanded(child: _SecondaryButton(
+                      label: Strings.t('repeat_upper'), onTap: () => _choose(true))),
+                  const SizedBox(width: 12),
+                  Expanded(child: _PrimaryButton(
+                      label: Strings.t('next_upper'), onTap: () => _choose(false))),
+                ]),
+              ),
+              const SizedBox(height: 6),
+              Text(Strings.t('ac_paddle_hint'),
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textMuted)),
+            ],
           ]),
         ),
       ),
@@ -998,13 +1060,14 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                     .replaceFirst('{c}', '$_resultCorrect').replaceFirst('{t}', '$_resultTotal'),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textMuted)),
             const SizedBox(height: 10),
-            Text(Strings.t('ac_status_line')
+            Text(Strings.t('gen_status_line')
                     .replaceFirst('{wpm}', '$_effectiveWpm')
                     .replaceFirst('{ewpm}', '$_effectiveTextWpm')
                     .replaceFirst('{ic}', '$_effectiveInterChar')
-                    .replaceFirst('{iw}', '$_effectiveInterWord')
-                    .replaceFirst('{ema}', '${(_displayEma * 100).round()}')
-                    .replaceFirst('{trend}', _displayEmaTrend > 0 ? '▲' : _displayEmaTrend < 0 ? '▼' : '='),
+                    .replaceFirst('{iw}', '$_effectiveInterWord') +
+                    (_trend == null ? '' : ' · ' + Strings.t('trend_line')
+                        .replaceFirst('{pct}', '${_trend!.percent}')
+                        .replaceFirst('{arrow}', _trend!.arrow)),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
             const SizedBox(height: 20),
             _buildSpacingControl(context, scale: 1.2),

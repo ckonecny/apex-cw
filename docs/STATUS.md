@@ -325,3 +325,7 @@ installed on `63061JEBF01551`, user-confirmed working:
 - Keyer/WiFi Trx word gap now follows InterWord Spc (was fixed 6 dits). Verified on device.
 
 - WiFi Trx tested on device against cq.morserino.info (send + receive OK), service add/edit/delete OK. Next: optional per-service login command, foreground service for background operation, direct Morserino-to-Morserino test, adaptive word gap for straight key.
+
+
+## Trainings-Umbau Phase 8 (2026-09-25)
+Done (installed, partly user-confirmed): Paddle choice per group (Hören), block trend, think-time fix, Echo confirm tones, speed controls, 2 s wait, attempt indicator, stale-text fix. Reaktionszeit dropped. Next: 8c Verwechslungspaare, 8d benannte Presets, then Phase 8 test. Phase 5-7 testplans still with the user. See docs/training/P8-extras.md.
