@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Gradle output of the Android host project
+android/android/build/
+
+# Release APKs handed out to users (kept locally, not in git)
+releases/
+
+# Manual build by-products
+manual/*.epub
+manual/tools/__pycache__/
