@@ -94,6 +94,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _keyDiagActive = false;
   final List<String> _keyDiagLog = [];
 
+  // ── Info ──────────────────────────────────────────────────────────────────
+  // Version/build identification from native BuildConfig (git commit, dirty
+  // flag, build time are stamped in by app/build.gradle.kts).
+  String _version = '…';
+  String _build   = '…';
+  String _buildTime = '…';
+
   StreamSubscription? _eventSub;
 
   @override
@@ -102,6 +109,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _load();
     _loadPaddleDesc();
     _loadOutputDeviceKinds();
+    _loadAppVersion();
     _eventSub = _settingsEvents.receiveBroadcastStream().listen(_onSettingsEvent);
   }
 
@@ -150,6 +158,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _saveLive() => _save();  // called on every interactive change
+
+  Future<void> _loadAppVersion() async {
+    final v = await _settingsChannel.invokeMapMethod<String, dynamic>('getAppVersion');
+    if (v == null || !mounted) return;
+    setState(() {
+      _version = '${v['versionName']} (Build ${v['versionCode']})';
+      _build = '${v['gitSha']}${v['gitDirty'] == true ? '-dirty' : ''}'
+          '${v['buildType'] == 'release' ? '' : ' · ${v['buildType']}'}';
+      _buildTime = '${v['buildTime']}';
+    });
+  }
 
   Future<void> _loadPaddleDesc() async {
     final result = await _settingsChannel.invokeMapMethod<String, String>('getPaddleChars');
@@ -462,6 +481,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ],
+          const SizedBox(height: 24),
+
+          // ── Info ───────────────────────────────────────────────────────────
+          SettingsSectionHeader('Info'),
+          const SizedBox(height: 12),
+          SettingsCard(children: [
+            _InfoRow(label: 'Version', value: _version),
+            const SettingsDivider(),
+            _InfoRow(label: 'Commit', value: _build),
+            const SettingsDivider(),
+            _InfoRow(label: Strings.t('settings_build_time'), value: _buildTime),
+          ]),
           const SizedBox(height: 24),
         ],
       ),

@@ -1,8 +1,25 @@
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+// Build identification (shown in Settings → Info): git commit, whether the
+// working tree had uncommitted changes, and the commit count as versionCode,
+// so every APK handed out can be traced back to an exact source state.
+fun git(vararg args: String): String = try {
+    providers.exec { commandLine("git", *args); isIgnoreExitValue = true }
+        .standardOutput.asText.get().trim()
+} catch (e: Exception) { "" }
+
+val gitSha = git("rev-parse", "--short=7", "HEAD").ifEmpty { "unknown" }
+val gitDirty = git("status", "--porcelain", "--untracked-files=no").isNotEmpty()
+val gitCommitCount = git("rev-list", "--count", "HEAD").toIntOrNull()
+val buildTime = ZonedDateTime.now()
+    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
 
 android {
     namespace = "at.oe1cko.nextcwtrainer"
@@ -39,8 +56,18 @@ android {
         // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
         // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
         // flag during build.
-        versionCode = flutter.versionCode
+        // Build number = git commit count (monotonic, unique per commit);
+        // falls back to the pubspec build number outside a git checkout.
+        versionCode = gitCommitCount ?: flutter.versionCode
         versionName = flutter.versionName
+
+        buildConfigField("String", "GIT_SHA", "\"$gitSha\"")
+        buildConfigField("boolean", "GIT_DIRTY", "$gitDirty")
+        buildConfigField("String", "BUILD_TIME", "\"$buildTime\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

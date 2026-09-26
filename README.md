@@ -34,43 +34,109 @@ This port was built against **firmware version 9.0.0** (`VERSION_MAJOR`/
 firmware changes aren't automatically reflected here and would need their own
 review against this app's behavior.
 
-## What this app is — and isn't
+## What the app covers
 
-This app focuses on the parts of the Morserino-32 that are genuinely useful
-as **pure training software**, with no special hardware required for most of
-it — just your phone's speaker, screen, and (optionally) a keying device:
+The start page has three groups: **Practice** (Listen, Send), **Free**
+(CW Keyer, CW Decoder, WiFi Trx, QSO Bot) and **Play** (games). All CW
+timing and the sidetone run natively (Kotlin + C++/AAudio), so keying feels
+as immediate as it does on the device.
 
-- **CW Keyer** — practice keying with a real paddle or straight key (see
-  below), decoded to text live, just like the device.
-- **CW Generator** and **Koch Trainer** — listen to generated CW (random
-  characters, words, callsigns, abbreviations, mixed content, your own
-  practice-character set), with the same content pools, spacing rules and
-  display conventions as the original.
-- **Echo Trainer** — both standalone and nested inside the Koch Trainer,
-  including adaptive speed, configurable repeats, and the repeat/reveal flow
-  of a missed word.
-- Matching settings: WPM, tone pitch/softness/shift, inter-character/word
-  spacing, CurtisB timing, AutoChar Spacing, Koch sequences (including the
-  LICW Carousel), Random Groups, Practice Set/Boost, callsign generation
-  options, and more — ported from the firmware's own preference definitions,
-  not guessed at.
+### Practice: Listen (CW Generator / Koch Trainer)
 
-What it deliberately does **not** try to reproduce, because it depends on
-hardware a phone doesn't have or is simply out of scope for a training app:
-physical rotary-encoder/button navigation, the OLED/LCD display hardware
-itself, radio/transceiver modes (LoRa, WiFi TRX to a real rig, iCW/Ext Trx,
-ESPNow), the TFT-only games, and on-device firmware/OTA or WiFi AP management.
-Where Android already has a better native equivalent, the app uses that
-instead of imitating the device: the OS theme instead of a "Theme"
-preference, pinch-to-zoom text size instead of a fixed "Font Size" option, an
-in-app German/English switch (the original device's UI is English-only), and
-on-device paddle-key learning instead of fixed factory adapter presets.
+- Generated CW with the firmware's own content pools and rules: random
+  characters, Random Groups (incl. prosign groups `<AS>`, `<KA>`, `<KN>`,
+  `<SK>`, `<VE>`, `<BK>`), common English words, abbreviations, call signs
+  (weighted prefix table, region/common-only options), mixed content, and
+  your own practice-character set.
+- **Koch method as the character set**: M32, LCWO, CW Academy, LICW (incl.
+  the LICW Carousel) or a custom sequence, with the firmware's weighting that
+  plays the most recently learned characters a bit more often.
+- **Block flow for copying on paper**: a block is played, then revealed; you
+  mark what you missed, and the result page shows accuracy, weak characters,
+  a trend across blocks and a "on the way to the next Koch character"
+  progress card.
+- **Adaptive suggestions** after each block (unlock the next Koch character,
+  tighten/widen Farnsworth spacing, raise character speed), each one
+  accept/reject/adjust — nothing changes behind your back. Weak characters
+  can be boosted into the next block (Practice Set/Boost).
+- Per-group paddle choice (repeat / next), session start/end markers,
+  Output Case lower/UPPER.
+
+### Practice: Send (Echo Trainer)
+
+- The firmware's Echo Trainer: a word/group is played, you key it back, it
+  is graded; a miss is repeated and revealed like on the device, including
+  the error sign (`<err>` / "eeee") to clear your answer.
+- Same content sources and Koch sequences as Listen, but a **fully separate
+  profile**: own lesson, speed, group length, Practice Set, Boost and weak
+  characters — sending weaknesses aren't listening weaknesses.
+- Optional block flow with a result page, adaptive suggestions, trend,
+  **confusion pairs** (which characters you mix up when sending), confirm
+  tones and an attempt indicator. "Gebe-Tempo" caps the expected answer
+  speed like the firmware's Echo Speed Max.
+
+### Statistics
+
+Per-character statistics, kept separately for listening and sending
+(📊 in each training), with the lifetime accuracy that drives weak
+characters, boosts and Koch unlocks.
+
+### Free keying and on-air practice
+
+- **CW Keyer** — Iambic A/B, Ultimatic, Non-Squeeze and Straight Key,
+  CurtisB timing, AutoChar Spacing, live decode to text. Input from on-screen
+  touch paddles or a real paddle/straight key (see below).
+- **CW Decoder** — decode CW through the phone's microphone: a port of the
+  firmware's Goertzel detector and adaptive decoder, with level meter,
+  automatic threshold, wide/narrow bandwidth, adjustable pitch, speed
+  display and an optional monitor tone.
+- **WiFi Trx** — CW over the internet using the Morserino's UDP protocol
+  (MOPP), e.g. with `cq.morserino.info`: multiple saved services, receive
+  with playback at the sender's speed, send via paddles or typed text,
+  persisted RX/TX log per service.
+- **QSO Bot** — a simulated QSO partner (SOTA/POTA, Standard, Contest with
+  CQ WW / WPX) that answers what you key, with three difficulty levels,
+  realistic call signs incl. CQ zones, and agn/rpt/qrs/qrq handling.
+
+### Play (games)
+
+- **Morsel** — Wordle-style word guessing: the word is played in CW, you
+  key your guess back.
+- **Morse Invaders** — arcade game: shoot falling characters by keying
+  them, from your current Koch lesson.
+- **Memory Chain** — one new character per round, key the whole chain from
+  memory (Koch characters or call signs), high scores per mode.
+
+### Settings and Android integration
+
+- Ported from the firmware's own preference definitions, not guessed at:
+  WPM, tone pitch/softness/shift, inter-character/inter-word spacing (shown
+  in dits *and* seconds), keyer options, Koch sequences, call sign options.
+- Training-specific settings live in a ⚙ sheet in each screen; the global
+  Settings page only holds what is really global.
+- Where Android has a better native equivalent, the app uses it instead of
+  imitating the device: the OS theme instead of a "Theme" preference,
+  pinch-to-zoom text size instead of "Font Size", an in-app German/English
+  switch (the device UI is English-only), on-device paddle-key learning
+  instead of fixed adapter presets, and audio output handling that follows
+  USB/Bluetooth connect/disconnect (plus a manual Auto/Speaker/Wired/
+  Bluetooth picker).
+
+### What it deliberately does not reproduce
+
+Hardware a phone doesn't have, or things Android already does itself:
+rotary-encoder/button navigation, the OLED/TFT display hardware, LoRa,
+ESP-NOW (and with it the multiplayer parts of the games), iCW/Ext Trx and
+keying a real transceiver, firmware/OTA updates and the WiFi AP setup page.
+The firmware's Practice Stats aren't ported either — the app has its own,
+more detailed statistics.
 
 ## Using a real paddle or straight key
 
-The CW Keyer and Echo Trainer can take input from a real Morse paddle or
-straight key, the same way the Morserino-32 itself can act as a keying
-dongle for a computer. A phone has no analog paddle input, so you need a
+Everything you key (CW Keyer, Send, WiFi Trx, QSO Bot, the games) can take
+input from on-screen touch paddles or from a real Morse paddle or straight
+key, the same way the Morserino-32 itself can act as a keying dongle for a
+computer. A phone has no analog paddle input, so you need a
 small USB (or USB‑OTG) adapter that turns paddle contacts into keystrokes:
 
 - **[vband](https://hamradio.solutions/vband/)** — a widely used, ready-made
@@ -85,22 +151,25 @@ send, so there's no fixed list of supported adapters to match against.
 
 ## Feature status
 
+Ported against firmware v9.0.0 and tested on a real device unless noted.
+Module-by-module details: `docs/PORTING-MAP.md`.
+
 | Area | Status | Notes |
 |---|---|---|
-| CW Keyer (Iambic A/B, Ultimatic, Non‑Squeeze, Straight Key) | ✅ Supported | Live decode to text; CurtisB timing, AutoChar Spacing |
-| CW Generator (Random / Words / Callsigns / Abbrevs / Mixed / Practice Set) | ✅ Supported | Ported content pools and generation rules |
-| Koch Trainer (levels, M32/LCWO/CW Academy/LICW/Custom sequences, nested Generator/Echo submodes) | ✅ Supported | Includes the LICW Carousel entry point |
-| Echo Trainer (standalone and Koch‑nested, incl. Adaptive Random) | ✅ Supported | Adaptive speed, repeat/reveal flow, Max # of Words |
-| Session markers, spacing, WPM, tone pitch/softness/shift | ✅ Supported | |
-| Theme, pinch‑to‑zoom output text size, German/English UI | ✅ Supported | Android-native equivalents of device-only prefs |
-| Physical controls, OLED/LCD hardware, on‑device menu navigation | ❌ Not applicable | Touchscreen UI instead |
-| Radio/Transceiver hardware modes (LoRa, WiFi TRX to a rig, iCW/Ext Trx, ESPNow) | ❌ Not applicable | No radio hardware on a phone |
-| TFT‑only games (Morse Invaders, Fight the Pileup, Radio Cave, Morsel, Trailblazer, Fox Hunt) | ❌ Not applicable | Out of scope for a training app |
-| Device firmware/OTA update, WiFi AP setup page | ❌ Not applicable | Android has its own update/network mechanisms |
-| WiFi Transceiver as an online meeting point (e.g. cq.morserino.info, qsobot.online) | 🚧 Not yet implemented | Technically feasible; a UDP-based protocol |
-| QSO Bot (SOTA / POTA / Standard / Contest simulated partner) | 🚧 Not yet implemented | Large feature; not started |
-| CW Decoder (microphone → text) | 🚧 Not yet implemented | |
-| File Player, CW Memories, Settings Snapshots | 🚧 Not yet implemented | |
+| CW Keyer (Iambic A/B, Ultimatic, Non‑Squeeze, Straight Key) | ✅ Supported | Live decode, CurtisB, AutoChar Spacing, touch or USB paddles |
+| Listen: CW Generator / Koch Trainer | ✅ Supported | All content modes, Koch sequences incl. LICW Carousel, block flow with adaptive suggestions |
+| Send: Echo Trainer | ✅ Supported | Separate profile, block flow, adaptive suggestions, confusion pairs, error sign |
+| Per-character statistics (listen / send separately) | ✅ Supported | App-specific, replaces the firmware's Practice Stats |
+| CW Decoder (microphone → text) | ✅ Supported | Goertzel + firmware decoder port |
+| WiFi Trx (MOPP over UDP, e.g. cq.morserino.info) | ✅ Supported | Foreground only; no background service yet |
+| QSO Bot (SOTA/POTA, Standard, Contest) | ✅ Supported | |
+| Games: Morsel, Morse Invaders, Memory Chain | ✅ Supported | Single player; Morsel not yet fully user-tested |
+| Settings, audio output routing, theme, text zoom, DE/EN UI | ✅ Supported | Android-native equivalents of device-only prefs |
+| Games: Trailblazer, Fox Hunt, Radio Cave, Fight the Pileup | 🚧 Not yet | In the backlog (single player) |
+| File Player (own text as practice content), Settings Snapshots / named presets | 🚧 Not yet | Low priority |
+| CW Memories | 🚧 Not yet | Not planned yet |
+| Physical controls, display hardware, LoRa, ESP‑NOW/multiplayer, iCW/Ext Trx, OTA/WiFi AP | ❌ Not applicable | No such hardware on a phone / handled by Android |
+| Practice Stats (`MorsePracticeStats.cpp`) | ❌ Not ported | Replaced by the app's own statistics |
 
 ## Development
 
@@ -108,7 +177,19 @@ Built with Flutter (UI, Dart) and native Kotlin/C++ on the Android side
 (low-latency AAudio sidetone, iambic keyer and CW generator timing). The
 Flutter project lives in `android/` (run `flutter` commands from there): see
 `android/lib/` for the Flutter app and `android/android/app/src/main/kotlin`
-and `android/android/app/src/main/cpp` for the native pieces.
+and `android/android/app/src/main/cpp` for the native pieces. Microphone
+input for the decoder uses Android's `AudioRecord`.
+
+```bash
+cd android && flutter build apk --debug
+```
+
+```bash
+adb install -r android/build/app/outputs/flutter-apk/app-debug.apk
+```
+
+Unit tests (decoder, QSO Bot engine, adaptive engine, …): `flutter test`
+from `android/`.
 
 `reference/` is a read-only git submodule of the original firmware, pinned
 at tag `V9.0` (the v9.0.0 baseline above) — the source of truth this port is

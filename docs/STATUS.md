@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private).
-Latest tagged build: v0.1.0.
+Latest tagged build: v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
 - CW Keyer: all 5 modes, decode-to-text, CurtisB timing, AutoChar Spacing.
@@ -548,3 +548,14 @@ Neue Karte "Auf dem Weg zu X" mit Fortschrittsbalken und den Zeichen, die noch f
   Echo, Hören/Adaptive Copy, games): no other display-size truncation found.
   Decoder caps at 3000 chars and scrolls; WiFi Trx/QSO Bot cap the number
   of segments (200/300) and scroll; the others show one word/block at a time.
+
+## README updated (2026-09-25)
+README rewritten to reflect the current app: start page groups (Practice/Free/Play), Listen and Send trainings with block flow and adaptive suggestions, separate stats, CW Decoder, WiFi Trx, QSO Bot, games, new feature-status table and build commands. Docs only, nothing to install. Not committed.
+
+## Version display + v1.0.0 release (2026-09-26)
+Settings → Info (bottom) shows Version `1.0.0 (Build N)`, Commit (short git
+SHA, `-dirty` if built with uncommitted changes, build type if not release)
+and build time. Build number = git commit count, stamped in by
+`android/app/build.gradle.kts` via BuildConfig, so every handed-out APK maps
+to an exact commit. Tagged `v1.0.0`; release APK built from the tag and
+installed on the connected phone.

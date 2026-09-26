@@ -283,6 +283,14 @@ class MainActivity : FlutterActivity() {
                         setKeepScreenOn(call.arguments as? Boolean ?: false)
                         result.success(null)
                     }
+                    "getAppVersion" -> result.success(mapOf(
+                        "versionName" to BuildConfig.VERSION_NAME,
+                        "versionCode" to BuildConfig.VERSION_CODE,
+                        "gitSha"      to BuildConfig.GIT_SHA,
+                        "gitDirty"    to BuildConfig.GIT_DIRTY,
+                        "buildType"   to BuildConfig.BUILD_TYPE,
+                        "buildTime"   to BuildConfig.BUILD_TIME
+                    ))
                     "getOutputDeviceKinds" -> result.success(mapOf(
                         "preferred" to audioRouteManager.getPreferredKind(),
                         "available" to audioRouteManager.listAvailableKinds()

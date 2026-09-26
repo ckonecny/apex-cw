@@ -471,3 +471,17 @@ Flache Karten ohne Rahmen, getönte Buttons (`widgets/app_ui.dart`), Space-Grote
   key on the paddle jack (keyDecoder); not ported, the keyer is stopped on
   this screen. Output is always uppercase (the app's convention), prosigns
   as the tree shows them (`<KA>`), `<err>` is shown, not applied.
+
+## Build identification (2026-09-26)
+
+The app now goes to other users, so each APK must be traceable to a source
+state. `app/build.gradle.kts` runs git at build time and stamps
+`BuildConfig.GIT_SHA`, `GIT_DIRTY` and `BUILD_TIME`; `versionCode` is the git
+commit count (monotonic without manual bumping; falls back to the pubspec
+build number outside a git checkout). `versionName` still comes from
+`pubspec.yaml` and is bumped by hand per release, with a matching `vX.Y.Z`
+git tag. Shown in Settings → Info via the settings channel (`getAppVersion`).
+Builds meant for others: `flutter build apk --release` from a clean, tagged
+tree (Commit must not show `-dirty`). Release builds are still signed with
+this machine's debug key — fine for sideloading, but updates for recipients
+must be built on this machine (or with the same keystore).

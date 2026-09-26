@@ -211,6 +211,7 @@ class Strings {
     'echo_answer_wpm': ['Geben', 'Answer'],
     'settings_learn_paddle_keys': ['Paddle-Tasten anlernen', 'Learn Paddle Keys'],
     'settings_analyze_key_events': ['Key-Events analysieren', 'Analyze Key Events'],
+    'settings_build_time': ['Gebaut', 'Built'],
     'settings_analyze_key_events_desc': ['Adapter einstecken, Analyser starten, dann Tasten drücken.', 'Plug in adapter, start analyzer, then press keys.'],
     'settings_stop_analyzer': ['Analyser stoppen', 'Stop Analyzer'],
     'settings_start_analyzer': ['Analyser starten', 'Start Analyzer'],
