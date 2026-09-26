@@ -144,6 +144,10 @@ small USB (or USB‑OTG) adapter that turns paddle contacts into keystrokes:
 - **Something homemade** works just as well: any small USB‑HID device (for
   example, an Arduino/Pro Micro running a simple keyboard-emulation sketch)
   that reports the dit and dah paddle contacts as two separate keystrokes.
+  A ready-to-build example is
+  **[xiao-vband-adapter](https://github.com/ckonecny/xiao-vband-adapter)**:
+  a Seeed XIAO SAMD21 plus a 3.5 mm jack, sending the same keys as the vband
+  adapter; it connects to the phone with a USB‑C ↔ USB‑C cable.
 
 Whichever adapter you use, open **Settings → Learn Paddle Keys** and press
 each paddle once — the app learns whatever two keys your adapter happens to
