@@ -485,3 +485,37 @@ Builds meant for others: `flutter build apk --release` from a clean, tagged
 tree (Commit must not show `-dirty`). Release builds are still signed with
 this machine's debug key — fine for sideloading, but updates for recipients
 must be built on this machine (or with the same keystore).
+
+## User manual: Markdown sources, both languages, built like the firmware's (2026-09-26)
+
+The app now reaches other users, so it gets an end-user manual in `manual/`,
+modelled on the Morserino-32's own (`reference/Documentation/User Manual/`):
+Markdown sources per language (`manual_de.md`, `manual_en.md`), built with
+pandoc → HTML → weasyprint → PDF by `manual/build.sh`, and the built HTML/PDF
+committed so they can be handed out next to the APK. EPUB is available from
+the script but not committed. The title page is stamped with the pubspec
+versionName and the git commit, the same identifiers Settings → Info shows,
+so a manual can be matched to an APK.
+
+Written from the code, not from the firmware manual (no text copied from it;
+it is CC BY 4.0 but the app's behavior differs in many places). Detail level
+follows the firmware manual: every setting with range and default; the
+adaptive mode is spelled out with its actual formulas and constants (per-char
+EMA α = 0.2, block EMA with the user's α, 70/90 % thresholds, 2-block
+hysteresis, 20 occurrences, weak = ≥ 8 attempts and ≥ 12 %, no tighten/speed-up
+while Koch chars are still open), so users can see why a suggestion appears.
+
+Rule (CLAUDE.md rule 10): every user-visible change updates both languages in
+the same change and rebuilds; `build.sh` fails on broken internal links so a
+renamed heading can't silently break cross-references. Headings that pandoc
+can't turn into a clean ID (e.g. containing ⚙) carry an explicit `{#id}`.
+
+**Screenshots (2026-09-26):** separate DE and EN screenshots (the UI text
+differs), light theme (reads better in print), status bar cropped, 540 px
+wide, quantized to 128 colours so the 64 images stay ~2 MB in git. Single
+screenshots float beside the text, 2–3 related ones sit side by side with a
+caption. Taken from the real app on the phone via adb (`manual/tools/`):
+accessibility labels for navigation, the learned paddle keycodes (113/114)
+for keying. `input keyevent` jitter makes keying reliable only at ~8 WPM, and
+the `monkey --port` server does not work on this phone. The HTML embeds the
+images (`--embed-resources`) so it stays a single file to hand out.

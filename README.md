@@ -34,6 +34,13 @@ This port was built against **firmware version 9.0.0** (`VERSION_MAJOR`/
 firmware changes aren't automatically reflected here and would need their own
 review against this app's behavior.
 
+## User manual
+
+A detailed user manual in German and English — every setting with its range
+and default, and how the adaptive mode decides — is in [`manual/`](manual/):
+[Handbuch (PDF)](manual/NextCWTrainer_Handbuch.pdf) ·
+[User Manual (PDF)](manual/NextCWTrainer_Manual.pdf), also as HTML.
+
 ## What the app covers
 
 The start page has three groups: **Practice** (Listen, Send), **Free**

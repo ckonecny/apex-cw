@@ -1,0 +1,104 @@
+/* Next CW Trainer user manual: one stylesheet for the HTML (screen) and the
+   PDF (weasyprint, print media). Built by build.sh. */
+
+:root {
+  --accent: #0f766e;
+  --text: #222;
+  --muted: #666;
+  --rule: #d6d6d6;
+  --code-bg: #f3f4f4;
+  --bg: #fff;
+}
+@media screen and (prefers-color-scheme: dark) {
+  :root { --accent: #5eead4; --text: #e6e6e6; --muted: #a0a0a0;
+          --rule: #3a3a3a; --code-bg: #262a2a; --bg: #161818; }
+}
+
+html { background: var(--bg); }
+body {
+  font-family: 'Lato', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
+@media screen {
+  body { max-width: 50rem; margin: 0 auto; padding: 1.5rem 1rem 4rem; font-size: 1.02rem; }
+}
+
+h1, h2, h3, h4 { color: var(--accent); line-height: 1.25; }
+h1 { font-size: 1.7em; border-bottom: 2px solid var(--accent); padding-bottom: .2em; margin-top: 2em; }
+h2 { font-size: 1.3em; margin-top: 1.6em; }
+h3 { font-size: 1.1em; margin-top: 1.3em; }
+h1 .header-section-number, h2 .header-section-number, h3 .header-section-number {
+  color: var(--muted); margin-right: .4em;
+}
+a { color: var(--accent); }
+code { font-family: 'Menlo', 'Consolas', monospace; font-size: .92em;
+       background: var(--code-bg); padding: 0 .2em; border-radius: 3px; }
+
+table { border-collapse: collapse; width: 100%; margin: .8em 0 1.2em; font-size: .95em; }
+th, td { border: 1px solid var(--rule); padding: .35em .5em; vertical-align: top; text-align: left; }
+th { background: var(--code-bg); }
+/* pandoc gives long pipe tables equal column widths; let content decide. */
+col { width: auto !important; }
+table { table-layout: auto; }
+td:first-child { white-space: nowrap; }
+@media screen { table { display: block; overflow-x: auto; } }
+@media screen and (max-width: 560px) { .shots.one { float: none; width: auto; margin: 1em auto; } .shots.one figure { width: 60%; margin: 0 auto; } }
+
+blockquote { border-left: 3px solid var(--accent); margin-left: 0; padding-left: 1em; color: var(--muted); }
+
+/* Title page */
+.title-page { text-align: center; padding: 3em 0 2em; }
+.title-page .t-name { font-size: 2.6em; font-weight: bold; color: var(--accent); margin: 0; }
+.title-page .t-sub  { font-size: 1.4em; margin: .3em 0 1.5em; }
+.title-page .t-ver  { color: var(--muted); }
+.edition { color: var(--muted); font-size: .9em; border-top: 1px solid var(--rule);
+           border-bottom: 1px solid var(--rule); padding: .6em 0; margin-bottom: 2em; }
+
+/* Table of contents */
+nav#TOC ul { list-style: none; padding-left: 1.1em; }
+nav#TOC > ul { padding-left: 0; }
+nav#TOC a { text-decoration: none; }
+nav#TOC .toc-section-number { color: var(--muted); margin-right: .4em; }
+nav#TOC > ul > li { margin-top: .3em; font-weight: bold; }
+nav#TOC > ul > li li { font-weight: normal; }
+
+/* Screenshots: one to three phone screens side by side */
+.shots { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2em;
+         margin: 1em 0 1.6em; }
+.shots figure { margin: 0; width: 44%; max-width: 270px; text-align: center; }
+.shots.three figure { width: 30%; max-width: 230px; }
+/* A single screenshot floats beside the text instead of standing alone. */
+.shots.one { float: right; margin: .2em 0 1em 1.5em; width: 36%; max-width: 250px; }
+.shots.one figure { width: 100%; }
+h1 { clear: both; }
+.shots img { width: 100%; border: 1px solid var(--rule); border-radius: 10px; }
+.shots figcaption { font-size: .82em; color: var(--muted); margin-top: .35em; line-height: 1.3; }
+
+/* ---- PDF (weasyprint) ---- */
+@page {
+  size: A4;
+  margin: 2.2cm 2.2cm 2.4cm;
+  @top-right { content: string(doc-title); font-family: 'Lato', sans-serif; font-size: 8.5pt; color: #666; }
+  @top-left  { content: string(chapter); font-family: 'Lato', sans-serif; font-size: 8.5pt; color: #666; }
+  @bottom-center { content: counter(page); font-family: 'Lato', sans-serif; font-size: 9pt; }
+}
+@page :first {
+  @top-right { content: none; } @top-left { content: none; } @bottom-center { content: none; }
+}
+@media print {
+  body { font-size: 10.5pt; }
+  .title-page { string-set: doc-title attr(data-title); padding-top: 8cm; page-break-after: always; }
+  .edition { page-break-after: always; }
+  nav#TOC { page-break-after: always; }
+  nav#TOC a::after { content: leader('.') target-counter(attr(href), page); }
+  h1 { string-set: chapter content(text); page-break-before: always; }
+  h1, h2, h3 { page-break-after: avoid; }
+  tr, pre, .shots { page-break-inside: avoid; }
+  .shots figure { max-width: 5.4cm; }
+  .shots.three figure { max-width: 4.6cm; }
+  .shots.one { width: 5.2cm; }
+  a { color: inherit; text-decoration: none; }
+}

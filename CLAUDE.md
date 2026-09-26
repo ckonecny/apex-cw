@@ -20,6 +20,8 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
   (`oe1wkl/Morserino-32`), pinned at tag `V9.0`. Never edit; `git submodule
   update` only if deliberately re-pinning (record why in `docs/DECISIONS.md`
   if so).
+- `manual/` — end-user manual (DE + EN Markdown sources, built HTML/PDF);
+  see `manual/README.md`.
 - `docs/STATUS.md`, `docs/DECISIONS.md`, `docs/PORTING-MAP.md` — see
   `docs/PROJECT.md` for what each holds.
 
@@ -52,6 +54,15 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
    next-3-steps, open questions.
 9. **Record new or changed architecture decisions in `docs/DECISIONS.md`**
    as they're made, not after the fact.
+10. **Keep the user manual current, in both languages, in the same change.**
+    Anything a user can see or do differently (feature, setting, default,
+    range, label, adaptive threshold/rule) updates `manual/manual_de.md`
+    **and** `manual/manual_en.md` together — same structure, same facts —
+    then `manual/build.sh` rebuilds HTML/PDF (it fails on broken links).
+    If a screen shown in a screenshot changes, retake it in both languages
+    (`manual/img/{de,en}/`, helpers in `manual/tools/`).
+    Describe behavior from the code, not from memory. A change isn't done
+    while the manual still describes the old behavior.
 
 ## Build / run
 

@@ -44,6 +44,17 @@ Latest tagged build: v1.0.0 (2026-09-26, first build handed out to other users).
   from the chatserver README, not verified against that exact server),
   multiple endpoints (add/edit/delete), maybe a foreground service.
 
+- **User manual (2026-09-26):** `manual/` with German and English manual
+  (Markdown sources, built HTML + PDF via `manual/build.sh`, ~38 pages each),
+  written from the current code: all trainings, games, settings with
+  ranges/defaults, and a full chapter on how the adaptive mode decides.
+  CLAUDE.md rule 10 added: keep both languages current with every
+  user-visible change. Screenshots added 2026-09-26 (32 per language,
+  light theme, taken on 63061JEBF01551 via `manual/tools/`); manual now ~45
+  pages. Three text corrections found while shooting (Send speed sliders,
+  Memory Chain's own Koch lesson, decoder settings icon). Not yet reviewed
+  by the user.
+
 ## Working / verified on device
 Everything above, tested on 63061JEBF01551.
 
@@ -332,7 +343,31 @@ DECISIONS.md.
 Separately, a small open item (not a module): the echo answer reset by the
 error sign, see "Upstream check" below. It is needed for Morsel anyway.
 
+### TODOs from writing the manual (2026-09-26), handled separately
+- [ ] **Listen "Words per block" default mismatch (bug):** the ⚙ sheet shows
+  10 when nothing is stored (`maxWords` 0), Send uses 10, but
+  `AdaptiveCopyBody._blockSize` falls back to 5. A fresh install plays 5
+  groups in Listen while the slider says 10; the manual documents 10.
+  Fix: fall back to 10 in `_blockSize` (one line).
+- [ ] **Merge "Boost Practice" with the weak-character boost (needs a user
+  decision first):** during a Listen block the weak-char auto-boost
+  overwrites practiceChars/boostLevel for random content, and other contents
+  aren't boosted, so the profile's Boost Practice never applies in Listen
+  (it does in Send · All · Random). User wants the two combined; exactly how
+  is still open — ask before implementing. Update both manuals afterwards
+  (sections "Practice Set" and "Weak characters").
+- [ ] **Listen result page overflows (bug, found taking screenshots):** with
+  weak characters + progress card + a suggestion row, the page (a
+  non-scrolling centred Column in `AdaptiveCopyBody._buildResult`) runs
+  under the Finish / Next Block buttons; the suggestion row is overlapped and
+  hard to tap. Make the middle part scrollable (as the Send result page is).
+- [ ] **Home card subtitle keeps the old language:** after switching the
+  language, the Listen/Send cards still say "Lesson 15" until the app is
+  restarted (`HomeScreen._loadInfo()` builds the string once). Rebuild it on
+  `Strings.lang` changes.
+
 ## Open questions
+
 - ~~QSO Bot: port all QSO types, or SOTA-only first?~~ All three firmware
   types (SOTA/POTA, Standard, Contest) ported 2026-09-25.
 - WiFi Transceiver / online relay (cq.morserino.info): background UDP socket

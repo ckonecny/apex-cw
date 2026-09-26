@@ -1,0 +1,1290 @@
+# Introduction
+
+**Next CW Trainer** is an Android app for learning and practising Morse code
+(CW). It brings the training modes of the
+[Morserino-32](https://github.com/oe1wkl/Morserino-32) to your phone or
+tablet: Koch method, Echo Trainer, CW Keyer, CW Decoder, WiFi Trx, QSO Bot
+and several games. On top of that it adds an **adaptive block flow**. The
+app tracks your mistakes character by character and suggests when you are
+ready for a new character, more speed or shorter pauses.
+
+## Where the app comes from {-}
+
+Next CW Trainer is an independent hobby project. It has **no connection**
+to Willi Kraml (OE1WKL) or the Morserino-32 team. The only link is that its
+algorithms and training logic were read out of the Morserino firmware source
+and rewritten for Android. The idea behind the Morserino-32 and its training
+concept are Willi's and his team's work, and so are years of careful
+refinement. That includes the Koch sequences, the Echo Trainer, the QSO Bot
+and much more. The app contains no original firmware code and is not an
+official product of the Morserino project.
+
+If you don't own a Morserino-32 yet, build or buy one. It's a wonderful
+device. This app is for practising on the go, not a replacement.
+
+The app is based on firmware version 9.0.0. Later firmware changes are not
+carried over automatically.
+
+## About this manual {-}
+
+This manual describes the app version printed on the title page. You can see
+which version you have installed under **Settings → Info** (see
+[Info: version and build](#info-version-and-build)).
+
+Terms taken over from the firmware are kept as they are in the app, for
+example **Interchar Spc**, **Random Groups** and **Echo Prompt**. That way
+you can find them again in the Morserino manual.
+
+# Getting started
+
+## Installation
+
+The app is currently handed out as an APK file, not through the Play Store.
+
+1. Copy the APK file to your phone, for example by messenger, e-mail or USB
+   cable.
+2. Tap the file in your file manager. The first time, Android asks whether
+   the app you install from may **install unknown apps**. That might be your
+   file manager or browser. Allow it for that app.
+3. Confirm the installation.
+
+Updates work the same way: install the new APK over the old one, and your
+settings and statistics are kept. This only works if both APKs are signed
+with the same key. If Android reports a conflict, you first have to uninstall
+the old version, and that deletes your settings and statistics.
+
+## The home screen
+
+The home screen has three groups:
+
+| Group | Tile | What for |
+|---|---|---|
+| **Practice** | **Listen** | Practise copying: CW Generator and Koch Trainer in the block flow |
+| | **Send** | Practise sending: Echo Trainer. A word is played and you key it back |
+| **Free** | **CW Keyer** | Key freely, with the text decoded on screen |
+| | **CW Decoder** | Copy CW through the microphone |
+| | **WiFi Trx** | CW over the internet with other Morserinos and apps |
+| | **QSO Bot** | A simulated QSO partner |
+| **Play** | **Games** | Morsel, Morse Invaders, Memory Chain |
+
+The **Listen** and **Send** tiles show your current Koch lesson and speed.
+**Send** also shows the trend of your last blocks (see [Trend](#trend)).
+
+The gear icon at the top right opens the **global settings** (chapter
+[Settings](#settings)). Anything that concerns only one training is set up
+directly inside that training.
+
+::: {.shots .one}
+![The home screen](img/en/home.png)
+:::
+
+## Controls inside the trainings
+
+Each training has these icons at the top right:
+
+- **⚙ Training settings** opens a sheet that slides up from the bottom. Every
+  change takes effect immediately and is saved.
+- **📊 Statistics** (only in **Listen** and **Send**) shows your progress per
+  character (see [Character statistics](#character-statistics)).
+
+While a block is running, these icons and the selection at the top are hidden
+to keep the screen calm. The **back button** then only ends the running block
+and returns you to the training's start view. A second back leaves the
+training.
+
+The screen stays on while you practise.
+
+**Text size:** you can **pinch** text areas that show decoded text or results
+to make the text larger or smaller. This works in the CW Keyer, in Send and on
+the result page, among others. Each area remembers its own size.
+
+## Light, dark, language
+
+Under **Settings → Appearance** you choose the **Theme** (System, Light or
+Dark) and the app **Language** (Deutsch or English). Both take effect
+immediately.
+
+## Sound and volume
+
+Set the volume with the phone's volume keys. You set the **pitch** and the
+**tone softness** in the settings. When headphones, a USB audio device or a
+Bluetooth device is connected or disconnected, the app switches to it
+automatically. If you don't want that, you can fix the output (see
+[Audio output](#audio-output)).
+
+Bluetooth headphones usually add noticeable latency. That doesn't matter for
+listening, but it does for sending: you hear your sidetone noticeably later
+than you key. For sending, use wired headphones or the speaker.
+
+# Basics
+
+## Speed in WPM
+
+Speed is given in **WPM** (words per minute), based on the standard word
+"PARIS". At *w* WPM a dit lasts exactly 1200 / *w* milliseconds, so 60 ms at
+20 WPM.
+
+## Spacing in dits: Interchar Spc and InterWord Spc
+
+As on the Morserino, the pauses are set **in dit lengths**:
+
+- **Interchar Spc** is the pause between two characters of a word. Normal
+  Morse is 3 dits. You can set 3 to 45.
+- **InterWord Spc** is the pause between two words or groups. Normal Morse is
+  7 dits. You can set 6 to 105.
+
+The pause between the elements (dits and dahs) *inside* a character is always
+1 dit. So the characters themselves always come at the set speed, and only
+the pauses between them get longer. This is the **Farnsworth method**. You
+learn the sound of a character at full speed and still have time to think.
+
+Next to each spacing slider the app also shows the pause **in seconds** at
+the current speed, for example "28 dits · 1.68 s @ 20 WPM".
+
+The **Listen** and **Send** trainings start with generous pauses of
+**28 / 40 dits**. The CW Keyer, WiFi Trx and the QSO Bot use the normal
+7 dits as word spacing.
+
+## Effective speed
+
+Because the pauses are longer, whole words arrive more slowly. The app shows
+this as **eff.** (effective WPM):
+
+  eff. WPM = 50 × WPM / (31 + 4 × Interchar Spc + InterWord Spc)
+
+Example: 20 WPM with 28/40 dits gives 50 × 20 / (31 + 112 + 40) ≈ 5 WPM.
+The characters sound like 20 WPM, but you have as much time as at 5 WPM. With
+3/7 dits the two values are the same.
+
+## The Koch method
+
+With the Koch method you start with **two characters** at full speed. Once
+you recognise them reliably, the next character is added, then the next, until
+you know them all. Each step is called a **lesson**. The lesson number is the
+number of active characters.
+
+The order of the characters is set by the **Koch Sequence** (see
+[Koch Sequence](#koch-sequence)).
+
+When drawing random characters, the app weights them like the Morserino. Two
+out of three characters are drawn evenly from **all** active characters. Every
+third one is drawn only from the **last third**, where the most recently
+learned characters are. New characters therefore come up more often, without
+the old ones disappearing.
+
+## Prosigns
+
+Prosigns (procedural signals) are sent as run-together letters. The app
+writes them in angle brackets:
+
+| Prosign | Meaning |
+|---|---|
+| `<ka>` | Start of message |
+| `<ar>` | End of message (+) |
+| `<kn>` | Only the station called should answer |
+| `<sk>` | End of contact |
+| `<as>` | Wait |
+| `<ve>` | Understood |
+| `<bk>` | Break, over to the other station |
+| `<err>` | Error: eight dits (`........`) |
+
+In Listen (block flow), prosigns from **Random Groups** are shown and graded
+as two separate letters: `<ka>` appears as "K A".
+
+# Listen: practise copying
+
+**Listen** is the app's CW Generator and Koch Trainer. The app plays a
+**block** of groups or words, and you copy on paper. Nothing is shown on
+screen while it plays. Afterwards the app reveals the text and you tap what
+you got wrong. You then get a result with suggestions for the next block.
+
+## Choosing the character set and content
+
+At the top of the start view you choose two things.
+
+The **character set** decides which characters are practised:
+
+| Character set | Meaning |
+|---|---|
+| **Koch lesson** | Only the characters up to your current lesson |
+| **All characters** | All letters, digits, punctuation and prosigns |
+| **Practice set** | Only the characters you enter yourself |
+
+The **content** decides what is played:
+
+| Content | Meaning | Available with |
+|---|---|---|
+| **Random** | Groups of random characters | all |
+| **Words** | Common English words | Koch, All |
+| **Abbrevs** | Common CW abbreviations | Koch, All |
+| **Callsigns** | Random, realistic call signs | All |
+| **Mixed** | Words, abbreviations and groups mixed | Koch, All |
+
+With the Koch lesson, only words and abbreviations made **entirely** of
+characters you have already learned are used. In the first lessons there are
+very few of them.
+
+::: {.shots .one}
+![Listen start view: character set, content, Koch lesson, weak characters, spacing and speed](img/en/hear_start.png)
+:::
+
+### Setting the Koch lesson
+
+The **KOCH** slider sets the lesson. Below it you see all characters active in
+that lesson. Their colour shows the kind of character: letters, digits and
+punctuation/prosigns are coloured differently.
+
+**Tap a character** to get to know it:
+
+- **Listen** plays the character three times at the current speed.
+- **Practise with echo** opens a single-character drill. The character plays
+  over and over and you key it back with the paddle (see
+  [Practising a single character](#practising-a-single-character)).
+
+::: {.shots .one}
+![Tapping a Koch character](img/en/char_sheet.png)
+:::
+
+Usually you don't need to raise the lesson by hand. The block flow suggests
+the next character once you are ready (see
+[When the next Koch character comes](#when-the-next-koch-character-comes)).
+
+### Practice set
+
+With the **Practice set** character set, an input field appears right on the
+start view. Enter the characters you want to practise, for example `QXZJ`.
+Upper/lower case and spaces don't matter, and duplicate characters are
+ignored. The app shows how many distinct characters it found. The practice set
+only offers the **Random** content.
+
+## Speed
+
+The **WPM** slider below the practice area sets the character speed (5 to 60
+WPM). You set the pauses in the ⚙ sheet under **Spacing**, or directly on the
+start and result pages with **Adjust spacing**.
+
+## How a block runs
+
+1. Press **Start**. After one second of "Get ready …" the block begins.
+2. The app plays the groups one after another, with the set word spacing in
+   between. Only "Group *n* of *N*" and the speed are shown, not the text.
+   Copy on paper.
+   - **Pause** stops after the current group, and **Resume** continues.
+   - **Reveal** ends the block early and shows only the groups played so
+     far.
+3. After the last group, **Sent** appears, with each group as its own tile.
+   Compare it with what you copied.
+4. **Marking errors:** tap a group where you made a mistake. It opens large,
+   one character at a time. Tap every character you got wrong or missed, then
+   **Back**. Tapping a character again removes the mark. The marked
+   characters show in red in the overview.
+5. **Done · *n* errors** finishes the evaluation. The results are saved now,
+   and the result page appears.
+
+::: {.shots .three}
+![During the block: progress only, no text](img/en/hear_sending.png)
+
+![Revealed: groups with errors are red](img/en/hear_revealed.png)
+
+![One group opened: tap the wrong characters](img/en/hear_mark.png)
+:::
+
+You set how many groups a block has in the ⚙ sheet under **Word selection →
+Words per block**.
+
+### Stop after each group
+
+With **Flow → Stop after each group** (in the ⚙ sheet), the app waits after
+every group:
+
+- **Dit** (left paddle) or the **REPEAT** button plays the same group again.
+- **Dah** (right paddle) or **NEXT** plays the next group.
+
+This matches "Stop&lt;Next&gt;Rep" on the Morserino. It's handy at the start,
+when you want to hear a group several times.
+
+## The result page
+
+From top to bottom, the result page shows:
+
+- **Accuracy** in percent, meaning the share of characters copied correctly,
+  plus "*x* of *y* correct". It is green from 90 %, yellow from 70 % and red
+  below that.
+- The **status line**: speed, effective speed, spacing and, from the sixth
+  block on, the [trend](#trend). These values already apply to the **next**
+  block, including the ticked suggestions.
+- **Adjust spacing:** − and + change Interchar Spc and InterWord Spc together
+  by 1 dit each. This takes effect immediately and doesn't depend on the
+  suggestions.
+- **Weak characters:** the characters that cause you the most errors over
+  time, with their error rate (see [Weak characters](#weak-characters)).
+- **On the way to "X"** (Koch lesson only): what you still need before the
+  next character (see
+  [Progress card](#progress-card-on-the-way-to-x)).
+- **Suggestions:** what the app recommends for the next block (see
+  [Accepting, rejecting, adjusting suggestions](#accepting-rejecting-adjusting-suggestions)).
+
+At the bottom there are two buttons:
+
+- **Next Block** applies the ticked suggestions and starts the next block
+  right away.
+- **Finish** also applies the ticked suggestions but doesn't start a new
+  block.
+
+How the app arrives at its suggestions is explained in the chapter
+[Adaptive mode](#adaptive-mode).
+
+::: {.shots}
+![Result page with accuracy, spacing, weak characters and progress card](img/en/hear_result.png)
+
+![A weak character excluded (struck through)](img/en/hear_weak.png)
+:::
+
+## Settings in the ⚙ sheet (Listen) {#settings-listen}
+
+The ⚙ sheet of **Listen** has the following sections. Values in **bold** are
+the defaults.
+
+::: {.shots}
+![⚙ sheet: Koch Sequence and Practice Set](img/en/hear_sheet1.png)
+
+![⚙ sheet: Spacing, Word selection, Flow](img/en/hear_sheet2.png)
+:::
+
+### Koch Sequence
+
+Only shown when the **Koch lesson** character set is selected. This setting
+applies to **all** trainings and games that use the Koch method. For a
+description see [Koch Sequence](#koch-sequence).
+
+### Practice Set
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Characters | The practice set characters. This is the same field as on the start view with the **Practice set** character set | any characters |
+| Boost Practice | Draws practice set characters more often in random groups (see below) | **Off** / Moderate / Strong |
+
+This is how **Boost Practice** works. For each character of a random group,
+the app draws up to 3 times (Moderate) or 8 times (Strong) until it gets a
+character from the practice set. If that doesn't happen, the last character
+drawn stays. The practice set characters come up more often, but the others
+don't disappear.
+
+In **Listen**, the automatic boost of [weak characters](#weak-characters)
+takes over this job during a block. The **Boost Practice** setting therefore
+mainly has an effect in **Send** (with **All characters · Random**).
+
+### Spacing
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Interchar Spc | Pause between characters, in dits | 3–45 (**28**) |
+| InterWord Spc | Pause between groups/words, in dits | 6–105 (**40**) |
+
+InterWord Spc can never be smaller than Interchar Spc. If you move Interchar
+Spc past it, InterWord Spc is pulled along.
+
+### Word selection
+
+Only the settings that fit the chosen content are shown. The line "Applies
+to: …" tells you which combination you are setting up.
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Random Groups | Only with **All characters · Random**: which character groups are drawn from | **All Chars** / Alpha / Numerals / Interpunct. / Pro Signs / Alpha + Num / Num+Interp. / Interp+ProSn / Alph+Num+Int / Num+Int+ProS |
+| Group Length | Characters per random group | 2–8 (**5**) |
+| Max Word Length | Only words up to this length (with **Words** and **Mixed**) | **all**, 1–8 |
+| Max Abbreviation Length | Only abbreviations up to this length (with **Abbrevs** and **Mixed**) | **all**, 2–6 |
+| Words per block | Number of groups/words in a block | 1–50 (**10**) |
+
+### Flow
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Stop after each group | Wait after each group: dit = repeat, dah = next | **Off** / On |
+
+### Adaptive Mode
+
+These are the thresholds the app bases its suggestions on. They apply to
+**Listen and Send** together and are described in detail in
+[Adaptive mode settings](#adaptive-mode-settings).
+
+::: {.shots .one}
+![⚙ sheet: Adaptive Mode](img/en/hear_sheet4.png)
+:::
+
+# Send: Echo Trainer
+
+**Send** is the Echo Trainer. The app plays a word or group, and you key it
+back with the paddle. That can be the touch paddle or a real paddle (see
+[Paddle and Morse key](#paddle-and-morse-key)). If you get it right, the next
+word comes. If not, it is repeated.
+
+Send has its **own profile**, independent of Listen. It keeps its own Koch
+lesson, speed, spacing, practice set and character statistics. What you mix
+up when listening isn't necessarily what you get wrong when sending.
+
+## Start view
+
+At the top you choose the **character set** and **content** as in Listen (see
+[Choosing the character set and content](#choosing-the-character-set-and-content)).
+With the Koch lesson you also choose the lesson. Tapping a character works as
+in Listen.
+
+Below that, two sliders set the speeds:
+
+- **Listen** is the speed at which the word is played to you.
+- **Send** is the highest speed at which your answer is expected (see
+  [Answer speed](#answer-speed)). "same as prompt" means the same speed.
+
+At the bottom are the paddles or the key, and **Start**.
+
+::: {.shots}
+![Send start view](img/en/echo_start.png)
+
+![While answering: prompt (Echo Prompt = Both), attempt and speed](img/en/echo_answer.png)
+:::
+
+## How a word runs
+
+1. After **Start** the app waits 2 seconds, then plays the first word.
+2. **Your answer:** key the word back. Your sidetone is shifted by half a
+   tone so you can tell prompt and answer apart. This is the **Tone Shift**
+   setting.
+3. **When you have to start:** from the end of the prompt you have about
+   1.4 seconds, plus one character pause, plus a third of the word pause, plus
+   the **Think Time** (default 8 s) to **begin** your answer. If nothing
+   comes by then, the word counts as wrong.
+4. **When the answer ends:** once you have started, the think time no longer
+   applies. The answer is complete as soon as you leave a 7-dit word pause, at
+   answer speed.
+5. **Correcting:** key `<err>` (eight dits) or four `e` in a row to clear
+   your answer so far and start again. The exception is when the word itself
+   continues with another `e` at that point. Then the `e` counts as a normal
+   character.
+6. **Grading:**
+   - **✓ Correct**, optionally with a confirmation tone. The next word comes
+     after a little more than a second.
+   - **✗ Wrong**: the word is played again. "Attempt *n* of *max*" shows
+     which attempt this is. Once all **Repeats** are used up, the app shows
+     the correct word for two seconds and moves on.
+
+Whether the prompt is played, shown or both is set with **Echo Prompt** (see
+below).
+
+## Answer speed
+
+On the Morserino this setting is called "Echo Speed Max". It limits the speed
+at which **your answer** is expected. The prompt still plays at the listening
+speed.
+
+Example: Listen at 25 WPM and Send at 18 WPM means you hear fast but may
+answer more slowly. The answer speed sets how fast the keyer produces your
+dits and dahs and how long a word pause has to be. At 0 ("same as prompt"),
+the listening speed applies to the answer too.
+
+## The result page
+
+After the last word of a block the result page appears:
+
+- **Accuracy** is the share of words correct on the **first attempt**. The
+  colours are the same as in Listen.
+- Next to it is the breakdown:
+  - **● right**: correct on the first attempt.
+  - **◐ after repeat**: correct only after a repeat.
+  - **○ wrong**: not made even after all repeats.
+- The **status line** shows listening speed, answer speed (if capped), lesson
+  and the [trend](#trend).
+- **Mix-ups** lists which characters you confused in this block, as "target
+  → given", for example `p → w`. A `–` means nothing came at that position.
+- The **Listen** and **Send** speed controls. A change here replaces the
+  matching suggestion.
+- **Suggestions** and **Weak characters** (see
+  [Adaptive mode](#adaptive-mode)).
+- The list of all words in the block. The target word is shown in bold, with
+  your **first** attempt below it and the first wrong character highlighted
+  in red. A `_` means nothing came at that position.
+
+**Next block** applies the ticked suggestions, boosts the ticked weak
+characters in the next block, and starts it. **Finish** applies the ticked
+suggestions without a boost and returns to the start view.
+
+::: {.shots}
+![Result page: breakdown, mix-ups, weak characters, first attempts](img/en/echo_result.png)
+
+![A suggestion (here: raise the answer speed), ticked](img/en/echo_result2.png)
+:::
+
+## Settings in the ⚙ sheet (Send) {#settings-send}
+
+The **Koch Sequence**, **Practice Set**, **Spacing** and **Word selection**
+sections are the same as in Listen (see
+[Settings in the ⚙ sheet (Listen)](#settings-listen)), but they
+apply to the Send profile. There are two differences:
+
+- **Spacing** only affects the word **played to you**, not your answer.
+  Longer spacing does give you more time to begin your answer, though. Your
+  answer is always closed with a 7-dit word pause.
+- **Word selection** also uses the call sign settings from the global
+  settings (see [Call Signs](#call-signs)).
+
+In addition there is the **Echo Trainer** section:
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Think Time | Extra time to **begin** your answer | 1–20 s (**8 s**) |
+| Repeats | How often a wrongly answered word is played again before the app reveals it. "Forever" repeats until you get it right | 0–6 (**3**), Forever |
+| Echo Prompt | How the prompt is given. **Sound** means you only hear it. **Display** means you only read it, with no audio. **Both** means you hear it and then read it once it has played | **Sound** / Display / Both |
+| Answer speed (max) | Highest answer speed, see [Answer speed](#answer-speed) | **same as prompt**, 5–50 WPM |
+| Tone Shift (Echo) | Your sidetone while answering is half a tone above or below the prompt | No Shift / **Up ½** / Down ½ |
+| Confirmation Tone | Short tone after grading: high for right, low for wrong | Off / **On** |
+
+**Echo Prompt = Display** is a good way to get from written text to sending,
+for example to drill new characters.
+
+::: {.shots .one}
+![Send ⚙ sheet: the Echo Trainer section](img/en/echo_sheet.png)
+:::
+
+## Practising a single character
+
+In Listen or Send, tap a Koch character and choose **Practise with echo**.
+This opens a drill for that one character. It plays over and over, and you
+key it back. The drill has no blocks and no end, and it isn't counted in the
+statistics. If you don't answer, the character simply repeats. **Back**
+leaves the drill.
+
+This corresponds to "Learn New Chr" or "Preview Char" on the Morserino.
+
+# Adaptive mode
+
+Listen and Send always run in **blocks**. After each block the app evaluates
+how it went and gives you **suggestions**. It may suggest unlocking the next
+Koch character, making the pauses shorter or longer, or raising the speed.
+**None of this happens behind your back.** Every suggestion appears on the
+result page, and you decide whether to accept it.
+
+This chapter explains exactly how the app calculates. You don't need it to
+practise, but it helps you understand the suggestions and set the thresholds
+deliberately.
+
+## What the app tracks
+
+### Per character
+
+The app keeps statistics for every character, separately for **Listen** and
+**Send**:
+
+- **attempts**: how often the character was graded,
+- **errors**: how many of those were wrong,
+- **moving error rate**: the basis for all decisions.
+
+The **moving error rate** is an exponential moving average (EMA). On every
+attempt:
+
+  new rate = 0.2 × (1 on error, else 0) + 0.8 × old rate
+
+Each new attempt counts 20 % and the past counts 80 %. Recent results weigh
+more than old ones, but a single slip doesn't upset everything. For example, a
+character at 0 % error rate that gets one error is at 20 %. It then takes 3
+correct attempts to get back below 12 %, and 8 correct attempts to get below
+5 %.
+
+A character's **accuracy** is 100 % minus its moving error rate.
+
+**What counts as an attempt?**
+
+- **Listen:** every character played in a block. It is correct unless you
+  marked it as an error.
+- **Send:** only the **first** attempt of each word. The characters before
+  the first error count as correct, and the first wrong character counts as
+  an error. The characters after it aren't counted, because it's unclear
+  whether you heard them correctly. Repeats of the same word don't count.
+
+### Per block
+
+Every block has a **block rate**:
+
+- **Listen:** characters copied correctly / all characters.
+- **Send:** words correct on the first attempt / all words.
+
+From the block rates the app forms another moving average, the **block
+EMA**:
+
+  block EMA = α × block rate + (1 − α) × previous block EMA
+
+α is the **EMA Smoothing** setting (default 30 %). The block EMA starts at
+100 %. It is kept across sessions, separately for Listen and Send.
+
+## The two thresholds
+
+With **Success Threshold Low/High** (default **70 % / 90 %**) the app divides
+the block EMA into three ranges:
+
+| Block EMA | Meaning | Suggestion |
+|---|---|---|
+| **90 % and above** (high) | Going well | After **2 blocks in a row** in this range: shorten the pauses, or raise the speed if the pauses are already normal |
+| **70 % to below 90 %** | About right | Change nothing |
+| **below 70 %** (low) | Too hard | Immediately: lengthen the pauses |
+
+The high threshold is also the accuracy every character has to reach before
+the next Koch character unlocks.
+
+## When the next Koch character comes
+
+The next Koch character is suggested when **every** character of the current
+lesson meets two conditions. That means all of them, not just the most recently
+learned one:
+
+1. at least **20 attempts** (the **Occurrences for Unlock** setting), and
+2. an **accuracy of at least 90 %** (the high success threshold).
+
+Two points matter here:
+
+- The condition applies to each character individually. A single weak or
+  rarely practised character holds up the unlock. The
+  [progress card](#progress-card-on-the-way-to-x) and the
+  [character statistics](#character-statistics) show you which one it is.
+- Because accuracy is a moving value, it isn't enough to have got a
+  character right 20 times at some point. Your **recent** attempts have to be
+  good.
+
+The unlock appears as a highlighted suggestion with a star: **New character
+unlocked: "X"**. The 🔊 icon next to it plays the new character twice,
+without leaving the result page. If you untick it, you stay in the current
+lesson.
+
+## Pauses and speed
+
+The app always changes the **pauses** first, and only then the speed:
+
+- **Shorten:** Interchar Spc and InterWord Spc each get 1 dit shorter, down to
+  the normal 3 / 7 dits.
+- **Raise the speed:** only once the pauses are already at 3 / 7 dits does
+  the app suggest **+1 WPM**.
+- **Lengthen:** Interchar Spc and InterWord Spc each get 1 dit longer, but
+  never longer than at the start of the session. In Listen that is when you
+  opened the training. In Send it is the value from the ⚙ sheet.
+
+**While you are still working through the Koch sequence, the app neither
+shortens the pauses nor raises the speed.** You should be able to concentrate
+on new characters without everything getting faster at the same time.
+Lengthening is always possible. Shortening and raising the speed only start
+once one of these is true:
+
+- all characters of the Koch sequence are unlocked, or
+- you practise with **All characters** or a **Practice set**.
+
+The block in which a new character is added also never shortens the pauses or
+raises the speed.
+
+You can step in yourself at any time, independently of these rules. In Listen
+use **Adjust spacing**, and in Send use the speed controls.
+
+### Answer speed in Send
+
+Send has one extra suggestion: **Sending speed increased** (+1 WPM). It only
+appears if you have set an answer speed **below** the listening speed and the
+block reached at least the high threshold. It starts **unticked**, because the
+answer speed is a deliberate choice.
+
+## Accepting, rejecting, adjusting suggestions
+
+Each suggestion is a row on the result page:
+
+- The **checkbox** on the left accepts or rejects it. Most suggestions start
+  ticked.
+- **−** and **+** adjust the size. The speed goes up to at most 5 WPM above
+  the current one. The pauses can be anywhere between 3 / 7 dits and the value
+  at the start of the session.
+- The status line immediately shows the values for the next block.
+
+Nothing is applied until you leave the result page with **Next Block** or
+**Finish**.
+
+## Weak characters
+
+A character counts as **weak** if both of these are true:
+
+- it has at least **8 attempts**, and
+- its moving error rate is at least **12 %**.
+
+At most the **5** weakest are shown, worst first, with their error rate.
+Because the rate is tracked over time, a character stays weak until you get it
+right reliably again. This can take several blocks and sessions.
+
+**Tap a weak character** to exclude it from the boost (it appears struck
+through), or to include it again.
+
+- **Listen:** the weak characters already appear on the start view and on
+  every result page. In the next block they are boosted at the *Moderate*
+  level, with up to 3 draws per character (see [Practice Set](#practice-set)).
+  This only applies to random groups (Koch lesson or All characters ·
+  Random), not to words.
+- **Send:** the weak characters appear on the result page when you practise
+  **Koch lesson · Random**. With **Next block**, the ticked characters come up
+  twice as often in the next block. The boost lasts exactly one block.
+
+### Weighting in Send
+
+In **Send · Koch lesson · Random** the app also draws the characters by
+weight. On the Morserino this is called "Adaptive Random". Every character has
+a weight between 1 and 20, and the higher it is, the more often the character
+comes up. After the first attempt of each word:
+
+- **Word fully correct:** each character of the word gets −1.
+- **Error:** the first wrong character gets +4, and its neighbours in the
+  word get +2 each (if they are different characters).
+
+Characters you get wrong come up more often quickly. They only become rarer
+again once you key them correctly several times. That isn't always pleasant,
+but it's very effective.
+
+## Progress card "On the way to X"
+
+On the **Listen** result page with the Koch lesson, a card shows what is still
+missing before the next character:
+
+- The **bar** shows how many of the required attempts you have made, added up
+  over all characters that still lack attempts. If no attempts are missing any
+  more and only accuracy is, it shows the weakest character's accuracy
+  relative to the threshold.
+- **Still to practise** lists characters that still lack attempts, with the
+  number missing, for example `q (7)`.
+- **Accuracy below 90 %** lists characters with enough attempts but too low
+  an accuracy, for example `y (84 %)`.
+
+## Trend
+
+From the **sixth** block on, the status line shows a trend, for example
+"Trend 87 % ▲":
+
+- The number is the average block rate of the **last 5 blocks**.
+- The arrow compares it with the average of the 5 blocks before. **▲** means
+  at least 3 percentage points better, **▼** means at least 3 points worse,
+  and **►** means the same.
+
+The trend is kept across sessions, separately for Listen and Send. The app
+stores the last 20 blocks for it.
+
+## Adaptive mode settings
+
+These are in the ⚙ sheet of **Listen** under **Adaptive Mode**. They apply to
+Listen and Send together.
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Success Threshold Low/High | Below *low* the pauses are lengthened. At *high* (2 blocks in a row) they are shortened or the speed is raised. *High* is also the accuracy each character needs for the Koch unlock | 30–99 %, at least 5 points apart (**70 % / 90 %**) |
+| EMA Smoothing | How strongly the last block counts in the block EMA. Higher reacts faster, but is also jumpier | 5–100 % (**30 %**) |
+| Occurrences for Unlock | Minimum attempts per character before the next Koch character can come | 5–50 (**20**) |
+
+Some notes:
+
+- The high threshold can't be set to 100 %. The moving error rate of a
+  character that ever had an error never quite returns to 0. At 100 % that
+  character would block the unlock forever.
+- **EMA Smoothing 100 %** means only the last block counts.
+- If unlocking goes too fast for you, raise **Occurrences for Unlock** or the
+  high threshold. If it's too slow, lower them.
+
+# Character statistics
+
+The **📊 icon** in Listen and Send opens that training's statistics. Listen
+and Send have separate statistics.
+
+- **Listen** shows every active Koch character with its attempts (for example
+  "14/20 attempts") and its accuracy. A tick marks characters that meet the
+  unlock condition, and an hourglass marks those that aren't there yet. The
+  top shows "*x* of *y* characters ready". The characters that aren't ready
+  come first, which helps when the unlock seems stuck.
+- **Send** shows the characters sorted by errors, the least reliable at the
+  top. Below them are the **common mix-ups** across all blocks, as target →
+  given, with a count.
+
+The **reset** icon deletes all of this training's statistics after a
+confirmation: error rates, weights and mix-ups. The other training's
+statistics are kept. This cannot be undone.
+
+::: {.shots}
+![Listen statistics: attempts, accuracy, ready](img/en/hear_stats.png)
+
+![Send statistics with common mix-ups](img/en/echo_stats.png)
+:::
+
+# CW Keyer
+
+For free keying. What you key is heard and shown as decoded text.
+
+- Use the **paddles** at the bottom (DIT on the left, DAH on the right), or a
+  real paddle through an adapter (see
+  [Paddle and Morse key](#paddle-and-morse-key)). In **Straight** mode a
+  single **KEY** area appears instead.
+- **WPM** sets the keyer speed, 5 to 60 WPM.
+- The text runs from the bottom upwards. You can scroll back to older lines,
+  and you change the text size with two fingers.
+- The ⚙ sheet at the top right holds the **word spacing** (InterWord Spc,
+  default 7 dits). It sets the pause after which a space is inserted.
+  Interchar Spc has no effect when keying, as on the Morserino.
+
+You set the keyer mode and its details in the global settings under
+**Keyer** (see [Keyer](#keyer)). They apply everywhere you key: CW Keyer,
+Send, WiFi Trx, QSO Bot and the games.
+
+::: {.shots .one}
+![CW Keyer with decoded text](img/en/keyer.png)
+:::
+
+# CW Decoder
+
+The CW Decoder listens through the **microphone** and writes down what it
+recognises as Morse code. The signal might come from a radio, a practice
+program or another Morserino.
+
+On first start Android asks for microphone permission. Without it the decoder
+can't work. If you declined, allow the microphone in the Android settings
+under **Apps → Next CW Trainer → Permissions**.
+
+## Operation
+
+- **Start / Stop** switches copying on and off.
+- The **status line** shows the set pitch, the bandwidth and the detected
+  speed in WPM.
+- The **level meter** shows the loudness of the tone at the set pitch. A grey
+  mark shows the noise level during pauses.
+- The icons at the top right clear the text and, with the sliders icon, open
+  the decoder settings.
+
+The decoder adapts to the speed automatically, so there's nothing to set.
+It comes from the firmware. A Goertzel filter detects the tone, and timing
+logic tells dits, dahs and pauses apart. It keeps learning the current dit and
+dah length as it goes.
+
+::: {.shots}
+![CW Decoder listening, with level meter](img/en/decoder.png)
+
+![Decoder settings](img/en/decoder_sheet.png)
+:::
+
+## Decoder settings
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Bandwidth | **Wide** is more tolerant of a pitch that doesn't quite match. **Narrow** filters interference better, but the pitch must be exact | **Wide (~700 Hz)** / Narrow (~175 Hz) |
+| Tone pitch | The frequency of the CW tone the decoder listens for | 300–1200 Hz (**698 Hz**) |
+| Threshold | Minimum loudness for a tone to count. Set it just **above** the grey noise mark | −65 to −10 dBFS (**−40 dBFS**) |
+| Monitor tone | Plays back the detected tone cleanly at the set pitch | **Off** / On |
+
+**Tips**
+
+- If you don't know the signal's pitch, start with **Wide** and turn the
+  pitch until the level jumps clearly on the characters. Then switch to
+  **Narrow**.
+- Random `e` and `t` appearing in the pauses mean the **threshold** is too
+  low.
+- Only use the **monitor tone** with headphones. Otherwise the microphone
+  hears the tone itself and confuses the decoder.
+
+# WiFi Trx
+
+With WiFi Trx you send Morse over the internet or your local network with
+other Morserinos, apps and servers. The app uses the same protocol as the
+Morserino ("Morse over Packet", MOPP, UDP port 7373). One example is the chat
+server **cq.morserino.info**.
+
+The app uses the phone's existing WiFi or mobile data connection, so there
+are no WiFi credentials to enter.
+
+## Services
+
+At the top you choose the **service** to connect to. The default is
+`cq.morserino.info`.
+
+- **+** adds a new service, and the **pencil** edits or deletes the selected
+  one. Each service has a **Name** and a **Server** (host name or IP address).
+- An **empty server** means broadcast to the local network. This lets you
+  exchange Morse with Morserinos on the same WiFi.
+- You can only do this while not connected.
+
+**Connect** connects and **Disconnect** disconnects. The line below shows the
+status. If the server ends the connection (`:bye`), the app disconnects too.
+
+## Sending and receiving
+
+- **Send** with the paddles or the adapter. Each word is sent as a packet after
+  the word pause. You can also type text into **Send text…** and send it. It
+  goes out at the set speed.
+- **WPM** sets your sending speed.
+- **Receiving:** received words are played one after another at the
+  **sender's** speed and shown in the log.
+- The **log** tells received (RX) from sent (TX) text and is kept per service.
+  **Long-press the log** to clear it after a confirmation.
+- In the ⚙ sheet you set the **word spacing**, as in the CW Keyer. It decides
+  after which pause your word is sent.
+
+WiFi Trx only works while the app is in the foreground.
+
+::: {.shots .one}
+![WiFi Trx with service, log and text field](img/en/wifi.png)
+:::
+
+If your partner is behind a different router, UDP packets on port 7373 must be
+able to get through. With a public server such as cq.morserino.info this is
+normally no problem.
+
+# QSO Bot
+
+The QSO Bot is a simulated partner for complete, realistic radio contacts,
+without going on the air. The bot sends in CW, understands what you key and
+reacts to it. It only sounds through the app's speaker and never sends
+anything to the network.
+
+## Starting
+
+1. Choose the **QSO type**: **SOTA/POTA**, **Standard** or **Contest**.
+2. Press **Start**. The bot listens for 5 seconds:
+   - **If you call CQ** (for example `cq cq de oe1abc k`), it answers you.
+   - **If you stay silent**, it calls CQ itself and you answer.
+
+Each contact uses a new, realistic call sign for the bot.
+
+::: {.shots .one}
+![A QSO with the bot, answered with the text field](img/en/qso.png)
+:::
+
+## QSO types
+
+- **SOTA/POTA** is a summit or park activation with report and reference. If
+  the bot calls CQ, it is the activator and you are the chaser. If you call CQ,
+  it's the other way round. A session is a single contact.
+- **Standard** is the classic QSO in three rounds. First come report, name and
+  QTH. Then station details follow (rig, ant, wx, age), and finally the
+  sign-off. The bot finds your details by the keywords `name`, `qth`, `rig`,
+  `ant`, `wx` and `age`, and it remembers your name.
+- **Contest** is many very short contacts in a row. The exchange depends on
+  the **Contest type**: **CQ WW** (report + CQ zone) or **WPX** (report +
+  serial number). The session ends by itself after a longer silence.
+
+## Talking to the bot
+
+- **End each over** with `k`, `bk`, `<ar>`, `<sk>` or `73`, or simply pause.
+  The bot won't talk over you.
+- **Repeat:** `agn`, `rpt` or `?` repeats the bot's last over. `rpt rst`,
+  `rpt call`, `rpt qth` or `rpt name` repeats just that item.
+- **Bot speed:** `qrs` makes it slower and `qrq` faster. Your own speed
+  doesn't change.
+- **Correcting:** `<err>` (eight dits) or `eeee` discards your last word.
+- You can send reports in cut numbers: `5nn` for 599, `t` for 0, `a` for 1,
+  `n` for 9.
+- Filler words like `de`, `r` and `ur` don't matter, because the bot picks
+  out the information.
+- Instead of keying, you can type text into the input field. It is treated as
+  if keyed, but not played aloud.
+
+## QSO Bot settings
+
+These are behind the ⚙ icon in the QSO Bot:
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Your call sign | Your call sign for the bot. If you call CQ yourself, the call you key is used | empty = OE1XXX |
+| QSO difficulty | **Beginner**: more patience, 599 instead of 5nn, and the bot sends at your speed. **Intermediate** and **Advanced**: the bot sometimes calls at a slightly different speed, as practice for qrs/qrq. Advanced also keeps a tighter rhythm | Beginner / **Intermediate** / Advanced |
+| Contest type | Exchange in a contest | **CQ WW** / WPX |
+| Word spacing | After which pause your word counts as finished. It is shared with the CW Keyer | 6–105 dits (**7**) |
+
+**WPM** sets your speed. **Long-press the log** to clear it after a
+confirmation.
+
+::: {.shots .one}
+![QSO Bot settings](img/en/qso_sheet.png)
+:::
+
+# Games
+
+Under **Play → Games** there are three games. You play them all with the
+paddles or the adapter. They all use the keyer settings. They take the Koch
+lesson from **Send**, and Morsel and Memory Chain also let you change it for
+the game only. Each game shows short rules before you start.
+
+::: {.shots .one}
+![The games](img/en/games.png)
+:::
+
+## Morsel
+
+A word puzzle like Wordle, but in CW.
+
+- A game has **ten words**. One letter is revealed, and the word is played
+  once in CW.
+- Key the **whole word** back. A word pause submits it. `<err>` (eight dits)
+  deletes the last character.
+- Colours: **green** means right, **red** means wrong, and **grey** means the
+  revealed letter was keyed wrong.
+- After each miss the word is repeated **5 WPM slower**, down to 18 WPM. After
+  12 seconds without input it is played again. **Skip** gives up on a word.
+- **Score:** your time + 5 seconds per guess. A skipped word costs 60 seconds.
+  Lower is better.
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Koch lesson | For this game only. It starts at your Send lesson | 2 to the end of the sequence |
+| Word length | Exactly 3/4/5/6 letters, or at most 4/5/6 | 3, 4, max 4, 5, max 5, 6, max 6 |
+| Clue start speed | Speed of the first play | 10–48 WPM (**48**, as on the Morserino) |
+
+Longer words need a higher Koch lesson. If too few words are available, the
+app tells you which lesson you need.
+
+::: {.shots .one}
+![Morsel before the start](img/en/morsel_lobby.png)
+:::
+
+## Morse Invaders
+
+An arcade game. Characters from your Koch lesson fall down four lanes. **Key a
+character** to shoot the lowest invader showing it.
+
+- A character that reaches the bottom costs a **life**. You start with 3
+  lives, can have at most 5, and gain one every 1000 points.
+- After **ten hits** comes the next level. Each level is faster and busier.
+- **Points:** 10 × WPM/10 per hit, doubled in the bottom third. Streaks add
+  a multiplier: ×1.5 from 5, ×2 from 10 and ×3 from 20 hits in a row.
+- **Pause** (the icon at the top right) stops the game. From there you can
+  resume or go back to the menu. You can also change the speed with − and +
+  during the game.
+
+| Setting | Meaning |
+|---|---|
+| Koch lesson | The lesson from **Send** (change it there) |
+| Start level | The level you begin with |
+| Keying speed | Keyer speed, counts towards the score |
+
+High scores are saved.
+
+::: {.shots}
+![Morse Invaders before the start](img/en/inv_lobby.png)
+
+![Morse Invaders in play](img/en/inv_game.png)
+:::
+
+## Memory Chain
+
+A memory game. Each round adds **one character**, and you key the **whole
+chain** from the start, from memory. There is no time limit.
+
+- **Characters mode:** random characters from your Koch lesson. One error per
+  round is allowed, and the second ends the game.
+- **Call signs mode:** a call sign is built up letter by letter, then the next
+  one. Any error ends the game.
+- **Prompt:** the new character is **shown** or **played** in CW (Sound).
+- Colours: **green** means right, a **yellow frame** marks the next character,
+  and **red** marks an error (with the right character).
+- You set the **Koch lesson** for this game only before you start. It begins
+  at your Send lesson. You can also change the speed with − and + during the
+  game.
+
+High scores are saved per mode.
+
+::: {.shots .one}
+![Memory Chain before the start](img/en/mc_lobby.png)
+:::
+
+# Paddle and Morse key
+
+## Touch paddles
+
+Every mode where you key shows two areas at the bottom: **DIT** (left) and
+**DAH** (right). In the **Straight** keyer mode there is a single **KEY** area
+that sounds for as long as you press it.
+
+## A real paddle or straight key
+
+A phone has no paddle input. You need a small USB adapter that turns the
+paddle contacts into **key presses**:
+
+- **vband** ([hamradio.solutions/vband](https://hamradio.solutions/vband/)) is
+  a widely used, ready-made USB adapter built exactly for this.
+- **Homemade:** any small USB HID device that reports the dit and dah
+  contacts as two different keys works. A ready-to-build example is
+  [xiao-vband-adapter](https://github.com/ckonecny/xiao-vband-adapter). It is a
+  Seeed XIAO SAMD21 with a 3.5 mm jack that sends the same keys as the vband
+  adapter. It plugs straight into the phone with a USB-C cable.
+
+Older phones with micro-USB need a USB OTG adapter.
+
+### Learning the paddle keys
+
+This tells the app which key your adapter sends for dit and which for dah:
+
+1. Plug in the adapter.
+2. Go to **Settings → vband Paddle → Learn Paddle Keys**.
+3. When "Press Dit key …" appears, press the **dit paddle**. When "Press Dah
+   key …" appears, press the **dah paddle**.
+4. "Saved" confirms it. The detected keys are listed under **Dit** and
+   **Dah**.
+
+So there's no list of supported adapters. The app learns whatever keys your
+adapter sends.
+
+### Analyze Key Events
+
+If an adapter doesn't behave as expected, use **Settings → Analyze Key
+Events**. Press **Start Analyzer**, then press the paddles. The app lists
+every key event it receives, so you can see whether the adapter sends anything
+and what it sends. **Stop Analyzer** ends the display.
+
+# Settings
+
+Open the global settings with the gear at the top right of the home screen.
+They apply to the whole app. Anything that concerns only one training is in
+that training's ⚙ sheet.
+
+::: {.shots .three}
+![Settings: Appearance, General, Keyer](img/en/settings1.png)
+
+![Audio output and Call Signs](img/en/settings2.png)
+
+![vband Paddle, key events, Info](img/en/settings3.png)
+:::
+
+## Appearance
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Theme | Light or dark look | **System** / Light / Dark |
+| Language | App language | **Deutsch** / English |
+
+## General
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Pitch (Hz) | Frequency of the sidetone and of the played characters | 300–900 Hz in 50 Hz steps (**600 Hz**) |
+| Tone Softness | Rise and fall time of the tone. Larger values sound softer and click less, especially on short dits | 1–9 ms (**5 ms**) |
+| Output Case | Show characters in lower or UPPER case. Display only | **lower** / UPPER |
+
+## Keyer
+
+These settings apply wherever you key.
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Mode | How the keyer reads the paddles (see below) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
+| CurtisB Dit Timing | Iambic B and Ultimatic only: from what percentage of a dit a press on the other paddle is already stored | 0–100 % in steps of 5 (**75 %**) |
+| CurtisB Dah Timing | The same for dahs | 0–100 % in steps of 5 (**45 %**) |
+| AutoChar Spacing | Enforces a minimum pause between characters so they don't run together | **Off** / 2 / 3 / 4 dits |
+
+**The keyer modes**
+
+- **Iambic A**: if you hold both paddles ("squeeze"), dits and dahs
+  alternate. When you let go, the keyer stops after the current element.
+- **Iambic B**: like A, but the keyer remembers a press on the other paddle
+  that comes during an element, and adds that element (Curtis B behaviour).
+  The CurtisB settings control from when this applies. 0 % means during the
+  whole element, and 100 % means practically like Iambic A.
+- **Ultimatic**: when both paddles are pressed, the **last** one pressed wins
+  and repeats for as long as it is held.
+- **Non-Squeeze**: for single-lever paddles or those switching over. Squeezing
+  both paddles produces no alternating sequence.
+- **Straight**: a straight key. The tone is on for as long as the key is
+  pressed. With touch, a single **KEY** area appears. With an adapter, the
+  dit contact acts as the key.
+
+## Audio output
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Active | Shows where the sound is going right now | – |
+| Output | **Automatic** follows whatever is currently plugged in or connected. The other options fix the output. Only outputs that are currently available are offered | **Automatic** / Speaker / Wired/USB / Bluetooth |
+
+## Call Signs
+
+These are the settings for random call signs in the **Callsigns** content
+(with All characters).
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Length Calls | Maximum call sign length | **Unlim.** / 3 / 4 / 5 / 6 |
+| Calls Region | Only call signs from this region | **All** / EU / NA / SA / AF / AS / OC / VK/ZL |
+| Common prefixes only | Only frequently heard prefixes instead of all possible ones | Off / **On** |
+
+Call signs follow a weighted prefix table, as on the Morserino. Frequently
+heard countries come up more often.
+
+## vband Paddle and Analyze Key Events
+
+See [Learning the paddle keys](#learning-the-paddle-keys) and
+[Analyze Key Events](#analyze-key-events).
+
+## Info: version and build
+
+| Row | Meaning |
+|---|---|
+| Version | Version number and build number, for example "1.0.0 (Build 42)" |
+| Commit | The exact source code state the app was built from |
+| Built | Date and time of the build |
+
+When you report a problem, please include these three values.
+
+## Koch Sequence
+
+You set the Koch Sequence in the ⚙ sheet of **Listen** or **Send** when the
+**Koch lesson** character set is selected there. It applies to **all**
+trainings and games, though.
+
+| Sequence | Description |
+|---|---|
+| **M32** | The Morserino-32 order (45 characters): `m k r s u a p t l o w i . n j e f 0 y v , g 5 / q 9 z h 3 8 b ? 4 2 7 c 1 d 6 x - = + @ :` |
+| LCWO | The lcwo.net order |
+| CW Academy | The CW Academy (CWops) order |
+| LICW | The Long Island CW Club order with an **entry point** (see below) |
+| Custom | Your own order |
+
+**LICW Entry Point** (0–13): in the LICW course, students join a "carousel"
+at different points. The entry point rotates the sequence so that it starts
+there.
+
+**Custom:** enter the characters in the order you want to learn them.
+Duplicates are ignored, and the app shows how many characters it found. The
+default is `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?`.
+
+Prosigns are not part of the Koch sequences in the app.
+
+# What the app does not do (yet)
+
+Some Morserino-32 features are missing from the app, because a phone doesn't
+have the hardware or Android handles it already. These are the rotary knob and
+buttons, the display, LoRa, ESP-NOW (and with it the multiplayer parts of the
+games), iCW/Ext Trx and keying a real transmitter, firmware updates and the
+WiFi setup page. Instead of the firmware's Practice Stats, the app has its
+own, more detailed [character statistics](#character-statistics).
+
+Not done yet, but planned: the games Trailblazer, Fox Hunt, Radio Cave and
+Fight the Pileup, the File Player (your own text as practice content), saved
+settings profiles and CW Memories.
+
+# Troubleshooting
+
+**The app doesn't key when I press my paddle.**
+Learn the paddle keys (see
+[Learning the paddle keys](#learning-the-paddle-keys)). If nothing arrives,
+check with **Analyze Key Events** whether the adapter sends anything at all.
+
+**Sound comes out of the wrong device.**
+Fix the output under **Settings → Audio output**.
+
+**When sending, I hear my tone late.**
+This is almost always Bluetooth headphones. Use wired headphones or the
+speaker.
+
+**The next Koch character doesn't come.**
+Open the 📊 statistics in Listen. The characters without a tick are holding
+up the unlock. Usually it's a character with too few attempts or recent errors.
+See [When the next Koch character comes](#when-the-next-koch-character-comes).
+
+**The pauses never get shorter.**
+That's intended while you work through the Koch sequence (see
+[Pauses and speed](#pauses-and-speed)). You can shorten them yourself at any
+time with **Adjust spacing**.
+
+**The decoder only writes garbage.**
+Check pitch, bandwidth and threshold (see
+[Decoder settings](#decoder-settings)). Only turn on the monitor tone with
+headphones.

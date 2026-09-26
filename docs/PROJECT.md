@@ -14,6 +14,9 @@ scope/hardware-distinction, and the paddle-adapter note (vband etc.).
 - `reference/` — read-only git submodule of the original firmware
   (`oe1wkl/Morserino-32`), pinned at tag `V9.0`. Grep here for ground truth
   before assuming firmware behavior; never edit.
+- `manual/` — end-user manual, German + English (Markdown sources, built
+  HTML/PDF via `manual/build.sh`). Kept in sync with every user-visible
+  change (CLAUDE.md rule 10).
 - `docs/` — this folder. `STATUS.md` (current state, next steps, open
   questions), `DECISIONS.md` (why things are built the way they are),
   `PORTING-MAP.md` (firmware module -> Android module -> status).
