@@ -785,8 +785,10 @@ Two points matter here:
   good.
 
 The unlock appears as a highlighted suggestion with a star: **New character
-unlocked: "X"**. The 🔊 icon next to it plays the new character twice,
-without leaving the result page. If you untick it, you stay in the current
+unlocked: "X"**. The 🔊 icon next to it plays the new character three
+times, without leaving the result page. It shows the same tile as tapping a
+Koch character: the character with its code below, each element lighting up
+as it sounds. A tap closes it early. If you untick it, you stay in the current
 lesson.
 
 ## Pauses and speed

@@ -4,6 +4,22 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private)
 Latest tagged build: v1.1.0 (2026-09-27: Hören typing mode, Koch character row, terminology pass). Previous: v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **Hören typing: steady layout (2026-09-27), built and installed on
+  63061JEBF01551, not yet user-tested:** the middle of the typing view no
+  longer jumps when a group's result appears — progress dots sit in fixed
+  16×16 cells (the bigger "current" dot used to shrink the row), the
+  earlier-attempts slot has one fixed height sized for the solution list
+  (18 px × attempts per word), and the cursor keeps its 2 px slot (transparent)
+  in the result states.
+- **Koch unlock preview + Invaders hint (2026-09-27), built and installed
+  on 63061JEBF01551, not yet user-tested:** the 🔊 on the result screen's
+  "Neues Zeichen freigeschaltet" row now opens the same tile as tapping a
+  Koch character (character + code lighting up, played three times at the
+  Hören WPM, tap cancels) via `showCharPlayback`/`playCharThrice`, instead
+  of playing it twice without visuals. AdaptiveCopyBody drops its own
+  `_genSub` meanwhile so the tile's shared `cwGenEvents` listener gets the
+  element events. Morse Invaders Koch hint: "(Echo Trainer)" removed, EN
+  "The Send lesson". Manual DE+EN updated.
 - **Release v1.1.0 (2026-09-27):** tag `v1.1.0` on 117027c (versionName
   1.1.0, Build 51); release APK built from the tag and installed on
   63061JEBF01551. Manual screenshots retaken per the pending list, both
@@ -459,7 +475,19 @@ HTML/PDF and screenshots are refreshed when the next version is cut. List
 every screenshot (both `img/de/` and `img/en/`) whose screen changed since
 the last release, with the reason. Clear this list after the release build.
 
-(empty — cleared with the v1.1.0 release build, 2026-09-27)
+- `inv_lobby.png` (de+en): Koch-lesson hint no longer says "(Echo Trainer)";
+  EN now "The Send lesson, change it there".
+- `home.png` (de+en): v1.1.0 shots disagree (Send 76 % EN vs 72 % DE) because
+  practice blocks between the passes moved the trend; retake both from the
+  same restored prefs.
+- `hear_start.png` (de+en): weak-characters card cut off at the bottom
+  (scrolling middle); scroll or crop so it shows whole.
+- `hear_revealed.png` (en): back arrow still carries a tap-ripple tint; wait
+  for it to fade before the shot.
+- `hear_type.png`, `hear_type_retry.png` (de+en): typing view spacing changed
+  slightly (fixed-height attempts slot, fixed dot cells).
+- Process note: build the manual *before* the version commit/tag, so the
+  title page shows the tagged commit (v1.1.0 shows 13bc0d4, tag is 117027c).
 
 ## Open questions
 

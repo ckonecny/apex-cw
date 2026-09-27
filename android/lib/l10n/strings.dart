@@ -96,7 +96,7 @@ class Strings {
     'mc_hint': ['Jede Runde ein Zeichen mehr – die ganze Kette auswendig geben', 'One more character each round – key the whole chain from memory'],
     'inv_rules': ['Zeichen der Koch-Lektion fallen in vier Spuren herunter. Gib ein Zeichen, um das unterste Feld mit diesem Zeichen abzuschießen. Erreicht eines den Boden, kostet es ein Leben (3 zu Beginn, höchstens 5, +1 alle 1000 Punkte). Zehn Treffer pro Level, jedes Level wird schneller und dichter. Punkte: 10 × WPM/10, doppelt im unteren Drittel, ×1,5 / ×2 / ×3 ab 5 / 10 / 20 Treffern in Folge.', 'Characters of the Koch lesson fall down four lanes. Key a character to shoot the lowest invader showing it. One that reaches the bottom costs a life (3 at the start, max 5, +1 every 1000 points). Ten hits per level, each level is faster and busier. Points: 10 × WPM/10, doubled in the bottom third, ×1.5 / ×2 / ×3 from 5 / 10 / 20 hits in a row.'],
     'inv_koch': ['Koch-Lektion', 'Koch lesson'],
-    'inv_koch_hint': ['Die Lektion vom Geben (Echo Trainer), dort änderbar', 'The sending lesson (Echo Trainer), change it there'],
+    'inv_koch_hint': ['Die Lektion vom Geben, dort änderbar', 'The Send lesson, change it there'],
     'inv_chars': ['Zeichen', 'chars'],
     'inv_start_level': ['Start-Level', 'Start level'],
     'inv_key_wpm': ['Gebetempo', 'Sending speed'],

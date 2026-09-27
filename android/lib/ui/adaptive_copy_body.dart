@@ -21,6 +21,7 @@ import '../content/cw_content.dart' show kochActiveChars, parsePracticeChars;
 import '../content/adaptive_copy_engine.dart';
 import '../content/copy_grading.dart';
 import 'widgets/cw_keyboard.dart';
+import 'widgets/char_playback_overlay.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import '../util/char_color.dart';
@@ -421,27 +422,24 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     }
   }
 
-  // Plays a just-unlocked character a couple of times in place, right on the
-  // result screen's suggestion row — reuses the same generator/tone channels
-  // and done-event plumbing _startBlock()'s per-group playback already uses,
-  // so no new native surface is needed. Deliberately not routed through
-  // CharPracticeScreen (the "Learn New Chr" flow): that navigates away from Adaptive Copy, which is exactly what this is
-  // meant to avoid.
+  // Plays a just-unlocked character right on the result screen's suggestion
+  // row, with the same tile as a tap on a Koch character on the setup page
+  // (character + code lighting up, played three times) — user request
+  // 2026-09-27: consistent with the Koch overview. Deliberately not routed
+  // through CharPracticeScreen: that navigates away from Adaptive Copy, which
+  // is exactly what this is meant to avoid.
   Future<void> _previewNewChar(String ch) async {
     if (_previewingNewChar) return;
     setState(() => _previewingNewChar = true);
-    // _genSub is cancelled by _revealNow() (early "Aufdecken") but not by a
-    // block that ran to completion — re-subscribe defensively so the "done"
-    // event that resolves _doneCompleter below always has a listener.
-    _genSub ??= _genEvents.receiveBroadcastStream().listen(_onGenEvent);
+    // The tile listens on the shared cwGenEvents stream; a second
+    // receiveBroadcastStream() on the same channel would steal its events,
+    // so drop ours meanwhile. _startBlock() subscribes afresh anyway.
+    _genSub?.cancel();
+    _genSub = null;
     try {
-      for (var i = 0; i < 2; i++) {
-        final completer = Completer<void>();
-        _doneCompleter = completer;
-        await _genChannel.invokeMethod('playOne', ch);
-        await completer.future;
-        if (i == 0) await Future.delayed(const Duration(milliseconds: 500));
-      }
+      await showCharPlayback(context,
+          ch: ch, outputCase: _outputCase,
+          play: () => playCharThrice(ch, wpm: widget.wpm, interWordSpace: widget.interWordSpace));
     } finally {
       if (mounted) setState(() => _previewingNewChar = false);
     }
@@ -1184,6 +1182,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                 fontSize: 36, fontWeight: FontWeight.bold, letterSpacing: 4,
                 color: correct ? c.accent
                     : _wrongPositions.contains('$i:$k') ? c.danger : c.textPrimary)),
+          const SizedBox(width: 2),
         ]);
       } else {
         final shown = wrong && attempts.isNotEmpty ? (attempts.last ?? '') : _input;
@@ -1193,7 +1192,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                   fontWeight: FontWeight.bold, letterSpacing: 4,
                   color: wrong ? c.danger : c.textPrimary,
                   decoration: wrong ? TextDecoration.lineThrough : null)),
-          if (!wrong) Container(width: 2, height: 34, color: c.accent),
+          Container(width: 2, height: 34, color: wrong ? Colors.transparent : c.accent),
         ]);
       }
       String? badge;
@@ -1215,10 +1214,14 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
           final color = !done
               ? (k == i ? c.accent : c.border)
               : _outcomes[k] == 0 ? c.accent : _outcomes[k] == 1 ? c.warning : c.danger;
+          // Fixed 16x16 cell: the current dot is bigger, and when it turns
+          // into a result dot the row must not shrink — everything below
+          // would jump (user feedback 2026-09-27).
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Icon(k == i && !done ? Icons.radio_button_checked : Icons.circle,
-                size: k == i && !done ? 16 : 10, color: color),
+            child: SizedBox(width: 16, height: 16, child: Center(
+              child: Icon(k == i && !done ? Icons.radio_button_checked : Icons.circle,
+                  size: k == i && !done ? 16 : 10, color: color))),
           );
         })),
         const SizedBox(height: 10),
@@ -1235,18 +1238,22 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         const SizedBox(height: 6),
         // Earlier attempts of this word, struck through — no hint where the
         // error was. In the solution state: every attempt, numbered.
-        SizedBox(height: solution ? null : 22, child: solution
-            ? Column(children: [
+        // Fixed height in every state, sized for the solution's numbered
+        // list (one 18 px line per allowed attempt), so the answer line
+        // below stays put when the solution appears.
+        SizedBox(height: _typeAttempts * 18 < 22 ? 22 : _typeAttempts * 18.0,
+            child: Align(alignment: Alignment.bottomCenter, child: solution
+            ? Column(mainAxisSize: MainAxisSize.min, children: [
                 for (var a = 0; a < attempts.length; a++)
-                  Text('${a + 1}.  ${attempts[a] == null ? '— ${Strings.t('ac_type_passed')}'
-                      : attempts[a]!.split('').map(_displayChar).join()}', style: mono),
+                  SizedBox(height: 18, child: Text('${a + 1}.  ${attempts[a] == null ? '— ${Strings.t('ac_type_passed')}'
+                      : attempts[a]!.split('').map(_displayChar).join()}', style: mono)),
               ])
             : Text([
                 for (final a in attempts.take(wrong ? attempts.length - 1 : attempts.length))
                   (a ?? '').split('').map(_displayChar).join()
               ].join('   '),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textFaint,
-                    decoration: TextDecoration.lineThrough, letterSpacing: 2))),
+                    decoration: TextDecoration.lineThrough, letterSpacing: 2)))),
         const SizedBox(height: 4),
         SizedBox(height: 48, child: Center(child: answer)),
         Container(width: 200, height: 2, color: correct ? c.accent

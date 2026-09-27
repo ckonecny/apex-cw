@@ -802,7 +802,10 @@ Zwei Dinge sind dabei wichtig:
 
 Die Freischaltung erscheint als hervorgehobener Vorschlag mit Stern:
 **Neues Zeichen freigeschaltet: „X“**. Über das 🔊-Symbol daneben hörst du
-das neue Zeichen zweimal, ohne die Ergebnisseite zu verlassen. Wenn du den
+das neue Zeichen dreimal, ohne die Ergebnisseite zu verlassen. Dabei
+erscheint dieselbe Kachel wie beim Antippen eines Koch-Zeichens: das Zeichen
+und darunter sein Code, dessen Elemente mitleuchten. Tippen schließt sie
+vorzeitig. Wenn du den
 Haken entfernst, bleibst du in der aktuellen Lektion.
 
 ## Pausen und Tempo
