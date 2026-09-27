@@ -22,8 +22,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String _hearInfo = '';
-  String _giveInfo = '';
+  // Kept raw (not as finished strings) so the subtitles are rebuilt in the
+  // current language when Strings.lang changes.
+  TrainingProfile? _hear;
+  TrainingProfile? _echo;
+  BlockTrend? _trend;
 
   @override
   void initState() {
@@ -48,9 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final trend = trendOf(await const BlockHistory('echo').load(p));
     if (!mounted) return;
     setState(() {
-      _hearInfo = _profileInfo(hear);
-      _giveInfo = _profileInfo(echo) +
-          (trend != null ? ' · ${trend.percent} % ${trend.arrow}' : '');
+      _hear = hear;
+      _echo = echo;
+      _trend = trend;
     });
   }
 
@@ -66,7 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // in settings_screen.dart's build().
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => Scaffold(
+      builder: (context, _, __) {
+        final hearInfo = _hear == null ? '' : _profileInfo(_hear!);
+        final giveInfo = _echo == null ? '' : _profileInfo(_echo!) +
+            (_trend != null ? ' · ${_trend!.percent} % ${_trend!.arrow}' : '');
+        return Scaffold(
         backgroundColor: c.background,
         appBar: AppBar(
           backgroundColor: c.background,
@@ -91,8 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(child: _ModeCard(
               icon: Icons.headphones,
               title: Strings.t('block_hear'),
-              subtitle: _hearInfo.isEmpty
-                  ? Strings.t('home_hear_subtitle') : _hearInfo,
+              subtitle: hearInfo.isEmpty
+                  ? Strings.t('home_hear_subtitle') : hearInfo,
               color: c.accent,
               onTap: () => _open(const GeneratorScreen()),
             )),
@@ -100,8 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(child: _ModeCard(
               icon: Icons.keyboard,
               title: Strings.t('block_give'),
-              subtitle: _giveInfo.isEmpty
-                  ? Strings.t('home_give_subtitle') : _giveInfo,
+              subtitle: giveInfo.isEmpty
+                  ? Strings.t('home_give_subtitle') : giveInfo,
               color: c.accent,
               onTap: () => _open(const EchoTrainerScreen()),
             )),
@@ -150,7 +157,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
           ),
         ),
-      ),
+      );
+      },
     );
   }
 }

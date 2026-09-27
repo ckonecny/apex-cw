@@ -139,18 +139,19 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
 
   Future<void> _connect() async {
     final host = _svc.host.trim();
-    setState(() { _connecting = true; _status = 'Resolving…'; });
+    setState(() { _connecting = true; _status = Strings.t('trx_resolving'); });
     try {
       await _client.connect(host);
       if (!mounted) return;
       setState(() {
         _connected = true;
         _connecting = false;
-        _status = 'Connected to ${_client.peerLabel}:${MoppClient.port}';
+        _status = Strings.t('trx_connected_to')
+            .replaceFirst('{peer}', '${_client.peerLabel}:${MoppClient.port}');
       });
     } catch (e) {
       if (!mounted) return;
-      setState(() { _connecting = false; _status = 'Failed: $e'; });
+      setState(() { _connecting = false; _status = Strings.t('trx_failed').replaceFirst('{err}', '$e'); });
     }
   }
 
@@ -158,7 +159,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     _encoder.reset();
     _playQueue.clear();
     await _client.close();
-    if (mounted) setState(() { _connected = false; _status = 'Disconnected'; });
+    if (mounted) setState(() { _connected = false; _status = Strings.t('trx_disconnected'); });
   }
 
   // ── Transmit ────────────────────────────────────────────────────────────
@@ -197,7 +198,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     final t = p.text;
     _append(true, t);
     if (t.toLowerCase().startsWith(':bye')) {
-      setState(() { _connected = false; _status = 'Server closed the connection (:bye)'; });
+      setState(() { _connected = false; _status = Strings.t('trx_server_closed'); });
       _client.close();
       return;
     }
@@ -284,23 +285,22 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     final res = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(add ? 'Add service' : 'Edit service'),
+        title: Text(Strings.t(add ? 'trx_add_service' : 'trx_edit_service')),
         content: Column(mainAxisSize: MainAxisSize.min, children: [
-          TextField(controller: nameCtl, decoration: const InputDecoration(labelText: 'Name')),
+          TextField(controller: nameCtl, decoration: InputDecoration(labelText: Strings.t('trx_name'))),
           TextField(
             controller: hostCtl,
             autocorrect: false,
             keyboardType: TextInputType.url,
-            decoration: const InputDecoration(
-                labelText: 'Server (name or IP, empty = broadcast)'),
+            decoration: InputDecoration(labelText: Strings.t('trx_server')),
           ),
         ]),
         actions: [
           if (!add && _services.length > 1)
             TextButton(onPressed: () => Navigator.pop(ctx, 'delete'),
-                child: const Text('Delete')),
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, 'save'), child: const Text('Save')),
+                child: Text(Strings.t('delete'))),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(Strings.t('cancel'))),
+          FilledButton(onPressed: () => Navigator.pop(ctx, 'save'), child: Text(Strings.t('save'))),
         ],
       ),
     );
@@ -332,11 +332,11 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Clear log?'),
-        content: Text('Delete the saved text of "${_svc.name}".'),
+        title: Text(Strings.t('qso_clear_title')),
+        content: Text(Strings.t('trx_clear_body').replaceFirst('{name}', _svc.name)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Clear')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(Strings.t('cancel'))),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(Strings.t('qso_clear'))),
         ],
       ),
     );
@@ -427,7 +427,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
           const SizedBox(width: 4),
           FilledButton(
             onPressed: _connecting ? null : (_connected ? _disconnect : _connect),
-            child: Text(_connected ? 'Disconnect' : 'Connect'),
+            child: Text(Strings.t(_connected ? 'trx_disconnect' : 'trx_connect')),
           ),
         ]),
       ),
@@ -438,7 +438,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
               color: _connected ? c.accent : c.textMuted),
           const SizedBox(width: 6),
           Expanded(child: Text(
-              _status.isEmpty ? 'Not connected' : _status,
+              _status.isEmpty ? Strings.t('trx_not_connected') : _status,
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted))),
         ]),
       ),
@@ -494,7 +494,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
             style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.textPrimary),
             decoration: InputDecoration(
               isDense: true, filled: true, fillColor: c.surface,
-              hintText: 'Send text…',
+              hintText: Strings.t('trx_send_hint'),
               hintStyle: TextStyle(fontFamily: 'CwMono', color: c.textDisabled),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
                   borderSide: BorderSide(color: c.border)),

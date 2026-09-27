@@ -59,7 +59,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // randomOption: which alphabet subset "Zufallszeichen" draws from when NOT
   // in Koch mode (matches M32 "Random Groups" / posRandomOption exactly).
 
-  // ── Call Signs ────────────────────────────────────────────────────────────
+  // ── Rufzeichen ────────────────────────────────────────────────────────────
   // callLengthOpt: 0=Unlimited,1="3",2="4",3="5",4="6" (M32 "Length Calls")
   int  _callLengthOpt = 0;
   // callRegionOpt: 0=All,1=EU,2=NA,3=SA,4=AF,5=AS,6=OC,7=VK/ZL (M32 "Calls Region")
@@ -311,7 +311,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ValueListenableBuilder<ThemeMode>(
               valueListenable: ThemeController.mode,
               builder: (context, mode, _) => SegmentRow(
-                label: 'Theme',
+                label: Strings.t('settings_theme'),
                 options: [Strings.t('theme_system'), Strings.t('theme_light'), Strings.t('theme_dark')],
                 selected: switch (mode) {
                   ThemeMode.light => 1,
@@ -349,8 +349,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: _applyToneSoftness),
             const SettingsDivider(),
             SegmentRow(
-              label: 'Output Case',
-              options: const ['lower', 'UPPER'],
+              label: Strings.t('settings_output_case'),
+              options: [Strings.t('opt_lower'), Strings.t('opt_upper')],
               selected: _outputCase,
               onChanged: (v) { setState(() => _outputCase = v); _saveLive(); },
             ),
@@ -383,7 +383,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SettingsDivider(),
             SegmentRow(
               label: Strings.t('settings_acs'),
-              options: [Strings.t('opt_off'), '2 dits', '3 dits', '4 dits'],
+              options: [Strings.t('opt_off'), for (final n in [2, 3, 4])
+                  Strings.t('unit_dits').replaceFirst('{n}', '$n')],
               selected: _acs,
               onChanged: _applyAcs,
             ),
@@ -408,20 +409,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           const SizedBox(height: 24),
 
-          // ── Call Signs ───────────────────────────────────────────────────────
-          SettingsSectionHeader('Call Signs'),
+          // ── Rufzeichen ───────────────────────────────────────────────────────
+          SettingsSectionHeader(Strings.t('settings_call_signs')),
           const SizedBox(height: 12),
           SettingsCard(children: [
             SegmentRow(
-              label: 'Length Calls',
+              label: Strings.t('settings_call_length'),
               options: [Strings.t('opt_unlim_short'), '3', '4', '5', '6'],
               selected: _callLengthOpt,
               onChanged: (v) { setState(() => _callLengthOpt = v); _saveLive(); },
             ),
             const SettingsDivider(),
             SegmentRow(
-              label: 'Calls Region',
-              options: const ['All', 'EU', 'NA', 'SA', 'AF', 'AS', 'OC', 'VK/ZL'],
+              label: Strings.t('settings_call_region'),
+              options: [Strings.t('opt_all_cap'), 'EU', 'NA', 'SA', 'AF', 'AS', 'OC', 'VK/ZL'],
               selected: _callRegionOpt,
               onChanged: (v) { setState(() => _callRegionOpt = v); _saveLive(); },
             ),

@@ -127,7 +127,7 @@ class CharsetHeader extends StatelessWidget {
             onChanged: onPracticeCharsChanged!,
             countLabel: Strings.t('settings_unique_chars_detected')
                 .replaceFirst('{n}', '${parsePracticeChars(practiceChars).length}'),
-            hint: 'e.g. QXZJ...',
+            hint: Strings.t('settings_example_chars'),
           ),
         ),
     ]);

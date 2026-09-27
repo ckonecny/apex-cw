@@ -726,7 +726,7 @@ class _InvadersScreenState extends State<InvadersScreen>
         AppCard(
           padding: const EdgeInsets.all(20),
           child: Column(children: [
-            Text('GAME OVER', style: _mono(22, c.danger, bold: true)),
+            Text(Strings.t('msl_game_over'), style: _mono(22, c.danger, bold: true)),
             const SizedBox(height: 12),
             Text('${Strings.t('inv_score')}  $_score', style: _mono(30, c.info)),
             const SizedBox(height: 10),
@@ -742,7 +742,7 @@ class _InvadersScreenState extends State<InvadersScreen>
                 style: _mono(12, c.textMuted)),
             if (_lastRank >= 0) ...[
               const SizedBox(height: 14),
-              Text(Strings.t('inv_new_hi'), style: _mono(15, c.warning, bold: true)),
+              Text(Strings.t('msl_new_hi').replaceAll('{r}', '${_lastRank + 1}'), style: _mono(15, c.warning, bold: true)),
             ],
           ]),
         ),

@@ -31,9 +31,10 @@ Dieses Handbuch beschreibt die App-Version, die auf der Titelseite steht. Welche
 Version du installiert hast, siehst du unter **Einstellungen → Info** (siehe
 [Info: Version und Build](#info-version-und-build)).
 
-Begriffe, die aus der Firmware übernommen wurden, stehen wie in der App auch
-hier auf Englisch (z. B. **Interchar Spc**, **Random Groups**, **Echo Prompt**),
-damit du sie im Morserino-Handbuch wiederfindest.
+Einstellungen, die es auch am Morserino gibt, heißen in der App deutsch
+(z. B. **Zeichenabstand** statt „Interchar Spc“). Welcher Morserino-Menüpunkt
+zu welcher Einstellung gehört, steht in der Tabelle
+[Morserino-Begriffe](#morserino-begriffe).
 
 # Erste Schritte
 
@@ -102,13 +103,13 @@ Jedes Feld merkt sich seine eigene Größe.
 
 ## Hell, dunkel, Sprache
 
-Unter **Einstellungen → Darstellung** wählst du **Theme** (System / Hell /
+Unter **Einstellungen → Darstellung** wählst du das **Farbschema** (System / Hell /
 Dunkel) und die **Sprache** der App (Deutsch / English). Beides wirkt sofort.
 
 ## Ton und Lautstärke
 
 Die Lautstärke regelst du mit den Lauter/Leiser-Tasten des Handys. Die
-**Tonhöhe** und die **Ton-Weichheit** stellst du in den Einstellungen ein. Wird
+**Tonhöhe** und die **Tonweichheit** stellst du in den Einstellungen ein. Wird
 ein Kopfhörer, ein USB-Audiogerät oder ein Bluetooth-Gerät verbunden oder
 getrennt, wechselt die App automatisch dorthin. Wenn du das nicht willst,
 kannst du die Ausgabe auch fest wählen (siehe
@@ -126,13 +127,13 @@ Das Tempo wird in **WPM** (Wörter pro Minute) angegeben, bezogen auf das
 Normwort „PARIS“. Ein Dit dauert bei *w* WPM genau 1200 / *w* Millisekunden –
 bei 20 WPM also 60 ms.
 
-## Abstände in Dits: Interchar Spc und InterWord Spc
+## Abstände in Dits: Zeichenabstand und Wortabstand
 
 Wie am Morserino werden die Pausen **in Dit-Längen** eingestellt:
 
-- **Interchar Spc** – die Pause zwischen zwei Zeichen eines Wortes. Normales
+- **Zeichenabstand** – die Pause zwischen zwei Zeichen eines Wortes. Normales
   Morse: 3 Dits. Einstellbar von 3 bis 45.
-- **InterWord Spc** – die Pause zwischen zwei Wörtern bzw. Gruppen. Normales
+- **Wortabstand** – die Pause zwischen zwei Wörtern bzw. Gruppen. Normales
   Morse: 7 Dits. Einstellbar von 6 bis 105.
 
 Die Pause zwischen den Elementen (Dits und Dahs) *innerhalb* eines Zeichens ist
@@ -142,7 +143,7 @@ lernst den Klang eines Zeichens bei vollem Tempo und hast trotzdem Zeit zum
 Nachdenken.
 
 Neben jedem Abstands-Regler zeigt die App die Pause auch **in Sekunden** beim
-aktuellen Tempo, z. B. „28 dits · 1,68 s @ 20 WPM“.
+aktuellen Tempo, z. B. „28 Dits · 1,68 s @ 20 WPM“.
 
 Die Trainings **Hören** und **Geben** starten mit großzügigen Pausen von
 **28 / 40 Dits**. Der CW Keyer, WiFi Trx und der QSO Bot verwenden die
@@ -153,7 +154,7 @@ normalen 7 Dits als Wortabstand.
 Weil die Pausen länger werden, sinkt das Tempo, mit dem ganze Wörter
 ankommen. Die App zeigt es als **eff.** (effektive WPM) an:
 
-  eff. WPM = 50 × WPM / (31 + 4 × Interchar Spc + InterWord Spc)
+  eff. WPM = 50 × WPM / (31 + 4 × Zeichenabstand + Wortabstand)
 
 Beispiel: 20 WPM mit 28/40 Dits ergibt 50 × 20 / (31 + 112 + 40) ≈ 5 WPM.
 Die Zeichen klingen also nach 20 WPM, aber du hast Zeit wie bei 5 WPM. Mit
@@ -166,8 +167,8 @@ du sie sicher erkennst, kommt das nächste Zeichen dazu, dann das nächste, bis
 alle Zeichen gelernt sind. Jede Stufe heißt **Lektion**; die Lektionsnummer ist
 die Zahl der aktiven Zeichen.
 
-Die Reihenfolge der Zeichen legt die **Koch Sequence** fest (siehe
-[Koch Sequence](#koch-sequence)).
+Die Reihenfolge der Zeichen legt die **Koch-Reihenfolge** fest (siehe
+[Koch-Reihenfolge](#koch-reihenfolge)).
 
 Beim Ziehen zufälliger Zeichen gewichtet die App wie der Morserino:
 Bei zwei von drei Zeichen wird gleichmäßig aus **allen** aktiven Zeichen
@@ -191,7 +192,7 @@ in der App in spitzen Klammern geschrieben:
 | `<bk>` | Break, Gegenstation ist dran |
 | `<err>` | Fehler: acht Dits (`........`) |
 
-Beim Hören (Blockablauf) werden Prosigns aus **Random Groups** wie zwei
+Beim Hören (Blockablauf) werden Prosigns aus **Zeichen für Gruppen** wie zwei
 einzelne Buchstaben angezeigt und bewertet (`<ka>` erscheint als „K A“).
 
 # Hören – Mitschreiben üben
@@ -271,9 +272,9 @@ der Start- und Ergebnisseite mit **Abstand anpassen**.
 ## Ein Block im Ablauf
 
 1. **Start** drücken. Nach einer Sekunde „Bereit machen …“ beginnt der Block.
-2. Die App spielt die Gruppen nacheinander, mit der eingestellten Wortpause
-   dazwischen. Angezeigt werden nur „Gruppe *n* von *N*“ und das Tempo –
-   nicht der Text. Schreib auf Papier mit.
+2. Die App spielt die Gruppen nacheinander, mit dem eingestellten Wortabstand
+   dazwischen. Angezeigt werden nur „Gruppe *n* von *N*“ (bei Wörtern
+   „Wort *n* von *N*“) und das Tempo – nicht der Text. Schreib auf Papier mit.
    - **Pause** hält nach der aktuellen Gruppe an, **Weiter** setzt fort.
    - **Aufdecken** bricht den Block ab und zeigt nur die Gruppen, die schon
      gespielt wurden.
@@ -295,12 +296,14 @@ der Start- und Ergebnisseite mit **Abstand anpassen**.
 :::
 
 Wie viele Gruppen ein Block hat, stellst du im ⚙-Blatt unter **Wortauswahl →
-Wörter pro Block** ein.
+Gruppen pro Block** ein (bei Wörtern heißt die Einstellung **Wörter pro
+Block**). Die Anzeige während des Blocks und die Ergebnisseite sprechen bei
+Zufall von **Gruppen**, bei allen anderen Inhalten von **Wörtern**.
 
 ### Nach jeder Gruppe anhalten
 
-Mit **Ablauf → Nach jeder Gruppe anhalten** (im ⚙-Blatt) wartet die App nach
-jeder Gruppe:
+Mit **Ablauf → Nach jeder Gruppe anhalten** (im ⚙-Blatt; bei Wörtern heißt es
+**Nach jedem Wort anhalten**) wartet die App nach jeder Gruppe bzw. jedem Wort:
 
 - **Dit** (linkes Paddle) oder die Schaltfläche **WIEDERHOLEN** spielt
   dieselbe Gruppe noch einmal.
@@ -318,8 +321,8 @@ Die Ergebnisseite zeigt von oben nach unten:
 - Die **Statuszeile**: Tempo, effektives Tempo, Abstände und, ab dem sechsten
   Block, der [Trend](#trend). Die Werte gelten bereits für den **nächsten**
   Block, also inklusive der angehakten Vorschläge.
-- **Abstand anpassen** – mit − und + änderst du Interchar Spc und InterWord
-  Spc gemeinsam um je 1 Dit. Das gilt sofort und unabhängig von den
+- **Abstand anpassen** – mit − und + änderst du Zeichenabstand und Wortabstand
+  gemeinsam um je 1 Dit. Das gilt sofort und unabhängig von den
   Vorschlägen.
 - **Schwache Zeichen** – die Zeichen, die dir auf Dauer die meisten Fehler
   machen, mit ihrer Fehlerquote (siehe
@@ -352,43 +355,46 @@ Das ⚙-Blatt von **Hören** enthält folgende Abschnitte. Werte in **fett** sin
 die Voreinstellungen.
 
 ::: {.shots}
-![⚙-Blatt: Koch Sequence und Practice Set](img/de/hear_sheet1.png)
+![⚙-Blatt: Koch-Reihenfolge und Übungsset](img/de/hear_sheet1.png)
 
 ![⚙-Blatt: Abstände, Wortauswahl, Ablauf](img/de/hear_sheet2.png)
 :::
 
-### Koch Sequence
+### Koch-Reihenfolge {#koch-reihenfolge-blatt}
 
 Nur sichtbar, wenn der Zeichenvorrat **Koch-Lektion** gewählt ist. Diese
 Einstellung gilt für **alle** Trainings und Spiele, die die Koch-Methode
-verwenden. Beschreibung siehe [Koch Sequence](#koch-sequence).
+verwenden. Beschreibung siehe [Koch-Reihenfolge](#koch-reihenfolge).
 
-### Practice Set
+### Übungsset {#uebungsset-einstellungen}
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Zeichen | Die Zeichen des Übungssets (dasselbe Feld wie auf der Startansicht beim Zeichenvorrat **Übungsset**) | beliebige Zeichen |
-| Boost Practice | Zieht die Übungsset-Zeichen bei Zufallsgruppen häufiger (siehe unten) | **Off** / Moderate / Strong |
+| Übungsset bevorzugen | Zieht die Übungsset-Zeichen bei Zufallsgruppen häufiger (siehe unten) | **Aus** / Mäßig / Stark |
 
-So funktioniert **Boost Practice**: Für jedes Zeichen einer Zufallsgruppe
-würfelt die App bis zu 3-mal (Moderate) bzw. 8-mal (Strong), bis ein Zeichen
+So funktioniert **Übungsset bevorzugen**: Für jedes Zeichen einer Zufallsgruppe
+würfelt die App bis zu 3-mal (Mäßig) bzw. 8-mal (Stark), bis ein Zeichen
 aus dem Übungsset herauskommt. Klappt es nicht, bleibt das letzte gewürfelte
 Zeichen. Die Übungsset-Zeichen werden also häufiger, die anderen verschwinden
 aber nicht.
 
-In **Hören** übernimmt während eines Blocks die automatische Verstärkung der
-[schwachen Zeichen](#schwache-zeichen) diese Aufgabe. Die Einstellung **Boost
-Practice** wirkt deshalb vor allem in **Geben** (mit **Alle Zeichen · Zufall**).
+**Übungsset bevorzugen** wirkt in **Hören** (Koch-Lektion oder Alle Zeichen ·
+Zufall) und in **Geben** (Alle Zeichen · Zufall). In **Hören** wird das
+Übungsset mit den [schwachen Zeichen](#schwache-zeichen) zusammengelegt:
+Verstärkt werden die Zeichen aus beiden Listen, und zwar mit der höheren der
+beiden Stufen. Je mehr Zeichen zusammenkommen, desto weniger fällt das
+einzelne auf.
 
 ### Abstände
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Interchar Spc | Pause zwischen den Zeichen, in Dits | 3–45 (**28**) |
-| InterWord Spc | Pause zwischen den Gruppen/Wörtern, in Dits | 6–105 (**40**) |
+| Zeichenabstand | Pause zwischen den Zeichen, in Dits | 3–45 (**28**) |
+| Wortabstand | Pause zwischen den Gruppen/Wörtern, in Dits | 6–105 (**40**) |
 
-InterWord Spc kann nie kleiner sein als Interchar Spc: Schiebst du Interchar
-Spc darüber hinaus, wird InterWord Spc mitgezogen.
+Der Wortabstand kann nie kleiner sein als der Zeichenabstand: Schiebst du den
+Zeichenabstand darüber hinaus, wird der Wortabstand mitgezogen.
 
 ### Wortauswahl
 
@@ -397,17 +403,17 @@ Zeile „Gilt für: …“ zeigt, für welche Kombination du gerade einstellst.
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Random Groups | Nur bei **Alle Zeichen · Zufall**: aus welchen Zeichengruppen gezogen wird | **All Chars** / Alpha / Numerals / Interpunct. / Pro Signs / Alpha + Num / Num+Interp. / Interp+ProSn / Alph+Num+Int / Num+Int+ProS |
-| Gruppen-Länge | Zeichen pro Zufallsgruppe | 2–8 (**5**) |
+| Zeichen für Gruppen | Nur bei **Alle Zeichen · Zufall**: aus welchen Zeichenklassen gezogen wird | **Alle** / Buchstaben / Ziffern / Satzzeichen / Prosigns / Buchst.+Ziff. / Ziff.+Satzz. / Satzz.+Prosigns / Buchst.+Ziff.+Satzz. / Ziff.+Satzz.+Prosigns |
+| Gruppenlänge | Zeichen pro Zufallsgruppe (nur bei **Zufall**) | 2–8 (**5**) |
 | Max. Wortlänge | Nur Wörter bis zu dieser Länge (bei **Wörter** und **Gemischt**) | **alle**, 1–8 |
 | Max. Abkürzungslänge | Nur Abkürzungen bis zu dieser Länge (bei **Abkürzungen** und **Gemischt**) | **alle**, 2–6 |
-| Wörter pro Block | Anzahl der Gruppen/Wörter in einem Block | 1–50 (**10**) |
+| Gruppen pro Block / Wörter pro Block | Anzahl der Gruppen (bei **Zufall**) bzw. Wörter in einem Block | 1–50 (**10**) |
 
 ### Ablauf
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Nach jeder Gruppe anhalten | Nach jeder Gruppe warten: Dit = wiederholen, Dah = weiter | **Aus** / Ein |
+| Nach jeder Gruppe anhalten / Nach jedem Wort anhalten | Danach warten: Dit = wiederholen, Dah = weiter | **Aus** / Ein |
 
 ### Adaptiver Modus
 
@@ -443,21 +449,21 @@ Darunter stellst du mit zwei Reglern die Tempi ein:
 
 - **Hören** – das Tempo, in dem dir das Wort vorgespielt wird.
 - **Geben** – das höchste Tempo, in dem deine Antwort erwartet wird (siehe
-  [Gebe-Tempo](#gebe-tempo)). „wie Hören“ heißt: dasselbe Tempo.
+  [Gebetempo](#gebetempo)). „wie Hören“ heißt: dasselbe Tempo.
 
 Unten liegen die Paddles bzw. die Taste und **Start**.
 
 ::: {.shots}
 ![Startansicht von Geben](img/de/echo_start.png)
 
-![Während der Antwort: Vorgabe (Echo Prompt = Beides), Versuch und Tempo](img/de/echo_answer.png)
+![Während der Antwort: Vorgabe (Vorgabe = Beides), Versuch und Tempo](img/de/echo_answer.png)
 :::
 
 ## Ein Wort im Ablauf
 
 1. Nach **Start** wartet die App 2 Sekunden, dann spielt sie das erste Wort.
 2. **Deine Antwort:** Gib das Wort zurück. Dein Mithörton ist um einen
-   Halbton versetzt (einstellbar, **Ton-Versatz**), damit du Vorgabe und
+   Halbton versetzt (einstellbar, **Tonversatz**), damit du Vorgabe und
    Antwort unterscheiden kannst.
 3. **Wann du anfangen musst:** Du hast ab dem Ende der Vorgabe etwa
    1,4 Sekunden plus eine Zeichenpause plus ein Drittel der Wortpause plus die
@@ -478,19 +484,19 @@ Unten liegen die Paddles bzw. die Taste und **Start**.
      **Wiederholungen** aufgebraucht, zeigt die App das richtige Wort zwei
      Sekunden lang an und geht weiter.
 
-Ob die Vorgabe gespielt, angezeigt oder beides wird, stellst du mit **Echo
-Prompt** ein (siehe unten).
+Ob die Vorgabe gespielt, angezeigt oder beides wird, stellst du mit **Vorgabe**
+ein (siehe unten).
 
-## Gebe-Tempo
+## Gebetempo
 
 Beim Morserino heißt diese Einstellung „Echo Speed Max“. Sie begrenzt das
 Tempo, in dem **deine Antwort** erwartet wird. Die Vorgabe spielt weiter im
-Hör-Tempo.
+Hörtempo.
 
 Beispiel: Hören 25 WPM, Geben 18 WPM – du hörst schnell, darfst aber
-langsamer antworten. Das Gebe-Tempo bestimmt, wie schnell der Keyer
+langsamer antworten. Das Gebetempo bestimmt, wie schnell der Keyer
 deine Dits und Dahs erzeugt und wie lang eine Wortpause sein muss. Auf 0
-(„wie Hören“) gilt das Hör-Tempo auch für die Antwort.
+(„wie Hören“) gilt das Hörtempo auch für die Antwort.
 
 ## Die Ergebnisseite
 
@@ -502,7 +508,7 @@ Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
   - **● richtig** – beim ersten Versuch richtig,
   - **◐ nach Wiederholung** – erst nach einer Wiederholung richtig,
   - **○ falsch** – auch nach allen Wiederholungen nicht geschafft.
-- Die **Statuszeile**: Hör-Tempo, Gebe-Tempo (falls begrenzt), Lektion und der
+- Die **Statuszeile**: Hörtempo, Gebetempo (falls begrenzt), Lektion und der
   [Trend](#trend).
 - **Verwechslungen** – welche Zeichen du in diesem Block verwechselt hast, als
   „Soll → Gegeben“, z. B. `p → w`. Ein `–` heißt, dass an dieser Stelle nichts
@@ -523,12 +529,12 @@ Startansicht zurück.
 ::: {.shots}
 ![Ergebnisseite: Aufteilung, Verwechslungen, schwache Zeichen, erste Versuche](img/de/echo_result.png)
 
-![Ein Vorschlag (hier: Gebe-Tempo erhöhen), angehakt](img/de/echo_result2.png)
+![Ein Vorschlag (hier: Gebetempo erhöhen), angehakt](img/de/echo_result2.png)
 :::
 
 ## Einstellungen im ⚙-Blatt (Geben) {#einstellungen-geben}
 
-Die Abschnitte **Koch Sequence**, **Practice Set**, **Abstände** und
+Die Abschnitte **Koch-Reihenfolge**, **Übungsset**, **Abstände** und
 **Wortauswahl** entsprechen denen von Hören (siehe
 [Einstellungen im ⚙-Blatt (Hören)](#einstellungen-hoeren)), gelten
 aber für das Profil von Geben. Zwei Unterschiede:
@@ -538,20 +544,20 @@ aber für das Profil von Geben. Zwei Unterschiede:
   beginnen darfst. Deine Antwort wird immer mit 7 Dits Wortpause
   abgeschlossen.
 - Bei **Wortauswahl** gelten zusätzlich die Rufzeichen-Einstellungen aus den
-  globalen Einstellungen (siehe [Call Signs](#call-signs)).
+  globalen Einstellungen (siehe [Rufzeichen](#rufzeichen)).
 
 Dazu kommt der Abschnitt **Echo Trainer**:
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Denkzeit | Zusätzliche Zeit, um mit der Antwort zu **beginnen** | 1–20 s (**8 s**) |
-| Wiederholungen | Wie oft ein falsch beantwortetes Wort erneut gespielt wird, bevor die App es auflöst. „Forever“ wiederholt, bis es stimmt | 0–6 (**3**), Forever |
-| Echo Prompt | Wie die Vorgabe kommt: **Sound** = nur hören; **Anzeige** = nur lesen, ohne Ton; **Beides** = hören und nach dem Abspielen lesen | **Sound** / Anzeige / Beides |
-| Gebe-Tempo (max.) | Höchstes Antwort-Tempo, siehe [Gebe-Tempo](#gebe-tempo) | **wie Hören**, 5–50 WPM |
-| Ton-Versatz (Echo) | Dein Mithörton beim Antworten liegt einen Halbton höher oder tiefer als die Vorgabe | Kein Shift / **Hoch ½** / Runter ½ |
+| Wiederholungen | Wie oft ein falsch beantwortetes Wort erneut gespielt wird, bevor die App es auflöst. „Endlos“ wiederholt, bis es stimmt | 0–6 (**3**), Endlos |
+| Vorgabe | Wie die Vorgabe kommt: **Ton** = nur hören; **Anzeige** = nur lesen, ohne Ton; **Beides** = hören und nach dem Abspielen lesen | **Ton** / Anzeige / Beides |
+| Gebetempo (max.) | Höchstes Antwort-Tempo, siehe [Gebetempo](#gebetempo) | **wie Hören**, 5–50 WPM |
+| Tonversatz | Dein Mithörton beim Antworten liegt einen Halbton höher oder tiefer als die Vorgabe | Kein Versatz / **Hoch ½** / Runter ½ |
 | Bestätigungston | Kurzer Ton nach der Bewertung: hoch für richtig, tief für falsch | Aus / **Ein** |
 
-**Echo Prompt = Anzeige** ist eine gute Übung, um vom geschriebenen Text zum
+**Vorgabe = Anzeige** ist eine gute Übung, um vom geschriebenen Text zum
 Geben zu kommen, etwa zum Einschleifen neuer Zeichen.
 
 ::: {.shots .one}
@@ -672,11 +678,11 @@ Haken entfernst, bleibst du in der aktuellen Lektion.
 
 Die App verändert immer zuerst die **Pausen**, erst dann das Tempo:
 
-- **Verkürzen:** Interchar Spc und InterWord Spc werden je um 1 Dit kürzer,
+- **Verkürzen:** Zeichenabstand und Wortabstand werden je um 1 Dit kürzer,
   bis hinunter zu den normalen 3 / 7 Dits.
 - **Tempo erhöhen:** Erst wenn die Pausen bereits bei 3 / 7 Dits angekommen
   sind, schlägt die App **+1 WPM** vor.
-- **Verlängern:** Interchar Spc und InterWord Spc werden je um 1 Dit länger –
+- **Verlängern:** Zeichenabstand und Wortabstand werden je um 1 Dit länger –
   aber nie länger als zu Beginn der Sitzung (bei Hören: als du das Training
   geöffnet hast; bei Geben: der Wert aus dem ⚙-Blatt).
 
@@ -694,12 +700,12 @@ Verkürzen und keine Tempoerhöhung.
 Mit **Abstand anpassen** (Hören) bzw. den Tempo-Reglern (Geben) kannst du
 jederzeit selbst eingreifen, unabhängig von diesen Regeln.
 
-### Gebe-Tempo bei Geben
+### Gebetempo bei Geben
 
-Bei Geben gibt es einen zusätzlichen Vorschlag: **Gebe-Tempo erhöht**
-(+1 WPM). Er erscheint nur, wenn du ein Gebe-Tempo **unterhalb** des Hör-Tempos
+Bei Geben gibt es einen zusätzlichen Vorschlag: **Gebetempo erhöht**
+(+1 WPM). Er erscheint nur, wenn du ein Gebetempo **unterhalb** des Hörtempos
 eingestellt hast und der Block mindestens die obere Schwelle erreicht hat. Er
-ist anfangs **nicht angehakt**, weil das Gebe-Tempo eine bewusste Entscheidung
+ist anfangs **nicht angehakt**, weil das Gebetempo eine bewusste Entscheidung
 ist.
 
 ## Vorschläge annehmen, ablehnen, anpassen
@@ -732,10 +738,12 @@ mehrere Blöcke und Sitzungen.
 (durchgestrichen) oder wieder aufzunehmen.
 
 - **Hören:** Die schwachen Zeichen erscheinen schon auf der Startansicht und auf
-  jeder Ergebnisseite. Im nächsten Block werden sie mit der Stufe *Moderate*
+  jeder Ergebnisseite. Im nächsten Block werden sie mit der Stufe *Mäßig*
   verstärkt (bis zu 3 Würfe pro Zeichen, siehe
-  [Practice Set](#practice-set)). Das gilt nur für Zufallsgruppen (Koch-Lektion
-  oder Alle Zeichen · Zufall), nicht für Wörter.
+  [Übungsset](#uebungsset-einstellungen)). Das gilt nur für Zufallsgruppen (Koch-Lektion
+  oder Alle Zeichen · Zufall), nicht für Wörter. Hast du im Übungsset
+  eigene Zeichen und **Übungsset bevorzugen** eingestellt, kommen diese dazu; es gilt
+  dann die höhere Stufe (Stark also für alle, wenn du Stark gewählt hast).
 - **Geben:** Die schwachen Zeichen erscheinen auf der Ergebnisseite, wenn du
   **Koch-Lektion · Zufall** übst. Mit **Nächster Block** kommen die
   angehakten Zeichen im nächsten Block doppelt so oft. Die Verstärkung gilt
@@ -837,13 +845,13 @@ angezeigt.
 
 - Die **Paddles** unten (DIT links, DAH rechts) oder ein echtes Paddle über
   einen Adapter (siehe [Paddle und Morsetaste](#paddle-und-morsetaste)). Im
-  Modus **Straight** erscheint stattdessen eine einzelne Taste **KEY**.
+  Modus **Straight** erscheint stattdessen eine einzelne Taste **TASTE**.
 - **WPM** – Tempo des Keyers, 5 bis 60 WPM.
 - Der Text läuft von unten nach oben. Ältere Zeilen kannst du zurückscrollen,
   die Textgröße änderst du mit zwei Fingern.
 - Das ⚙-Blatt oben rechts enthält den **Wortabstand**
-  (InterWord Spc, Voreinstellung 7 Dits). Er legt fest, nach welcher Pause ein
-  Leerzeichen gesetzt wird. Interchar Spc hat beim Tasten keine Wirkung, wie
+  (Wortabstand, Voreinstellung 7 Dits). Er legt fest, nach welcher Pause ein
+  Leerzeichen gesetzt wird. Der Zeichenabstand hat beim Tasten keine Wirkung, wie
   am Morserino.
 
 Den Keyer-Modus und seine Feinheiten stellst du in den globalen Einstellungen
@@ -1083,9 +1091,9 @@ Ein Arcade-Spiel: Zeichen deiner Koch-Lektion fallen in vier Spuren herunter.
 |---|---|
 | Koch-Lektion | Die Lektion aus **Geben** (dort änderbar) |
 | Start-Level | Mit welchem Level du beginnst |
-| Geben-Tempo | Tempo des Keyers; es zählt in die Punkte |
+| Gebetempo | Tempo des Keyers; es zählt in die Punkte |
 
-Highscores werden gespeichert.
+Die Ergebnisse kommen in eine Bestenliste.
 
 ::: {.shots}
 ![Morse Invaders vor dem Start](img/de/inv_lobby.png)
@@ -1110,7 +1118,7 @@ Ein Gedächtnisspiel: Jede Runde kommt **ein Zeichen** dazu, und du gibst die
   beginnt bei deiner Geben-Lektion. Das Tempo änderst du auch während des
   Spiels mit − und +.
 
-Highscores werden je Modus gespeichert.
+Die Bestenliste wird je Modus geführt.
 
 ::: {.shots .one}
 ![Memory Chain vor dem Start](img/de/mc_lobby.png)
@@ -1157,9 +1165,9 @@ dein Adapter sendet.
 ### Key-Events analysieren
 
 Reagiert ein Adapter nicht wie erwartet, hilft **Einstellungen → Key-Events
-analysieren**: **Analyser starten**, dann die Paddles drücken. Die App listet
+analysieren**: **Analyse starten**, dann die Paddles drücken. Die App listet
 jedes Tastenereignis auf, das sie empfängt. So siehst du, ob und was der
-Adapter überhaupt sendet. **Analyser stoppen** beendet die Anzeige.
+Adapter überhaupt sendet. **Analyse stoppen** beendet die Anzeige.
 
 # Einstellungen
 
@@ -1170,7 +1178,7 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 ::: {.shots .three}
 ![Einstellungen: Darstellung, Allgemein, Keyer](img/de/settings1.png)
 
-![Audioausgabe und Call Signs](img/de/settings2.png)
+![Audioausgabe und Rufzeichen](img/de/settings2.png)
 
 ![vband Paddle, Key-Events, Info](img/de/settings3.png)
 :::
@@ -1179,7 +1187,7 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Theme | Helles oder dunkles Erscheinungsbild | **System** / Hell / Dunkel |
+| Farbschema | Helles oder dunkles Erscheinungsbild | **System** / Hell / Dunkel |
 | Sprache | Sprache der App | **Deutsch** / English |
 
 ## Allgemein
@@ -1187,8 +1195,8 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Tonhöhe (Hz) | Frequenz des Mithörtons und der gespielten Zeichen | 300–900 Hz in 50-Hz-Schritten (**600 Hz**) |
-| Ton-Weichheit | Anstiegs- und Abfallzeit des Tons. Größere Werte klingen weicher und klicken weniger, besonders bei kurzen Dits | 1–9 ms (**5 ms**) |
-| Output Case | Zeichen in Klein- oder Großbuchstaben anzeigen. Betrifft nur die Anzeige | **lower** / UPPER |
+| Tonweichheit | Anstiegs- und Abfallzeit des Tons. Größere Werte klingen weicher und klicken weniger, besonders bei kurzen Dits | 1–9 ms (**5 ms**) |
+| Schreibweise | Zeichen in Klein- oder Großbuchstaben anzeigen. Betrifft nur die Anzeige | **klein** / GROSS |
 
 ## Keyer
 
@@ -1215,7 +1223,7 @@ Diese Einstellungen gelten überall, wo du tastest.
 - **Non-Squeeze** – Für Einhebel-Paddles bzw. Umsteiger: Das Zusammendrücken
   beider Paddles erzeugt keine Wechselfolge.
 - **Straight** – Handtaste: Der Ton ist an, solange die Taste gedrückt ist.
-  Mit Touch erscheint dann eine einzelne Taste **KEY**, mit einem Adapter
+  Mit Touch erscheint dann eine einzelne Taste **TASTE**, mit einem Adapter
   wirkt der Dit-Kontakt als Taste.
 
 ## Audioausgabe
@@ -1225,15 +1233,15 @@ Diese Einstellungen gelten überall, wo du tastest.
 | Aktiv | Zeigt, wohin der Ton gerade geht | – |
 | Ausgabe | **Automatisch** folgt dem, was gerade angesteckt oder verbunden ist. Die anderen Optionen legen die Ausgabe fest. Es werden nur Ausgaben angeboten, die gerade verfügbar sind | **Automatisch** / Lautsprecher / Kabel/USB / Bluetooth |
 
-## Call Signs
+## Rufzeichen
 
 Einstellungen für zufällige Rufzeichen im Inhalt **Rufzeichen** (bei Alle
 Zeichen).
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Length Calls | Maximale Länge der Rufzeichen | **Unbegr.** / 3 / 4 / 5 / 6 |
-| Calls Region | Nur Rufzeichen aus dieser Region | **All** / EU / NA / SA / AF / AS / OC / VK/ZL |
+| Max. Rufzeichenlänge | Maximale Länge der Rufzeichen | **Unbegr.** / 3 / 4 / 5 / 6 |
+| Region | Nur Rufzeichen aus dieser Region | **Alle** / EU / NA / SA / AF / AS / OC / VK/ZL |
 | Nur gängige Präfixe | Nur häufig gehörte Präfixe statt aller möglichen | Aus / **Ein** |
 
 Die Rufzeichen folgen einer gewichteten Präfix-Tabelle wie beim Morserino.
@@ -1254,9 +1262,9 @@ Siehe [Paddle-Tasten anlernen](#paddle-tasten-anlernen) und
 
 Wenn du einen Fehler meldest, gib bitte diese drei Angaben mit an.
 
-## Koch Sequence
+## Koch-Reihenfolge {#koch-reihenfolge}
 
-Die Koch Sequence stellst du im ⚙-Blatt von **Hören** oder **Geben** ein,
+Die Koch-Reihenfolge stellst du im ⚙-Blatt von **Hören** oder **Geben** ein,
 wenn dort der Zeichenvorrat **Koch-Lektion** gewählt ist. Sie gilt aber für
 **alle** Trainings und Spiele.
 
@@ -1266,17 +1274,50 @@ wenn dort der Zeichenvorrat **Koch-Lektion** gewählt ist. Sie gilt aber für
 | LCWO | Die Reihenfolge von lcwo.net |
 | CW Academy | Die Reihenfolge der CW Academy (CWops) |
 | LICW | Die Reihenfolge der Long Island CW Club mit **Einstiegspunkt** (siehe unten) |
-| Custom | Deine eigene Reihenfolge |
+| Eigene | Deine eigene Reihenfolge |
 
-**LICW Einstiegspunkt** (0–13): Beim LICW-Kurs steigen Teilnehmer an
+**LICW-Einstiegspunkt** (0–13): Beim LICW-Kurs steigen Teilnehmer an
 verschiedenen Stellen eines „Karussells“ ein. Der Einstiegspunkt dreht die
 Reihenfolge so, dass sie an dieser Stelle beginnt.
 
-**Custom:** Trage die Zeichen in der Reihenfolge ein, in der du sie lernen
+**Eigene:** Trage die Zeichen in der Reihenfolge ein, in der du sie lernen
 willst. Doppelte Zeichen werden ignoriert, die App zeigt die Zahl der
 erkannten Zeichen an. Voreingestellt ist `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?`.
 
 Prosigns sind in der App nicht Teil der Koch-Reihenfolgen.
+
+## Morserino-Begriffe
+
+Die App übersetzt die Menünamen des Morserino-32. Wenn du vom Morserino
+kommst oder dessen Handbuch liest, hilft diese Tabelle:
+
+| Morserino-Menü | In der App |
+|---|---|
+| Interchar Spc | Zeichenabstand |
+| InterWord Spc | Wortabstand |
+| Random Groups | Zeichen für Gruppen |
+| Length Rnd Gr | Gruppenlänge |
+| Length Words | Max. Wortlänge |
+| Length Abbrev | Max. Abkürzungslänge |
+| Length Calls | Max. Rufzeichenlänge |
+| Calls Region | Region (unter Rufzeichen) |
+| Max # of Words | Gruppen pro Block / Wörter pro Block |
+| Stop&lt;Next&gt;Rep | Nach jeder Gruppe anhalten / Nach jedem Wort anhalten |
+| Koch Sequence | Koch-Reihenfolge |
+| Practice Set | Übungsset |
+| Boost Practice | Übungsset bevorzugen |
+| Echo Prompt | Vorgabe |
+| Echo Repeats | Wiederholungen |
+| Echo Speed Max | Gebetempo (max.) |
+| Tone Shift | Tonversatz |
+| Confrm. Tone | Bestätigungston |
+| AutoChar Spc | Auto-Zeichenabstand |
+| Output Case | Schreibweise |
+| Keyer Mode | Modus (unter Keyer) |
+| CurtisB DitT% / DahT% | CurtisB Dit-Timing / Dah-Timing |
+
+Die Namen der Keyer-Modi (Iambic A, Ultimatic …) und der Koch-Reihenfolgen
+(M32, LCWO …) sind in der App gleich wie am Morserino.
 
 # Was die App (noch) nicht kann
 

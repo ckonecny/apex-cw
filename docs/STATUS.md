@@ -55,6 +55,27 @@ Latest tagged build: v1.0.0 (2026-09-26, first build handed out to other users).
   Memory Chain's own Koch lesson, decoder settings icon). Not yet reviewed
   by the user.
 
+- **UI terminology pass (2026-09-27), installed on 63061JEBF01551, not yet
+  user-tested:** triggered by Sia's feedback ("Gruppen-Länge" vs "Wörter pro
+  Block" for the same unit). Glossary + style rules in DECISIONS.md ("UI
+  terminology glossary"). Firmware menu names are now translated instead of
+  copied (Interchar Spc → Zeichenabstand/Character spacing, Random Groups →
+  Zeichen für Gruppen/Group characters, Echo Prompt → Vorgabe/Prompt, Boost
+  Practice → Übungsset bevorzugen, Koch Sequence, Output Case, Length Calls,
+  Calls Region, Theme, Forever …); manuals got a "Morserino-Begriffe" /
+  "Morserino terms" mapping table instead. Counters and settings say
+  Gruppe/group for Random content and Wort/word otherwise (Hören block
+  counter + marking title, Echo counter, "… pro Block", "Nach jeder
+  Gruppe/jedem Wort anhalten"). Unified: Gebetempo/sending speed, Hörtempo,
+  Bestenliste, "8 Dits" (was "8 Punkte"), call sign spelling, English
+  sentence case, American spelling. Hard-coded English removed from WiFi
+  Trx (dialogs, status, buttons), QSO Bot Start/Stop, Echo/Hören START/STOP,
+  Invaders GAME OVER, touch KEY. Stale "Adapt. Rand."/"Adaptive Copy"/"Koch
+  Trainer" mentions in the statistics texts rewritten. Memory Chain showed
+  "NEUE BESTZEIT" although it scores chain length; now a neutral "neu in der
+  Bestenliste – Platz n" shared by all three games (Invaders now shows the
+  rank too). Both manuals updated.
+
 ## Working / verified on device
 Everything above, tested on 63061JEBF01551.
 
@@ -344,27 +365,61 @@ Separately, a small open item (not a module): the echo answer reset by the
 error sign, see "Upstream check" below. It is needed for Morsel anyway.
 
 ### TODOs from writing the manual (2026-09-26), handled separately
-- [ ] **Listen "Words per block" default mismatch (bug):** the ⚙ sheet shows
+- [x] **Listen "Words per block" default mismatch (bug):** *(fixed
+  2026-09-26: `_blockSize` now `maxWords == 0 ? 10 : clamp(1, 50)`, same as
+  Geben; built, install pending — no device connected)* the ⚙ sheet shows
   10 when nothing is stored (`maxWords` 0), Send uses 10, but
   `AdaptiveCopyBody._blockSize` falls back to 5. A fresh install plays 5
   groups in Listen while the slider says 10; the manual documents 10.
   Fix: fall back to 10 in `_blockSize` (one line).
-- [ ] **Merge "Boost Practice" with the weak-character boost (needs a user
-  decision first):** during a Listen block the weak-char auto-boost
+- [x] **Merge "Boost Practice" with the weak-character boost:** *(done
+  2026-09-26, variant a: union of both lists, higher level; see
+  DECISIONS.md; both manuals updated; built, install pending)* Original note: during a Listen block the weak-char auto-boost
   overwrites practiceChars/boostLevel for random content, and other contents
   aren't boosted, so the profile's Boost Practice never applies in Listen
   (it does in Send · All · Random). User wants the two combined; exactly how
   is still open — ask before implementing. Update both manuals afterwards
   (sections "Practice Set" and "Weak characters").
-- [ ] **Listen result page overflows (bug, found taking screenshots):** with
+- [x] **Listen result page overflows (bug, found taking screenshots):**
+  *(fixed 2026-09-26: middle part wrapped in a SingleChildScrollView;
+  built, install pending)* with
   weak characters + progress card + a suggestion row, the page (a
   non-scrolling centred Column in `AdaptiveCopyBody._buildResult`) runs
   under the Finish / Next Block buttons; the suggestion row is overlapped and
   hard to tap. Make the middle part scrollable (as the Send result page is).
-- [ ] **Home card subtitle keeps the old language:** after switching the
+- [x] **Home card subtitle keeps the old language:** *(fixed 2026-09-26:
+  HomeScreen keeps the profiles/trend and builds the subtitles inside the
+  Strings.lang builder; built, install pending)* after switching the
   language, the Listen/Send cards still say "Lesson 15" until the app is
   restarted (`HomeScreen._loadInfo()` builds the string once). Rebuild it on
   `Strings.lang` changes.
+
+## Manual: pending for next release
+
+Per CLAUDE.md rule 10, only the Markdown sources are updated per change;
+HTML/PDF and screenshots are refreshed when the next version is cut. List
+every screenshot (both `img/de/` and `img/en/`) whose screen changed since
+the last release, with the reason. Clear this list after the release build.
+
+- `hear_result.png` — check: Listen result page middle part is now
+  scrollable (overflow fix 2026-09-26); retake if the layout looks different.
+- HTML/PDF: rebuild (Markdown changed since v1.0.0: Boost Practice merged
+  with weak-character boost; terminology pass 2026-09-27).
+- Terminology pass 2026-09-27, retake in **both** languages:
+  `hear_sheet1.png` (Koch-Reihenfolge, Übungsset, Übungsset bevorzugen),
+  `hear_sheet2.png` (Zeichen-/Wortabstand, Dits, Gruppenlänge, Gruppen pro
+  Block), `hear_sheet4.png` (adaptive mode texts/casing), `echo_sheet.png`
+  (Vorgabe, Tonversatz, Gebetempo, Endlos), `echo_answer.png` (status
+  "Geben …", Gruppe n / t), `hear_revealed.png` (hint text),
+  `hear_mark.png` ("Gruppe n" title), `echo_stats.png` (description),
+  `settings1.png` (Farbschema, Tonweichheit, Schreibweise, Dits),
+  `settings2.png` (Rufzeichen section), `settings3.png` (Analyse starten),
+  `inv_lobby.png` (Gebetempo, Bestenliste), `home.png` (Geben subtitle).
+  DE only: `morsel_lobby.png` (Starttempo), `wifi.png` (now German).
+  EN only: `echo_start.png` (Send slider), `echo_result.png` and
+  `hear_result.png` (Next block), `qso_sheet.png` (Difficulty),
+  `games.png` (subtitles), `char_sheet.png` (Practice with echo),
+  `hear_stats.png` (Statistics: listening).
 
 ## Open questions
 

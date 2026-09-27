@@ -1024,7 +1024,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               width: double.infinity, height: 56,
               child: AppButton(
                 height: 56,
-                label: (_state == _State.idle) ? '▶  START' : '■  STOP',
+                label: (_state == _State.idle)
+                    ? '▶  ${Strings.t('start').toUpperCase()}'
+                    : '■  ${Strings.t('stop').toUpperCase()}',
                 color: (_state != _State.idle) ? c.warning : c.accent,
                 onTap: (_state == _State.idle) ? _startSession : _stopSession,
               ),
@@ -1051,7 +1053,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Column(children: [
-        Text(Strings.t('block_word_of').replaceFirst('{n}', '$n').replaceFirst('{t}', '$_blockSize'),
+        Text(Strings.t(_choice.content == ContentKind.random ? 'block_group_of' : 'block_word_of').replaceFirst('{n}', '$n').replaceFirst('{t}', '$_blockSize'),
             style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.textMuted)),
         const SizedBox(height: 2),
         Text(dots, style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),

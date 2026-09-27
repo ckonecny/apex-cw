@@ -2,6 +2,7 @@
 // also needs to receive keyed input, whether from touch or a vband adapter —
 // the Echo Trainer too (including Koch "Neu lernen" / "Vorhören").
 import 'package:flutter/material.dart';
+import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 
 class IambicPaddles extends StatelessWidget {
@@ -56,7 +57,7 @@ class _StraightKeyPaddleState extends State<StraightKeyPaddle> {
             color: _pressed ? color.withOpacity(0.3) : c.surface,
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Center(child: Text('KEY',
+          child: Center(child: Text(Strings.t('paddle_key'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: color.withOpacity(_pressed ? 1.0 : 0.75)))),

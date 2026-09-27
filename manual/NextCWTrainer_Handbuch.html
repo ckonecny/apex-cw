@@ -125,11 +125,11 @@ a { color: inherit; text-decoration: none; }
 <div class="title-page" data-title="Next CW Trainer – Handbuch">
 <p class="t-name">Next CW Trainer</p>
 <p class="t-sub">Benutzerhandbuch</p>
-<p class="t-ver">App-Version 1.0.0 · Stand September 2026 · c6b71c7</p>
+<p class="t-ver">App-Version 1.0.0 · Stand September 2026 · 63909c2-dirty</p>
 </div>
 <div class="edition">
 <p><strong>Next CW Trainer – Benutzerhandbuch</strong>, für App-Version 1.0.0
-(Quellstand c6b71c7), September 2026.</p>
+(Quellstand 63909c2-dirty), September 2026.</p>
 <p>Next CW Trainer ist ein unabhängiges Projekt. Trainingskonzept und Algorithmen
 stammen aus der Firmware des Morserino-32 von Willi Kraml, OE1WKL, und dem
 Morserino-32-Team; es besteht keine weitere Verbindung zu ihnen.</p>
@@ -765,11 +765,13 @@ einer Zufallsgruppe würfelt die App bis zu 3-mal (Moderate) bzw. 8-mal
 (Strong), bis ein Zeichen aus dem Übungsset herauskommt. Klappt es
 nicht, bleibt das letzte gewürfelte Zeichen. Die Übungsset-Zeichen
 werden also häufiger, die anderen verschwinden aber nicht.</p>
-<p>In <strong>Hören</strong> übernimmt während eines Blocks die
-automatische Verstärkung der <a href="#schwache-zeichen">schwachen
-Zeichen</a> diese Aufgabe. Die Einstellung <strong>Boost
-Practice</strong> wirkt deshalb vor allem in <strong>Geben</strong> (mit
-<strong>Alle Zeichen · Zufall</strong>).</p>
+<p><strong>Boost Practice</strong> wirkt in <strong>Hören</strong>
+(Koch-Lektion oder Alle Zeichen · Zufall) und in <strong>Geben</strong>
+(Alle Zeichen · Zufall). In <strong>Hören</strong> wird das Übungsset
+mit den <a href="#schwache-zeichen">schwachen Zeichen</a>
+zusammengelegt: Verstärkt werden die Zeichen aus beiden Listen, und zwar
+mit der höheren der beiden Stufen. Je mehr Zeichen zusammenkommen, desto
+weniger fällt das einzelne auf.</p>
 <h3 data-number="4.5.3" id="abstände"><span class="header-section-number">4.5.3</span> Abstände</h3>
 <table>
 <colgroup>
@@ -1278,7 +1280,9 @@ der Startansicht und auf jeder Ergebnisseite. Im nächsten Block werden
 sie mit der Stufe <em>Moderate</em> verstärkt (bis zu 3 Würfe pro
 Zeichen, siehe <a href="#practice-set">Practice Set</a>). Das gilt nur
 für Zufallsgruppen (Koch-Lektion oder Alle Zeichen · Zufall), nicht für
-Wörter.</li>
+Wörter. Hast du im Practice Set eigene Zeichen und <strong>Boost
+Practice</strong> eingestellt, kommen diese dazu; es gilt dann die
+höhere Stufe (Strong also für alle, wenn du Strong gewählt hast).</li>
 <li><strong>Geben:</strong> Die schwachen Zeichen erscheinen auf der
 Ergebnisseite, wenn du <strong>Koch-Lektion · Zufall</strong> übst. Mit
 <strong>Nächster Block</strong> kommen die angehakten Zeichen im

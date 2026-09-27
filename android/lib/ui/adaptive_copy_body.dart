@@ -262,7 +262,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     await _genChannel.invokeMethod('setBoostLevel', boostLevel);
   }
 
-  int get _blockSize => widget.maxWords > 0 ? widget.maxWords : 5;
+  // Same fallback/range as the ⚙ sheet slider and Geben (echo_trainer_screen):
+  // nothing stored (0) means 10.
+  int get _blockSize => widget.maxWords == 0 ? 10 : widget.maxWords.clamp(1, 50);
 
   // Resolved target for the *next* block: the pending proposal if accepted,
   // otherwise the unchanged current value. Drives both the status line and
@@ -310,6 +312,13 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     if (_acceptUnlock && _unlockedThisBlock) {
       widget.onKochLevelChanged?.call(widget.kochLevel + 1);
     }
+  }
+
+  // Random content (ordinal 0 random chars, 4 practice set) plays groups,
+  // everything else words; the counters say which (DECISIONS.md glossary).
+  bool get _playsGroups {
+    final ordinal = widget.contentModeOrdinals[widget.contentModeIndex];
+    return ordinal == 0 || ordinal == 4;
   }
 
   Future<String> _fetchGroup() async {
@@ -417,8 +426,11 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // Boost proposal from the previous block's result screen, minus
     // whatever the user tapped out — reuses the same practiceChars/
     // boostLevel mechanism as CW Generator's "Practice Set" + Boost
-    // (CwGenerator.kt randomKochChars() already consults both). Empty/off
-    // when there's no accepted weak char, e.g. the very first block.
+    // (CwGenerator.kt randomKochChars() already consults both). Merged with
+    // the profile's own Practice Set + Boost Practice (decision 2026-09-26,
+    // docs/DECISIONS.md): union of both char lists, the higher of the two
+    // levels — so the profile's boost still applies, with or without weak
+    // chars.
     // Level 1 (Moderate, 3 draw attempts), not 2 (Strong, 8 attempts): user
     // feedback 2026-09-23 — Strong pushed one missed char to ~80% of the
     // very next block, far too extreme a spike; weak chars already stay
@@ -429,8 +441,16 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         .where((ch) => !_excludedBoostChars.contains(ch))
         .toList();
     if (_boostApplies) {
-      await _genChannel.invokeMethod('setPracticeChars', boostChars);
-      await _genChannel.invokeMethod('setBoostLevel', boostChars.isEmpty ? 0 : 1);
+      final pf = await TrainingProfile.open(TrainingProfile.hear);
+      final ownChars = parsePracticeChars(pf.getString('practiceChars') ?? '');
+      // A level with an empty Practice Set boosts nothing of the user's own —
+      // it must not raise the weak chars above Moderate on its own.
+      final ownLevel = ownChars.isEmpty ? 0 : (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
+      final chars = {...ownChars, ...boostChars}.toList();
+      final level = [ownLevel, boostChars.isEmpty ? 0 : 1]
+          .reduce((a, b) => a > b ? a : b);
+      await _genChannel.invokeMethod('setPracticeChars', chars);
+      await _genChannel.invokeMethod('setBoostLevel', level);
     } else {
       // Practice set / words: the profile's own set (rule 2).
       await _restorePracticeCharsAndBoost();
@@ -854,7 +874,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
             })),
             const SizedBox(height: 12),
             Text(
-                Strings.t('ac_group_of')
+                Strings.t(_playsGroups ? 'ac_group_of' : 'ac_word_of')
                     .replaceFirst('{n}', '${(_currentGroupIndex + 1).clamp(1, _blockSize)}')
                     .replaceFirst('{total}', '$_blockSize'),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
@@ -1003,7 +1023,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(Strings.t('ac_word_title').replaceFirst('{n}', '${wordIndex + 1}'),
+          Text(Strings.t(_playsGroups ? 'ac_group_title' : 'ac_word_title').replaceFirst('{n}', '${wordIndex + 1}'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 18,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
           Text(Strings.t('ac_mark_desc'),
@@ -1056,6 +1076,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _buildHeader(context),
       Expanded(
         child: Center(
+          child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Text('$pct %', style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 52,
                 fontVariations: const [FontVariation('wght', 600)],
@@ -1091,6 +1113,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
               ..._buildSuggestionRows(context),
             ],
           ]),
+          ),
         ),
       ),
       Padding(

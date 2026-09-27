@@ -519,3 +519,93 @@ accessibility labels for navigation, the learned paddle keycodes (113/114)
 for keying. `input keyevent` jitter makes keying reliable only at ~8 WPM, and
 the `monkey --port` server does not work on this phone. The HTML embeds the
 images (`--embed-resources`) so it stays a single file to hand out.
+
+## Listen: Boost Practice merged with the weak-character boost (2026-09-26)
+
+Before, a Listen block overwrote the generator's practiceChars/boostLevel with
+the weak chars (level 1, or 0 when there were none), so the profile's Practice
+Set + Boost Practice never applied in Listen. Now `AdaptiveCopyBody` pushes the
+**union** of the profile's practice chars and the included weak chars, at
+`max(ownLevel, weak ? 1 : 0)`, where ownLevel counts only if the practice set
+is non-empty (a level without chars must not push weak chars to Strong on its
+own — Strong was too extreme per 2026-09-23 feedback).
+
+Chosen over "practice set first, weak chars only if room" (the native boost is
+a re-draw weighting with no slots, so "room" has no meaning) and over a profile
+switch picking one of the two (extra setting, and the two don't conflict).
+Trade-off: a larger combined list dilutes the boost per char; weak chars can
+still be tapped out. Words/abbreviations stay unboosted, as in the generator.
+
+## Manual: HTML/PDF and screenshots only per release (2026-09-27)
+
+Rebuilding HTML/PDF (~3 MB PDFs per language in git) and retaking
+screenshots via adb on every user-visible change was too much overhead per
+the user. Rule 10 now splits it: the Markdown sources (`manual_de.md`,
+`manual_en.md`) are still updated in the same change, both languages; the
+build (`manual/build.sh`) and the screenshot retakes happen only when an
+official `vX.Y.Z` is cut. Screens that changed in between are tracked in
+`docs/STATUS.md` → "Manual: pending for next release", so nothing is
+forgotten at release time. Side effect: the committed HTML/PDF always match
+the last release (their title page already names version + commit), which
+is what gets handed out next to the release APK anyway. Broken internal links
+are now caught at release build instead of per change.
+
+## UI terminology glossary (2026-09-27)
+
+Prompted by outside feedback (Sia): the Word selection card said
+"Gruppen-Länge" and "Wörter pro Block" for the same unit, and a sweep found
+the same kind of drift across the app (three words for sending speed, two for
+high scores, "Punkte" meaning both dits and score, ~40 hard-coded English
+labels showing in the German UI). This glossary is binding for new UI text
+and for `manual/manual_{de,en}.md`; check it before adding a string.
+
+**Firmware menu names are translated, not copied** (user-confirmed
+2026-09-27 over "all English" and "translated label + firmware name as
+hint"). Supersedes the earlier
+convention (manual intro) of showing Morserino menu names like `Interchar
+Spc`, `Random Groups`, `Echo Prompt` verbatim in English: it was applied to
+only half the settings (`Tone Shift`, `Max # of Words`, `Echo Repeats`,
+`Length Rnd Gr` were already translated), which is exactly what made the UI
+inconsistent. The firmware name now appears once in the manual's mapping
+table (`Morserino-Begriffe` / `Morserino terms`), so M32 users can still
+find their way. Exceptions kept verbatim because they are proper names:
+keyer modes (Iambic A/B, Ultimatic, Non-Squeeze, Straight), Koch sequence
+names (M32, LCWO, CW Academy, LICW), CurtisB, product/screen names (CW
+Keyer, Echo Trainer, QSO Bot, WiFi Trx, Morsel, Morse Invaders, Memory
+Chain, vband), WPM, Koch, prosign mnemonics.
+
+| Concept | Deutsch | English | Not |
+|---|---|---|---|
+| Unit between two word gaps | Wort | word | — |
+| …when content is purely random characters | Gruppe | group | "Wort" for random groups |
+| Label counting those units | „Gruppen pro Block“ (Zufall) / „Wörter pro Block“ (sonst) | Groups / Words per block | fixed "Wörter" |
+| Length of a random group | Gruppenlänge | Group length | Gruppen-Länge, "(Zufall)" suffix |
+| Receiving training area / activity | Hören | Listen (area), listening (noun) | hearing |
+| Sending training area / activity | Geben | Send (area), sending (noun), key (verb, paddle action) | Senden (DE) |
+| Speed of your own sending | Gebetempo | sending speed | Gebe-Tempo, Geben-Tempo, answer/keying speed |
+| Speed of what is played | Tempo / Hörtempo | speed / listening speed | Hör-Tempo |
+| Time unit | Dit (Pl. Dits), Dit-Länge | dit(s) | Punkte |
+| Pause between characters | Zeichenabstand | character spacing | Interchar Spc |
+| Pause between words | Wortabstand | word spacing | InterWord Spc, Wortpause (as a setting name) |
+| The call sign | Rufzeichen | call sign (label: "Call signs"; "Calls" only in compact game tables) | Callsigns, Call Signs |
+| Adaptive block flow | adaptiver Modus | adaptive mode | Adaptive Copy, Adaptiv, Adapt. Rand. |
+| Own character selection | Übungsset | practice set | Practice Set (DE) |
+| Weighting it up | Übungsset bevorzugen: Aus/Mäßig/Stark | Boost practice set: Off/Moderate/Strong | Boost Practice |
+| Order of Koch characters | Koch-Reihenfolge | Koch sequence | — |
+| Echo prompt mode | Vorgabe: Ton/Anzeige/Beides | Prompt: Sound/Display/Both | Echo Prompt |
+| Characters used in random groups | Zeichen für Gruppen | Group characters | Random Groups |
+| Game score list | Bestenliste | High scores | Highscores (DE) |
+| Start/stop buttons | Start / Stopp | Start / Stop | English in DE UI |
+
+**Style rules.**
+- German compounds without hyphen (Gruppenlänge, Gebetempo, Tonversatz),
+  hyphen only next to abbreviations/foreign parts/names (Koch-Lektion,
+  Dit-Länge, CW-Decoder, Paddle-Tasten, Start-Level). "z. B." with space.
+- English: sentence case for all labels, buttons and section headers
+  ("Next block", "Tone softness"); ALL CAPS only where the design uses it
+  on purpose (status lines, big buttons). American spelling ("practice" as
+  verb too).
+- No redundant scope suffixes like "(Zufall)", "(nur Wörter)", "(Echo)" when
+  the surrounding section or "Gilt für" hint already says it.
+- All user-visible text goes through `Strings.t()`; a literal in a widget is
+  only OK for the proper names listed above.

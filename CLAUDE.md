@@ -54,15 +54,19 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
    next-3-steps, open questions.
 9. **Record new or changed architecture decisions in `docs/DECISIONS.md`**
    as they're made, not after the fact.
-10. **Keep the user manual current, in both languages, in the same change.**
-    Anything a user can see or do differently (feature, setting, default,
-    range, label, adaptive threshold/rule) updates `manual/manual_de.md`
-    **and** `manual/manual_en.md` together — same structure, same facts —
-    then `manual/build.sh` rebuilds HTML/PDF (it fails on broken links).
-    If a screen shown in a screenshot changes, retake it in both languages
-    (`manual/img/{de,en}/`, helpers in `manual/tools/`).
-    Describe behavior from the code, not from memory. A change isn't done
-    while the manual still describes the old behavior.
+10. **Keep the user manual text current, in both languages, in the same
+    change.** Anything a user can see or do differently (feature, setting,
+    default, range, label, adaptive threshold/rule) updates
+    `manual/manual_de.md` **and** `manual/manual_en.md` together — same
+    structure, same facts. Describe behavior from the code, not from memory.
+    A change isn't done while the Markdown still describes the old behavior.
+    **Do not** rebuild HTML/PDF or retake screenshots per change — that
+    happens only when cutting an official release (`vX.Y.Z`). Instead, if a
+    change alters a screen shown in a screenshot, add that image to the list
+    "Manual: pending for next release" in `docs/STATUS.md` (file name + why).
+    At release: retake every listed screenshot in both languages
+    (`manual/img/{de,en}/`, helpers in `manual/tools/`), run
+    `manual/build.sh` (fails on broken links), clear the list.
 
 ## Build / run
 

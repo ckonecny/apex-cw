@@ -45,9 +45,10 @@ class _TrainingSettingsBody extends StatefulWidget {
 }
 
 class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
-  static const _randomOptionLabels = [
-    'All Chars', 'Alpha', 'Numerals', 'Interpunct.', 'Pro Signs',
-    'Alpha + Num', 'Num+Interp.', 'Interp+ProSn', 'Alph+Num+Int', 'Num+Int+ProS',
+  // Same order as the firmware's Random Groups options.
+  static const _randomOptionKeys = [
+    'rnd_all', 'rnd_alpha', 'rnd_num', 'rnd_punct', 'rnd_prosigns',
+    'rnd_alpha_num', 'rnd_num_punct', 'rnd_punct_pro', 'rnd_alpha_num_punct', 'rnd_num_punct_pro',
   ];
 
   TrainingProfile? _prof;
@@ -78,7 +79,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _kochSeq = 0;
   String _customKochChars = 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
   int _licwCarouselStart = 0;
-  static const _kochSeqLabels = ['M32', 'LCWO', 'CW Academy', 'LICW', 'Custom'];
+  static List<String> get _kochSeqLabels =>
+      ['M32', 'LCWO', 'CW Academy', 'LICW', Strings.t('opt_custom')];
   // Adaptive Copy engine thresholds (global keys, as in Settings before).
   int _adaptiveLowPct = 70;
   int _adaptiveHighPct = 90;
@@ -109,7 +111,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
           : widget.profile == TrainingProfile.keyer
               ? (p.getInt('wpm') ?? 20)
               : (prof.getInt('wpm') ?? p.getInt('wpm') ?? 20);
-      _randomOption = (prof.getInt('randomOption') ?? 0).clamp(0, _randomOptionLabels.length - 1);
+      _randomOption = (prof.getInt('randomOption') ?? 0).clamp(0, _randomOptionKeys.length - 1);
       _groupLength = (prof.getInt('groupLength') ?? 5).clamp(2, 8);
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);
       _abbrevLengthMax = (prof.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
@@ -134,6 +136,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
 
   void _setInt(String f, int v) => _prof?.setInt(f, v);
 
+  String _dits(int n) => Strings.t('unit_dits').replaceFirst('{n}', '$n');
+
   Widget _hint(String text) {
     final c = AppColors.of(context);
     return Padding(
@@ -145,7 +149,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
 
   List<Widget> _content() {
     return [
-      SettingsSectionHeader('Practice Set'),
+      SettingsSectionHeader(Strings.t('charset_practice')),
       _hint(Strings.t('settings_practice_set_desc')),
       SettingsCard(children: [
         CharSetField(
@@ -157,15 +161,16 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
           },
           countLabel: Strings.t('settings_unique_chars_detected')
               .replaceFirst('{n}', '${parsePracticeChars(_practiceChars).length}'),
-          hint: 'e.g. QXZJ...',
+          hint: Strings.t('settings_example_chars'),
         ),
         const SettingsDivider(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             SegmentRow(
-              label: 'Boost Practice',
-              options: const ['Off', 'Moderate', 'Strong'],
+              label: Strings.t('settings_boost_practice'),
+              options: [Strings.t('opt_off'), Strings.t('opt_boost_moderate'),
+                  Strings.t('opt_boost_strong')],
               selected: _boostLevel,
               onChanged: (v) {
                 setState(() => _boostLevel = v);
@@ -189,8 +194,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         // InterWord Spc may never drop below InterChar Spc (see the note in
         // the Settings screen this was moved from).
         LabeledSlider(
-            label: 'Interchar Spc', value: _interCharSpace.toDouble(),
-            min: 3, max: 45, divisions: 42, display: '$_interCharSpace dits · ${ditsToSeconds(_interCharSpace, _wpm)} @ $_wpm WPM',
+            label: Strings.t('settings_char_spacing'), value: _interCharSpace.toDouble(),
+            min: 3, max: 45, divisions: 42, display: '${_dits(_interCharSpace)} · ${ditsToSeconds(_interCharSpace, _wpm)} @ $_wpm WPM',
             onChanged: (v) {
               final newChar = v.round();
               setState(() {
@@ -202,8 +207,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             }),
         const SettingsDivider(),
         LabeledSlider(
-            label: 'InterWord Spc', value: _interWordSpace.toDouble(),
-            min: 6, max: 105, divisions: 99, display: '$_interWordSpace dits · ${ditsToSeconds(_interWordSpace, _wpm)} @ $_wpm WPM',
+            label: Strings.t('settings_word_spacing'), value: _interWordSpace.toDouble(),
+            min: 6, max: 105, divisions: 99, display: '${_dits(_interWordSpace)} · ${ditsToSeconds(_interWordSpace, _wpm)} @ $_wpm WPM',
             onChanged: (v) {
               setState(() => _interWordSpace = v.round().clamp(_interCharSpace, 105));
               _setInt('interWordSpace', _interWordSpace);
@@ -222,9 +227,9 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _hint(Strings.t('settings_word_spacing_desc')),
       SettingsCard(children: [
         LabeledSlider(
-            label: 'InterWord Spc', value: _interWordSpace.toDouble(),
+            label: Strings.t('settings_word_spacing'), value: _interWordSpace.toDouble(),
             min: 6, max: 105, divisions: 99,
-            display: '$_interWordSpace dits · ${ditsToSeconds(_interWordSpace, _wpm)} @ $_wpm WPM',
+            display: '${_dits(_interWordSpace)} · ${ditsToSeconds(_interWordSpace, _wpm)} @ $_wpm WPM',
             onChanged: (v) {
               setState(() => _interWordSpace = v.round());
               _setInt('interWordSpace', _interWordSpace);
@@ -239,7 +244,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
     final n = kochSequenceChars(_kochSeq, _customKochChars,
         licwCarouselStart: _licwCarouselStart).length;
     return [
-      SettingsSectionHeader('Koch Sequence'),
+      SettingsSectionHeader(Strings.t('settings_koch_sequence')),
       const SizedBox(height: 4),
       Text(Strings.t('settings_koch_sequence_desc'),
           style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
@@ -290,7 +295,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _hint(Strings.t('settings_stop_each_desc')),
       SettingsCard(children: [
         ToggleRow(
-          label: Strings.t('settings_stop_each'),
+          label: Strings.t(_choice.content == ContentKind.random
+              ? 'settings_stop_each' : 'settings_stop_each_word'),
           value: _stopEach,
           onChanged: (v) {
             setState(() => _stopEach = v);
@@ -364,8 +370,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
     final rows = <Widget>[
       if (_choice.engine.usesRandomOption)
         SegmentRow(
-          label: 'Random Groups',
-          options: _randomOptionLabels,
+          label: Strings.t('settings_random_chars'),
+          options: [for (final k in _randomOptionKeys) Strings.t(k)],
           selected: _randomOption,
           onChanged: (v) {
             setState(() => _randomOption = v);
@@ -406,7 +412,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       ],
       if (rows.isNotEmpty) const SettingsDivider(),
       LabeledSlider(
-          label: Strings.t('settings_words_per_block'),
+          label: Strings.t(k == ContentKind.random
+              ? 'settings_groups_per_block' : 'settings_words_per_block'),
           value: (_maxWords == 0 ? 10 : _maxWords).clamp(1, 50).toDouble(),
           min: 1, max: 50, divisions: 49,
           display: '${_maxWords == 0 ? 10 : _maxWords.clamp(1, 50)}',
@@ -442,14 +449,14 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         LabeledSlider(
             label: Strings.t('settings_repeats'), value: _echoRepeats.toDouble(),
             min: 0, max: 7, divisions: 7,
-            display: _echoRepeats == 7 ? 'Forever' : '$_echoRepeats ×',
+            display: _echoRepeats == 7 ? Strings.t('opt_forever') : '$_echoRepeats ×',
             onChanged: (v) {
               setState(() => _echoRepeats = v.round());
               _p?.setInt('echoRepeats', _echoRepeats);
             }),
         const SettingsDivider(),
         SegmentRow(
-          label: 'Echo Prompt',
+          label: Strings.t('settings_echo_prompt'),
           options: [Strings.t('opt_sound'), Strings.t('opt_display'), Strings.t('opt_both')],
           selected: _echoDisplay - 1,
           onChanged: (v) {

@@ -549,7 +549,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
           const SizedBox(width: 8),
           FilledButton(
             onPressed: _running ? _stop : _start,
-            child: Text(_running ? 'Stop' : 'Start'),
+            child: Text(Strings.t(_running ? 'stop' : 'start')),
           ),
         ]),
       ),

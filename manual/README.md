@@ -36,8 +36,21 @@ Needs `pandoc`, and `weasyprint` plus the Lato font for the PDF
 The manual describes behavior, not code: every setting with its range and
 default, and how the adaptive logic decides. Any change that alters what a
 user sees or does — a feature, a setting, a default, a label, a threshold —
-updates **both** `manual_de.md` and `manual_en.md` in the same change, and
-the outputs are rebuilt with `./build.sh` (see rule 10 in `CLAUDE.md`).
-The two files keep the same chapter structure so they can be diffed side by
-side. If a change alters a screen that is shown in a screenshot, retake that
-screenshot in both languages (`tools/`).
+updates **both** `manual_de.md` and `manual_en.md` in the same change (see
+rule 10 in `CLAUDE.md`). The two files keep the same chapter structure so
+they can be diffed side by side.
+
+Between releases only the Markdown sources are kept current. The built
+HTML/PDF and the screenshots are refreshed **only when an official version
+is cut**, so the committed HTML/PDF always match the last release. If a
+change alters a screen that is shown in a screenshot, the image is not
+retaken right away; it is added to the list *"Manual: pending for next
+release"* in `docs/STATUS.md`.
+
+## At release time
+
+1. Retake every screenshot on that list, in both languages (`tools/`).
+2. Check that both Markdown files still match the app.
+3. Build from the tagged commit: `./build.sh` (title page shows version and
+   commit; the script fails on broken internal links).
+4. Clear the list in `docs/STATUS.md`.

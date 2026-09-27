@@ -287,7 +287,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                 height: 56,
                 child: AppButton(
                   height: 56,
-                  label: '▶  START',
+                  label: '▶  ${Strings.t('start').toUpperCase()}',
                   color: c.accent,
                   onTap: _adaptiveController.start,
                 ),

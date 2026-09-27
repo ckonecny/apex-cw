@@ -125,11 +125,11 @@ a { color: inherit; text-decoration: none; }
 <div class="title-page" data-title="Next CW Trainer – User Manual">
 <p class="t-name">Next CW Trainer</p>
 <p class="t-sub">User Manual</p>
-<p class="t-ver">App version 1.0.0 · September 2026 · c6b71c7</p>
+<p class="t-ver">App version 1.0.0 · September 2026 · 63909c2-dirty</p>
 </div>
 <div class="edition">
 <p><strong>Next CW Trainer – User Manual</strong>, for app version 1.0.0
-(source c6b71c7), September 2026.</p>
+(source 63909c2-dirty), September 2026.</p>
 <p>Next CW Trainer is an independent project. Its training concept and
 algorithms come from the Morserino-32 firmware by Willi Kraml, OE1WKL, and the
 Morserino-32 team; there is no other connection to them.</p>
@@ -757,10 +757,13 @@ of a random group, the app draws up to 3 times (Moderate) or 8 times
 (Strong) until it gets a character from the practice set. If that
 doesn’t happen, the last character drawn stays. The practice set
 characters come up more often, but the others don’t disappear.</p>
-<p>In <strong>Listen</strong>, the automatic boost of <a href="#weak-characters">weak characters</a> takes over this job during a
-block. The <strong>Boost Practice</strong> setting therefore mainly has
-an effect in <strong>Send</strong> (with <strong>All characters ·
-Random</strong>).</p>
+<p><strong>Boost Practice</strong> works in <strong>Listen</strong>
+(Koch lesson or All characters · Random) and in <strong>Send</strong>
+(All characters · Random). In <strong>Listen</strong> the practice set
+is combined with the <a href="#weak-characters">weak characters</a>: the
+characters from both lists are boosted, at the higher of the two levels.
+The more characters come together, the less each single one stands
+out.</p>
 <h3 data-number="4.5.3" id="spacing"><span class="header-section-number">4.5.3</span> Spacing</h3>
 <table>
 <thead>
@@ -1253,7 +1256,10 @@ blocks and sessions.</p>
 <li><strong>Listen:</strong> the weak characters already appear on the
 start view and on every result page. In the next block they are boosted
 at the <em>Moderate</em> level, with up to 3 draws per character (see <a href="#practice-set">Practice Set</a>). This only applies to random
-groups (Koch lesson or All characters · Random), not to words.</li>
+groups (Koch lesson or All characters · Random), not to words. If you
+have your own practice set characters and <strong>Boost
+Practice</strong> switched on, they are added, and the higher level
+applies (so Strong for all of them if you chose Strong).</li>
 <li><strong>Send:</strong> the weak characters appear on the result page
 when you practise <strong>Koch lesson · Random</strong>. With
 <strong>Next block</strong>, the ticked characters come up twice as
