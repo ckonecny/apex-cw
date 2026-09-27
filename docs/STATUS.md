@@ -4,6 +4,13 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private)
 Latest tagged build: v1.1.0 (2026-09-27: Hören typing mode, Koch character row, terminology pass). Previous: v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **Release v1.1.0 (2026-09-27):** tag `v1.1.0` on 117027c (versionName
+  1.1.0, Build 51); release APK built from the tag and installed on
+  63061JEBF01551. Manual screenshots retaken per the pending list, both
+  languages (light theme), plus new `hear_type`, `hear_type_retry`,
+  `hear_type_sent`, `char_practice`; `insert.py` synced with the current
+  captions/anchors; HTML/PDF rebuilt. The phone's own prefs/statistics were
+  backed up before and restored after (see `manual/tools/README.md`).
 - **Hören typing mode (2026-09-27): built and installed on 63061JEBF01551,
   user-tested OK (incl. correct answer and result page).** Concept + mockups (private artifact):
   https://claude.ai/artifact/733FKS7KDyoeJyiu1nmctd; decisions in
@@ -452,46 +459,7 @@ HTML/PDF and screenshots are refreshed when the next version is cut. List
 every screenshot (both `img/de/` and `img/en/`) whose screen changed since
 the last release, with the reason. Clear this list after the release build.
 
-- `hear_start.png` — WPM slider now starts at 10 (was 5).
-- `echo_start.png` — Geben/Hören sliders now start at 10 (was 5), already listed
-  if present; retake together.
-- `echo_sheet.png` — check: Geben spacing hint text changed (answer word
-  end follows the spacing, 2026-09-27); retake if the Abstände section is
-  in the shot.
-- `hear_result.png` — check: Listen result page middle part is now
-  scrollable (overflow fix 2026-09-26); retake if the layout looks different.
-- HTML/PDF: rebuild (Markdown changed since v1.0.0: Boost Practice merged
-  with weak-character boost; terminology pass 2026-09-27).
-- Terminology pass 2026-09-27, retake in **both** languages:
-  `hear_sheet1.png` (Koch-Reihenfolge, Übungsset, Übungsset bevorzugen),
-  `hear_sheet2.png` (Zeichen-/Wortabstand, Dits, Gruppenlänge, Gruppen pro
-  Block), `hear_sheet4.png` (adaptive mode texts/casing), `echo_sheet.png`
-  (Vorgabe, Tonversatz, Gebetempo, Endlos), `echo_answer.png` (status
-  "Geben …", Gruppe n / t), `hear_revealed.png` (hint text),
-  `hear_mark.png` ("Gruppe n" title), `echo_stats.png` (description),
-  `settings1.png` (Farbschema, Tonweichheit, Schreibweise, Dits),
-  `settings2.png` (Rufzeichen section), `settings3.png` (Analyse starten),
-  `inv_lobby.png` (Gebetempo, Bestenliste), `home.png` (Geben subtitle).
-  DE only: `morsel_lobby.png` (Starttempo), `wifi.png` (now German).
-  EN only: `echo_start.png` (Send slider), `echo_result.png` and
-  `hear_result.png` (Next block), `qso_sheet.png` (Difficulty),
-  `games.png` (subtitles), `char_sheet.png` (Practice with echo),
-  `hear_stats.png` (Statistics: listening).
-- Character tap 2026-09-27, retake in **both** languages: `char_sheet.png`
-  now shows the playback tile (tap a Koch character, capture mid-playback)
-  instead of the removed action sheet; `hear_start.png` and `echo_start.png`
-  (new hint "antippen: anhören · lange drücken: üben"; character
-  row now shows the full Koch sequence with locked characters dimmed).
-  New screenshot worth adding: `char_practice.png` (Üben: X page with a
-  keyed attempt) for the "Einzelzeichen üben" section.
-- Hören typing mode 2026-09-27, both languages: `hear_start.png` (two start
-  buttons Papier/Tippen, hint "Zuhören und mitschreiben."), `hear_sheet2.png`
-  (Ablauf: Versuche pro Wort, Vibration bei Tastendruck). New screenshots
-  for the section "Mit der Bildschirmtastatur mitschreiben": `hear_type.png`
-  (keyboard while typing), `hear_type_retry.png` (Versuch 2 von 2),
-  `hear_type_sent.png` (Gesendet with typed attempts). Take them with
-  `insert.py` anchors added; do not press Fertig with fake answers (writes
-  the phone's statistics).
+(empty — cleared with the v1.1.0 release build, 2026-09-27)
 
 ## Open questions
 

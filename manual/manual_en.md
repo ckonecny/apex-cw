@@ -364,6 +364,12 @@ is hidden to make room for the keyboard.
    characters wrong in the first attempt in red) with your attempts below
    it, then moves on.
 
+::: {.shots}
+![Typing: the keyboard, only the lesson's characters are active](img/en/hear_type.png)
+
+![Wrong: the word plays again, attempt 2 of 2](img/en/hear_type_retry.png)
+:::
+
 The confirmation tone (high = correct, low = wrong) follows the
 **Confirmation tone** setting in the ⚙ sheet of **Send**. How many attempts
 you get per word and whether the keys vibrate is set in the ⚙ sheet under
@@ -374,6 +380,10 @@ you get per word and whether the keys vibrate is set in the ⚙ sheet under
 typed ("— passed" for a pass). You can tap a group and change marks, for
 example when you only mistyped. **Done · *n* errors** saves and shows the
 usual result page.
+
+::: {.shots .one}
+![Sent after a typed block: first-attempt errors marked, your input below](img/en/hear_type_sent.png)
+:::
 
 **How it is counted:**
 
@@ -668,6 +678,10 @@ complete they turn green (**✓ Correct**) or red (**✗ You keyed:** with the
 character you keyed), and shortly after the character plays again. If you
 key nothing, it repeats after a pause. That is no error, and nothing is
 counted or added to any statistics. **Back** leaves the page.
+
+::: {.shots .one}
+![Practice: a character, keyed back correctly](img/en/char_practice.png)
+:::
 
 Set the length of the pause with the **gear** icon at the top right:
 **Pause before repeating**, 1–20 s (default **4 s**). It applies only to this

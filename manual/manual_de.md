@@ -371,6 +371,12 @@ Platz hat.
    (die im ersten Versuch falschen Zeichen rot) und darunter deine Versuche,
    dann geht es weiter.
 
+::: {.shots}
+![Tippen: die Tastatur, nur die Zeichen der Lektion sind aktiv](img/de/hear_type.png)
+
+![Falsch: das Wort kommt noch einmal, Versuch 2 von 2](img/de/hear_type_retry.png)
+:::
+
 Ob nach dem Prüfen ein kurzer Ton kommt (hoch = richtig, tief = falsch),
 stellst du im ⚙-Blatt von **Geben** unter **Bestätigungston** ein. Wie viele Versuche
 du pro Wort hast und ob die Tasten vibrieren, stellst du im ⚙-Blatt unter
@@ -381,6 +387,10 @@ du pro Wort hast und ob die Tasten vibrieren, stellst du im ⚙-Blatt unter
 was du getippt hast (bei Passen „— gepasst“). Du kannst eine Gruppe antippen
 und Markierungen ändern, etwa wenn du dich nur vertippt hast. **Fertig ·
 *n* Fehler** speichert und zeigt die gewohnte Ergebnisseite.
+
+::: {.shots .one}
+![Gesendet nach einem getippten Block: Fehler des ersten Versuchs markiert, darunter deine Eingaben](img/de/hear_type_sent.png)
+:::
 
 **So wird gezählt:**
 
@@ -682,6 +692,10 @@ rot (**✗ Gegeben:** mit dem Zeichen, das du gegeben hast), und kurz danach
 kommt das Zeichen erneut. Gibst du nichts, wird es nach einer Pause
 wiederholt. Das ist kein Fehler, und nichts wird gezählt oder in eine
 Statistik übernommen. Mit **Zurück** verlässt du die Seite.
+
+::: {.shots .one}
+![Üben: ein Zeichen, nachgegeben und richtig](img/de/char_practice.png)
+:::
 
 Die Länge der Pause stellst du über das **Zahnrad** oben rechts ein:
 **Pause bis zur Wiederholung**, 1–20 s (Voreinstellung **4 s**). Sie gilt nur
