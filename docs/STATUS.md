@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private).
-Latest tagged build: v1.0.0 (2026-09-26, first build handed out to other users).
+Latest tagged build: v1.1.0 (2026-09-27: Hören typing mode, Koch character row, terminology pass). Previous: v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
 - **Hören typing mode (2026-09-27): built and installed on 63061JEBF01551,
