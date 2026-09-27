@@ -364,8 +364,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // result screen's suggestion row — reuses the same generator/tone channels
   // and done-event plumbing _startBlock()'s per-group playback already uses,
   // so no new native surface is needed. Deliberately not routed through
-  // EchoTrainerScreen(fixedTarget: ...) (the existing "Learn New Chr" flow):
-  // that navigates away from Adaptive Copy, which is exactly what this is
+  // CharPracticeScreen (the "Learn New Chr" flow): that navigates away from Adaptive Copy, which is exactly what this is
   // meant to avoid.
   Future<void> _previewNewChar(String ch) async {
     if (_previewingNewChar) return;

@@ -231,19 +231,27 @@ very few of them.
 
 ### Setting the Koch lesson
 
-The **KOCH** slider sets the lesson. Below it you see all characters active in
-that lesson. Their colour shows the kind of character: letters, digits and
-punctuation/prosigns are coloured differently.
+The **KOCH** slider sets the lesson. Below it you see every character of the
+Koch sequence. The characters active in this lesson are highlighted, and
+their color shows the kind of character: letters, digits and
+punctuation/prosigns are colored differently. Characters not yet unlocked by
+the lesson are dimmed.
 
-**Tap a character** to get to know it:
+To get to know a character (this works for the dimmed ones too, so you can
+listen ahead to later lessons):
 
-- **Listen** plays the character three times at the current speed.
-- **Practice with echo** opens a single-character drill. The character plays
-  over and over and you key it back with the paddle (see
+- **Tap** it to play it three times at the current speed. A tile with the
+  character and its Morse code appears in the middle of the screen, and the
+  rest of the screen is dimmed. The dits and dahs start out gray and light up
+  exactly while they sound. Each repetition starts from gray again. After the
+  third repetition the tile closes by itself. A tap anywhere on the screen
+  (or the back button) stops playback at once.
+- **Long press** it to open the practice page for that character: listen and,
+  if you like, key it back (see
   [Practicing a single character](#practicing-a-single-character)).
 
 ::: {.shots .one}
-![Tapping a Koch character](img/en/char_sheet.png)
+![Tapping a Koch character: tile with its Morse code](img/en/char_sheet.png)
 :::
 
 Usually you don't need to raise the lesson by hand. The block flow suggests
@@ -554,11 +562,22 @@ for example to drill new characters.
 
 ## Practicing a single character
 
-In Listen or Send, tap a Koch character and choose **Practice with echo**.
-This opens a drill for that one character. It plays over and over, and you
-key it back. The drill has no blocks and no end, and it isn't counted in the
-statistics. If you don't answer, the character simply repeats. **Back**
-leaves the drill.
+In Listen or Send, long press a Koch character (locked ones too) to open
+**Practice: X**. In the middle is the same tile as for a tap: the character
+and its Morse code, whose dits and dahs light up while it plays. The
+character plays over and over.
+
+After each play you **can** key the character back, with the touch paddle at
+the bottom or a connected key, but you don't have to. Your dits and dahs
+appear below the line in the tile as you key them. Once the character is
+complete they turn green (**✓ Correct**) or red (**✗ You keyed:** with the
+character you keyed), and shortly after the character plays again. If you
+key nothing, it repeats after a pause. That is no error, and nothing is
+counted or added to any statistics. **Back** leaves the page.
+
+Set the length of the pause with the **gear** icon at the top right:
+**Pause before repeating**, 1–20 s (default **4 s**). It applies only to this
+practice page, not to Send.
 
 This corresponds to "Learn New Chr" or "Preview Char" on the Morserino.
 

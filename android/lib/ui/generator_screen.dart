@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../content/cw_content.dart';
 import '../content/char_stats.dart';
 import 'char_stats_screen.dart';
-import 'echo_trainer_screen.dart';
+import 'char_practice_screen.dart';
 import 'adaptive_copy_body.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
@@ -13,7 +13,7 @@ import '../l10n/strings.dart';
 import '../content/training_profile.dart';
 import '../content/charset_content.dart';
 import 'widgets/charset_header.dart';
-import 'widgets/char_actions_sheet.dart';
+import 'widgets/char_playback_overlay.dart';
 import 'widgets/training_settings_sheet.dart';
 
 class GeneratorScreen extends StatefulWidget {
@@ -149,15 +149,15 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     if (_adaptiveActive) _adaptiveController.resetToIdle();
   }
 
-  // Tap on a Koch character: listen to it or practise it with the echo
-  // drill (docs/training/P7, decision 6). The drill is the former Learn New
-  // Chr / Preview Char (Koch::getNewChar()/getKochChar()).
-  Future<void> _onCharTap(String ch) => showCharActionsSheet(context,
+  // Koch character: tap plays it with the code overlay, long press opens the
+  // echo drill (docs/training/P7, decision 6). The drill is the former Learn
+  // New Chr / Preview Char (Koch::getNewChar()/getKochChar()).
+  Future<void> _onCharTap(String ch) => showCharPlayback(context,
       ch: ch, outputCase: _outputCase,
-      onListen: () => playCharThrice(ch, wpm: _wpm, interWordSpace: _interWordSpace),
-      onEcho: () => Navigator.push(context, MaterialPageRoute(builder: (_) => EchoTrainerScreen(
-        fixedTarget: ch, title: Strings.t('char_echo_title').replaceFirst('{ch}', ch.toUpperCase()),
-      ))));
+      play: () => playCharThrice(ch, wpm: _wpm, interWordSpace: _interWordSpace));
+
+  Future<void> _onCharLongPress(String ch) => Navigator.push(context, MaterialPageRoute(
+      builder: (_) => CharPracticeScreen(ch: ch)));
 
   // ── Build ──
 
@@ -220,6 +220,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                 onKochLevelChanged: (v) { setState(() => _kochLevel = v); _savePrefs(); },
                 outputCase: _outputCase,
                 onCharTap: _onCharTap,
+                onCharLongPress: _onCharLongPress,
                 practiceChars: _practiceChars,
                 onPracticeCharsChanged: (v) async {
                   _practiceChars = v;

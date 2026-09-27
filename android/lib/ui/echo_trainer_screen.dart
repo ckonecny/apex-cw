@@ -12,10 +12,11 @@ import '../content/adaptive_copy_engine.dart';
 import '../content/echo_suggestions.dart';
 import 'adaptive_copy_body.dart' show SuggestionRow;
 import 'char_stats_screen.dart';
+import 'char_practice_screen.dart';
 import '../content/training_profile.dart';
 import '../content/charset_content.dart';
 import 'widgets/charset_header.dart';
-import 'widgets/char_actions_sheet.dart';
+import 'widgets/char_playback_overlay.dart';
 
 import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
@@ -42,15 +43,10 @@ class WordResult {
       this.firstWrongIndex);
 }
 
+// Learn New Chr / Preview Char (single-character drill) lives in
+// CharPracticeScreen since 2026-09-27, no longer as a mode of this screen.
 class EchoTrainerScreen extends StatefulWidget {
-  // When set, locks onto this single character instead of picking a random
-  // target: the same char repeats every round (M32 Koch Trainer "Learn New
-  // Chr" / "Preview Char" — both funnel into the Echo Trainer engine drilling
-  // one fixed character; see Koch::getNewChar()/getKochChar()). No start/end
-  // markers and no Max # of Words in this mode, matching KOCH_LEARN/PREVIEW.
-  final String? fixedTarget;
-  final String? title;
-  const EchoTrainerScreen({super.key, this.fixedTarget, this.title});
+  const EchoTrainerScreen({super.key});
 
   @override
   State<EchoTrainerScreen> createState() => _EchoTrainerScreenState();
@@ -104,8 +100,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   String _firstAttempt = '';
   bool _showResult = false;
   int get _blockSize => _maxWords == 0 ? 10 : _maxWords.clamp(1, 50);
-  // The single-character drill (fixedTarget) runs endless, without blocks.
-  bool get _blockActive => widget.fixedTarget == null;
 
   // Touch paddle: 0=Iambic A, 1=Iambic B, 2=Ultimatic, 3=Non-Squeeze, 4=Straight
   int _keyerMode = 0;
@@ -629,14 +623,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     // Like the Hören block: wait 2 s before the first word so there is time to
     // get ready (replaces the firmware's "vvv<ka>" start marker).
-    if (widget.fixedTarget == null) {
-      await _applyPromptConfig();
-      setState(() => _preparing = true);
-      await Future.delayed(const Duration(seconds: 2));
-      if (!mounted) return;
-      setState(() => _preparing = false);
-      if (!_sessionActive) return;
-    }
+    await _applyPromptConfig();
+    setState(() => _preparing = true);
+    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+    setState(() => _preparing = false);
+    if (!_sessionActive) return;
 
     await _playWord(fresh: true);
   }
@@ -776,24 +768,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     _decoder.flush();
 
-    // Learn New Chr / Preview Char (fixedTarget): giving no answer at all is
-    // optional and silently ignored — no error, no stats, no feedback shown —
-    // then it just repeats. Mirrors the real device's EVAL_FEEDBACK, which
-    // skips the ERR branch specifically for KOCH_LEARN/KOCH_PREVIEW when
-    // echoResponse is empty (an actual — even wrong — answer still evaluates
-    // normally, same as the regular Echo Trainer).
-    if (widget.fixedTarget != null && _attempt.trim().isEmpty) {
-      Timer(const Duration(milliseconds: 400), () {
-        if (mounted && _sessionActive) _playWord(fresh: false);
-      });
-      return;
-    }
-
     _total++;
 
     final ok = _attempt.trim().toUpperCase() == _targetPlain.toUpperCase();
     if (_repeats == 1) _firstAttempt = _attempt.trim();
-    if (_blockActive && _repeats == 1) _applyBlockFeedback(_targetPlain, _attempt);
+    if (_repeats == 1) _applyBlockFeedback(_targetPlain, _attempt);
 
     setState(() => _state = ok ? _State.correct : _State.wrong);
     if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', ok);
@@ -811,7 +790,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // word has been presented _echoRepeats times or fewer so far — matches
     // REPEAT_WORD's `repeats <= posEchoRepeats.value` check in m32_v6.ino.
     final alwaysRepeat = _echoRepeats == 7;
-    final exhausted = widget.fixedTarget == null && !alwaysRepeat && _repeats > _echoRepeats;
+    final exhausted = !alwaysRepeat && _repeats > _echoRepeats;
     if (exhausted) {
       _recordWord(WordOutcome.failed);
       // Reveal the word, then move on — matches the REPEAT_WORD "goto
@@ -828,7 +807,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   }
 
   void _recordWord(WordOutcome outcome) {
-    if (widget.fixedTarget != null) return;
     final t = _targetPlain.toUpperCase(), a = _firstAttempt.toUpperCase();
     var wrong = -1;
     if (a != t) {
@@ -841,19 +819,17 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Moves on to the next word, or ends the session if Max # of Words has
   // been reached — matches fetchNewWord()'s posMaxSequence handling.
   Future<void> _advance() async {
-    if (widget.fixedTarget == null) {
-      _wordCounter++;
-      if (_wordCounter >= _blockSize) {
-        await _computeSuggestions();
-        if (mounted) setState(() {
-          _state = _State.idle;
-          _showResult = true;
-        });
-        _sessionActive = false;
-        _genSub?.cancel(); _genSub = null;
-        _keyerChannel.invokeMethod('stop');
-        return;
-      }
+    _wordCounter++;
+    if (_wordCounter >= _blockSize) {
+      await _computeSuggestions();
+      if (mounted) setState(() {
+        _state = _State.idle;
+        _showResult = true;
+      });
+      _sessionActive = false;
+      _genSub?.cancel(); _genSub = null;
+      _keyerChannel.invokeMethod('stop');
+      return;
     }
     await _playWord(fresh: true);
   }
@@ -873,8 +849,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   void _dahUp()   => _setTouchInputs(dah: false);
 
   Future<String> _fetchTarget() async {
-    if (widget.fixedTarget != null) return widget.fixedTarget!;
-
     final e = _choice.engine;
     // Koch + random: weighted draw by weak chars (former "Adapt. Rand."),
     // a GROUP like getRandomChars(posRandomLength, ...) in m32_v6.ino.
@@ -906,8 +880,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       valueListenable: Strings.lang,
       builder: (context, _, __) => PopScope(
       // While a block runs, back returns to the idle view instead of leaving
-      // (same as the Hören block view). The single-char drill just leaves.
-      canPop: _state == _State.idle || widget.fixedTarget != null,
+      // (same as the Hören block view).
+      canPop: _state == _State.idle,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
         _stopSession();
@@ -916,13 +890,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       backgroundColor: c.background,
       appBar: AppBar(
         backgroundColor: c.background,
-        title: appBarTitle(c, widget.title ?? Strings.t('block_give')),
+        title: appBarTitle(c, Strings.t('block_give')),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMuted),
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
-          if (_state == _State.idle && widget.fixedTarget == null)
+          if (_state == _State.idle)
             IconButton(
               icon: Icon(Icons.bar_chart_outlined, color: c.textMuted),
               tooltip: Strings.t('char_stats_title_echo'),
@@ -939,9 +913,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       ),
       body: Column(
         children: [
-          // ── Character set + content (hidden while running or when locked
-          // to a fixed target) ─────────────────────────────────────────────
-          if (widget.fixedTarget == null && _state == _State.idle && !_showResult)
+          // ── Character set + content (hidden while running) ───────────────
+          if (_state == _State.idle && !_showResult)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: CharsetHeader(
@@ -957,21 +930,19 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                   final pf = await TrainingProfile.open(TrainingProfile.echo);
                   await pf.setString('practiceChars', v);
                 },
-                onCharTap: (ch) => showCharActionsSheet(context,
+                onCharTap: (ch) => showCharPlayback(context,
                     ch: ch, outputCase: _outputCase,
-                    onListen: () async {
+                    play: () async {
                       await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});
                       await playCharThrice(ch, wpm: _wpm, interWordSpace: _interWordSpace);
-                    },
-                    onEcho: () => Navigator.push(context, MaterialPageRoute(builder: (_) => EchoTrainerScreen(
-                      fixedTarget: ch,
-                      title: Strings.t('char_echo_title').replaceFirst('{ch}', ch.toUpperCase()),
-                    )))),
+                    }),
+                onCharLongPress: (ch) => Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => CharPracticeScreen(ch: ch))),
               ),
             ),
 
           if (_showResult) Expanded(child: _buildBlockResult(c)) else ...[
-          if (_blockActive && _sessionActive) _buildBlockProgress(c),
+          if (_sessionActive) _buildBlockProgress(c),
           // ── One word at a time: idle hint or practice view ──────────────
           Expanded(child: _state == _State.idle
               ? _buildIdle(c)

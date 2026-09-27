@@ -30,8 +30,9 @@ class CharsetHeader extends StatelessWidget {
   final ValueChanged<int> onKochLevelChanged;
   // 0=lower, 1=UPPER — display only.
   final int outputCase;
-  // Tap on a Koch character (Anhören / Mit Echo üben, Phase 7e).
+  // Koch character: tap plays it, long press opens the echo drill (Phase 7e).
   final ValueChanged<String>? onCharTap;
+  final ValueChanged<String>? onCharLongPress;
   // Practice Set characters, editable right on the start screen.
   final String practiceChars;
   final ValueChanged<String>? onPracticeCharsChanged;
@@ -45,6 +46,7 @@ class CharsetHeader extends StatelessWidget {
     required this.onKochLevelChanged,
     this.outputCase = 1,
     this.onCharTap,
+    this.onCharLongPress,
     this.practiceChars = '',
     this.onPracticeCharsChanged,
   });
@@ -89,19 +91,26 @@ class CharsetHeader extends StatelessWidget {
           child: Wrap(
             spacing: 6, runSpacing: 6,
             children: [
-              for (final ch in kochActiveChars(kochLevel, kochSequence))
+              // The whole sequence: characters beyond the current lesson are
+              // shown inactive (dimmed, no border) but can still be tapped
+              // or long-pressed to listen/practice ahead.
+              for (final (i, ch) in kochSequence.indexed)
                 GestureDetector(
                   onTap: onCharTap == null ? null : () => onCharTap!(ch),
-                  child: Container(
-                    width: 30, height: 32, alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: c.surfaceAlt,
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: c.border),
+                  onLongPress: onCharLongPress == null ? null : () => onCharLongPress!(ch),
+                  child: Opacity(
+                    opacity: i < kochLevel ? 1.0 : 0.35,
+                    child: Container(
+                      width: 30, height: 32, alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: i < kochLevel ? c.surfaceAlt : Colors.transparent,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: c.border),
+                      ),
+                      child: Text(outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase(),
+                          style: TextStyle(fontFamily: 'CwMono', fontSize: 15,
+                              color: i < kochLevel ? charTypeColor(ch, c) : c.textMuted)),
                     ),
-                    child: Text(outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase(),
-                        style: TextStyle(fontFamily: 'CwMono', fontSize: 15,
-                            color: charTypeColor(ch, c))),
                   ),
                 ),
             ],

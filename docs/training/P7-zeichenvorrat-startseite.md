@@ -228,7 +228,7 @@ diese Spec (Ergebnis).
       "Klassisch", kein Endlosablauf, kein Adaptive Speed.
 - [ ] Hören mit Alle Zeichen/Übungsset: Ergebnis und Tempo-/Abstands-
       Vorschläge, keine Zeichen-Freischaltung.
-- [ ] Koch-Zeichen antippen → Anhören / Mit Echo üben.
+- [ ] Koch-Zeichen antippen → Anhören mit Code-Kachel; lange drücken → Mit Echo üben (geändert 2026-09-27).
 - [ ] Koch-Freischaltung, Boost und Schwachzeichen funktionieren in Hören
       und Geben wie zuvor.
 - [ ] Alte Einstellungen (Lektion, Tempo, Abstände, Statistik) sind nach

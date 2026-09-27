@@ -91,10 +91,11 @@ class MainActivity : FlutterActivity() {
                     generator.onWord    = { w  -> runOnUiThread { events.success(mapOf("type" to "word",    "value" to w))  } }
                     generator.onDone    = { maxWords -> runOnUiThread { events.success(mapOf("type" to "done", "value" to (if (maxWords) "maxWords" else ""))) } }
                     generator.onWaiting = {      runOnUiThread { events.success(mapOf("type" to "waiting", "value" to ""))  } }
+                    generator.onElement = { idx, on -> runOnUiThread { events.success(mapOf("type" to (if (on) "elementOn" else "elementOff"), "value" to "$idx")) } }
                 }
                 override fun onCancel(args: Any?) {
                     genEventSink = null
-                    generator.onChar = null; generator.onWord = null; generator.onDone = null; generator.onWaiting = null
+                    generator.onChar = null; generator.onWord = null; generator.onDone = null; generator.onWaiting = null; generator.onElement = null
                 }
             })
 
@@ -173,6 +174,8 @@ class MainActivity : FlutterActivity() {
                         result.success(null)
                     }
                     "stop"    -> { generator.stop(); keyer.start(); result.success(null) }
+                    // Abort a playOne() without touching the keyer (tap on the character playback tile).
+                    "stopOne" -> { generator.stop(); result.success(null) }
                     "playOne" -> {
                         generator.playOne(call.arguments as? String ?: "")
                         result.success(null)

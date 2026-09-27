@@ -55,6 +55,29 @@ Latest tagged build: v1.0.0 (2026-09-26, first build handed out to other users).
   Memory Chain's own Koch lesson, decoder settings icon). Not yet reviewed
   by the user.
 
+- **Koch character tap → playback tile (2026-09-27), installed and checked
+  on 63061JEBF01551, not yet user-tested:** Sia's suggestion. Tap on a Koch
+  character in Hören/Geben plays it 3× with a centered tile (screen dimmed)
+  showing the character and its code; each element lights up while it
+  sounds, reset per repetition, tile closes itself; a tap anywhere or Back
+  cancels at once (native `stopOne`, which unlike `stop` leaves the keyer
+  alone). Long press opens the
+  echo drill. The Anhören/Mit Echo üben bottom sheet is gone. Native
+  generator now emits `elementOn`/`elementOff` events per dit/dah (see
+  DECISIONS.md "Element events"). Verified on device: sync, auto-close,
+  long press, tap/Back cancel, replay after cancel, and a Hören block
+  started afterwards still advances. The row now shows the whole Koch
+  sequence; characters beyond the lesson are dimmed but still tappable /
+  long-pressable (user request, verified on device).
+  Long press now opens a new `CharPracticeScreen` instead of the Echo
+  Trainer's fixedTarget drill: same tile, replays in a loop after a pause
+  set via the gear icon (own pref, 1–20 s, default 4 s); keying back is optional with right/wrong
+  feedback, silence just replays, no counting, no statistics (user request).
+  Verified on device: correct/wrong feedback, replay after answer, replay
+  after silence (2 s pause measured as ~3.2 s cycle incl. playback), locked
+  character, gear sheet. The Echo Trainer's old `fixedTarget` mode was
+  removed; a Geben session was re-checked on device afterwards.
+
 - **UI terminology pass (2026-09-27), installed on 63061JEBF01551, not yet
   user-tested:** triggered by Sia's feedback ("Gruppen-Länge" vs "Wörter pro
   Block" for the same unit). Glossary + style rules in DECISIONS.md ("UI
@@ -420,6 +443,13 @@ the last release, with the reason. Clear this list after the release build.
   `hear_result.png` (Next block), `qso_sheet.png` (Difficulty),
   `games.png` (subtitles), `char_sheet.png` (Practice with echo),
   `hear_stats.png` (Statistics: listening).
+- Character tap 2026-09-27, retake in **both** languages: `char_sheet.png`
+  now shows the playback tile (tap a Koch character, capture mid-playback)
+  instead of the removed action sheet; `hear_start.png` and `echo_start.png`
+  (new hint "antippen: anhören · lange drücken: üben"; character
+  row now shows the full Koch sequence with locked characters dimmed).
+  New screenshot worth adding: `char_practice.png` (Üben: X page with a
+  keyed attempt) for the "Einzelzeichen üben" section.
 
 ## Open questions
 

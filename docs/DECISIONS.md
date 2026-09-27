@@ -609,3 +609,48 @@ Chain, vband), WPM, Koch, prosign mnemonics.
   the surrounding section or "Gilt für" hint already says it.
 - All user-visible text goes through `Strings.t()`; a literal in a widget is
   only OK for the proper names listed above.
+
+## Koch character tap: playback tile, long press for echo (2026-09-27)
+
+Replaces the Anhören / Mit Echo üben bottom sheet (P7 decision 6), per Sia's
+suggestion, user-confirmed: tap plays the character 3× with an overlay tile
+(character + code, elements light up in sync); long press opens the echo
+drill directly. The tile closes after the last repetition; a tap anywhere
+or Back cancels at once (user-requested). Cancel uses a new generator method
+`stopOne` (generator.stop() only), because the existing `stop` also
+restarts the keyer, which the Geben start screen keeps stopped.
+
+The row shows the whole Koch sequence; characters beyond the lesson are
+dimmed but tap/long press still work (user request), so one can listen ahead.
+Only the display changed: content generation still uses kochActiveChars().
+
+**Long press → CharPracticeScreen** (user request, replaces the Echo
+Trainer's fixedTarget drill, i.e. the port of Learn New Chr / Preview Char).
+The character replays in a loop (user-corrected: no tap-to-replay). After
+each play a pause runs, its own setting `charPracticePause` (1–20 s, default
+4 s, gear icon on the page). First tried with the Echo Trainer's start
+deadline (1400 ms + inter-char + inter-word/3 + Echo Think Time), but that is
+~12 s at the defaults, too long here, and needs vary per person (user
+feedback); a separate key keeps Geben's think time untouched. Keying back
+within the pause is optional. A keyed character gets right/wrong feedback (and the confirm tone
+if enabled), then replays after 1.2 s / 1.5 s as in the Echo Trainer;
+silence replays after 400 ms, like the firmware's KOCH_LEARN/KOCH_PREVIEW
+empty-answer branch. Nothing is counted or written to CharStatsStore/block
+history. The keyer is stopped
+while the prompt plays so prompt and keying never overlap. Settings come
+from the Geben profile (wpm, answer speed cap) and the global keyer/tone
+prefs, pushed on entry (rule 2).
+
+**Element events.** `CwGenerator.playChar()` fires `onElement(idx, on)` at
+each element's key-down/key-up; MainActivity forwards them on the generator
+event channel as `elementOn`/`elementOff` (value = element index within the
+character). The display is driven by these rather than by Dart-side timing,
+so it cannot drift from the audio. Emitted in every mode; existing
+listeners ignore unknown types.
+
+**One stream per channel.** A second `receiveBroadcastStream()` on the same
+EventChannel replaces the first one's platform message handler, so only the
+newest subscriber receives events. `char_playback_overlay.dart` therefore
+shares one stream between the tile and `playCharThrice()` (found on device:
+the tile stayed grey).
+

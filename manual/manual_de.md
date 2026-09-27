@@ -236,19 +236,27 @@ Lektionen gibt es deshalb nur sehr wenige davon.
 ### Koch-Lektion einstellen
 
 Mit dem Regler **KOCH** stellst du die Lektion ein. Darunter siehst du alle
-Zeichen, die in dieser Lektion aktiv sind. Die Farbe zeigt die Art des
-Zeichens: Buchstaben, Ziffern und Satzzeichen/Prosigns sind unterschiedlich
-eingefärbt.
+Zeichen der Koch-Reihenfolge. Die in dieser Lektion aktiven Zeichen sind
+hervorgehoben; die Farbe zeigt die Art des Zeichens: Buchstaben, Ziffern und
+Satzzeichen/Prosigns sind unterschiedlich eingefärbt. Die noch nicht
+freigeschalteten Zeichen der späteren Lektionen sind abgeblendet.
 
-**Tippe ein Zeichen an**, um es kennenzulernen:
+So lernst du ein Zeichen kennen – das geht auch mit den abgeblendeten, du
+kannst also schon in spätere Lektionen hineinhören:
 
-- **Anhören** – das Zeichen wird dreimal im aktuellen Tempo gespielt.
-- **Mit Echo üben** – ein Einzelzeichen-Drill: Das Zeichen wird immer wieder
-  gespielt und du gibst es mit dem Paddle zurück (siehe
+- **Antippen** – das Zeichen wird dreimal im aktuellen Tempo gespielt. Dabei
+  erscheint in der Bildschirmmitte eine Kachel mit dem Zeichen und seinem
+  Morsecode; der Rest des Bildschirms wird abgedunkelt. Die Punkte und
+  Striche sind zunächst grau und leuchten genau dann auf, wenn sie erklingen.
+  Jede Wiederholung beginnt wieder grau. Nach der dritten Wiederholung
+  verschwindet die Kachel von selbst. Ein Tipp irgendwo auf den Bildschirm
+  (oder die Zurück-Taste) bricht die Wiedergabe sofort ab.
+- **Lange drücken** – öffnet die Übungsseite für dieses Zeichen: anhören und,
+  wenn du willst, mit der Taste nachgeben (siehe
   [Einzelzeichen üben](#einzelzeichen-üben)).
 
 ::: {.shots .one}
-![Ein Koch-Zeichen antippen](img/de/char_sheet.png)
+![Ein Koch-Zeichen antippen: Kachel mit dem Morsecode](img/de/char_sheet.png)
 :::
 
 Normalerweise musst du die Lektion nicht von Hand erhöhen: Der Blockablauf
@@ -566,11 +574,23 @@ Geben zu kommen, etwa zum Einschleifen neuer Zeichen.
 
 ## Einzelzeichen üben
 
-Tippst du in Hören oder Geben ein Koch-Zeichen an und wählst **Mit Echo
-üben**, öffnet sich ein Drill nur für dieses Zeichen. Es wird immer wieder
-gespielt, du gibst es zurück. Der Drill hat keine Blöcke und kein Ende, und er
-wird nicht in die Statistik gezählt. Gibst du nichts, wird das Zeichen einfach
-wiederholt. Mit **Zurück** verlässt du den Drill.
+Drückst du in Hören oder Geben lange auf ein Koch-Zeichen (auch auf ein noch
+nicht freigeschaltetes), öffnet sich **Üben: X**. In der Mitte steht dieselbe
+Kachel wie beim Antippen: das Zeichen und sein Morsecode, dessen Punkte und
+Striche beim Abspielen aufleuchten. Das Zeichen wird immer wieder gespielt.
+
+Nach jedem Abspielen **kannst** du das Zeichen mit der Taste nachgeben – mit
+dem Touch-Paddle unten oder einer angeschlossenen Taste –, musst aber nicht.
+Unter dem Strich in der Kachel erscheinen deine Punkte und Striche, sobald du
+sie gibst. Ist das Zeichen fertig, färben sie sich grün (**✓ Richtig**) oder
+rot (**✗ Gegeben:** mit dem Zeichen, das du gegeben hast), und kurz danach
+kommt das Zeichen erneut. Gibst du nichts, wird es nach einer Pause
+wiederholt. Das ist kein Fehler, und nichts wird gezählt oder in eine
+Statistik übernommen. Mit **Zurück** verlässt du die Seite.
+
+Die Länge der Pause stellst du über das **Zahnrad** oben rechts ein:
+**Pause bis zur Wiederholung**, 1–20 s (Voreinstellung **4 s**). Sie gilt nur
+für diese Übungsseite, nicht für Geben.
 
 Das entspricht „Learn New Chr“ bzw. „Preview Char“ am Morserino.
 

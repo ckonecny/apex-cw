@@ -69,6 +69,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
     var onWord:    ((String) -> Unit)? = null   // each complete word
     var onDone:    ((Boolean) -> Unit)? = null  // playback finished; param = stopped because "Max # of Words" was reached
     var onWaiting: (() -> Unit)?       = null   // paused after a word, awaiting paddle choice (stopAfterItem)
+    var onElement: ((Int, Boolean) -> Unit)? = null // element idx within the current char; true=key-down, false=key-up
 
     // Set true by the generator thread after a word when stopAfterItem is on; cleared by
     // choosePaddle(). Mirrors the real M32: dit=repeat word, dah=next word (see morseGenerator
@@ -520,8 +521,10 @@ class CwGenerator(private val tone: CwTonePlugin) {
             if (!running) break
             val toneDur = if (sym == '.') ditMs() else dahMs()
             CwAudioNative.setPlaying(true)
+            if (myGen == generation) onElement?.invoke(idx, true)
             sleepMs(toneDur)
             CwAudioNative.setPlaying(false)
+            if (myGen == generation) onElement?.invoke(idx, false)
             // inter-element gap (skip after last symbol — inter-char gap follows)
             if (idx < morse.length - 1) sleepMs(ditMs())
         }
