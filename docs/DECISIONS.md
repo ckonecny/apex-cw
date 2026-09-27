@@ -692,4 +692,10 @@ Gebetempo cap (`echoAnswerWpmMax`, 0 = same as Hören) now starts at
 page slider, the ⚙-sheet slider and the −/+ stepper on the result page. The
 sliders' leftmost notch (9) stands for "same as Hören". Stored values 1–9
 are raised to 10 on load (`kGiveWpmCap`). App-only setting, no firmware
-counterpart to check against. The Hören speed range (5–60) is unchanged.
+counterpart to check against.
+
+Extended the same day (user request): the listening speed of Hören and Geben
+also starts at 10 (`TrainingProfile.minWpm`, `clampWpm()` on load; also the
+home tiles, CharPracticeScreen and the ⚙ sheet's seconds display);
+`kGiveWpmMin` now refers to it. CW Keyer, WiFi Trx, QSO Bot and the games
+keep 5–60.

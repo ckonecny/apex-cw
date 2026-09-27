@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String _profileInfo(TrainingProfile pf) {
-    final wpm = pf.getInt('wpm') ?? 20;
+    final wpm = TrainingProfile.clampWpm(pf.getInt('wpm'));
     final cs = pf.getInt('charset');
     final koch = cs == null || cs == CharSet.koch.index;
     final lesson = pf.getInt('kochLevel');

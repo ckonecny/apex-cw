@@ -273,7 +273,7 @@ wurden. Beim Übungsset gibt es nur den Inhalt **Zufall**.
 
 ## Tempo
 
-Der Regler **WPM** unter der Übungsfläche stellt das Zeichentempo ein (5 bis 60
+Der Regler **WPM** unter der Übungsfläche stellt das Zeichentempo ein (10 bis 60
 WPM). Die Pausen stellst du im ⚙-Blatt unter **Abstände** ein oder direkt auf
 der Start- und Ergebnisseite mit **Abstand anpassen**.
 
@@ -455,7 +455,7 @@ ebenfalls wie bei Hören.
 
 Darunter stellst du mit zwei Reglern die Tempi ein:
 
-- **Hören** – das Tempo, in dem dir das Wort vorgespielt wird.
+- **Hören** – das Tempo, in dem dir das Wort vorgespielt wird (10 bis 60 WPM).
 - **Geben** – das höchste Tempo, in dem deine Antwort erwartet wird (siehe
   [Gebetempo](#gebetempo)). „wie Hören“ heißt: dasselbe Tempo.
 

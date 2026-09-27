@@ -111,7 +111,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
           ? (p.getInt('trxWpm') ?? p.getInt('wpm') ?? 20)
           : widget.profile == TrainingProfile.keyer
               ? (p.getInt('wpm') ?? 20)
-              : (prof.getInt('wpm') ?? p.getInt('wpm') ?? 20);
+              : TrainingProfile.clampWpm(prof.getInt('wpm') ?? p.getInt('wpm'));
       _randomOption = (prof.getInt('randomOption') ?? 0).clamp(0, _randomOptionKeys.length - 1);
       _groupLength = (prof.getInt('groupLength') ?? 5).clamp(2, 8);
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);

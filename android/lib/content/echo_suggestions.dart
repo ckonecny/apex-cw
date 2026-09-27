@@ -5,11 +5,11 @@
 // still open). Proposals only — nothing here changes any setting.
 import 'adaptive_copy_engine.dart';
 import 'char_stats.dart';
+import 'training_profile.dart';
 
 /// Lowest Gebe-Tempo cap (echoAnswerWpmMax) the UI offers; 0 = same as
-/// Hören. App choice, not firmware (no separate answer speed there): below
-/// 10 WPM keying is too slow to be useful (user, 2026-09-27).
-const int kGiveWpmMin = 10;
+/// Hören. Same floor as the listening speed (TrainingProfile.minWpm).
+const int kGiveWpmMin = TrainingProfile.minWpm;
 
 /// A stored cap, sanitised: 0 stays "same as Hören", older values below
 /// [kGiveWpmMin] are raised to it.

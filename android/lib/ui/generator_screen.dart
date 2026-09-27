@@ -67,7 +67,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     final p = await SharedPreferences.getInstance();
     final pf = await TrainingProfile.open(TrainingProfile.hear);
     if (mounted) setState(() {
-      _wpm            = pf.getInt('wpm')            ?? 20;
+      _wpm            = TrainingProfile.clampWpm(pf.getInt('wpm'));
       _kochLevel      = pf.getInt('kochLevel')      ?? 5;
       _choice         = CharsetChoice.load(pf);
       _practiceChars  = pf.getString('practiceChars') ?? '';
@@ -270,7 +270,8 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
             child: Column(children: [
               _SliderRow(
                 label: 'WPM', value: _wpm.toDouble(),
-                min: 5, max: 60, divisions: 55,
+                min: TrainingProfile.minWpm.toDouble(), max: 60,
+                divisions: 60 - TrainingProfile.minWpm,
                 onChanged: (v) {
                   setState(() => _wpm = v.round());
                   _savePrefs();
@@ -327,6 +328,9 @@ class _SliderRow extends StatelessWidget {
           thumbColor: c.accent,
           overlayColor: c.accent.withOpacity(0.1),
           trackHeight: 3,
+          // No step dots: Flutter draws them only when the track is long
+          // enough, so rows of different width looked different.
+          tickMarkShape: SliderTickMarkShape.noTickMark,
         ),
         child: Slider(value: value, min: min, max: max,
             divisions: divisions, onChanged: onChanged),

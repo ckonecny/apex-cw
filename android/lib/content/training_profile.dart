@@ -17,6 +17,14 @@ class TrainingProfile {
   /// Firmware default 7 dits for keying; the trainings keep the app's 40.
   static int defaultInterWord(String kind) => (kind == keyer || kind == trx) ? 7 : 40;
 
+  /// Lowest speed Hören and Geben offer (listening and Gebetempo alike).
+  /// App choice: below 10 WPM is uselessly slow (user, 2026-09-27). Keyer,
+  /// Trx, QSO Bot and games keep their own 5–60 range.
+  static const minWpm = 10;
+
+  /// A stored training wpm, sanitised: older values below [minWpm] are raised.
+  static int clampWpm(int? v) => (v ?? 20).clamp(minWpm, 60);
+
   static const _intFields = [
     'wpm',
     'kochLevel', 'groupLength', 'randomOption', 'maxWords', 'wordLengthMax',

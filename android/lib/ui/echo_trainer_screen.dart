@@ -244,7 +244,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     final p = await SharedPreferences.getInstance();
     final pf = await TrainingProfile.open(TrainingProfile.echo);
     if (mounted) setState(() {
-      _wpm            = pf.getInt('wpm')            ?? 20;
+      _wpm            = TrainingProfile.clampWpm(pf.getInt('wpm'));
       _kochLevel      = pf.getInt('kochLevel')      ?? 5;
       _echoThinkTime  = p.getInt('echoThinkTime')  ?? 8;
       _echoRepeats    = (p.getInt('echoRepeats')   ?? 3).clamp(0, 7);
@@ -424,7 +424,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // matching suggestion of the finished block.
   Future<void> _setHearWpm(int v) async {
     setState(() {
-      _wpm = v.clamp(5, 60);
+      _wpm = v.clamp(TrainingProfile.minWpm, 60);
       _currentWpm = _wpm;
       _pendWpm = null;
     });
@@ -995,7 +995,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(children: [
               _SliderRow(label: Strings.t('block_hear'), value: _wpm.toDouble(),
-                  min: 5, max: 60, divisions: 55,
+                  min: TrainingProfile.minWpm.toDouble(), max: 60,
+                  divisions: 60 - TrainingProfile.minWpm,
                   onChanged: (v) { setState(() => _wpm = v.round()); _savePrefs(); }),
               // Leftmost notch (kGiveWpmMin - 1) = "same as Hören".
               _SliderRow(label: Strings.t('block_give'),
@@ -1342,11 +1343,15 @@ class _SliderRow extends StatelessWidget {
           thumbColor: c.accent,
           overlayColor: c.accent.withOpacity(0.1),
           trackHeight: 3,
+          // No step dots: Flutter draws them only when the track is long
+          // enough, so rows of different width looked different.
+          tickMarkShape: SliderTickMarkShape.noTickMark,
         ),
         child: Slider(value: value, min: min, max: max,
             divisions: divisions, onChanged: onChanged),
       )),
-      SizedBox(width: display == null ? 40 : 84, child: Text(display ?? value.round().toString(),
+      // Same width in both rows so Hören and Geben tracks line up.
+      SizedBox(width: 84, child: Text(display ?? value.round().toString(),
           textAlign: TextAlign.right,
           style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
               color: c.accent))),

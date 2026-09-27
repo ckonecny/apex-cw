@@ -268,7 +268,7 @@ only offers the **Random** content.
 
 ## Speed
 
-The **WPM** slider below the practice area sets the character speed (5 to 60
+The **WPM** slider below the practice area sets the character speed (10 to 60
 WPM). You set the pauses in the ⚙ sheet under **Spacing**, or directly on the
 start and result pages with **Adjust spacing**.
 
@@ -447,7 +447,7 @@ in Listen.
 
 Below that, two sliders set the speeds:
 
-- **Listen** is the speed at which the word is played to you.
+- **Listen** is the speed at which the word is played to you (10 to 60 WPM).
 - **Send** is the highest speed at which your answer is expected (see
   [Sending speed](#sending-speed)). "same as prompt" means the same speed.
 

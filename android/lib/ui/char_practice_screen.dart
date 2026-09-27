@@ -91,7 +91,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
   Future<void> _init() async {
     final p = await SharedPreferences.getInstance();
     final pf = await TrainingProfile.open(TrainingProfile.echo);
-    _wpm          = pf.getInt('wpm') ?? 20;
+    _wpm          = TrainingProfile.clampWpm(pf.getInt('wpm'));
     _pauseS         = (p.getInt(_pauseKey) ?? _pauseDefault).clamp(1, 20);
     _answerWpmMax = kGiveWpmCap(p.getInt('echoAnswerWpmMax') ?? 0);
     _pitch        = p.getInt('pitch') ?? 600;

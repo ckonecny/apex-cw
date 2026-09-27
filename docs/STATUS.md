@@ -4,6 +4,11 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private)
 Latest tagged build: v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- Hören + Geben: listening speed also starts at 10 WPM (was 5); stored
+  lower values are raised. Verified on 63061JEBF01551 (Geben Hören slider
+  leftmost = 10). Keyer/Trx/QSO Bot/games unchanged (5–60).
+  Speed sliders (Hören page, Geben Hören/Geben) drawn without step dots and
+  with equal value-column width, so both Geben rows look the same.
 - Geben: Gebetempo (answer speed cap) now starts at 10 WPM instead of 5
   (start page slider, ⚙ sheet, result stepper); leftmost notch = "wie
   Hören"; old values below 10 are raised. Manuals updated. Verified on
@@ -433,7 +438,8 @@ HTML/PDF and screenshots are refreshed when the next version is cut. List
 every screenshot (both `img/de/` and `img/en/`) whose screen changed since
 the last release, with the reason. Clear this list after the release build.
 
-- `echo_start.png` — Geben slider now starts at 10 (was 5), already listed
+- `hear_start.png` — WPM slider now starts at 10 (was 5).
+- `echo_start.png` — Geben/Hören sliders now start at 10 (was 5), already listed
   if present; retake together.
 - `echo_sheet.png` — check: Geben spacing hint text changed (answer word
   end follows the spacing, 2026-09-27); retake if the Abstände section is
