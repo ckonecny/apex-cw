@@ -190,14 +190,22 @@ writes them in angle brackets:
 | `<err>` | Error: eight dits (`........`) |
 
 In Listen (block flow), prosigns from **Group characters** are shown and graded
-as two separate letters: `<ka>` appears as "K A".
+as two separate letters: `<ka>` appears as "K A". When copying on the
+on-screen keyboard you type them as two letters as well.
 
 # Listen: practice copying
 
 **Listen** is the app's CW Generator and Koch Trainer. The app plays a
-**block** of groups or words, and you copy on paper. Nothing is shown on
-screen while it plays. Afterwards the app reveals the text and you tap what
-you got wrong. You then get a result with suggestions for the next block.
+**block** of groups or words, and you copy it, in one of two ways:
+
+- **Paper**: you copy on paper. Nothing is shown on screen while it plays.
+  Afterwards the app reveals the text and you tap what you got wrong.
+- **Type**: for on the go. The app plays one word after another and you type
+  it on the app's own on-screen keyboard (see
+  [Copying on the on-screen keyboard](#copying-on-the-on-screen-keyboard)).
+
+Either way you get the same result with suggestions for the next block at the
+end, and both count towards the same Listen statistics.
 
 ## Choosing the character set and content
 
@@ -274,7 +282,11 @@ start and result pages with **Adjust spacing**.
 
 ## How a block runs
 
-1. Press **Start**. After one second of "Get ready …" the block begins.
+At the bottom of the start view are two start buttons: **Paper** and
+**Type**. The one you used last is highlighted. This section describes
+**Paper**; **Type** follows further down.
+
+1. Press **Paper**. After one second of "Get ready …" the block begins.
 2. The app plays the groups one after another, with the set word spacing in
    between. Only "Group *n* of *N*" (for words "Word *n* of *N*") and the speed are
    shown, not the text.
@@ -313,7 +325,73 @@ called **Stop after each word**), the app waits after every group or word:
 - **Dah** (right paddle) or **NEXT** plays the next group.
 
 This matches "Stop&lt;Next&gt;Rep" on the Morserino. It's handy at the start,
-when you want to hear a group several times.
+when you want to hear a group several times. The setting only applies to
+**Paper**; when typing, the app waits after every word anyway.
+
+## Copying on the on-screen keyboard
+
+With **Type** you copy on the app's own keyboard on the display instead of on
+paper, meant for on the go. It is not the phone's system keyboard.
+
+**The keyboard** is a QWERTY keyboard with a digit row above it. Every key is
+always in the same place. Only the characters the chosen character set can
+contain are active (bright, tappable); the others are only outlined and do
+nothing. If the character set contains punctuation (`. , : - / = ? @ +`), it
+gets a row of its own. While you press a key, a bubble above it shows the
+character large. **⌫** deletes the last character. **Pass** is at the bottom
+left, **⏎ Check** at the bottom right. While the block runs, the WPM slider
+is hidden to make room for the keyboard.
+
+**How a word runs:**
+
+1. Press **Type**. After one second of "Get ready …" the app plays the first
+   group (or word). "playing …" is shown below the answer line.
+2. You can type along while it plays or wait until it has finished; both
+   work. There is no time limit.
+3. **Checking:** as soon as you have typed as many characters as the word has,
+   the app checks automatically (after the word has ended plus a short
+   0.4 s, during which you can still correct with ⌫). **⏎ Check** hands in
+   earlier, for example when you missed a character. If you press ⏎ while
+   the word is still playing, the app checks right after the word ends.
+4. **✓ Correct**: the next word comes after about one second. Whatever you
+   type during that second counts for the next word.
+5. **✗ Wrong**: the word is played again at once, with an empty field. Your
+   previous attempt is shown small and struck through above it, without a
+   hint where the error was. "Attempt *n* of *max*" shows which attempt this
+   is.
+6. **Pass**: at any time, also while the word plays. After the last wrong
+   attempt or a pass, the app shows the solution for 2 seconds (the
+   characters wrong in the first attempt in red) with your attempts below
+   it, then moves on.
+
+The confirmation tone (high = correct, low = wrong) follows the
+**Confirmation tone** setting in the ⚙ sheet of **Send**. How many attempts
+you get per word and whether the keys vibrate is set in the ⚙ sheet under
+**Flow** (see [below](#flow)).
+
+**After the block**, **Sent** appears as with Paper. The errors of your
+**first** attempt are already marked red, and under each group is what you
+typed ("— passed" for a pass). You can tap a group and change marks, for
+example when you only mistyped. **Done · *n* errors** saves and shows the
+usual result page.
+
+**How it is counted:**
+
+- Only the **first** attempt of each word counts; the second is easier
+  because you hear the word a second time.
+- The app compares character by character, but not rigidly position by
+  position: if you left out a character, only that character is wrong, not
+  every one after it. Example: played `tqr5u`, typed `tq5u` → only `r` is
+  wrong. A character heard wrong is wrong (`cd9al` as `cb9al` → `d` wrong).
+  An extra typed character does not make any played character wrong.
+- **Pass** in the first attempt means every character of that word is wrong,
+  like a blank on paper.
+- When typing, the pauses between words don't matter. The app therefore only
+  suggests changes to the **character spacing** (see
+  [Pauses and speed](#pauses-and-speed)).
+
+The arrow at the top left cancels the block; nothing is saved then. The
+keyboard is portrait-only for now.
 
 ## The result page
 
@@ -415,7 +493,9 @@ to: …" tells you which combination you are setting up.
 
 | Setting | Meaning | Values |
 |---|---|---|
-| Stop after each group / Stop after each word | Wait after each one: dit = repeat, dah = next | **Off** / On |
+| Stop after each group / Stop after each word | **Paper** only: wait after each one, dit = repeat, dah = next | **Off** / On |
+| Attempts per word | **Type** only: how often you may try a word; 1 = no second attempt | 1 / **2** / 3 |
+| Vibrate on key press | **Type** only: short vibration on every active key | Off / **On** |
 
 ### Adaptive mode
 
@@ -634,7 +714,9 @@ A character's **accuracy** is 100 % minus its moving error rate.
 **What counts as an attempt?**
 
 - **Listen:** every character played in a block. It is correct unless you
-  marked it as an error.
+  marked it as an error. When copying on the on-screen keyboard, the app marks
+  the errors of the **first** attempt of each word itself (see
+  [Copying on the on-screen keyboard](#copying-on-the-on-screen-keyboard)).
 - **Send:** only the **first** attempt of each word. The characters before
   the first error count as correct, and the first wrong character counts as
   an error. The characters after it aren't counted, because it's unclear
@@ -704,6 +786,11 @@ The app always changes the **pauses** first, and only then the speed:
 - **Lengthen:** character spacing and word spacing each get 1 dit longer, but
   never longer than at the start of the session. In Listen that is when you
   opened the training. In Send it is the value from the ⚙ sheet.
+
+When copying on the **on-screen keyboard**, the app only changes the
+**character spacing**; the word spacing stays, because the app waits for you
+after every word there anyway. The pauses then count as normal as soon as the
+character spacing is at 3 dits.
 
 **While you are still working through the Koch sequence, the app neither
 shortens the pauses nor raises the speed.** You should be able to concentrate

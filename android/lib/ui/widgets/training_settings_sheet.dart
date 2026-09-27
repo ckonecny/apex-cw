@@ -68,6 +68,9 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _abbrevLengthMax = 0;
   int _maxWords = 0;
   bool _stopEach = false;
+  // Hören typing mode (hear profile).
+  int _typeAttempts = 2;
+  bool _typeHaptic = true;
   // Echo flow prefs (global keys, as in Settings before).
   int _echoThinkTime = 8;
   int _echoRepeats = 3;
@@ -118,6 +121,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _abbrevLengthMax = (prof.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _maxWords = (prof.getInt('maxWords') ?? 0).clamp(0, 250);
       _stopEach = (prof.getInt('stopEach') ?? 0) == 1;
+      _typeAttempts = (prof.getInt('typeAttempts') ?? 2).clamp(1, 3);
+      _typeHaptic = (prof.getInt('typeHaptic') ?? 1) == 1;
       _echoThinkTime = p.getInt('echoThinkTime') ?? 8;
       _echoRepeats = (p.getInt('echoRepeats') ?? 3).clamp(0, 7);
       _echoDisplay = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
@@ -302,6 +307,28 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
           onChanged: (v) {
             setState(() => _stopEach = v);
             _setInt('stopEach', v ? 1 : 0);
+          },
+        ),
+      ]),
+      const SizedBox(height: 16),
+      _hint(Strings.t('settings_type_desc')),
+      SettingsCard(children: [
+        SegmentRow(
+          label: Strings.t('settings_type_attempts'),
+          options: const ['1', '2', '3'],
+          selected: _typeAttempts - 1,
+          onChanged: (v) {
+            setState(() => _typeAttempts = v + 1);
+            _setInt('typeAttempts', _typeAttempts);
+          },
+        ),
+        const SettingsDivider(),
+        ToggleRow(
+          label: Strings.t('settings_type_haptic'),
+          value: _typeHaptic,
+          onChanged: (v) {
+            setState(() => _typeHaptic = v);
+            _setInt('typeHaptic', v ? 1 : 0);
           },
         ),
       ]),

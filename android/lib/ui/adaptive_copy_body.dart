@@ -1,5 +1,8 @@
-// Adaptive Copy Mode — listen-and-copy-on-paper flow: send a block of
-// groups, reveal, tap errors, show a result. See docs/ADAPTIVE-COPY.md.
+// Adaptive Copy Mode — listen-and-copy flow: send a block of groups,
+// reveal, tap errors, show a result. See docs/ADAPTIVE-COPY.md.
+// Two ways to copy (DECISIONS.md "Hören: typing mode"): on paper (the whole
+// block plays, errors are tapped afterwards) or typed on CwKeyboard (one
+// word per step, graded from the first attempt, errors pre-marked).
 //
 // Tempo/spacing/Koch-level auto-adaptation is driven by AdaptiveCopyEngine
 // (adaptive_copy_engine.dart) at the end of each block. The engine only
@@ -16,6 +19,8 @@ import '../content/char_stats.dart';
 import '../content/training_profile.dart';
 import '../content/cw_content.dart' show kochActiveChars, parsePracticeChars;
 import '../content/adaptive_copy_engine.dart';
+import '../content/copy_grading.dart';
+import 'widgets/cw_keyboard.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import '../util/char_color.dart';
@@ -23,15 +28,34 @@ import '../l10n/strings.dart';
 
 enum _Phase { idle, sending, revealed, result }
 
+// Typing mode, per word: input = typing/waiting for the answer, wrong =
+// short pause after a wrong attempt before the replay, correct = ✓ shown,
+// solution = word shown after the last attempt or a pass.
+enum _TypeState { input, wrong, correct, solution }
+
+// Characters the generator can draw for "all characters" random groups, as
+// CwGenerator.kt randomCharsAlphabet (prosigns arrive as their two letters,
+// see _fetchGroup()), and its randomOption ranges.
+const _randomAlphabet = [
+  'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S',
+  'T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9',
+  '.',',',':','-','/','=','?','@','+','AS','KA','KN','SK','VE','BK',
+];
+(int, int) _randomOptionRange(int option) => switch (option) {
+  1 => (0, 25), 2 => (26, 35), 3 => (36, 44), 4 => (44, 50), 5 => (0, 35),
+  6 => (26, 44), 7 => (36, 50), 8 => (0, 44), 9 => (26, 50), _ => (0, 50),
+};
+
 // Lets the parent (GeneratorScreen) reset an in-progress session back to
 // the idle/start phase — e.g. from the app bar back button, which during
 // practice should return to the Koch Trainer setup screen rather than
 // leaving the screen entirely. Bound in _AdaptiveCopyBodyState.initState().
 class AdaptiveCopyController {
   VoidCallback? _resetToIdle;
-  VoidCallback? _start;
+  void Function(bool typing)? _start;
   void resetToIdle() => _resetToIdle?.call();
-  void start() => _start?.call();
+  /// typing: false = copy on paper, true = type on the on-screen keyboard.
+  void start({bool typing = false}) => _start?.call(typing);
 }
 
 class AdaptiveCopyBody extends StatefulWidget {
@@ -67,7 +91,12 @@ class AdaptiveCopyBody extends StatefulWidget {
   // and reset back to idle from its own back button — see
   // AdaptiveCopyController above.
   final ValueChanged<bool>? onActiveChanged;
+  // true while the typing keyboard is on screen — the parent hides its WPM
+  // slider then, to leave room for the keys.
+  final ValueChanged<bool>? onKeyboardChanged;
   final AdaptiveCopyController? controller;
+  // Profile's practice set: the keyboard's active keys for that charset.
+  final String practiceChars;
 
   const AdaptiveCopyBody({
     super.key,
@@ -90,7 +119,9 @@ class AdaptiveCopyBody extends StatefulWidget {
     this.onKochLevelChanged,
     this.onSpacingChanged,
     this.onActiveChanged,
+    this.onKeyboardChanged,
     this.controller,
+    this.practiceChars = '',
   });
 
   @override
@@ -185,11 +216,30 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // moment to get ready before the first group actually plays.
   bool _preparing = false;
 
+  // ── Typing mode ──
+  bool _typing = false;          // this session copies on the keyboard
+  int _typeAttempts = 2;         // ⚙ "attempts per word", 1–3
+  bool _typeHaptic = true;
+  bool _confirmTone = true;      // global, set in Geben's ⚙ sheet
+  _TypeState _typeState = _TypeState.input;
+  String _input = '';
+  String _target = '';           // word being asked
+  String _shownWord = '';        // word shown in the correct/solution state
+  bool _playing = false;
+  int _attemptNo = 1;
+  // Per sent group: every attempt (null = passed), and the outcome
+  // (0 = right first time, 1 = right after a retry, 2 = failed/passed).
+  List<List<String?>> _typedAttempts = [];
+  List<int> _outcomes = [];
+  Completer<String?>? _submitGate;
+  bool _submitRequested = false; // ⏎ pressed while the word still played
+  Timer? _checkTimer;
+
   @override
   void initState() {
     super.initState();
     widget.controller?._resetToIdle = _resetToIdle;
-    widget.controller?._start = _startBlock;
+    widget.controller?._start = (typing) => _startBlock(typing: typing);
     _loadInitialWeakChars();
   }
 
@@ -224,6 +274,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   @override
   void dispose() {
     _sessionActive = false;
+    _checkTimer?.cancel();
+    _completeSubmit(null);
     _genSub?.cancel();
     _genChannel.invokeMethod('stop');
     _genChannel.invokeMethod('setPaddleChoice', false);
@@ -241,6 +293,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // screen, without tearing down this whole widget.
   void _resetToIdle() {
     _sessionActive = false;
+    _checkTimer?.cancel();
+    _completeSubmit(null);
+    widget.onKeyboardChanged?.call(false);
     _cancelChoice();
     _awaitingChoice = false;
     _genSub?.cancel();
@@ -294,7 +349,11 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     if (_pendingInterChar == null || _pendingInterWord == null) return;
     setState(() {
       _pendingInterChar = (_pendingInterChar! + delta).clamp(3, _startInterCharSpace);
-      _pendingInterWord = (_pendingInterWord! + delta).clamp(7, _startInterWordSpace);
+      // Typing mode: the word gap has no effect there, only the char gap
+      // is suggested (DECISIONS.md "Hören: typing mode").
+      if (!_typing) {
+        _pendingInterWord = (_pendingInterWord! + delta).clamp(7, _startInterWordSpace);
+      }
     });
   }
 
@@ -342,7 +401,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
 
   void _onGenEvent(dynamic raw) {
     final ev = raw as Map;
-    if (ev['type'] == 'done') _doneCompleter?.complete();
+    if (ev['type'] == 'done' && !(_doneCompleter?.isCompleted ?? true)) {
+      _doneCompleter!.complete();
+    }
     if (ev['type'] == 'paddle') _choose(ev['value'] == 'dit');
   }
 
@@ -391,8 +452,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // instead, since calling widget.onWpmChanged/onSpacingChanged and then
   // immediately reading widget.wpm/widget.interCharSpace in the same
   // synchronous call would still see the pre-rebuild values.
-  Future<void> _startBlock({int? wpm, int? interCharSpace, int? interWordSpace}) async {
+  Future<void> _startBlock({int? wpm, int? interCharSpace, int? interWordSpace, bool? typing}) async {
     if (_phase == _Phase.sending) return;
+    if (typing != null) _typing = typing;
     _activeWpm = wpm ?? widget.wpm;
     final activeInterChar = interCharSpace ?? widget.interCharSpace;
     final activeInterWord = interWordSpace ?? widget.interWordSpace;
@@ -406,8 +468,13 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _markingWordIndex = null;
       _currentGroupIndex = 0;
       _paused = false;
+      _typedAttempts = [];
+      _outcomes = [];
+      _input = '';
+      _typeState = _TypeState.input;
     });
     if (wasIdle) widget.onActiveChanged?.call(true);
+    if (_typing) widget.onKeyboardChanged?.call(true);
 
     // Brief pause before the first group actually plays, so the user can
     // get ready — mirrors the same "Start" delay in GeneratorScreen._start().
@@ -461,6 +528,15 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
 
     _genSub?.cancel();
     _genSub = _genEvents.receiveBroadcastStream().listen(_onGenEvent);
+
+    if (_typing) {
+      final pf = await TrainingProfile.open(TrainingProfile.hear);
+      _typeAttempts = (pf.getInt('typeAttempts') ?? 2).clamp(1, 3);
+      _typeHaptic = (pf.getInt('typeHaptic') ?? 1) == 1;
+      _confirmTone = p.getBool('confirmTone') ?? true;
+      await _runTypingBlock();
+      return;
+    }
 
     for (var i = 0; i < _blockSize; i++) {
       if (!_sessionActive) return;
@@ -518,7 +594,168 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   }
 
   void _revealBlock() {
+    if (_typing) widget.onKeyboardChanged?.call(false);
     if (mounted) setState(() => _phase = _Phase.revealed);
+  }
+
+  // ── Typing mode flow ──
+  // One word per step: play it, wait for the answer (typed during or after
+  // the word), check. Wrong → the word is replayed with an empty field, up to
+  // _typeAttempts attempts; pass or the last wrong attempt → solution for 2 s.
+  // Only the first attempt is graded (as in Geben), per character via
+  // gradeTyped(); its errors pre-mark the "Gesendet" page. Timings as Geben.
+  Future<void> _runTypingBlock() async {
+    var carry = '';
+    for (var i = 0; i < _blockSize; i++) {
+      if (!_sessionActive) return;
+      final group = await _fetchGroup();
+      if (!_sessionActive || !mounted) return;
+      setState(() {
+        _sentGroups.add(group);
+        _typedAttempts.add([]);
+        _currentGroupIndex = i;
+        _attemptNo = 1;
+        _typeState = _TypeState.input;
+        _input = carry; // keys typed while the previous ✓ was shown
+      });
+      carry = '';
+      String? first;
+      var outcome = 2;
+      for (var a = 1; a <= _typeAttempts; a++) {
+        if (a > 1) {
+          setState(() { _attemptNo = a; _input = ''; _typeState = _TypeState.input; });
+        }
+        final typed = await _playAndAwaitAnswer(group);
+        if (!_sessionActive || !mounted) return;
+        setState(() => _typedAttempts[i].add(typed));
+        if (a == 1) first = typed ?? '';
+        if (typed == null) break; // passed
+        final ok = typed == group;
+        if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', ok);
+        if (ok) {
+          outcome = a == 1 ? 0 : 1;
+          break;
+        }
+        if (a < _typeAttempts) {
+          setState(() => _typeState = _TypeState.wrong);
+          await Future.delayed(const Duration(milliseconds: 800));
+          if (!_sessionActive || !mounted) return;
+        }
+      }
+      final flags = gradeTyped(group, first ?? '');
+      setState(() {
+        _outcomes.add(outcome);
+        for (var k = 0; k < flags.length; k++) {
+          if (!flags[k]) _wrongPositions.add('$i:$k');
+        }
+        _shownWord = group;
+        _input = '';
+        _typeState = outcome == 2 ? _TypeState.solution : _TypeState.correct;
+      });
+      await Future.delayed(Duration(milliseconds: outcome == 2 ? 2000 : 1000));
+      if (!_sessionActive || !mounted) return;
+      if (outcome != 2) carry = _input;
+    }
+    if (!_sessionActive || !mounted) return;
+    _revealBlock();
+  }
+
+  // Plays the word and resolves with the answer (null = passed). The answer
+  // is taken once the word has finished: at once after ⏎, or 0.4 s after
+  // the input reached the word's length (⌫ in that time cancels it).
+  Future<String?> _playAndAwaitAnswer(String word) async {
+    final gate = Completer<String?>();
+    _submitGate = gate;
+    _submitRequested = false;
+    _target = word;
+    setState(() => _playing = true);
+    final done = Completer<void>();
+    _doneCompleter = done;
+    await _genChannel.invokeMethod('playOne', word);
+    await Future.any([done.future, gate.future]);
+    if (mounted) setState(() => _playing = false);
+    _maybeScheduleCheck();
+    final answer = await gate.future;
+    _checkTimer?.cancel();
+    if (_submitGate == gate) _submitGate = null;
+    return answer;
+  }
+
+  void _completeSubmit(String? answer) {
+    final g = _submitGate;
+    if (g != null && !g.isCompleted) g.complete(answer);
+  }
+
+  void _maybeScheduleCheck() {
+    _checkTimer?.cancel();
+    final gate = _submitGate;
+    if (gate == null || gate.isCompleted || _playing || _typeState != _TypeState.input) return;
+    if (_submitRequested) {
+      gate.complete(_input);
+      return;
+    }
+    if (_target.isNotEmpty && _input.length >= _target.length) {
+      _checkTimer = Timer(const Duration(milliseconds: 400), () {
+        if (_submitGate == gate && _input.length >= _target.length) _completeSubmit(_input);
+      });
+    }
+  }
+
+  // Keys count while answering, and during the ✓ (they carry over to the
+  // next word); not during the pause after a wrong attempt or the solution.
+  void _onKey(String k) {
+    if (_typeState != _TypeState.input && _typeState != _TypeState.correct) return;
+    if (_input.length >= 16) return;
+    setState(() => _input += k);
+    if (_typeState == _TypeState.input) _maybeScheduleCheck();
+  }
+
+  void _onBackspace() {
+    if (_typeState != _TypeState.input && _typeState != _TypeState.correct) return;
+    _checkTimer?.cancel();
+    _submitRequested = false;
+    if (_input.isEmpty) return;
+    setState(() => _input = _input.substring(0, _input.length - 1));
+  }
+
+  void _onSubmit() {
+    if (_typeState != _TypeState.input || _submitGate == null) return;
+    if (_playing) {
+      setState(() => _submitRequested = true);
+    } else {
+      _checkTimer?.cancel();
+      _completeSubmit(_input);
+    }
+  }
+
+  // Pass, also while the word still plays (stopOne leaves the keyer alone).
+  void _onPass() {
+    if (_typeState != _TypeState.input || _submitGate == null) return;
+    _checkTimer?.cancel();
+    if (_playing) _genChannel.invokeMethod('stopOne');
+    _completeSubmit(null);
+  }
+
+  // Active keyboard keys: the characters the current charset can play.
+  Set<String> get _keyboardChars {
+    final ordinal = widget.contentModeOrdinals[widget.contentModeIndex];
+    Iterable<String> base;
+    if (ordinal == 4) {
+      base = parsePracticeChars(widget.practiceChars);
+    } else if (widget.kochLesson) {
+      base = kochActiveChars(widget.kochLevel, widget.activeKochChars);
+    } else if (ordinal == 0) {
+      final (a, b) = _randomOptionRange(widget.randomOption);
+      base = _randomAlphabet.sublist(a, b + 1);
+    } else {
+      base = _randomAlphabet;
+    }
+    // Prosigns play as their two letters in Hören (see _fetchGroup()), so
+    // they are typed as letters; the target's own chars are always typeable.
+    return {
+      for (final ch in base) ...ch.toUpperCase().split(''),
+      ..._target.split(''),
+    };
   }
 
   // Stop<Next>Rep (firmware autoStop): nach der Gruppe anhalten und auf die
@@ -581,7 +818,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       ),
       initialBlockEma: p.getDouble('adaptiveBlockEma') ?? 1.0,
     );
-    final spacingAtCharSpeed = widget.interCharSpace <= 3 && widget.interWordSpace <= 7;
+    // Typing mode: only the char gap matters (DECISIONS.md "Hören: typing
+    // mode"), so the word gap is neither suggested nor waited for.
+    final typing = _typing;
+    final spacingAtCharSpeed = widget.interCharSpace <= 3 && (typing || widget.interWordSpace <= 7);
     final decision = _engine!.recordBlock(results, spacingAtCharSpeed: spacingAtCharSpeed);
     final newEma = _engine!.blockEma;
     await p.setDouble('adaptiveBlockEma', newEma);
@@ -617,7 +857,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     int? newInterChar, newInterWord, interCharBefore, interWordBefore;
     if (decision.spacingStep == TempoStep.up && !unlocked && !rampingUpKoch) {
       final ic = (widget.interCharSpace - 1).clamp(3, _startInterCharSpace);
-      final iw = (widget.interWordSpace - 1).clamp(7, _startInterWordSpace);
+      final iw = typing ? widget.interWordSpace
+          : (widget.interWordSpace - 1).clamp(7, _startInterWordSpace);
       // Already at the floor — clamping produced no real change, so don't
       // propose a no-op ("tightened: 3→3") suggestion row.
       if (ic != widget.interCharSpace || iw != widget.interWordSpace) {
@@ -628,7 +869,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       }
     } else if (decision.spacingStep == TempoStep.down) {
       final ic = (widget.interCharSpace + 1).clamp(3, _startInterCharSpace);
-      final iw = (widget.interWordSpace + 1).clamp(7, _startInterWordSpace);
+      final iw = typing ? widget.interWordSpace
+          : (widget.interWordSpace + 1).clamp(7, _startInterWordSpace);
       // Already at the ceiling (this session's starting spacing) — same
       // no-op guard for "widened: 11→11".
       if (ic != widget.interCharSpace || iw != widget.interWordSpace) {
@@ -694,7 +936,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   Widget build(BuildContext context) {
     return switch (_phase) {
       _Phase.idle => _buildIdle(context),
-      _Phase.sending => _buildSending(context),
+      _Phase.sending => _typing ? _buildTyping(context) : _buildSending(context),
       _Phase.revealed => _buildRevealed(context),
       _Phase.result => _buildResult(context),
     };
@@ -916,6 +1158,131 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     ]);
   }
 
+  // Typing mode screen: progress, the answer line, and the keyboard.
+  Widget _buildTyping(BuildContext context) {
+    final c = AppColors.of(context);
+    final i = _currentGroupIndex;
+    final mono = TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted);
+    final attempts = i < _typedAttempts.length ? _typedAttempts[i] : const <String?>[];
+
+    Widget center;
+    if (_preparing) {
+      center = Text(Strings.t('get_ready'),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 26,
+              fontWeight: FontWeight.bold, color: c.warning));
+    } else {
+      final solution = _typeState == _TypeState.solution;
+      final correct = _typeState == _TypeState.correct;
+      final wrong = _typeState == _TypeState.wrong;
+      // Answer line: the typed text with a cursor; the word itself once
+      // it is right (green) or given up (wrong chars of attempt 1 in red).
+      Widget answer;
+      if (correct || solution) {
+        answer = Row(mainAxisSize: MainAxisSize.min, children: [
+          for (var k = 0; k < _shownWord.length; k++)
+            Text(_displayChar(_shownWord[k]), style: TextStyle(fontFamily: 'CwMono',
+                fontSize: 36, fontWeight: FontWeight.bold, letterSpacing: 4,
+                color: correct ? c.accent
+                    : _wrongPositions.contains('$i:$k') ? c.danger : c.textPrimary)),
+        ]);
+      } else {
+        final shown = wrong && attempts.isNotEmpty ? (attempts.last ?? '') : _input;
+        answer = Row(mainAxisSize: MainAxisSize.min, children: [
+          Text(shown.split('').map(_displayChar).join(),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 36,
+                  fontWeight: FontWeight.bold, letterSpacing: 4,
+                  color: wrong ? c.danger : c.textPrimary,
+                  decoration: wrong ? TextDecoration.lineThrough : null)),
+          if (!wrong) Container(width: 2, height: 34, color: c.accent),
+        ]);
+      }
+      String? badge;
+      Color badgeColor = c.danger;
+      if (correct) {
+        badge = Strings.t('echo_status_correct');
+        badgeColor = c.accent;
+      } else if (solution) {
+        badge = Strings.t('ac_type_solution');
+      } else if (wrong) {
+        badge = Strings.t('echo_status_wrong');
+      } else if (_attemptNo > 1) {
+        badge = '✗ ${Strings.t('echo_attempt')
+            .replaceFirst('{n}', '$_attemptNo').replaceFirst('{max}', '$_typeAttempts')}';
+      }
+      center = Column(mainAxisSize: MainAxisSize.min, children: [
+        Row(mainAxisSize: MainAxisSize.min, children: List.generate(_blockSize, (k) {
+          final done = k < _outcomes.length;
+          final color = !done
+              ? (k == i ? c.accent : c.border)
+              : _outcomes[k] == 0 ? c.accent : _outcomes[k] == 1 ? c.warning : c.danger;
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Icon(k == i && !done ? Icons.radio_button_checked : Icons.circle,
+                size: k == i && !done ? 16 : 10, color: color),
+          );
+        })),
+        const SizedBox(height: 10),
+        Text('${Strings.t(_playsGroups ? 'ac_group_of' : 'ac_word_of')
+            .replaceFirst('{n}', '${i + 1}').replaceFirst('{total}', '$_blockSize')} · $_activeWpm WPM',
+            style: mono),
+        const SizedBox(height: 14),
+        SizedBox(height: 28, child: badge == null ? null : Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(color: badgeColor.withOpacity(0.13),
+              borderRadius: BorderRadius.circular(14)),
+          child: Text(badge, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: badgeColor)),
+        )),
+        const SizedBox(height: 6),
+        // Earlier attempts of this word, struck through — no hint where the
+        // error was. In the solution state: every attempt, numbered.
+        SizedBox(height: solution ? null : 22, child: solution
+            ? Column(children: [
+                for (var a = 0; a < attempts.length; a++)
+                  Text('${a + 1}.  ${attempts[a] == null ? '— ${Strings.t('ac_type_passed')}'
+                      : attempts[a]!.split('').map(_displayChar).join()}', style: mono),
+              ])
+            : Text([
+                for (final a in attempts.take(wrong ? attempts.length - 1 : attempts.length))
+                  (a ?? '').split('').map(_displayChar).join()
+              ].join('   '),
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textFaint,
+                    decoration: TextDecoration.lineThrough, letterSpacing: 2))),
+        const SizedBox(height: 4),
+        SizedBox(height: 48, child: Center(child: answer)),
+        Container(width: 200, height: 2, color: correct ? c.accent
+            : (wrong || solution) ? c.danger : c.border),
+        const SizedBox(height: 10),
+        SizedBox(height: 18, child: _playing
+            ? Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.graphic_eq, size: 16, color: c.accent),
+                const SizedBox(width: 6),
+                Text(Strings.t(_submitRequested ? 'ac_type_check_after' : 'ac_type_playing'),
+                    style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent)),
+              ])
+            : null),
+      ]);
+    }
+    final canType = !_preparing &&
+        (_typeState == _TypeState.input || _typeState == _TypeState.correct);
+    return Column(children: [
+      _buildHeader(context),
+      Expanded(child: Center(child: SingleChildScrollView(child: center))),
+      CwKeyboard(
+        active: _keyboardChars,
+        onKey: _onKey,
+        onBackspace: _onBackspace,
+        onSubmit: _onSubmit,
+        onPass: _onPass,
+        enabled: canType,
+        submitFaded: _playing,
+        haptic: _typeHaptic,
+        outputCase: _outputCase,
+        passLabel: Strings.t('ac_type_pass'),
+        submitLabel: '⏎ ${Strings.t('ac_type_check')}',
+      ),
+    ]);
+  }
+
   // Combines the old separate "sent" and "marking" screens: the word tiles
   // double as the error-marking overview (tap a word to drill into its
   // characters), so there's a single flow instead of two screens plus a
@@ -932,7 +1299,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
           Text(Strings.t('ac_sent_title'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 18,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
-          Text(Strings.t('ac_sent_desc'),
+          Text(Strings.t(_typing ? 'ac_sent_desc_typed' : 'ac_sent_desc'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
         ]),
       ),
@@ -1007,6 +1374,16 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                       color: wrong ? c.danger : charTypeColor(group[k], c)));
             }),
           ),
+          // Typing mode: what was typed, attempt by attempt.
+          if (_typing && i < _typedAttempts.length) ...[
+            const SizedBox(height: 2),
+            Text([
+              for (final a in _typedAttempts[i])
+                a == null ? '— ${Strings.t('ac_type_passed')}' : a.split('').map(_displayChar).join()
+            ].join(' · '),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+          ],
         ]),
       ),
     );
@@ -1248,9 +1625,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         accepted: _acceptSpacing,
         onToggle: (v) => setState(() => _acceptSpacing = v),
         label: '$label: $_interCharBefore→${_acceptSpacing ? _pendingInterChar : _interCharBefore} '
-            '(${ditsToSeconds(_acceptSpacing ? _pendingInterChar! : _interCharBefore!, spacingWpm)}) / '
+            '(${ditsToSeconds(_acceptSpacing ? _pendingInterChar! : _interCharBefore!, spacingWpm)})'
+            '${_typing ? '' : ' / '
             '$_interWordBefore→${_acceptSpacing ? _pendingInterWord : _interWordBefore} '
-            '(${ditsToSeconds(_acceptSpacing ? _pendingInterWord! : _interWordBefore!, spacingWpm)})',
+            '(${ditsToSeconds(_acceptSpacing ? _pendingInterWord! : _interWordBefore!, spacingWpm)})'}',
         onDecrement: _acceptSpacing ? () => _stepPendingSpacing(-1) : null,
         onIncrement: _acceptSpacing ? () => _stepPendingSpacing(1) : null,
       ));

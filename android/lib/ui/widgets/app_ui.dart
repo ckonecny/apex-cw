@@ -54,15 +54,23 @@ class AppButton extends StatelessWidget {
   final Color color;
   final bool primary;
   final double height;
+  final IconData? icon;
   const AppButton({super.key, required this.label, required this.onTap,
-      required this.color, this.primary = true, this.height = 52});
+      required this.color, this.primary = true, this.height = 52, this.icon});
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(14));
-    final text = Text(label, style: const TextStyle(fontFamily: 'CwMono',
-        fontSize: 15, fontWeight: FontWeight.bold));
+    final Widget text = icon == null
+        ? Text(label, style: const TextStyle(fontFamily: 'CwMono',
+            fontSize: 15, fontWeight: FontWeight.bold))
+        : Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(icon, size: 20),
+            const SizedBox(width: 10),
+            Text(label, style: const TextStyle(fontFamily: 'CwMono',
+                fontSize: 15, fontWeight: FontWeight.bold)),
+          ]);
     return SizedBox(height: height, child: primary
         ? ElevatedButton(
             style: ElevatedButton.styleFrom(

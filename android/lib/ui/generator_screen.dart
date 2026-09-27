@@ -55,6 +55,11 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   final _adaptiveController = AdaptiveCopyController();
   bool _adaptiveActive = false;
   bool get _practiceActive => _adaptiveActive;
+  // Typing mode keyboard on screen: the WPM slider makes room for it.
+  bool _keyboardShown = false;
+  // Last used way to copy (0 = paper, 1 = typing): its start button is the
+  // highlighted one (DECISIONS.md "Hören: typing mode").
+  int _copyMode = 0;
 
   @override
   void initState() {
@@ -74,6 +79,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _outputCase     = (p.getInt('outputCase')     ?? 0).clamp(0, 1);
       _wordLengthMax  = pf.getInt('wordLengthMax')  ?? 0;
       _stopEach       = (pf.getInt('stopEach') ?? 0) == 1;
+      _copyMode       = (pf.getInt('copyMode') ?? 0).clamp(0, 1);
       _groupLength    = pf.getInt('groupLength')    ?? 5;
       _randomOption   = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
       _abbrevLengthMax = (pf.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
@@ -141,6 +147,13 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     final boostLevel = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
     await _genChannel.invokeMethod('setPracticeChars', practiceChars);
     await _genChannel.invokeMethod('setBoostLevel', boostLevel);
+  }
+
+  Future<void> _start(bool typing) async {
+    setState(() => _copyMode = typing ? 1 : 0);
+    _adaptiveController.start(typing: typing);
+    final pf = await TrainingProfile.open(TrainingProfile.hear);
+    await pf.setInt('copyMode', _copyMode);
   }
 
   // Back button while a block is active: return to the idle phase instead of
@@ -260,12 +273,14 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                 _savePrefs();
               },
               controller: _adaptiveController,
+              practiceChars: _practiceChars,
               onActiveChanged: (v) { if (mounted) setState(() => _adaptiveActive = v); },
+              onKeyboardChanged: (v) { if (mounted) setState(() => _keyboardShown = v); },
             ),
           ),
 
           // ── Controls ──────────────────────────────────────────────────────
-          Padding(
+          if (!_keyboardShown) Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Column(children: [
               _SliderRow(
@@ -281,19 +296,30 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           ),
 
           // ── Start (idle only; the running block has its own buttons) ─────
+          // Two starts: copy on paper, or type on the on-screen keyboard.
+          // The last used one is highlighted.
           if (!_practiceActive)
             Padding(
               padding: const EdgeInsets.all(16),
-              child: SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: AppButton(
+              child: Row(children: [
+                Expanded(child: AppButton(
                   height: 56,
-                  label: '▶  ${Strings.t('start').toUpperCase()}',
+                  label: Strings.t('ac_start_paper').toUpperCase(),
+                  icon: Icons.edit_outlined,
                   color: c.accent,
-                  onTap: _adaptiveController.start,
-                ),
-              ),
+                  primary: _copyMode == 0,
+                  onTap: () => _start(false),
+                )),
+                const SizedBox(width: 12),
+                Expanded(child: AppButton(
+                  height: 56,
+                  label: Strings.t('ac_start_typing').toUpperCase(),
+                  icon: Icons.keyboard_outlined,
+                  color: c.accent,
+                  primary: _copyMode == 1,
+                  onTap: () => _start(true),
+                )),
+              ]),
             ),
         ],
       ),

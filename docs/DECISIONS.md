@@ -699,3 +699,47 @@ also starts at 10 (`TrainingProfile.minWpm`, `clampWpm()` on load; also the
 home tiles, CharPracticeScreen and the ⚙ sheet's seconds display);
 `kGiveWpmMin` now refers to it. CW Keyer, WiFi Trx, QSO Bot and the games
 keep 5–60.
+
+## Hören: typing mode with an own on-screen keyboard (2026-09-27)
+
+App-only extension, no firmware counterpart. Concept + mockups:
+https://claude.ai/artifact/733FKS7KDyoeJyiu1nmctd (private). All points
+confirmed by the user on 2026-09-27:
+
+- **Mode choice:** the Hören start page gets two start buttons, **Papier**
+  (today's flow, unchanged) and **Tippen**; the last used one is filled.
+  "Nächster Block" stays in the current mode; switching only via the start
+  page.
+- **Flow:** one word/group per step (same mechanism as "Nach jeder Gruppe
+  anhalten"). Typing is accepted from the first tone; the check runs after
+  the word has finished: automatically once the input has the word's length
+  (+0.4 s in which ⌫ cancels) or earlier with ⏎. Right: ✓, next after ~1 s.
+  Wrong: the word is replayed at once, empty field, first attempt shown
+  small and struck through (no hint where the error was). After the last
+  attempt or **Passen**: solution 2 s, then next. Timings as in Geben.
+- **Attempts per word:** ⚙-sheet setting 1–3, default 2 (1 = no retry).
+- **Passen** is a fixed key bottom left, available in every attempt (in the
+  first attempt = "nothing recognised"); ⏎ wide bottom right. No confirm
+  dialog. No "hear again" button; the replay is the second attempt.
+- **Keyboard:** own widget, not the system keyboard. QWERTY + digit row, all
+  keys always at their fixed position; keys outside the charset are drawn
+  inactive (outline, faint label, no action, no vibration). Punctuation row
+  (`. , : - / = ? @ +`) only if the charset has punctuation; prosigns
+  (AS KA KN SK VE BK, one key each, ⌫ deletes as a whole) in the bottom row
+  only if the charset has prosigns. No space key. Key preview bubble. No key
+  click sound (would clash with the CW tone), short vibration (switchable).
+  Portrait only for now; landscape maybe later.
+- **No time pressure:** no think-time limit after the word.
+- **Statistics:** same Hören statistics as the paper mode (shared profile,
+  shared weak chars, block EMA, trend, Koch unlock). Only the **first**
+  attempt counts (as in Geben); passing in the first attempt = every char of
+  the word wrong. Per-char grading via Levenshtein alignment with backtrace:
+  substitution/deletion = that played char wrong; extra typed chars are
+  ignored (a char that was not played cannot be wrong).
+- **Spacing suggestions:** in the typing mode the adaptive mode only
+  suggests changes to the **inter-character** spacing (inter-word spacing has
+  no effect there).
+- **After the block:** the usual "Gesendet" page, errors pre-marked from the
+  first attempts, typed text under each group; marks can be removed by
+  tapping (typos). Then the **unchanged** result page (no ●◐○ split, no
+  confusion list).

@@ -4,6 +4,20 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private)
 Latest tagged build: v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **Hören typing mode (2026-09-27): built and installed on 63061JEBF01551,
+  user-tested OK (incl. correct answer and result page).** Concept + mockups (private artifact):
+  https://claude.ai/artifact/733FKS7KDyoeJyiu1nmctd; decisions in
+  DECISIONS.md ("Hören: typing mode ..."). Two start buttons Papier/Tippen
+  (`generator_screen.dart`, last used highlighted, profile `copyMode`);
+  `CwKeyboard` (`lib/ui/widgets/cw_keyboard.dart`); per-word flow, retry,
+  pass, pre-marked "Gesendet" in `adaptive_copy_body.dart`; grading
+  `lib/content/copy_grading.dart` (+ unit tests); ⚙ Ablauf: Versuche pro
+  Wort (1–3, default 2), Vibration; spacing suggestions change only the char
+  gap in this mode. Manual DE + EN updated. Checked on the device: keyboard
+  with active/inactive keys, typing during playback, wrong → replay with
+  "Versuch 2 von 2", pass during playback → solution, "Gesendet" with typed
+  attempts, back to start. Correct answer (✓) and result page confirmed by
+  the user.
 - Hören + Geben: listening speed also starts at 10 WPM (was 5); stored
   lower values are raised. Verified on 63061JEBF01551 (Geben Hören slider
   leftmost = 10). Keyer/Trx/QSO Bot/games unchanged (5–60).
@@ -470,6 +484,14 @@ the last release, with the reason. Clear this list after the release build.
   row now shows the full Koch sequence with locked characters dimmed).
   New screenshot worth adding: `char_practice.png` (Üben: X page with a
   keyed attempt) for the "Einzelzeichen üben" section.
+- Hören typing mode 2026-09-27, both languages: `hear_start.png` (two start
+  buttons Papier/Tippen, hint "Zuhören und mitschreiben."), `hear_sheet2.png`
+  (Ablauf: Versuche pro Wort, Vibration bei Tastendruck). New screenshots
+  for the section "Mit der Bildschirmtastatur mitschreiben": `hear_type.png`
+  (keyboard while typing), `hear_type_retry.png` (Versuch 2 von 2),
+  `hear_type_sent.png` (Gesendet with typed attempts). Take them with
+  `insert.py` anchors added; do not press Fertig with fake answers (writes
+  the phone's statistics).
 
 ## Open questions
 

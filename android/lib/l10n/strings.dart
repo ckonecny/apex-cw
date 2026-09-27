@@ -261,7 +261,22 @@ class Strings {
 
     // ── Adaptive Copy mode (Koch Trainer "Adaptiv" flow) ─────────────────
     'ac_block_label': ['BLOCK {n}', 'BLOCK {n}'],
-    'ac_idle_hint': ['Zuhören und auf Papier mitschreiben.', 'Listen and copy on paper.'],
+    'ac_idle_hint': ['Zuhören und mitschreiben.', 'Listen and copy.'],
+    'ac_start_paper': ['Papier', 'Paper'],
+    'ac_start_typing': ['Tippen', 'Type'],
+    'ac_type_pass': ['Passen', 'Pass'],
+    'ac_type_check': ['Prüfen', 'Check'],
+    'ac_type_playing': ['spielt …', 'playing …'],
+    'ac_type_check_after': ['prüft nach dem Wort …', 'checks after the word …'],
+    'ac_type_solution': ['Lösung', 'Solution'],
+    'ac_type_passed': ['gepasst', 'passed'],
+    'ac_sent_desc_typed': ['Die Fehler deines ersten Versuchs sind markiert. Antippen, um eine Markierung zu ändern.',
+        'The errors of your first attempt are marked. Tap to change a mark.'],
+    'settings_type_desc': [
+      'Beim Mitschreiben mit der Tastatur (Start mit „Tippen“).',
+      'When copying on the keyboard (start with "Type").'],
+    'settings_type_attempts': ['Versuche pro Wort', 'Attempts per word'],
+    'settings_type_haptic': ['Vibration bei Tastendruck', 'Vibrate on key press'],
     'ac_listening': ['Zuhören', 'Listening'],
     'ac_group_of': ['Gruppe {n} von {total}', 'Group {n} of {total}'],
     'ac_pause': ['Pause', 'Pause'],

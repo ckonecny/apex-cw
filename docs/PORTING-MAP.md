@@ -36,6 +36,7 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | LoRa (RadioLib) | — | N/A — no hardware |
 | Bluetooth (`MorseBluetooth.cpp`) | — | N/A — Android handles BT/HID natively |
 | Accessibility voice clips (`CONFIG_AUDIO_A11Y`) | — | N/A — not evaluated |
+| — (no firmware equivalent) | Hören typing mode: `lib/ui/adaptive_copy_body.dart` + new keyboard widget | Done 2026-09-27, user-tested OK (see DECISIONS.md) |
 | — (no firmware equivalent) | `lib/l10n/strings.dart` | Done — app-only DE/EN switch |
 | — (no firmware equivalent) | `lib/theme/*`, `lib/ui/widgets/pinch_zoom_text.dart` | Done — app-only theme/text-size |
 

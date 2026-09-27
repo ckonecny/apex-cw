@@ -194,14 +194,23 @@ in der App in spitzen Klammern geschrieben:
 
 Beim Hören (Blockablauf) werden Prosigns aus **Zeichen für Gruppen** wie zwei
 einzelne Buchstaben angezeigt und bewertet (`<ka>` erscheint als „K A“).
+Beim Mitschreiben mit der Bildschirmtastatur tippst du sie ebenso als zwei
+Buchstaben.
 
 # Hören – Mitschreiben üben
 
 **Hören** ist der CW Generator und Koch Trainer der App. Die App spielt einen
-**Block** von Gruppen oder Wörtern, du schreibst auf Papier mit. Während des
-Spielens zeigt der Bildschirm nichts an. Danach deckt die App den Text auf, du
-tippst an, was du falsch hattest, und bekommst eine Auswertung mit Vorschlägen
-für den nächsten Block.
+**Block** von Gruppen oder Wörtern, und du schreibst mit – auf zwei Arten:
+
+- **Papier** – du schreibst auf Papier mit. Während des Spielens zeigt der
+  Bildschirm nichts an. Danach deckt die App den Text auf, du tippst an, was
+  du falsch hattest.
+- **Tippen** – für unterwegs: Die App spielt ein Wort nach dem anderen, und du
+  tippst es auf einer eigenen Bildschirmtastatur mit (siehe
+  [Mit der Bildschirmtastatur mitschreiben](#mit-der-bildschirmtastatur-mitschreiben)).
+
+In beiden Fällen bekommst du am Ende dieselbe Auswertung mit Vorschlägen für
+den nächsten Block, und beide zählen in dieselbe Hören-Statistik.
 
 ## Zeichenvorrat und Inhalt wählen
 
@@ -279,7 +288,11 @@ der Start- und Ergebnisseite mit **Abstand anpassen**.
 
 ## Ein Block im Ablauf
 
-1. **Start** drücken. Nach einer Sekunde „Bereit machen …“ beginnt der Block.
+Unten auf der Startansicht liegen zwei Start-Schaltflächen: **Papier** und
+**Tippen**. Die zuletzt benutzte ist hervorgehoben. Dieser Abschnitt beschreibt
+**Papier**; **Tippen** folgt weiter unten.
+
+1. **Papier** drücken. Nach einer Sekunde „Bereit machen …“ beginnt der Block.
 2. Die App spielt die Gruppen nacheinander, mit dem eingestellten Wortabstand
    dazwischen. Angezeigt werden nur „Gruppe *n* von *N*“ (bei Wörtern
    „Wort *n* von *N*“) und das Tempo – nicht der Text. Schreib auf Papier mit.
@@ -318,7 +331,74 @@ Mit **Ablauf → Nach jeder Gruppe anhalten** (im ⚙-Blatt; bei Wörtern heißt
 - **Dah** (rechtes Paddle) oder **WEITER** spielt die nächste Gruppe.
 
 Das entspricht „Stop&lt;Next&gt;Rep“ am Morserino und eignet sich gut für den
-Anfang, wenn du eine Gruppe mehrmals hören willst.
+Anfang, wenn du eine Gruppe mehrmals hören willst. Die Einstellung gilt nur
+für **Papier**; beim Tippen wartet die App ohnehin nach jedem Wort.
+
+## Mit der Bildschirmtastatur mitschreiben
+
+Mit **Tippen** schreibst du auf einer eigenen Tastatur im Display mit, ohne
+Papier – gedacht für unterwegs. Es ist nicht die Systemtastatur des Telefons.
+
+**Die Tastatur** ist eine QWERTY-Tastatur mit Ziffernreihe darüber. Alle
+Tasten stehen immer an derselben Stelle. Aktiv (hell, antippbar) sind nur die
+Zeichen, die im gewählten Zeichenvorrat vorkommen können; die anderen sind nur
+umrandet und tun nichts. Enthält der Zeichenvorrat Satzzeichen
+(`. , : - / = ? @ +`), erscheint dafür eine eigene Reihe. Beim Drücken zeigt
+eine Blase über der Taste das Zeichen groß an. Die Taste **⌫** löscht das
+letzte Zeichen. Unten links liegt **Passen**, unten rechts **⏎ Prüfen**.
+Während der Block läuft, ist der WPM-Regler ausgeblendet, damit die Tastatur
+Platz hat.
+
+**Ein Wort im Ablauf:**
+
+1. **Tippen** drücken. Nach einer Sekunde „Bereit machen …“ spielt die App die
+   erste Gruppe (bzw. das erste Wort). Darunter steht „spielt …“.
+2. Du kannst schon während des Spielens mittippen oder erst danach – beides
+   geht. Es gibt keine Zeitgrenze.
+3. **Prüfen:** Sobald du so viele Zeichen getippt hast, wie das Wort hat, prüft
+   die App automatisch (nach dem Ende des Wortes und einer kurzen Pause von
+   0,4 s, in der du mit ⌫ noch korrigieren kannst). Mit **⏎ Prüfen** gibst du
+   früher ab, etwa wenn du ein Zeichen verpasst hast. Drückst du ⏎, während
+   das Wort noch spielt, prüft die App gleich nach dem Wortende.
+4. **✓ Richtig** – nach etwa einer Sekunde kommt das nächste Wort. Was du in
+   dieser Sekunde schon tippst, zählt für das nächste Wort.
+5. **✗ Falsch** – das Wort wird sofort noch einmal gespielt, das Feld ist leer.
+   Dein voriger Versuch steht klein und durchgestrichen darüber, ohne Hinweis,
+   wo der Fehler war. „Versuch *n* von *max*“ zeigt, der wievielte Versuch das
+   ist.
+6. **Passen** – jederzeit, auch während das Wort spielt. Nach dem letzten
+   falschen Versuch oder nach Passen zeigt die App 2 Sekunden lang die Lösung
+   (die im ersten Versuch falschen Zeichen rot) und darunter deine Versuche,
+   dann geht es weiter.
+
+Ob nach dem Prüfen ein kurzer Ton kommt (hoch = richtig, tief = falsch),
+stellst du im ⚙-Blatt von **Geben** unter **Bestätigungston** ein. Wie viele Versuche
+du pro Wort hast und ob die Tasten vibrieren, stellst du im ⚙-Blatt unter
+**Ablauf** ein (siehe [unten](#ablauf)).
+
+**Nach dem Block** erscheint wie bei Papier **Gesendet**. Die Fehler aus deinem
+**ersten** Versuch sind dort schon rot markiert, und unter jeder Gruppe steht,
+was du getippt hast (bei Passen „— gepasst“). Du kannst eine Gruppe antippen
+und Markierungen ändern, etwa wenn du dich nur vertippt hast. **Fertig ·
+*n* Fehler** speichert und zeigt die gewohnte Ergebnisseite.
+
+**So wird gezählt:**
+
+- Es zählt nur der **erste** Versuch jedes Wortes – der zweite ist leichter,
+  weil du das Wort ein zweites Mal hörst.
+- Die App vergleicht Zeichen für Zeichen, aber nicht stur Stelle für Stelle:
+  Hast du ein Zeichen ausgelassen, ist nur dieses Zeichen falsch, nicht alle
+  danach. Beispiel: gespielt `tqr5u`, getippt `tq5u` → nur `r` falsch.
+  Ein falsch gehörtes Zeichen ist falsch (`cd9al` als `cb9al` → `d` falsch).
+  Ein zusätzlich getipptes Zeichen macht kein gespieltes Zeichen falsch.
+- **Passen** im ersten Versuch heißt: alle Zeichen dieses Wortes falsch, wie
+  eine leere Stelle auf dem Papier.
+- Beim Tippen spielen die Pausen zwischen den Wörtern keine Rolle. Die App
+  schlägt deshalb nur Änderungen am **Zeichenabstand** vor (siehe
+  [Pausen und Tempo](#pausen-und-tempo)).
+
+Mit dem Pfeil oben links brichst du den Block ab; dann wird nichts gespeichert.
+Die Tastatur gibt es vorerst nur im Hochformat.
 
 ## Die Ergebnisseite
 
@@ -421,7 +501,9 @@ Zeile „Gilt für: …“ zeigt, für welche Kombination du gerade einstellst.
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Nach jeder Gruppe anhalten / Nach jedem Wort anhalten | Danach warten: Dit = wiederholen, Dah = weiter | **Aus** / Ein |
+| Nach jeder Gruppe anhalten / Nach jedem Wort anhalten | Nur bei **Papier**: danach warten, Dit = wiederholen, Dah = weiter | **Aus** / Ein |
+| Versuche pro Wort | Nur bei **Tippen**: wie oft du ein Wort versuchen darfst; 1 = kein zweiter Versuch | 1 / **2** / 3 |
+| Vibration bei Tastendruck | Nur bei **Tippen**: kurze Vibration bei jeder aktiven Taste | Aus / **Ein** |
 
 ### Adaptiver Modus
 
@@ -647,7 +729,9 @@ Fehlerquote.
 **Was zählt als Versuch?**
 
 - **Hören:** Jedes gespielte Zeichen eines Blocks. Richtig, wenn du es nicht
-  als Fehler markiert hast.
+  als Fehler markiert hast. Beim Mitschreiben mit der Bildschirmtastatur
+  markiert die App die Fehler aus dem **ersten** Versuch jedes Wortes selbst
+  (siehe [Mit der Bildschirmtastatur mitschreiben](#mit-der-bildschirmtastatur-mitschreiben)).
 - **Geben:** Nur der **erste** Versuch jedes Wortes. Die Zeichen vor dem
   ersten Fehler zählen als richtig, das erste falsche Zeichen als Fehler. Die
   Zeichen danach werden nicht gezählt, weil unklar ist, ob du sie richtig
@@ -718,6 +802,11 @@ Die App verändert immer zuerst die **Pausen**, erst dann das Tempo:
 - **Verlängern:** Zeichenabstand und Wortabstand werden je um 1 Dit länger –
   aber nie länger als zu Beginn der Sitzung (bei Hören: als du das Training
   geöffnet hast; bei Geben: der Wert aus dem ⚙-Blatt).
+
+Beim Mitschreiben mit der **Bildschirmtastatur** ändert die App nur den
+**Zeichenabstand**; der Wortabstand bleibt, weil die App dort ohnehin nach jedem
+Wort auf dich wartet. Die Pausen gelten dann als normal, sobald der
+Zeichenabstand bei 3 Dits ist.
 
 **Solange du die Koch-Reihenfolge noch durcharbeitest, verkürzt die App die
 Pausen nicht und erhöht auch das Tempo nicht.** Du sollst dich auf neue Zeichen
