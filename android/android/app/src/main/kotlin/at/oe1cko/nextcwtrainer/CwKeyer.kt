@@ -32,6 +32,12 @@ class CwKeyer(private val tone: CwTonePlugin) {
     // Trx modes use (InterWord Spc - 1) dits (m32_v6.ino, interWordTimer).
     @Volatile var wordGapDits: Int = 6
 
+    // Straight key word gap in dits, counted from key-up. Default 7; the Echo
+    // Trainer sets (InterWord Spc + 1) like the firmware's straight-key
+    // decoder does in echo mode (MorseDecoder.cpp INTERCHAR_ lacktime).
+    // setInterWordSpace resets it to 7, so other screens never inherit it.
+    @Volatile var straightWordGapDits: Int = 7
+
     private val ditMs  get() = (1200.0 / wpm).roundToInt()
     private val dahMs  get() = ditMs * 3
     private val gapMs  get() = ditMs
@@ -254,7 +260,7 @@ class CwKeyer(private val tone: CwTonePlugin) {
                 // Still idle well past the character gap — that's a word gap
                 // (see the iambic path's idleSince/wordGapSent for why this is
                 // a separate "  " event rather than another plain " ").
-                if (now - skUpAt >= ditMs * 7) {
+                if (now - skUpAt >= ditMs * straightWordGapDits) {
                     onSymbol?.invoke("  ")
                     skWordGapSent = true
                 }

@@ -503,8 +503,9 @@ Hörtempo.
 
 Beispiel: Hören 25 WPM, Geben 18 WPM – du hörst schnell, darfst aber
 langsamer antworten. Das Gebetempo bestimmt, wie schnell der Keyer
-deine Dits und Dahs erzeugt und wie lang eine Wortpause sein muss. Auf 0
-(„wie Hören“) gilt das Hörtempo auch für die Antwort.
+deine Dits und Dahs erzeugt und wie lang eine Wortpause sein muss. Ganz links
+(„wie Hören“) gilt das Hörtempo auch für die Antwort. Das niedrigste
+Gebetempo ist 10 WPM.
 
 ## Die Ergebnisseite
 
@@ -547,10 +548,22 @@ Die Abschnitte **Koch-Reihenfolge**, **Übungsset**, **Abstände** und
 [Einstellungen im ⚙-Blatt (Hören)](#einstellungen-hoeren)), gelten
 aber für das Profil von Geben. Zwei Unterschiede:
 
-- **Abstände** betreffen nur das **vorgespielte** Wort, nicht deine Antwort.
-  Längere Abstände verlängern aber auch die Zeit, in der du mit der Antwort
-  beginnen darfst. Deine Antwort wird immer mit 7 Dits Wortpause
-  abgeschlossen.
+- **Abstände** gelten für das vorgespielte Wort **und für deine Antwort**, wie
+  am Morserino. Deine Antwort gilt als beendet, wenn du nach einem Zeichen
+  so lange pausierst:
+
+  ```
+  2 × Zeichenabstand + 1 + Wortabstand / 8   (Dits im Gebetempo)
+  ```
+
+  Mit der Handtaste sind es Wortabstand + 1 Dits. Beispiel: Zeichenabstand
+  28, Wortabstand 40, Gebetempo 18 WPM ergibt 62 Dits, also rund 4 s. So
+  lange darfst du auch zwischen den Zeichen einer Gruppe überlegen, und so
+  lange wartet die App nach dem letzten Zeichen, bevor sie bewertet. Ist dir
+  das zu großzügig oder zu träge, stell den Zeichenabstand kleiner; der
+  Normalabstand 3 / 7 ergibt 8 Dits. Verkürzt die Adaptiv-Funktion die
+  Abstände, wird auch die Antwort strenger. Längere Abstände verlängern
+  außerdem die Zeit, in der du mit der Antwort beginnen darfst.
 - Bei **Wortauswahl** gelten zusätzlich die Rufzeichen-Einstellungen aus den
   globalen Einstellungen (siehe [Rufzeichen](#rufzeichen)).
 
@@ -561,7 +574,7 @@ Dazu kommt der Abschnitt **Echo Trainer**:
 | Denkzeit | Zusätzliche Zeit, um mit der Antwort zu **beginnen** | 1–20 s (**8 s**) |
 | Wiederholungen | Wie oft ein falsch beantwortetes Wort erneut gespielt wird, bevor die App es auflöst. „Endlos“ wiederholt, bis es stimmt | 0–6 (**3**), Endlos |
 | Vorgabe | Wie die Vorgabe kommt: **Ton** = nur hören; **Anzeige** = nur lesen, ohne Ton; **Beides** = hören und nach dem Abspielen lesen | **Ton** / Anzeige / Beides |
-| Gebetempo (max.) | Höchstes Antwort-Tempo, siehe [Gebetempo](#gebetempo) | **wie Hören**, 5–50 WPM |
+| Gebetempo (max.) | Höchstes Antwort-Tempo, siehe [Gebetempo](#gebetempo) | **wie Hören**, 10–50 WPM |
 | Tonversatz | Dein Mithörton beim Antworten liegt einen Halbton höher oder tiefer als die Vorgabe | Kein Versatz / **Hoch ½** / Runter ½ |
 | Bestätigungston | Kurzer Ton nach der Bewertung: hoch für richtig, tief für falsch | Aus / **Ein** |
 

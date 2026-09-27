@@ -126,6 +126,11 @@ class MainActivity : FlutterActivity() {
                     }
                     "setInterWordSpace" -> {
                         keyer.wordGapDits = ((call.arguments as? Number)?.toInt() ?: 7).coerceAtLeast(2) - 1
+                        keyer.straightWordGapDits = 7
+                        result.success(null)
+                    }
+                    "setStraightWordGap" -> {
+                        keyer.straightWordGapDits = ((call.arguments as? Number)?.toInt() ?: 7).coerceAtLeast(3)
                         result.success(null)
                     }
                     "setAcs" -> {

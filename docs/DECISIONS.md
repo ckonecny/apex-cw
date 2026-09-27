@@ -654,3 +654,42 @@ newest subscriber receives events. `char_playback_overlay.dart` therefore
 shares one stream between the tile and `playCharThrice()` (found on device:
 the tile stayed grey).
 
+
+## Echo answer word end follows the spacing settings (2026-09-27)
+
+User report: with group length 2 the answer was scored after the first
+character when pausing briefly. Cause: the Echo Trainer pushed a fixed
+`setInterWordSpace 7` (6 dits after character end, ~0.4 s at 18 WPM), far
+tighter than the firmware. Firmware, `m32_v6.ino` keyer IDLE path, echo
+branch: `interWordTimer = 2*interCharacterSpace + ditLength +
+interWordSpace/8`, with `interWordSpace = max(IW, IC+4)` from
+`updateTimings()`; its comment says this is meant to allow longer pauses
+between characters "like in listening". Straight key goes through
+`MorseDecoder.cpp` (INTERCHAR_), where echo mode uses `lacktime = IW + 1`
+dits from key-up.
+
+The app now does the same with the Geben profile's IC/IW:
+`_answerEndDits = round(2·IC + 1 + max(IW, IC+4)/8)` for the paddle keyer
+and `IW + 1` for the straight key, pushed in `_applyAnswerConfig()` before
+every answer (an accepted spacing suggestion changes IC/IW mid-session).
+Dits are at the answer speed (the firmware has only one speed; the keyer
+measures in its own dits). No separate setting: the existing spacing
+sliders now also govern the answer, and adaptive spacing makes the answer
+stricter over time. The answer safety timer is raised to that gap + 20 dits
+(min 3 s) so it never fires first.
+
+`CwKeyer.straightWordGapDits` (was hard-coded 7) is new, set via
+`setStraightWordGap`. `setInterWordSpace` resets it to 7, and the Echo
+Trainer pushes `setInterWordSpace 7` on dispose, so other screens don't
+inherit the long echo gaps (rule 2). Supersedes the "Echo Trainer pushes 7 =
+old behaviour" note in the keyer word-gap entry above.
+
+## Gebetempo floor 10 WPM (2026-09-27)
+
+User request: 5 WPM as the lowest answer speed is uselessly slow. The
+Gebetempo cap (`echoAnswerWpmMax`, 0 = same as Hören) now starts at
+`kGiveWpmMin = 10` (lib/content/echo_suggestions.dart) on the Geben start
+page slider, the ⚙-sheet slider and the −/+ stepper on the result page. The
+sliders' leftmost notch (9) stands for "same as Hören". Stored values 1–9
+are raised to 10 on load (`kGiveWpmCap`). App-only setting, no firmware
+counterpart to check against. The Hören speed range (5–60) is unchanged.

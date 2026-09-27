@@ -195,8 +195,25 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         _echoThinkTime * 1000;
   }
 
+  // When the answer counts as finished: silence after the last character, in
+  // dits at the answer speed. Firmware (m32_v6.ino, echoTrainer branch of
+  // the keyer's interWordTimer): 2 × inter-char + 1 dit + inter-word / 8,
+  // with inter-word = max(IW, IC + 4) as in updateTimings(), counted from the
+  // end of the character — deliberately generous, "like in listening", so
+  // the spacing of the Geben profile also sets how long you may pause
+  // between the characters of your answer.
+  int get _answerEndDits =>
+      (2 * _interCharSpace + 1 + max(_interWordSpace, _interCharSpace + 4) / 8)
+          .round();
+  // Straight key: the firmware's decoder ends the word after IW + 1 dits of
+  // silence in echo mode (MorseDecoder.cpp, INTERCHAR_ lacktime).
+  int get _answerEndDitsStraight => _interWordSpace + 1;
+
   // Safety net only: the keyer normally reports the word gap by itself.
-  int get _answerSafetyMs => max(3000, (20 * 1200 / _answerWpm).round());
+  int get _answerSafetyMs => max(
+      3000,
+      ((max(_answerEndDits, _answerEndDitsStraight) + 20) * 1200 / _answerWpm)
+          .round());
 
   @override
   void initState() {
@@ -233,7 +250,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _echoRepeats    = (p.getInt('echoRepeats')   ?? 3).clamp(0, 7);
       _echoDisplay    = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _confirmTone    = p.getBool('confirmTone')   ?? true;
-      _answerWpmMax   = (p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
+      _answerWpmMax   = kGiveWpmCap(p.getInt('echoAnswerWpmMax') ?? 0);
       _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
       _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
       _capInterChar = _interCharSpace;
@@ -427,7 +444,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // goes back to that, stepping down from it starts at hearing speed - 1.
   void _stepGiveWpm(int d) {
     final eff = _answerWpmMax == 0 ? _wpm : min(_answerWpmMax, _wpm);
-    final n = (eff + d).clamp(5, _wpm);
+    if (_wpm <= kGiveWpmMin) {
+      _setGiveWpm(0);
+      return;
+    }
+    final n = (eff + d).clamp(kGiveWpmMin, _wpm);
     _setGiveWpm(n >= _wpm ? 0 : n);
   }
 
@@ -564,6 +585,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _symbolSub?.cancel();
     _genChannel.invokeMethod('stop');
     _keyerChannel.invokeMethod('stop');
+    // Don't leave the long echo word gap on the shared keyer (rule 2).
+    _keyerChannel.invokeMethod('setInterWordSpace', 7);
     super.dispose();
   }
 
@@ -585,6 +608,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   /// Keyer tempo for the answer (Echo Speed Max) and the shifted answer pitch.
   Future<void> _applyAnswerConfig() async {
     await _keyerChannel.invokeMethod('setWpm', _answerWpm).catchError((_) {});
+    // Word end of the answer (see _answerEndDits). Pushed per word because
+    // an accepted spacing suggestion changes it mid-session. The native side
+    // takes inter-word spc and subtracts 1; setInterWordSpace also resets
+    // the straight-key gap, so that one goes second.
+    await _keyerChannel.invokeMethod('setInterWordSpace', _answerEndDits + 1).catchError((_) {});
+    await _keyerChannel.invokeMethod('setStraightWordGap', _answerEndDitsStraight).catchError((_) {});
   }
 
   // ── Session control ────────────────────────────────────────────────────────
@@ -615,8 +644,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _keyerChannel.invokeMethod('setCurtisBTiming',
         {'dit': _curtisBDitTiming, 'dah': _curtisBDahTiming}).catchError((_) {});
     await _keyerChannel.invokeMethod('setAcs', _acs).catchError((_) {});
-    // Echo trainer keeps its own word-end rule; don't inherit the keyer's.
-    await _keyerChannel.invokeMethod('setInterWordSpace', 7).catchError((_) {});
+    // The answer's word-end rule is pushed per word by _applyAnswerConfig().
     // Base sidetone pitch for the target word; _beginReceive() shifts it for
     // the operator's own echoed answer (Tone Shift).
     await _toneChannel.invokeMethod('setEnvelopeMs', (_toneSoftness + 1).toDouble()).catchError((_) {});
@@ -969,11 +997,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               _SliderRow(label: Strings.t('block_hear'), value: _wpm.toDouble(),
                   min: 5, max: 60, divisions: 55,
                   onChanged: (v) { setState(() => _wpm = v.round()); _savePrefs(); }),
-              _SliderRow(label: Strings.t('block_give'), value: _answerWpmMax.toDouble(),
-                  min: 0, max: 60, divisions: 60,
+              // Leftmost notch (kGiveWpmMin - 1) = "same as Hören".
+              _SliderRow(label: Strings.t('block_give'),
+                  value: (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax).toDouble(),
+                  min: kGiveWpmMin - 1.0, max: 60, divisions: 61 - kGiveWpmMin,
                   display: _answerWpmMax == 0
                       ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax',
-                  onChanged: (v) => _setGiveWpm(v < 5 ? 0 : v.round())),
+                  onChanged: (v) => _setGiveWpm(v < kGiveWpmMin ? 0 : v.round())),
             ]),
           ),
 

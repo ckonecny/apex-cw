@@ -6,6 +6,15 @@
 import 'adaptive_copy_engine.dart';
 import 'char_stats.dart';
 
+/// Lowest Gebe-Tempo cap (echoAnswerWpmMax) the UI offers; 0 = same as
+/// Hören. App choice, not firmware (no separate answer speed there): below
+/// 10 WPM keying is too slow to be useful (user, 2026-09-27).
+const int kGiveWpmMin = 10;
+
+/// A stored cap, sanitised: 0 stays "same as Hören", older values below
+/// [kGiveWpmMin] are raised to it.
+int kGiveWpmCap(int v) => v <= 0 ? 0 : v.clamp(kGiveWpmMin, 60);
+
 class EchoSuggestionInput {
   // One entry per word of the block: true = right on the first attempt
   // (a word right only after a repeat counts as false, decision 3).

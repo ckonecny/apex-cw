@@ -494,8 +494,9 @@ speed.
 
 Example: Listen at 25 WPM and Send at 18 WPM means you hear fast but may
 answer more slowly. The sending speed sets how fast the keyer produces your
-dits and dahs and how long a word pause has to be. At 0 ("same as prompt"),
-the listening speed applies to the answer too.
+dits and dahs and how long a word pause has to be. At the far left ("same as
+prompt"), the listening speed applies to the answer too. The lowest sending
+speed is 10 WPM.
 
 ## The result page
 
@@ -536,9 +537,22 @@ sections are the same as in Listen (see
 [Settings in the ⚙ sheet (Listen)](#settings-listen)), but they
 apply to the Send profile. There are two differences:
 
-- **Spacing** only affects the word **played to you**, not your answer.
-  Longer spacing does give you more time to begin your answer, though. Your
-  answer is always closed with a 7-dit word pause.
+- **Spacing** applies to the word played to you **and to your answer**, as
+  on the Morserino. Your answer counts as finished once you pause this long
+  after a character:
+
+  ```
+  2 × character spacing + 1 + word spacing / 8   (dits at the answer speed)
+  ```
+
+  With a straight key it is word spacing + 1 dits. Example: character
+  spacing 28, word spacing 40, answer speed 18 WPM gives 62 dits, about 4 s.
+  That is how long you may pause between the characters of a group, and how
+  long the app waits after the last character before it scores. If that is
+  too lenient or too slow for you, lower the character spacing; the normal
+  3 / 7 gives 8 dits. When the adaptive feature shortens the spacing, the
+  answer gets stricter too. Longer spacing also gives you more time to begin
+  your answer.
 - **Word selection** also uses the call sign settings from the global
   settings (see [Call signs](#call-signs)).
 
@@ -549,7 +563,7 @@ In addition there is the **Echo Trainer** section:
 | Think time | Extra time to **begin** your answer | 1–20 s (**8 s**) |
 | Repeats | How often a wrongly answered word is played again before the app reveals it. "Forever" repeats until you get it right | 0–6 (**3**), Forever |
 | Prompt | How the prompt is given. **Sound** means you only hear it. **Display** means you only read it, with no audio. **Both** means you hear it and then read it once it has played | **Sound** / Display / Both |
-| Sending speed (max) | Highest speed for your answer, see [Sending speed](#sending-speed) | **same as prompt**, 5–50 WPM |
+| Sending speed (max) | Highest speed for your answer, see [Sending speed](#sending-speed) | **same as prompt**, 10–50 WPM |
 | Tone shift | Your sidetone while answering is half a tone above or below the prompt | No shift / **Up ½** / Down ½ |
 | Confirmation tone | Short tone after grading: high for right, low for wrong | Off / **On** |
 

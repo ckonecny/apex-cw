@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../content/echo_suggestions.dart';
 import '../content/training_profile.dart';
 import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
@@ -92,7 +93,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
     final pf = await TrainingProfile.open(TrainingProfile.echo);
     _wpm          = pf.getInt('wpm') ?? 20;
     _pauseS         = (p.getInt(_pauseKey) ?? _pauseDefault).clamp(1, 20);
-    _answerWpmMax = (p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
+    _answerWpmMax = kGiveWpmCap(p.getInt('echoAnswerWpmMax') ?? 0);
     _pitch        = p.getInt('pitch') ?? 600;
     _toneShift    = (p.getInt('toneShift') ?? 1).clamp(0, 2);
     _toneSoftness = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);

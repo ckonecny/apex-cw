@@ -4,6 +4,15 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private)
 Latest tagged build: v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- Geben: Gebetempo (answer speed cap) now starts at 10 WPM instead of 5
+  (start page slider, ⚙ sheet, result stepper); leftmost notch = "wie
+  Hören"; old values below 10 are raised. Manuals updated. Verified on
+  63061JEBF01551 (start page slider: leftmost = wie Hören, next notch = 10).
+- Geben: the answer's word end now follows the Geben profile's spacing, as in
+  the firmware (2·IC + 1 + IW/8 dits; straight key IW + 1), instead of a fixed
+  6 dits. User report: group length 2 scored after the first character.
+  Settings hint and both manuals updated. Built and installed on
+  63061JEBF01551 (2026-09-27); user confirmed it works.
 - CW Keyer: all 5 modes, decode-to-text, CurtisB timing, AutoChar Spacing.
 - CW Generator + Koch Trainer: all content modes, LICW Carousel, Random
   Groups, Practice Set/Boost, weighted callsign generator.
@@ -424,6 +433,11 @@ HTML/PDF and screenshots are refreshed when the next version is cut. List
 every screenshot (both `img/de/` and `img/en/`) whose screen changed since
 the last release, with the reason. Clear this list after the release build.
 
+- `echo_start.png` — Geben slider now starts at 10 (was 5), already listed
+  if present; retake together.
+- `echo_sheet.png` — check: Geben spacing hint text changed (answer word
+  end follows the spacing, 2026-09-27); retake if the Abstände section is
+  in the shot.
 - `hear_result.png` — check: Listen result page middle part is now
   scrollable (overflow fix 2026-09-26); retake if the layout looks different.
 - HTML/PDF: rebuild (Markdown changed since v1.0.0: Boost Practice merged

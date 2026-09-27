@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../content/cw_content.dart';
+import '../../content/echo_suggestions.dart';
 import '../../content/training_profile.dart';
 import '../../content/charset_content.dart';
 import 'charset_header.dart';
@@ -120,7 +121,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _echoThinkTime = p.getInt('echoThinkTime') ?? 8;
       _echoRepeats = (p.getInt('echoRepeats') ?? 3).clamp(0, 7);
       _echoDisplay = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
-      _echoAnswerWpmMax = (p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
+      _echoAnswerWpmMax = kGiveWpmCap(p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
       _toneShift = (p.getInt('toneShift') ?? 1).clamp(0, 2);
       _confirmTone = p.getBool('confirmTone') ?? true;
       _kochSeq = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
@@ -466,12 +467,14 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         ),
         const SettingsDivider(),
         LabeledSlider(
-            label: Strings.t('settings_answer_wpm'), value: _echoAnswerWpmMax.toDouble(),
-            min: 0, max: 50, divisions: 50,
+            // Leftmost notch (kGiveWpmMin - 1) = "same as Hören".
+            label: Strings.t('settings_answer_wpm'),
+            value: (_echoAnswerWpmMax == 0 ? kGiveWpmMin - 1 : _echoAnswerWpmMax).toDouble(),
+            min: kGiveWpmMin - 1.0, max: 50, divisions: 51 - kGiveWpmMin,
             display: _echoAnswerWpmMax == 0
                 ? Strings.t('settings_answer_wpm_same') : '$_echoAnswerWpmMax WPM',
             onChanged: (v) {
-              setState(() => _echoAnswerWpmMax = v < 5 ? 0 : v.round());
+              setState(() => _echoAnswerWpmMax = v < kGiveWpmMin ? 0 : v.round());
               _p?.setInt('echoAnswerWpmMax', _echoAnswerWpmMax);
             }),
         Padding(
