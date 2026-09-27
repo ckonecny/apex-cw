@@ -743,3 +743,33 @@ confirmed by the user on 2026-09-27:
   first attempts, typed text under each group; marks can be removed by
   tapping (typos). Then the **unchanged** result page (no ●◐○ split, no
   confusion list).
+
+## System font size: capped at 1.3 (2026-09-27)
+
+- The Android font-size setting is honoured, but clamped to **1.3×**
+  (`kMaxTextScale` in `widgets/app_ui.dart`, applied app-wide via
+  `MediaQuery.withClampedTextScaling` in `main.dart`'s `MaterialApp.builder`).
+  Pixel offers 7 steps (≈0.85 … 2.0); 1.3 is step 4. Beyond that the
+  training screens (fixed-height typing view, half-width buttons, 7 home
+  cards) stop fitting. Fully ignoring the setting was rejected: many users
+  are older and set large fonts on purpose.
+- **Fixed-geometry elements ignore it** (`NoTextScale`): the CW keyboard and
+  the Koch character tiles in `CharsetHeader` — their labels are already
+  sized for the box.
+- **Fixed heights that hold text** (kept fixed so the layout doesn't jump
+  between states) are multiplied by `textScaleOf(context)` instead of being
+  literal pixels: typing-mode slots, Einzelzeichen-üben feedback line,
+  Memory Chain prompt box.
+- `AppButton` labels are one line and shrink to fit (`FittedBox`) instead of
+  clipping; horizontal padding reduced to 12.
+- Long scroll areas use `ScrollHint` (always-visible scrollbar + bottom fade
+  while there is more): Hören "Gesendet" overview, Hören result page, and the
+  home screen, which switches from 7 height-sharing cards to fixed-height
+  cards in a scroll view when the screen is too short for them.
+- **Android "Display size" (Anzeigegröße) is ignored entirely**:
+  `MainActivity.attachBaseContext` overrides `densityDpi` with
+  `DisplayMetrics.DENSITY_DEVICE_STABLE`, so FlutterView always gets the
+  stock devicePixelRatio. It scales everything (not just text), so there is
+  nothing to cap sensibly; enlarged, the fixed-geometry screens break.
+- Test: `android/test/text_scale_test.dart` pumps the home screen at scales
+  0.85–2.0 on two phone sizes and fails on any overflow.

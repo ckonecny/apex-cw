@@ -573,7 +573,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
         ]),
       ),
       SizedBox(
-        height: 96,
+        height: 96 * textScaleOf(context),
         child: Center(
           child: _promptShown && _chain.isNotEmpty
               ? Text(_chain.last, style: _mono(64, c.warning, bold: true))

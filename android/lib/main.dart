@@ -4,6 +4,7 @@ import 'theme/app_colors.dart';
 import 'theme/theme_controller.dart';
 import 'l10n/strings.dart';
 import 'ui/home_screen.dart';
+import 'ui/widgets/app_ui.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +48,13 @@ class NextCwTrainerApp extends StatelessWidget {
           themeMode: mode,
           theme: _theme(AppColors.light, Brightness.light),
           darkTheme: _theme(AppColors.dark, Brightness.dark),
+          // System font size is honoured up to 1.3× (Pixel step 4 of 7);
+          // beyond that the fixed-geometry training screens stop fitting
+          // (DECISIONS.md "System font size: capped at 1.3").
+          builder: (context, child) => MediaQuery.withClampedTextScaling(
+            maxScaleFactor: kMaxTextScale,
+            child: child!,
+          ),
           home: const HomeScreen(),
         ),
       ),

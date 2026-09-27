@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'widgets/app_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
 import '../content/charset_content.dart';
@@ -89,13 +90,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          child: Column(
+        body: LayoutBuilder(builder: (context, box) {
+          // The seven cards share the screen height; when that gets too
+          // tight for their text (large system font, small screen), they
+          // switch to a fixed minimum height and the page scrolls instead.
+          final f = textScaleOf(context);
+          final minCard = 76 * f;
+          final needed = 7 * minCard + 4 * 8 + 2 * 16 + 3 * 23 * f + 8 + 24;
+          final scroll = box.maxHeight < needed;
+          Widget card(Widget w) => scroll ? SizedBox(height: minCard, child: w) : Expanded(child: w);
+          final column = Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _SectionLabel(Strings.t('home_section_practice')),
-            Expanded(child: _ModeCard(
+            card(_ModeCard(
               icon: Icons.headphones,
               title: Strings.t('block_hear'),
               subtitle: hearInfo.isEmpty
@@ -104,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => _open(const GeneratorScreen()),
             )),
             const SizedBox(height: 8),
-            Expanded(child: _ModeCard(
+            card(_ModeCard(
               icon: Icons.keyboard,
               title: Strings.t('block_give'),
               subtitle: giveInfo.isEmpty
@@ -114,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
             const SizedBox(height: 16),
             _SectionLabel(Strings.t('home_section_free')),
-            Expanded(child: _ModeCard(
+            card(_ModeCard(
               icon: Icons.tune,
               title: 'CW Keyer',
               subtitle: Strings.t('home_keyer_subtitle'),
@@ -122,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => _open(const KeyerScreen()),
             )),
             const SizedBox(height: 8),
-            Expanded(child: _ModeCard(
+            card(_ModeCard(
               icon: Icons.hearing,
               title: Strings.t('dec_title'),
               subtitle: Strings.t('home_decoder_subtitle'),
@@ -130,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => _open(const DecoderScreen()),
             )),
             const SizedBox(height: 8),
-            Expanded(child: _ModeCard(
+            card(_ModeCard(
               icon: Icons.wifi,
               title: 'WiFi Trx',
               subtitle: Strings.t('home_wifitrx_subtitle'),
@@ -138,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => _open(const WifiTrxScreen()),
             )),
             const SizedBox(height: 8),
-            Expanded(child: _ModeCard(
+            card(_ModeCard(
               icon: Icons.forum_outlined,
               title: 'QSO Bot',
               subtitle: Strings.t('home_qso_subtitle'),
@@ -147,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
             const SizedBox(height: 16),
             _SectionLabel(Strings.t('home_section_games')),
-            Expanded(child: _ModeCard(
+            card(_ModeCard(
               icon: Icons.sports_esports,
               title: Strings.t('games_title'),
               subtitle: Strings.t('home_games_subtitle'),
@@ -155,8 +163,12 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => _open(const GamesScreen()),
             )),
           ],
-          ),
-        ),
+          );
+          const padding = EdgeInsets.fromLTRB(16, 8, 16, 24);
+          return scroll
+              ? ScrollHint(padding: padding, child: column)
+              : Padding(padding: padding, child: column);
+        }),
       );
       },
     );
@@ -214,10 +226,10 @@ class _ModeCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: TextStyle(
+                  Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(
                       fontFamily: 'CwMono', fontSize: 20, color: c.textPrimary)),
                   const SizedBox(height: 4),
-                  Text(subtitle, style: TextStyle(
+                  Text(subtitle, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(
                       fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
                 ],
               )),

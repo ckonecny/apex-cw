@@ -1162,6 +1162,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final i = _currentGroupIndex;
     final mono = TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted);
     final attempts = i < _typedAttempts.length ? _typedAttempts[i] : const <String?>[];
+    // The fixed heights below keep the layout from jumping between states;
+    // they grow with the system font size so the text still fits.
+    final f = textScaleOf(context);
 
     Widget center;
     if (_preparing) {
@@ -1192,7 +1195,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                   fontWeight: FontWeight.bold, letterSpacing: 4,
                   color: wrong ? c.danger : c.textPrimary,
                   decoration: wrong ? TextDecoration.lineThrough : null)),
-          Container(width: 2, height: 34, color: wrong ? Colors.transparent : c.accent),
+          Container(width: 2, height: 34 * f, color: wrong ? Colors.transparent : c.accent),
         ]);
       }
       String? badge;
@@ -1229,7 +1232,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
             .replaceFirst('{n}', '${i + 1}').replaceFirst('{total}', '$_blockSize')} · $_activeWpm WPM',
             style: mono),
         const SizedBox(height: 14),
-        SizedBox(height: 28, child: badge == null ? null : Container(
+        SizedBox(height: 28 * f, child: badge == null ? null : Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(color: badgeColor.withOpacity(0.13),
               borderRadius: BorderRadius.circular(14)),
@@ -1241,11 +1244,11 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         // Fixed height in every state, sized for the solution's numbered
         // list (one 18 px line per allowed attempt), so the answer line
         // below stays put when the solution appears.
-        SizedBox(height: _typeAttempts * 18 < 22 ? 22 : _typeAttempts * 18.0,
+        SizedBox(height: (_typeAttempts * 18 < 22 ? 22 : _typeAttempts * 18.0) * f,
             child: Align(alignment: Alignment.bottomCenter, child: solution
             ? Column(mainAxisSize: MainAxisSize.min, children: [
                 for (var a = 0; a < attempts.length; a++)
-                  SizedBox(height: 18, child: Text('${a + 1}.  ${attempts[a] == null ? '— ${Strings.t('ac_type_passed')}'
+                  SizedBox(height: 18 * f, child: Text('${a + 1}.  ${attempts[a] == null ? '— ${Strings.t('ac_type_passed')}'
                       : attempts[a]!.split('').map(_displayChar).join()}', style: mono)),
               ])
             : Text([
@@ -1255,11 +1258,13 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textFaint,
                     decoration: TextDecoration.lineThrough, letterSpacing: 2)))),
         const SizedBox(height: 4),
-        SizedBox(height: 48, child: Center(child: answer)),
+        // Long groups/words shrink to fit instead of overflowing sideways.
+        SizedBox(height: 48 * f, child: Center(
+            child: FittedBox(fit: BoxFit.scaleDown, child: answer))),
         Container(width: 200, height: 2, color: correct ? c.accent
             : (wrong || solution) ? c.danger : c.border),
         const SizedBox(height: 10),
-        SizedBox(height: 18, child: _playing
+        SizedBox(height: 18 * f, child: _playing
             ? Row(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.graphic_eq, size: 16, color: c.accent),
                 const SizedBox(width: 6),
@@ -1312,24 +1317,21 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       ),
       Expanded(
         child: LayoutBuilder(builder: (context, constraints) {
-          // Center the tiles when they fit, but still allow scrolling once
-          // there are more groups than fit at once — a plain Center() inside
-          // a scroll view only works when the content is already shorter
-          // than the viewport, hence the explicit minHeight constraint.
-          return SingleChildScrollView(
+          // Centered when the tiles fit; otherwise scrollable, with a
+          // visible scrollbar and bottom fade so it's clear there's more.
+          // Tiles grow with the font size, but never below two columns.
+          final tileWidth = (150 * textScaleOf(context))
+              .clamp(0.0, (constraints.maxWidth - 32 - 20) / 2);
+          return ScrollHint(
+            center: true,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: Center(
-                child: Wrap(
-                  alignment: WrapAlignment.center,
-                  runAlignment: WrapAlignment.center,
-                  spacing: 20,
-                  runSpacing: 16,
-                  children: List.generate(_sentGroups.length,
-                      (i) => _buildRevealedTile(context, i)),
-                ),
-              ),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.center,
+              spacing: 20,
+              runSpacing: 16,
+              children: List.generate(_sentGroups.length,
+                  (i) => _buildRevealedTile(context, i, tileWidth)),
             ),
           );
         }),
@@ -1350,7 +1352,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // colored by type (letter/digit/other) so mixed-content groups are
   // easier to scan. Tapping the tile opens the per-word marking screen;
   // any characters already marked wrong in it show red right here too.
-  Widget _buildRevealedTile(BuildContext context, int i) {
+  Widget _buildRevealedTile(BuildContext context, int i, double width) {
     final c = AppColors.of(context);
     final group = _sentGroups[i];
     final hasError =
@@ -1359,7 +1361,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       onTap: () => setState(() => _markingWordIndex = i),
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        width: 150,
+        width: width,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: hasError ? c.danger.withOpacity(0.13) : c.surfaceAlt,
@@ -1458,8 +1460,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     return Column(children: [
       _buildHeader(context),
       Expanded(
-        child: Center(
-          child: SingleChildScrollView(
+        child: ScrollHint(
+          center: true,
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Text('$pct %', style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 52,
@@ -1496,7 +1498,6 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
               ..._buildSuggestionRows(context),
             ],
           ]),
-          ),
         ),
       ),
       Padding(
@@ -1547,16 +1548,37 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       progress = (worst / 100 / th.highThreshold).clamp(0.0, 1.0);
     }
     final next = _displayChar(widget.activeKochChars[widget.kochLevel]);
-    final lines = <String>[];
+    // One chip per character, so an entry never breaks across lines; most
+    // repetitions owed / lowest accuracy first, capped so a bad block
+    // doesn't turn the card into a wall.
+    const maxChips = 10;
+    Widget chips(List<String> items) {
+      final shown = items.take(maxChips).toList();
+      return Wrap(spacing: 6, runSpacing: 6, children: [
+        for (final t in shown) Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          decoration: BoxDecoration(color: c.surfaceAlt,
+              borderRadius: BorderRadius.circular(12), border: Border.all(color: c.border)),
+          child: Text(t, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary)),
+        ),
+        if (items.length > maxChips) Padding(
+          padding: const EdgeInsets.symmetric(vertical: 3),
+          child: Text(Strings.t('ac_outlook_more').replaceFirst('{n}', '${items.length - maxChips}'),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+        ),
+      ]);
+    }
+    final sections = <(String, List<String>)>[];
     if (needAttempts.isNotEmpty) {
-      lines.add(Strings.t('ac_outlook_attempts').replaceFirst('{list}',
-          needAttempts.entries.map((e) => '${_displayChar(e.key)} (${e.value})').join('  ')));
+      final e = needAttempts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+      sections.add((Strings.t('ac_outlook_attempts'),
+          [for (final x in e) '${_displayChar(x.key)} ${x.value}']));
     }
     if (lowAcc.isNotEmpty) {
-      lines.add(Strings.t('ac_outlook_accuracy')
-          .replaceFirst('{pct}', '${(th.highThreshold * 100).round()}')
-          .replaceFirst('{list}',
-              lowAcc.entries.map((e) => '${_displayChar(e.key)} (${e.value} %)').join('  ')));
+      final e = lowAcc.entries.toList()..sort((a, b) => a.value.compareTo(b.value));
+      sections.add((Strings.t('ac_outlook_accuracy')
+          .replaceFirst('{pct}', '${(th.highThreshold * 100).round()}'),
+          [for (final x in e) '${_displayChar(x.key)} ${x.value} %']));
     }
     final mono = TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted);
     return SizedBox(
@@ -1576,9 +1598,12 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
               valueColor: AlwaysStoppedAnimation(c.accent),
             ),
           ),
-          const SizedBox(height: 8),
-          for (final l in lines) Padding(
-            padding: const EdgeInsets.only(top: 2), child: Text(l, style: mono)),
+          for (final (label, items) in sections) ...[
+            const SizedBox(height: 10),
+            Text(label, style: mono),
+            const SizedBox(height: 6),
+            chips(items),
+          ],
         ]),
       ),
     );

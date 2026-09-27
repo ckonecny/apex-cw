@@ -4,6 +4,20 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private)
 Latest tagged build: v1.1.0 (2026-09-27: Hören typing mode, Koch character row, terminology pass). Previous: v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **System font size capped at 1.3 + layout fixes for large fonts
+  (2026-09-27), user-tested OK.** User
+  report: at Pixel font step 5 the "Nächster Block" button text overflowed,
+  the typing view broke, the Gesendet overview hid that it scrolls, and the
+  "Auf dem Weg zu" lists overflowed. Fix: global cap (DECISIONS.md "System
+  font size: capped at 1.3"), `NoTextScale` for keyboard/Koch tiles,
+  fixed heights × `textScaleOf`, shrink-to-fit `AppButton`, `ScrollHint`
+  (scrollbar + fade) on overview/result/home, home cards scroll when too
+  tight, "Auf dem Weg zu" as chips (sorted, max 10 per list, "+N weitere").
+  New test `test/text_scale_test.dart`. User-checked OK at font steps 4
+  and 5. Follow-up: Android "Anzeigegröße" (display size) is now ignored
+  (density pinned to the device default in `MainActivity`) — installed on
+  63061JEBF01551, user-tested OK (phone runs display size 356 dpi vs.
+  stock 420, so the app now looks larger than before).
 - **Fix: practice-set "N eindeutige Zeichen erkannt" lagged one edit behind
   (2026-09-27), built on top of 6e18eb7 and installed on 63061JEBF01551,
   not yet user-tested.** The Hören
@@ -496,6 +510,10 @@ the last release, with the reason. Clear this list after the release build.
   for it to fade before the shot.
 - `hear_type.png`, `hear_type_retry.png` (de+en): typing view spacing changed
   slightly (fixed-height attempts slot, fixed dot cells).
+- `hear_result.png` (de+en): "Auf dem Weg zu" card now shows chips
+  instead of text lists; scrollbar visible when the page scrolls.
+- `hear_revealed.png` (de+en): scrollbar at the right edge when the groups
+  don't fit.
 - Process note: build the manual *before* the version commit/tag, so the
   title page shows the tagged commit (v1.1.0 shows 13bc0d4, tag is 117027c).
 

@@ -105,6 +105,15 @@ Under **Settings → Appearance** you choose the **Theme** (System, Light or
 Dark) and the app **Language** (Deutsch or English). Both take effect
 immediately.
 
+The app follows the Android **font size** setting, but only up to **1.3×**
+the default size (step 4 of 7 on a Pixel). Larger steps look the same as
+that one in the app; otherwise the training screens would no longer fit. The
+on-screen keyboard for typing along and the Koch character row always keep
+their size. The Android **Display size** setting ("Make everything bigger or
+smaller") has no effect in the app; it always uses the device's default
+size. When a page is longer than the screen, a scrollbar at the edge
+shows that there is more.
+
 ## Sound and volume
 
 Set the volume with the phone's volume keys. You set the **pitch** and the
@@ -893,10 +902,13 @@ missing before the next character:
   over all characters that still lack attempts. If no attempts are missing any
   more and only accuracy is, it shows the weakest character's accuracy
   relative to the threshold.
-- **Still to practice** lists characters that still lack attempts, with the
-  number missing, for example `q (7)`.
+- **Still to practice (repetitions)** lists characters that still lack
+  attempts, each as a small chip with the number missing, for example `q 7`.
+  Those missing the most come first.
 - **Accuracy below 90 %** lists characters with enough attempts but too low
-  an accuracy, for example `y (84 %)`.
+  an accuracy, for example `y 84 %`. The weakest come first.
+
+Each list shows at most 10 characters; the rest appear as "+N more".
 
 ## Trend
 

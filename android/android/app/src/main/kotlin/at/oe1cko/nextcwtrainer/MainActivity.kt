@@ -3,6 +3,8 @@ package at.oe1cko.nextcwtrainer
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
@@ -11,6 +13,18 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
+
+    // Ignore Android's "Display size" setting: always render at the
+    // device's stock density, so the fixed-geometry training screens keep
+    // fitting (DECISIONS.md "System font size: capped at 1.3" — font size is
+    // capped separately in Dart). FlutterView takes its devicePixelRatio
+    // from these resources.
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase)
+        applyOverrideConfiguration(Configuration().apply {
+            densityDpi = DisplayMetrics.DENSITY_DEVICE_STABLE
+        })
+    }
 
     // Set from Dart ("setKeepScreenOn") only while an actual training screen
     // (Keyer/Generator/Koch/Echo) is open — not on Home or Settings.

@@ -4,6 +4,7 @@ import '../../content/cw_content.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import '../../util/char_color.dart';
+import 'app_ui.dart';
 import 'setting_rows.dart';
 
 String charSetLabel(CharSet s) => Strings.t(const {
@@ -107,9 +108,11 @@ class CharsetHeader extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(color: c.border),
                       ),
-                      child: Text(outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase(),
+                      // Fixed 30×32 tile: ignores the system font size.
+                      child: NoTextScale(child: Text(
+                          outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase(),
                           style: TextStyle(fontFamily: 'CwMono', fontSize: 15,
-                              color: i < kochLevel ? charTypeColor(ch, c) : c.textMuted)),
+                              color: i < kochLevel ? charTypeColor(ch, c) : c.textMuted))),
                     ),
                   ),
                 ),

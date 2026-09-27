@@ -312,7 +312,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
                       ),
                       const SizedBox(height: 12),
                       SizedBox(
-                        height: 20,
+                        height: 20 * textScaleOf(context),
                         child: _ok == null
                             ? null
                             : Text(

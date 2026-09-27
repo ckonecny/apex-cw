@@ -106,6 +106,17 @@ Jedes Feld merkt sich seine eigene Größe.
 Unter **Einstellungen → Darstellung** wählst du das **Farbschema** (System / Hell /
 Dunkel) und die **Sprache** der App (Deutsch / English). Beides wirkt sofort.
 
+Die **Schriftgröße** übernimmt die App aus den Android-Einstellungen, aber
+nur bis zum **1,3-Fachen** der Standardgröße (beim Pixel die 4. von 7
+Stufen). Größere Stufen sehen in der App aus wie diese; sonst würden die
+Trainings-Bildschirme nicht mehr passen. Die Bildschirmtastatur beim
+Mitschreiben und die Koch-Zeichenleiste bleiben immer gleich groß. Die
+Android-Einstellung **Anzeigegröße** („Alles vergrößern oder verkleinern“)
+wirkt in der App gar nicht; sie wird immer in der Standardgröße des Geräts
+angezeigt. Ist eine
+Seite länger als der Bildschirm, zeigt eine Bildlaufleiste am Rand, dass es
+weitergeht.
+
 ## Ton und Lautstärke
 
 Die Lautstärke regelst du mit den Lauter/Leiser-Tasten des Handys. Die
@@ -912,10 +923,13 @@ bis zum nächsten Zeichen noch fehlt:
   zusammengezählt über alle Zeichen, denen noch Versuche fehlen. Fehlen keine
   Versuche mehr, sondern nur noch Treffsicherheit, zeigt er die Trefferquote
   des schwächsten Zeichens im Verhältnis zur Schwelle.
-- **Noch üben:** Zeichen, denen noch Versuche fehlen, mit der Zahl der
-  fehlenden Versuche, z. B. `q (7)`.
+- **Noch üben (Wiederholungen):** Zeichen, denen noch Versuche fehlen, je
+  als kleines Kästchen mit der Zahl der fehlenden Versuche, z. B. `q 7`. Die
+  mit den meisten fehlenden Versuchen stehen vorne.
 - **Trefferquote unter 90 %:** Zeichen mit genug Versuchen, aber zu niedriger
-  Trefferquote, z. B. `y (84 %)`.
+  Trefferquote, z. B. `y 84 %`. Die schwächsten stehen vorne.
+
+Pro Liste werden höchstens 10 Zeichen gezeigt, der Rest als „+N weitere“.
 
 ## Trend
 
