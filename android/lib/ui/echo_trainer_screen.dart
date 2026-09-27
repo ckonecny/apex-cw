@@ -954,7 +954,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                 outputCase: _outputCase,
                 practiceChars: _practiceChars.join(),
                 onPracticeCharsChanged: (v) async {
-                  _practiceChars = parsePracticeChars(v);
+                  setState(() => _practiceChars = parsePracticeChars(v));
                   final pf = await TrainingProfile.open(TrainingProfile.echo);
                   await pf.setString('practiceChars', v);
                 },

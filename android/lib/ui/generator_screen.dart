@@ -236,7 +236,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                 onCharLongPress: _onCharLongPress,
                 practiceChars: _practiceChars,
                 onPracticeCharsChanged: (v) async {
-                  _practiceChars = v;
+                  setState(() => _practiceChars = v);
                   final pf = await TrainingProfile.open(TrainingProfile.hear);
                   await pf.setString('practiceChars', v);
                 },

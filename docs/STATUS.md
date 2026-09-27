@@ -4,6 +4,16 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private)
 Latest tagged build: v1.1.0 (2026-09-27: Hören typing mode, Koch character row, terminology pass). Previous: v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **Fix: practice-set "N eindeutige Zeichen erkannt" lagged one edit behind
+  (2026-09-27), built on top of 6e18eb7 and installed on 63061JEBF01551,
+  not yet user-tested.** The Hören
+  and Geben start pages (`generator_screen.dart`, `echo_trainer_screen.dart`)
+  updated `_practiceChars` in `onPracticeCharsChanged` without `setState`, so
+  the `CharsetHeader` count label only refreshed on some later unrelated
+  rebuild. Now wrapped in `setState`. The ⚙ sheet
+  (`training_settings_sheet.dart`) already did this and was fine. To check
+  on device: Übungsset, type/delete characters, the count follows every
+  keystroke.
 - **Hören typing: steady layout (2026-09-27), built and installed on
   63061JEBF01551, not yet user-tested:** the middle of the typing view no
   longer jumps when a group's result appears — progress dots sit in fixed
