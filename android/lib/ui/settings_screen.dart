@@ -6,6 +6,7 @@ import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import '../theme/theme_controller.dart';
 import '../l10n/strings.dart';
+import '../licenses.dart';
 import 'widgets/setting_rows.dart';
 
 enum _LearnState { idle, waitDit, waitDah, done }
@@ -499,6 +500,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _InfoRow(label: 'Commit', value: _build),
             const SettingsDivider(),
             _InfoRow(label: Strings.t('settings_build_time'), value: _buildTime),
+            const SettingsDivider(),
+            InkWell(
+              onTap: () => showLicensePage(
+                context: context,
+                applicationName: 'Next CW Trainer',
+                applicationVersion: _version,
+                applicationLegalese: appLegalese,
+              ),
+              child: _InfoRow(label: Strings.t('settings_licenses'),
+                  value: 'GPL-3.0 ›'),
+            ),
           ]),
           const SizedBox(height: 24),
         ],

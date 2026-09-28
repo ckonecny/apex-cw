@@ -10,6 +10,14 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   author on the title page, edition block and PDF metadata, one sentence in
   "Woher die App kommt"; Info table updated (DE+EN). README: byline and
   credits.
+- **Licence: GPL-3.0 (2026-09-28, installed on 63061JEBF01551).** Root
+  `LICENSE` (GPL-3.0 text, identical to the firmware's), README "License"
+  section, Settings → Info → "Lizenzen/Licences" opens Flutter's licence
+  page with the app's GPL (+ Morserino-32 credit), Zork MIT licence plus a
+  trademark/non-affiliation note, and the OFL texts of both fonts
+  (`lib/licenses.dart`, `test/licenses_test.dart`). Manual Info section
+  (DE+EN) explains it. Licence page chrome is English (no Material
+  localisations in the app).
 - **Custom Koch default credited (2026-09-28, docs only).** The default
   custom sequence is the order of the YouTube course by "Heinz – just me";
   named with the playlist link in the manual's Koch-sequence section (DE+EN),
@@ -580,7 +588,8 @@ every screenshot (both `img/de/` and `img/en/`) whose screen changed since
 the last release, with the reason. Clear this list after the release build.
 
 - `settings3.png` (DE+EN): Info card now starts with "Entwickelt von /
-  Developed by" and "Danke / Thanks" rows.
+  Developed by" and "Danke / Thanks" rows, and ends with a "Lizenzen /
+  Licences" row.
 - Process note: build the manual *before* the version commit/tag, so the
   title page shows the tagged commit.
 - File names carry the version (`NextCWTrainer_Handbuch_v1.2.0.pdf`, …);

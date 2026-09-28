@@ -132,6 +132,22 @@ Affects Koch generation generally (Classic and Adaptiv), not just Adaptive
 Copy — intentional, since this is a fidelity fix (CLAUDE.md rule 1), not an
 Adaptive-Copy-only behavior.
 
+## Licence: GPL-3.0
+2026-09-28. The Morserino-32 firmware is GPL-3.0-or-later (header of
+`m32_v6.ino`, `reference/Software/LICENSE`). The app ports not just ideas but
+data tables (word lists, abbreviations, call sign prefixes, QSO texts) and
+closely follows the code, so it is treated as a derivative work and released
+under GPL-3.0-or-later too; the repo had no licence before. Consequences:
+source stays public, every APK carries the licence texts (Settings → Info →
+Licences via `showLicensePage`, entries registered in `lib/licenses.dart`).
+The GPL text is bundled as `assets/licenses/GPL-3.0.txt`, a copy of the root
+`LICENSE` (a test keeps them identical — Flutter assets can't live outside
+`android/`). Third-party parts keep their own licences: Zork story files MIT
+(Microsoft 2025), fonts SIL OFL 1.1 (texts from google/fonts), Flutter packages
+MIT/BSD/Apache — all GPL-compatible. "Zork" is a trademark not covered by the
+MIT licence: used only descriptively, never in app name/icon/store title, with
+a non-affiliation note.
+
 ## Default custom Koch sequence: "Heinz – just me" course order
 The Custom Koch Sequence default `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?` is
 the order of the YouTube Morse course by "Heinz – just me"

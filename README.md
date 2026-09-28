@@ -216,6 +216,25 @@ Module-by-module details: `docs/PORTING-MAP.md`.
   [historicalsource](https://github.com/historicalsource) repositories, MIT
   License (see `android/assets/zork/`).
 
+## License
+
+Next CW Trainer is free software under the **GNU General Public License
+v3.0 or later** (see [`LICENSE`](LICENSE)). It ports algorithms and data
+tables (word lists, abbreviations, call sign prefixes, QSO texts) from the
+Morserino-32 firmware, Copyright (C) 2018-2025 Willi Kraml, OE1WKL, which is
+itself GPL-3.0; the app is therefore a derivative work under the same
+licence.
+
+Bundled third-party material keeps its own licence: Zork I–III story files
+(MIT, `android/assets/zork/LICENSE`), the fonts Anonymous Pro and Space
+Grotesk (SIL Open Font License 1.1, `android/assets/fonts/OFL-*.txt`) and the
+Flutter packages (MIT/BSD/Apache). All licence texts are shown in the app
+under Settings → Info → Licences.
+
+Zork is a trademark of its owners. This project is not affiliated with or
+endorsed by them, nor by Infocom, Activision or Microsoft, nor by Willi
+Kraml/OE1WKL or the Morserino-32 team.
+
 ## Development
 
 Built with Flutter (UI, Dart) and native Kotlin/C++ on the Android side

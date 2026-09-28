@@ -68,6 +68,10 @@ flutter:
     - assets/zork/zork3.z3
     - assets/zork/zork3_map.json
     - assets/zork/LICENSE
+  # Licence texts for the licence page (lib/licenses.dart).
+    - assets/licenses/GPL-3.0.txt
+    - assets/fonts/OFL-AnonymousPro.txt
+    - assets/fonts/OFL-SpaceGrotesk.txt
 
   # To add assets to your application, add an assets section, like this:
   # assets:

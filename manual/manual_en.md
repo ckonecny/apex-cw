@@ -1557,8 +1557,19 @@ See [Learning the paddle keys](#learning-the-paddle-keys) and
 | Version | Version number and build number, for example "1.0.0 (Build 42)" |
 | Commit | The exact source code state the app was built from |
 | Built | Date and time of the build |
+| Licences | Tap to open the licence texts (see below) |
 
 When you report a problem, please include the version, commit and build time.
+
+**Licences:** The app is free software under the GNU General Public License
+v3.0 (or later). It takes algorithms and data (word lists, abbreviations, call
+sign prefixes, QSO texts) from the Morserino-32 firmware by Willi Kraml,
+OE1WKL, which is also under the GPL-3.0. The source code is on
+[GitHub](https://github.com/ckonecny/next_cw_trainer). The licence page also
+shows the MIT License of Zork I–III, the SIL Open Font License of the fonts
+Anonymous Pro and Space Grotesk, and the licences of the Flutter packages the
+app uses. Zork is a trademark of its owners; the app is not affiliated with
+them, nor with Infocom, Activision or Microsoft.
 
 ## Koch sequence {#koch-sequence}
 
