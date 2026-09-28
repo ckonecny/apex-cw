@@ -49,11 +49,13 @@ title_block() {   # $1 = lang
 <div class="title-page" data-title="Next CW Trainer – Handbuch">
 <p class="t-name">Next CW Trainer</p>
 <p class="t-sub">Benutzerhandbuch</p>
+<p class="t-author">Christian Konecny, OE1CKO</p>
 <p class="t-ver">App-Version $VERSION · Stand $MONTH_DE $YEAR · $COMMIT</p>
 </div>
 <div class="edition">
 <p><strong>Next CW Trainer – Benutzerhandbuch</strong>, für App-Version $VERSION
-(Quellstand $COMMIT), $MONTH_DE $YEAR.</p>
+(Quellstand $COMMIT), $MONTH_DE $YEAR. Autor: Christian Konecny, OE1CKO.
+App-Icon: Sia, OE1LMR.</p>
 <p>Next CW Trainer ist ein unabhängiges Projekt. Trainingskonzept und Algorithmen
 stammen aus der Firmware des Morserino-32 von Willi Kraml, OE1WKL, und dem
 Morserino-32-Team; es besteht keine weitere Verbindung zu ihnen.</p>
@@ -65,11 +67,13 @@ HTML
 <div class="title-page" data-title="Next CW Trainer – User Manual">
 <p class="t-name">Next CW Trainer</p>
 <p class="t-sub">User Manual</p>
+<p class="t-author">Christian Konecny, OE1CKO</p>
 <p class="t-ver">App version $VERSION · $MONTH_EN $YEAR · $COMMIT</p>
 </div>
 <div class="edition">
 <p><strong>Next CW Trainer – User Manual</strong>, for app version $VERSION
-(source $COMMIT), $MONTH_EN $YEAR.</p>
+(source $COMMIT), $MONTH_EN $YEAR. Author: Christian Konecny, OE1CKO.
+App icon: Sia, OE1LMR.</p>
 <p>Next CW Trainer is an independent project. Its training concept and
 algorithms come from the Morserino-32 firmware by Willi Kraml, OE1WKL, and the
 Morserino-32 team; there is no other connection to them.</p>
@@ -97,7 +101,7 @@ build() {   # $1 = lang
   title_block "$lang" > "$TMP/title_$lang.html"
   local common=(manual_$lang.md --from markdown --toc --toc-depth=2
     --number-sections --metadata "title=$title" --metadata "lang=$lang"
-    --metadata "toc-title=$toc" --variable "pagetitle=$title"
+    --metadata "toc-title=$toc" --metadata "author=Christian Konecny, OE1CKO" --variable "pagetitle=$title"
     --include-before-body "$TMP/title_$lang.html")
 
   if [ "$FORMATS" = both ] || [ "$FORMATS" = html ] || [ "$FORMATS" = pdf ]; then
@@ -114,7 +118,7 @@ build() {   # $1 = lang
   fi
   if [ "$FORMATS" = epub ]; then
     echo "[$lang] EPUB"
-    pandoc "${common[@]}" --css style.css --metadata "author=Next CW Trainer" \
+    pandoc "${common[@]}" --css style.css \
       -o "$base.epub" || { echo "pandoc failed ($lang epub)"; exit 1; }
   fi
 }

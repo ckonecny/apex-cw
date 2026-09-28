@@ -4,6 +4,12 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private)
 Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new app icon, games order). Previous: v1.1.0 (2026-09-27, Hören typing mode, Koch character row, terminology pass); v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **Author credits (2026-09-28, installed on 63061JEBF01551).**
+  Settings → Info: "Entwickelt von: Christian Konecny, OE1CKO" and a
+  "Danke" row (Morserino-32 OE1WKL, icon Sia OE1LMR, Zork Infocom). Manual:
+  author on the title page, edition block and PDF metadata, one sentence in
+  "Woher die App kommt"; Info table updated (DE+EN). README: byline and
+  credits.
 - **v1.2.0 release (2026-09-28).** New app icon (design by Sia, the user's
   friend; adaptive + legacy icons built by `android/tool/icon/make_icon.py`,
   checked in the phone's app drawer). Games page order: Morse Invaders,
@@ -569,7 +575,8 @@ HTML/PDF and screenshots are refreshed when the next version is cut. List
 every screenshot (both `img/de/` and `img/en/`) whose screen changed since
 the last release, with the reason. Clear this list after the release build.
 
-- (empty — cleared at v1.2.0)
+- `settings3.png` (DE+EN): Info card now starts with "Entwickelt von /
+  Developed by" and "Danke / Thanks" rows.
 - Process note: build the manual *before* the version commit/tag, so the
   title page shows the tagged commit.
 - File names carry the version (`NextCWTrainer_Handbuch_v1.2.0.pdf`, …);

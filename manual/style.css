@@ -52,7 +52,8 @@ blockquote { border-left: 3px solid var(--accent); margin-left: 0; padding-left:
 /* Title page */
 .title-page { text-align: center; padding: 3em 0 2em; }
 .title-page .t-name { font-size: 2.6em; font-weight: bold; color: var(--accent); margin: 0; }
-.title-page .t-sub  { font-size: 1.4em; margin: .3em 0 1.5em; }
+.title-page .t-sub  { font-size: 1.4em; margin: .3em 0 .6em; }
+.title-page .t-author { font-size: 1.1em; margin: 0 0 1.5em; }
 .title-page .t-ver  { color: var(--muted); }
 .edition { color: var(--muted); font-size: .9em; border-top: 1px solid var(--rule);
            border-bottom: 1px solid var(--rule); padding: .6em 0; margin-bottom: 2em; }

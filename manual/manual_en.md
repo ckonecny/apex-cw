@@ -10,7 +10,8 @@ ready for a new character, more speed or shorter pauses.
 
 ## Where the app comes from {-}
 
-Next CW Trainer is an independent hobby project. It has **no connection**
+Next CW Trainer is an independent hobby project by Christian Konecny,
+OE1CKO. It has **no connection**
 to Willi Kraml (OE1WKL) or the Morserino-32 team. The only link is that its
 algorithms and training logic were read out of the Morserino firmware source
 and rewritten for Android. The idea behind the Morserino-32 and its training
@@ -1551,11 +1552,13 @@ See [Learning the paddle keys](#learning-the-paddle-keys) and
 
 | Row | Meaning |
 |---|---|
+| Developed by | Christian Konecny, OE1CKO |
+| Thanks | Morserino-32 (OE1WKL), app icon (Sia, OE1LMR), Zork (Infocom) |
 | Version | Version number and build number, for example "1.0.0 (Build 42)" |
 | Commit | The exact source code state the app was built from |
 | Built | Date and time of the build |
 
-When you report a problem, please include these three values.
+When you report a problem, please include the version, commit and build time.
 
 ## Koch sequence {#koch-sequence}
 

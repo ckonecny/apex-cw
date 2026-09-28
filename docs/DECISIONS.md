@@ -895,7 +895,7 @@ artifact): https://claude.ai/artifact/72w1sXjGBDmTx6TG4a4qVa.
   counts all) and death (I/II: SCORE-UPD −10 and RANDOMIZE-OBJECTS; Zork I
   ends at the third death, Zork III at the fourth) — from the historicalsource
   ZIL, not from memory.
-- **App icon (2026-09-28, v1.2.0)**: design by Sia (the user's friend),
+- **App icon (2026-09-28, v1.2.0)**: design by Sia, OE1LMR (the user's friend),
   delivered as a finished rounded-square JPEG (`android/tool/icon/
   icon_source.jpg`). Launchers mask icons themselves, so
   `tool/icon/make_icon.py` rebuilds the blue panel full bleed (a colour
@@ -914,3 +914,9 @@ artifact): https://claude.ai/artifact/72w1sXjGBDmTx6TG4a4qVa.
   the others; older ones live on their GitHub releases), and the script
   rewrites the links in `README.md` and `manual/README.md`. The v1.2.0 files
   were renamed accordingly. Release assets use the same versioned names.
+- **Author credits (2026-09-28, user request)**: Christian Konecny, OE1CKO,
+  as developer in Settings → Info (first row, with a "Danke" row for
+  Morserino-32/OE1WKL, the icon by Sia/OE1LMR and Zork/Infocom), on the
+  manual title page, in its edition block and PDF author metadata, and in
+  the README. Deliberately not on the home screen, and no contact address
+  (the repo is private; an e-mail in a handed-out PDF would be public).

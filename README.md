@@ -6,6 +6,8 @@ An Android app (Flutter UI + native Kotlin/C++ audio and keying) that brings
 the core CW/Morse **training** modes of the [Morserino-32](https://github.com/oe1wkl/Morserino-32)
 to a phone or tablet.
 
+By Christian Konecny, OE1CKO.
+
 ## Project intent
 
 This is an independent, community side project with **no connection** to
@@ -203,9 +205,10 @@ Module-by-module details: `docs/PORTING-MAP.md`.
 
 ## Credits
 
+- Development: Christian Konecny, OE1CKO.
 - Training design and algorithms: Willi Kraml, OE1WKL, and the Morserino-32
   team (see above).
-- App icon: designed by Sia.
+- App icon: designed by Sia, OE1LMR.
 - Zork I–III: Marc Blank, Dave Lebling, Bruce Daniels and Tim Anderson
   (Infocom); story files from the
   [historicalsource](https://github.com/historicalsource) repositories, MIT

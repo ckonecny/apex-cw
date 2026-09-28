@@ -10,7 +10,8 @@ Tempo oder kürzere Pausen dran sind.
 
 ## Woher die App kommt {-}
 
-Next CW Trainer ist ein unabhängiges Hobbyprojekt. Mit Willi Kraml (OE1WKL)
+Next CW Trainer ist ein unabhängiges Hobbyprojekt von Christian Konecny,
+OE1CKO. Mit Willi Kraml (OE1WKL)
 und dem Morserino-32-Team besteht **keine Verbindung**, außer dass die
 Algorithmen und die Trainingslogik aus dem Quelltext der Morserino-Firmware
 gelesen und für Android neu geschrieben wurden. Die ganze Idee hinter dem
@@ -1596,11 +1597,13 @@ Siehe [Paddle-Tasten anlernen](#paddle-tasten-anlernen) und
 
 | Zeile | Bedeutung |
 |---|---|
+| Entwickelt von | Christian Konecny, OE1CKO |
+| Danke | Morserino-32 (OE1WKL), App-Icon (Sia, OE1LMR), Zork (Infocom) |
 | Version | Versionsnummer und Build-Nummer, z. B. „1.0.0 (Build 42)“ |
 | Commit | Der genaue Quellcode-Stand, aus dem die App gebaut wurde |
 | Gebaut | Datum und Uhrzeit des Builds |
 
-Wenn du einen Fehler meldest, gib bitte diese drei Angaben mit an.
+Wenn du einen Fehler meldest, gib bitte Version, Commit und Build-Zeit mit an.
 
 ## Koch-Reihenfolge {#koch-reihenfolge}
 

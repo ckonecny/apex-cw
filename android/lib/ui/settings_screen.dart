@@ -488,6 +488,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SettingsSectionHeader('Info'),
           const SizedBox(height: 12),
           SettingsCard(children: [
+            _InfoRow(label: Strings.t('settings_developer'),
+                value: 'Christian Konecny, OE1CKO'),
+            const SettingsDivider(),
+            _InfoRow(label: Strings.t('settings_thanks'),
+                value: Strings.t('settings_thanks_value')),
+            const SettingsDivider(),
             _InfoRow(label: 'Version', value: _version),
             const SettingsDivider(),
             _InfoRow(label: 'Commit', value: _build),
