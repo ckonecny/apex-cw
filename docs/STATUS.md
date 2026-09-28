@@ -572,6 +572,9 @@ the last release, with the reason. Clear this list after the release build.
 - (empty — cleared at v1.2.0)
 - Process note: build the manual *before* the version commit/tag, so the
   title page shows the tagged commit.
+- File names carry the version (`NextCWTrainer_Handbuch_v1.2.0.pdf`, …);
+  `build.sh` does this, deletes the previous release's files and updates
+  the README links. Upload the PDFs to the GitHub release under these names.
 - Adventure map shots: pinch zoom can't be injected over adb, so
   `adv_map*.png` show the default zoom.
 

@@ -15,7 +15,11 @@
 #
 # The app version on the title page comes from android/pubspec.yaml
 # (versionName) plus the current git commit, so a rebuild always states which
-# app state the manual describes.
+# app state the manual describes. The version is also in the file names
+# (NextCWTrainer_Handbuch_v1.2.0.pdf, ...), so a copy handed out on its own
+# still shows which release it belongs to. Built files of other versions are
+# removed, and the links in README.md and ../README.md are pointed at the new
+# names.
 
 cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
 set -o pipefail
@@ -75,13 +79,21 @@ HTML
   fi
 }
 
+stem() { [ "$1" = de ] && echo NextCWTrainer_Handbuch || echo NextCWTrainer_Manual; }
+
 build() {   # $1 = lang
-  local lang=$1 base title toc
+  local lang=$1 base title toc f
+  base="$(stem "$lang")_v$VERSION"
   if [ "$lang" = de ]; then
-    base=NextCWTrainer_Handbuch; title="Next CW Trainer – Handbuch"; toc=Inhalt
+    title="Next CW Trainer – Handbuch"; toc=Inhalt
   else
-    base=NextCWTrainer_Manual; title="Next CW Trainer – User Manual"; toc=Contents
+    title="Next CW Trainer – User Manual"; toc=Contents
   fi
+  # Only the current version's build is kept here; older ones are attached
+  # to their GitHub releases.
+  for f in "$(stem "$lang")".* "$(stem "$lang")"_v*.*; do
+    [ -e "$f" ] && [ "${f%.*}" != "$base" ] && rm -f "$f"
+  done
   title_block "$lang" > "$TMP/title_$lang.html"
   local common=(manual_$lang.md --from markdown --toc --toc-depth=2
     --number-sections --metadata "title=$title" --metadata "lang=$lang"
@@ -111,7 +123,7 @@ for l in $LANGS; do build "$l"; done
 
 # Internal links: every #anchor must exist in the same document.
 for l in $LANGS; do
-  f=$([ "$l" = de ] && echo NextCWTrainer_Handbuch.html || echo NextCWTrainer_Manual.html)
+  f="$(stem "$l")_v$VERSION.html"
   [ -f "$f" ] || continue
   python3 - "$f" <<'PY'
 import re, sys, html
@@ -123,4 +135,7 @@ if bad:
 PY
   [ $? -eq 0 ] || exit 1
 done
+# Point the links in the READMEs at the versioned file names.
+sed -E -i '' "s/(NextCWTrainer_(Handbuch|Manual))(_v[0-9]+\.[0-9]+\.[0-9]+)?\.(pdf|html)/\1_v$VERSION.\4/g" \
+  README.md ../README.md
 echo "Done: version $VERSION, $COMMIT"

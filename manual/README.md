@@ -2,8 +2,8 @@
 
 | | Deutsch | English |
 |---|---|---|
-| PDF | [NextCWTrainer_Handbuch.pdf](NextCWTrainer_Handbuch.pdf) | [NextCWTrainer_Manual.pdf](NextCWTrainer_Manual.pdf) |
-| HTML | [NextCWTrainer_Handbuch.html](NextCWTrainer_Handbuch.html) | [NextCWTrainer_Manual.html](NextCWTrainer_Manual.html) |
+| PDF | [NextCWTrainer_Handbuch_v1.2.0.pdf](NextCWTrainer_Handbuch_v1.2.0.pdf) | [NextCWTrainer_Manual_v1.2.0.pdf](NextCWTrainer_Manual_v1.2.0.pdf) |
+| HTML | [NextCWTrainer_Handbuch_v1.2.0.html](NextCWTrainer_Handbuch_v1.2.0.html) | [NextCWTrainer_Manual_v1.2.0.html](NextCWTrainer_Manual_v1.2.0.html) |
 | Source (Markdown) | [manual_de.md](manual_de.md) | [manual_en.md](manual_en.md) |
 
 The title page states the app version and source commit the manual was built
@@ -14,7 +14,7 @@ from; compare it with **Settings → Info** in the app.
 | File | What it is |
 |---|---|
 | `manual_de.md`, `manual_en.md` | the sources — this is what gets edited, always both together |
-| `NextCWTrainer_Handbuch.*`, `NextCWTrainer_Manual.*` | the built manuals (HTML + PDF), committed so they can be handed out |
+| `NextCWTrainer_Handbuch_vX.Y.Z.*`, `NextCWTrainer_Manual_vX.Y.Z.*` | the built manuals (HTML + PDF) of the last release, version in the file name; committed so they can be handed out |
 | `build.sh` | builds both, via pandoc + weasyprint; also checks internal links |
 | `style.css` | stylesheet for HTML (screen, light/dark) and PDF (print) |
 | `img/de/`, `img/en/` | screenshots per language (same file names), light theme, 540 px wide |
@@ -52,5 +52,9 @@ release"* in `docs/STATUS.md`.
 1. Retake every screenshot on that list, in both languages (`tools/`).
 2. Check that both Markdown files still match the app.
 3. Build from the tagged commit: `./build.sh` (title page shows version and
-   commit; the script fails on broken internal links).
+   commit; the script fails on broken internal links). The version is taken
+   from `android/pubspec.yaml` and goes into the file names
+   (`NextCWTrainer_Handbuch_v1.2.0.pdf`, …); the previous release's files are
+   deleted and the links in both READMEs are updated. Attach the PDFs to the
+   GitHub release under these versioned names.
 4. Clear the list in `docs/STATUS.md`.

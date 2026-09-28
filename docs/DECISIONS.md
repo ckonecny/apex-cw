@@ -906,3 +906,11 @@ artifact): https://claude.ai/artifact/72w1sXjGBDmTx6TG4a4qVa.
   Re-run the script after changing the source.
 - **Games order (2026-09-28, user request)**: Morse Invaders, Text-Adventure,
   Morsel, Memory Chain — on the games page and in the home tile subtitle.
+- **Manual file names carry the version (2026-09-28, user request)**:
+  `manual/build.sh` writes `NextCWTrainer_Handbuch_v<version>.{html,pdf}` /
+  `NextCWTrainer_Manual_v<version>.*` (version from `android/pubspec.yaml`),
+  so a PDF passed around on its own still shows which release it belongs to.
+  Only the current release's build stays in `manual/` (the script deletes
+  the others; older ones live on their GitHub releases), and the script
+  rewrites the links in `README.md` and `manual/README.md`. The v1.2.0 files
+  were renamed accordingly. Release assets use the same versioned names.
