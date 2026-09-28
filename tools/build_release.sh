@@ -24,6 +24,10 @@ rm -rf "$work"
 git clone -q --no-recurse-submodules "$repo" "$work"
 git -C "$work" -c advice.detachedHead=false checkout -q "$tag"
 cp "$keyprops" "$work/android/android/key.properties"
+# The AAB's resources.pb records each resource's source path, i.e. the
+# Gradle cache (~/.gradle/caches/.../transformed/...). A Gradle home outside
+# $HOME keeps the home path out; kept between runs so deps aren't refetched.
+export GRADLE_USER_HOME=/tmp/nct-gradle-home
 (cd "$work/android" && flutter build apk --release && flutter build appbundle --release)
 apk="$work/android/build/app/outputs/flutter-apk/app-release.apk"
 aab="$work/android/build/app/outputs/bundle/release/app-release.aab"

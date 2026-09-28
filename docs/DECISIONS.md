@@ -1001,7 +1001,10 @@ Goal: publish on Google Play (user request). Code side:
   can't update a Play install, and vice versa) or Play is told to use our own
   key as app signing key is still open (STATUS).
 - **App Bundle:** `build_release.sh` now builds APK **and** AAB and scans
-  both for local identifiers.
+  both for local identifiers. First real run (v1.2.2) found the home path in
+  the AAB's `base/resources.pb` (source paths of every resource, from
+  `~/.gradle/caches/.../transformed/`); the APK was clean. Fix: the script
+  sets `GRADLE_USER_HOME=/tmp/nct-gradle-home` (kept between runs).
 - **ABIs: arm64-v8a + x86_64 only.** `libcw_audio` was only ever built for
   those (CMake `abiFilters`), but Flutter's Gradle plugin overwrites
   `defaultConfig.ndk.abiFilters` with its own list incl. armeabi-v7a, so every
