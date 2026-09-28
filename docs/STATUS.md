@@ -10,6 +10,9 @@ Latest tagged build: v1.2.2 (2026-09-28: nav bar no longer covers the bottom row
   recorded Gradle-cache paths (DECISIONS "Play Store preparation"). Doesn't
   install over v1.0.0–v1.2.1 (debug key) — uninstall first; release notes
   say so. No screenshots retaken (none pending); manual rebuilt for v1.2.2.
+  Test phone migrated with its data: backup via `run-as` (shared_prefs +
+  files/adventure), uninstall, debug APK re-signed with the upload key
+  (apksigner), restore via `run-as`, v1.2.2 installed over it.
 - **Nav bar overlap fix (2026-09-28, installed on the test phone).** Report
   from a Fairphone 6 (Android 16 / /e/OS, 3-button navigation): the nav bar
   covered the bottom row (Hören start buttons). Android 15+ forces
