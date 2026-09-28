@@ -4,6 +4,13 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (public s
 Latest tagged build: v1.2.1 (2026-09-28: author credits, GPL-3.0 licence page, licence guard). Previous: v1.2.0 (2026-09-28, text adventure Zork I–III in CW, new app icon, games order); v1.1.0 (2026-09-27, Hören typing mode, Koch character row, terminology pass); v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **Play Store prep, code side (2026-09-28, debug build installed on the
+  test phone, starts fine).** Upload-key signing via gitignored
+  `key.properties`, `build_release.sh` builds APK + AAB, 32-bit ARM dropped
+  (was shipped without libcw_audio → crash), targetSdk 36 and 16 KB
+  alignment verified. Manual: Android 8.0+ / 64-bit requirement (DE+EN).
+  See DECISIONS "Play Store preparation". `build_release.sh` not yet run
+  end-to-end (needs a tag with these changes and the real upload key).
 - **Repo public (2026-09-28, user request).** Needed for GPL-3.0: APK
   recipients must be able to get the source; the licence page links to the
   repo. Checked without login: repo, LICENSE, v1.2.1 release page, APK, PDFs
@@ -613,7 +620,23 @@ the last release, with the reason. Clear this list after the release build
 - Adventure map shots: pinch zoom can't be injected over adb, so
   `adv_map*.png` show the default zoom.
 
+## Next steps — Play Store (user, 2026-09-28)
+1. User: developer account (identity check pending). Upload keystore
+   created 2026-09-28 (CN=OE1CKO, outside the repo, backed up by the user),
+   `key.properties` written; test AAB verified signed with it.
+2. ~~Fix `flutter build appbundle` exit code~~ done 2026-09-28: apkanalyzer
+   failed ("Cannot locate latest build tools") because cmdline-tools/latest
+   was hand-unpacked (no package.xml). Reinstalled via sdkmanager
+   (+ build-tools 37.0.0); old copy kept as `cmdline-tools/old-manual`.
+3. Privacy policy (`PRIVACY.md`, DE+EN, URL = GitHub blob link, live only
+   after push) and store texts + console answers (`docs/PLAY-LISTING.md`)
+   drafted 2026-09-28, awaiting user review. Then graphics (512 icon,
+   1024×500 feature graphic, screenshots), tag v1.3.0, closed test
+   (12 testers × 14 days), then production.
+
 ## Open questions
+
+- ~~Play: which app signing key?~~ Decided 2026-09-28: our own key (see DECISIONS).
 
 - Text adventure: the automatic save can't be deleted (by design: it is
   the running game, "Neu" replaces it). User asked 2026-09-27 whether that

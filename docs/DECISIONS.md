@@ -545,9 +545,9 @@ build number outside a git checkout). `versionName` still comes from
 git tag. Shown in Settings → Info via the settings channel (`getAppVersion`).
 Builds meant for others: `tools/build_release.sh vX.Y.Z` (since 2026-09-28,
 see "No local identifiers online"), which builds the tag from a clean clone
-(Commit must not show `-dirty`). Release builds are still signed with
-this machine's debug key — fine for sideloading, but updates for recipients
-must be built on this machine (or with the same keystore).
+(Commit must not show `-dirty`). ~~Release builds are still signed with
+this machine's debug key~~ — superseded 2026-09-28 by "Play Store
+preparation" (upload key).
 
 ## User manual: Markdown sources, both languages, built like the firmware's (2026-09-26)
 
@@ -984,3 +984,44 @@ artifact): https://claude.ai/artifact/72w1sXjGBDmTx6TG4a4qVa.
   the README. Deliberately not on the home screen, and no contact address
   (an e-mail in a handed-out PDF would be public; the repo is public too
   since 2026-09-28).
+
+
+## Play Store preparation: upload key, AAB, 64-bit only (2026-09-28)
+
+Goal: publish on Google Play (user request). Code side:
+- **Signing:** release builds use the Play **upload key** from
+  `android/android/key.properties` (gitignored, like the `*.jks` keystore,
+  which lives outside the repo). Without that file, release builds fall back
+  to the debug key so `flutter run --release` keeps working;
+  `tools/build_release.sh` refuses to run without it and copies it into its
+  /tmp clone. Play App Signing holds the actual app signing key.
+  Consequence: APKs from the next release on are signed with a different key
+  than v1.0.0–v1.2.1 (debug key) — sideloaded installs must uninstall once
+  (settings/stats lost). Whether GitHub APKs keep the upload key (then they
+  can't update a Play install, and vice versa) or Play is told to use our own
+  key as app signing key is still open (STATUS).
+- **App Bundle:** `build_release.sh` now builds APK **and** AAB and scans
+  both for local identifiers.
+- **ABIs: arm64-v8a + x86_64 only.** `libcw_audio` was only ever built for
+  those (CMake `abiFilters`), but Flutter's Gradle plugin overwrites
+  `defaultConfig.ndk.abiFilters` with its own list incl. armeabi-v7a, so every
+  APK so far also shipped 32-bit ARM without `libcw_audio.so` — a 32-bit
+  device would crash at `System.loadLibrary`. Now `ndk.abiFilters` lists the
+  two ABIs and `disable-abi-filtering=true` in `gradle.properties` keeps
+  Flutter from re-adding armeabi-v7a; Play then won't offer the app to
+  32-bit-only devices. (Adding 32-bit support would mean building
+  libcw_audio for armeabi-v7a — not worth it, no 32-bit-only user known.)
+- **Checked, no change needed:** targetSdk/compileSdk 36 (Flutter 3.47
+  default; meets Play's current requirement); every `.so` is 16 KB
+  page-aligned (LOAD alignment 0x4000 or 0x10000; NDK 28).
+- **`INTERNET` permission stays** (WiFi Trx); Play's data-safety form must
+  say it only connects to servers the user enters. `RECORD_AUDIO` (decoder)
+  requires a privacy policy URL.
+- **App signing key = our own key (user decision 2026-09-28).** At the first
+  Play upload, choose "export and upload a key from a Java keystore" (PEPK)
+  with `nct-upload.jks`, instead of a Google-generated key. Reason: GitHub
+  APKs and Play installs then share one signature, so users can switch
+  channels without losing data (phones without Google services, existing
+  sideload users). Cost: losing keystore or password means no more updates
+  ever — keystore backed up (NAS + offsite), password in the user's password
+  manager. Play allows one later upgrade to a Google-managed key if needed.

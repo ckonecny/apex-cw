@@ -1,5 +1,6 @@
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -20,6 +21,9 @@ val gitDirty = git("status", "--porcelain", "--untracked-files=no").isNotEmpty()
 val gitCommitCount = git("rev-list", "--count", "HEAD").toIntOrNull()
 val buildTime = ZonedDateTime.now()
     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+
+val uploadKey = rootProject.file("key.properties").takeIf { it.exists() }
+    ?.let { f -> Properties().apply { f.inputStream().use { load(it) } } }
 
 android {
     namespace = "at.oe1cko.nextcwtrainer"
@@ -52,6 +56,12 @@ android {
                 abiFilters += listOf("arm64-v8a", "x86_64")
             }
         }
+        // Package only the ABIs libcw_audio is built for. Flutter would add
+        // armeabi-v7a, where System.loadLibrary("cw_audio") crashes; this also
+        // keeps Play from offering the app to 32-bit-only devices.
+        ndk {
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
         // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
         // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
         // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
@@ -70,11 +80,25 @@ android {
         buildConfig = true
     }
 
+    // Play upload key: android/key.properties (gitignored, never committed)
+    // with storeFile/storePassword/keyAlias/keyPassword. Without it, release
+    // builds fall back to the debug key so `flutter run --release` still works;
+    // tools/build_release.sh refuses to build without it.
+    signingConfigs {
+        uploadKey?.let { key ->
+            create("upload") {
+                storeFile = file(key.getProperty("storeFile"))
+                storePassword = key.getProperty("storePassword")
+                keyAlias = key.getProperty("keyAlias")
+                keyPassword = key.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(
+                if (uploadKey != null) "upload" else "debug")
         }
     }
 }

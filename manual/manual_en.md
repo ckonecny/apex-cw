@@ -42,6 +42,8 @@ which setting.
 ## Installation
 
 The app is currently handed out as an APK file, not through the Play Store.
+It needs Android 8.0 or newer and a 64-bit device (practically every phone
+since about 2017); it cannot be installed on 32-bit-only devices.
 
 1. Copy the APK file to your phone, for example by messenger, e-mail or USB
    cable.
