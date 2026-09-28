@@ -1025,3 +1025,15 @@ Goal: publish on Google Play (user request). Code side:
   sideload users). Cost: losing keystore or password means no more updates
   ever — keystore backed up (NAS + offsite), password in the user's password
   manager. Play allows one later upgrade to a Google-managed key if needed.
+
+## Positioning: a CW trainer in its own right (2026-09-28, user decision)
+Public texts and graphics (Play listing, feature graphic, README, manual
+introduction) lead with what the app does — not "the Morserino-32 training
+modes on your phone". The Morserino-32 and Willi Kraml, OE1WKL, are credited
+as the source of many ideas and much of the training logic, with thanks and
+the non-affiliation note, after the description. Reason: the user doesn't
+want to sell the app as the Morserino's mobile counterpart, and thinks Willi
+wouldn't like that either. Dropped with it: the "build or buy a Morserino-32,
+this app is not a replacement" paragraph. Factual references stay (Koch
+sequence "M32", the Morserino-terms table, firmware notes in DECISIONS/
+PORTING-MAP).

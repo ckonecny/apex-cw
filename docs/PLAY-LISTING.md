@@ -1,6 +1,8 @@
 # Google Play listing — texts and console answers
 
-Source for what goes into the Play Console. Keep in sync with the app and
+Source for what goes into the Play Console. Positioning (user decision
+2026-09-28): a CW trainer in its own right, not "the Morserino-32 on your
+phone" — the Morserino-32 is credited in the text, not used as the pitch. Keep in sync with the app and
 the manual (facts from the code, like everything else). Limits: title 30,
 short description 80, full description 4000 characters.
 
@@ -22,7 +24,7 @@ short description 80, full description 4000 characters.
 ## Full description — DE
 
 ```
-Next CW Trainer bringt die Trainingsmodi des Morserino-32 aufs Android-Handy: Morsen (CW) hören, geben und üben – unterwegs, ohne zusätzliche Hardware.
+Next CW Trainer ist ein umfassender Morse-Trainer (CW) fürs Android-Handy: hören, geben und üben – unterwegs, ohne zusätzliche Hardware.
 
 HÖREN
 • Zufallszeichen, Gruppen, häufige Wörter, Abkürzungen, Rufzeichen, gemischte Inhalte
@@ -31,13 +33,13 @@ HÖREN
 • Adaptive Vorschläge: nächstes Koch-Zeichen, Farnsworth-Abstände, Tempo – du entscheidest
 
 GEBEN
-• Echo-Trainer wie am Morserino: Wort hören, zurückgeben, sofortige Bewertung
+• Echo-Trainer: Wort hören, zurückgeben, sofortige Bewertung
 • Eigenes Profil fürs Geben, Verwechslungspaare, Gebe-Tempo
 
 FREI MORSEN
 • CW-Keyer: Iambic A/B, Ultimatic, Non-Squeeze, Handtaste, mit Live-Dekodierung
 • CW-Decoder über das Mikrofon
-• WiFi Trx: CW übers Internet mit dem Morserino-Protokoll (z. B. cq.morserino.info)
+• WiFi Trx: CW übers Internet mit anderen Funkamateuren (MOPP-Server)
 • QSO-Bot: simulierter Funkpartner für SOTA/POTA-, Standard- und Contest-QSOs
 
 SPIELE
@@ -51,13 +53,13 @@ AUSSERDEM
 
 Keine Werbung, keine Konten, keine Datensammlung. Freie Software (GPL-3.0), Quellcode auf GitHub.
 
-Die Trainingslogik stammt aus der Firmware des Morserino-32 von Willi Kraml, OE1WKL. Dies ist ein unabhängiges Projekt und nicht mit dem Morserino-32-Team verbunden. Zork ist eine Marke ihrer Inhaber; die App steht mit ihnen in keiner Verbindung.
+Viele Ideen und ein Großteil der Trainingslogik stammen aus der Open-Source-Firmware des Morserino-32 von Willi Kraml, OE1WKL – herzlichen Dank dafür. Next CW Trainer ist ein unabhängiges Projekt und steht in keiner Verbindung zum Morserino-32-Team. Zork ist eine Marke ihrer Inhaber; die App steht mit ihnen in keiner Verbindung.
 ```
 
 ## Full description — EN
 
 ```
-Next CW Trainer brings the training modes of the Morserino-32 to your Android phone: copy, send and practise Morse code (CW) on the go, with no extra hardware.
+Next CW Trainer is a comprehensive Morse code (CW) trainer for your Android phone: copy, send and practise on the go, with no extra hardware.
 
 LISTEN
 • Random characters, groups, common words, abbreviations, call signs, mixed content
@@ -66,13 +68,13 @@ LISTEN
 • Adaptive suggestions: next Koch character, Farnsworth spacing, speed – you decide
 
 SEND
-• Echo Trainer like on the Morserino: hear a word, key it back, instant grading
+• Echo Trainer: hear a word, key it back, instant grading
 • Separate sending profile, confusion pairs, answer speed cap
 
 FREE KEYING
 • CW keyer: Iambic A/B, Ultimatic, Non-Squeeze, straight key, with live decoding
 • CW decoder using the microphone
-• WiFi Trx: CW over the internet with the Morserino protocol (e.g. cq.morserino.info)
+• WiFi Trx: CW over the internet with other hams (MOPP servers)
 • QSO Bot: a simulated partner for SOTA/POTA, standard and contest QSOs
 
 GAMES
@@ -86,14 +88,17 @@ ALSO
 
 No ads, no accounts, no data collection. Free software (GPL-3.0), source code on GitHub.
 
-The training logic comes from the Morserino-32 firmware by Willi Kraml, OE1WKL. This is an independent project, not affiliated with the Morserino-32 team. Zork is a trademark of its owners; this app is not affiliated with them.
+Many ideas and much of the training logic come from the open-source Morserino-32 firmware by Willi Kraml, OE1WKL – many thanks for that. Next CW Trainer is an independent project, not affiliated with the Morserino-32 team. Zork is a trademark of its owners; this app is not affiliated with them.
 ```
 
 ## Graphics
 
-- App icon 512×512 PNG (from `android/tool/icon/`)
-- Feature graphic 1024×500 PNG/JPG
-- Phone screenshots: 2–8 per language, from `manual/img/{de,en}/`
+All built by `python3 store/make_graphics.py` into `store/out/`:
+- `icon_512.png` — app icon 512×512 (full-bleed; Play masks it)
+- `feature_{de,en}.png` — feature graphic 1024×500
+- `shot_{de,en}_N_<name>.png` — 7 phone screenshots per language, 1080×1920,
+  captioned, upload in order N. Raw shots in `store/raw/{de,en}/` (dark
+  theme, test phone, 2026-09-28); retake when those screens change.
 
 ## Console answers
 

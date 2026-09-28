@@ -2,41 +2,31 @@
 
 <img src="android/tool/icon/icon_rounded.png" alt="App icon" width="96" align="right">
 
-An Android app (Flutter UI + native Kotlin/C++ audio and keying) that brings
-the core CW/Morse **training** modes of the [Morserino-32](https://github.com/oe1wkl/Morserino-32)
-to a phone or tablet.
+An Android app for learning and practising Morse code (CW): copy training
+with the Koch method, sending practice with an Echo Trainer, a CW keyer, a CW
+decoder through the microphone, CW over the internet, a QSO bot and games —
+with an adaptive block flow that tracks your mistakes character by character.
+Flutter UI, with all CW timing and audio in native Kotlin/C++.
 
 By Christian Konecny, OE1CKO.
 
-## Project intent
+## Origin and credits
 
-This is an independent, community side project with **no connection** to
-Willi Kraml (OE1WKL) or the Morserino-32 team beyond reusing algorithms and
-training logic read out of the original firmware source — it is not a
-replacement for it, a fork of its source, or an official product of the
-Morserino-32 team.
+Many ideas and much of the training logic come from the open-source firmware
+of the [Morserino-32](https://github.com/oe1wkl/Morserino-32) by Willi Kraml,
+OE1WKL. Its training concept — the Koch sequences, the Echo Trainer, the QSO
+Bot and much more — is the result of years of careful work by Willi and his
+team. Many thanks for that.
 
-The complete idea behind the Morserino-32, its training curriculum (the Koch
-method sequencing, the Echo Trainer flow, the QSO Bot concept, and everything
-else), and years of careful refinement by Willi and his team are entirely
-theirs. This app exists because that design is worth having in your pocket
-too — it was built by reading the [original firmware source](https://github.com/oe1wkl/Morserino-32)
-and reimplementing its training logic as faithfully as possible for Android,
-from scratch, in Dart/Kotlin. It contains none of the original C++ firmware
-code and is not affiliated with, endorsed by, or sponsored by Willi Kraml,
-OE1WKL, or the Morserino-32 project. Aside from that shared lineage in the
-training algorithms, this project and Willi Kraml/OE1WKL have no connection
-to each other.
+The logic was read out of the [firmware source](https://github.com/oe1wkl/Morserino-32)
+and reimplemented from scratch in Dart/Kotlin; the app contains none of the
+original C++ firmware code. Beyond that shared lineage, this is an independent
+project, not affiliated with, endorsed by or sponsored by Willi Kraml, OE1WKL,
+or the Morserino-32 project.
 
-If you don't already own a Morserino-32: go build or buy one, it's a
-wonderful piece of hardware — see the [main project](https://github.com/oe1wkl/Morserino-32)
-for where to get one. This app is for practicing on the go with what's
-already in your pocket, not a substitute for it.
-
-This port was built against **firmware version 9.0.0** (`VERSION_MAJOR`/
+The port was built against **firmware version 9.0.0** (`VERSION_MAJOR`/
 `_MINOR`/`_PATCH` in `morsedefs.h` at the time this app was started) — later
-firmware changes aren't automatically reflected here and would need their own
-review against this app's behavior.
+firmware changes aren't automatically reflected here.
 
 ## Download
 

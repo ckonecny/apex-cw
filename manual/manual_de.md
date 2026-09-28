@@ -1,29 +1,27 @@
 # Einleitung
 
 **Next CW Trainer** ist eine Android-App zum Lernen und Üben von Morsetelegrafie
-(CW). Sie überträgt die Trainingsmodi des
-[Morserino-32](https://github.com/oe1wkl/Morserino-32) auf Handy und Tablet –
-Koch-Methode, Echo Trainer, CW Keyer, CW-Decoder, WiFi Trx, QSO Bot und einige
-Spiele – und ergänzt sie um einen **adaptiven Blockablauf**, der deine Fehler
-Zeichen für Zeichen mitzählt und dir vorschlägt, wann ein neues Zeichen, mehr
+(CW): Hörtraining mit der Koch-Methode, Gebetraining mit dem Echo Trainer, ein
+CW Keyer, ein CW-Decoder über das Mikrofon, CW übers Internet (WiFi Trx), ein
+QSO Bot und einige Spiele. Ein **adaptiver Blockablauf** zählt deine Fehler
+Zeichen für Zeichen mit und schlägt dir vor, wann ein neues Zeichen, mehr
 Tempo oder kürzere Pausen dran sind.
 
 ## Woher die App kommt {-}
 
 Next CW Trainer ist ein unabhängiges Hobbyprojekt von Christian Konecny,
-OE1CKO. Mit Willi Kraml (OE1WKL)
-und dem Morserino-32-Team besteht **keine Verbindung**, außer dass die
-Algorithmen und die Trainingslogik aus dem Quelltext der Morserino-Firmware
-gelesen und für Android neu geschrieben wurden. Die ganze Idee hinter dem
-Morserino-32, das Trainingskonzept (Koch-Reihenfolgen, Echo Trainer, QSO Bot
-und vieles mehr) und die jahrelange Feinarbeit stammen von Willi und seinem
-Team. Die App enthält keinen Originalcode der Firmware und ist kein
-offizielles Produkt des Morserino-Projekts.
+OE1CKO. Viele Ideen und ein Großteil der Trainingslogik stammen aus der
+Open-Source-Firmware des [Morserino-32](https://github.com/oe1wkl/Morserino-32)
+von Willi Kraml, OE1WKL. Das Trainingskonzept – Koch-Reihenfolgen, Echo
+Trainer, QSO Bot und vieles mehr – ist das Ergebnis jahrelanger Feinarbeit von
+Willi und seinem Team. Herzlichen Dank dafür!
 
-Wenn du noch keinen Morserino-32 hast: Bau oder kauf dir einen – es ist ein
-wunderbares Gerät. Die App ist zum Üben unterwegs gedacht, nicht als Ersatz.
+Die Logik wurde aus dem Quelltext der Firmware gelesen und für Android neu
+geschrieben; die App enthält keinen Originalcode der Firmware. Darüber hinaus
+besteht **keine Verbindung** zu Willi Kraml oder dem Morserino-32-Team, und die
+App ist kein Produkt des Morserino-Projekts.
 
-Grundlage ist die Firmware-Version 9.0.0. Spätere Änderungen an der Firmware
+Grundlage war die Firmware-Version 9.0.0. Spätere Änderungen an der Firmware
 fließen nicht automatisch in die App ein.
 
 ## Über dieses Handbuch {-}
