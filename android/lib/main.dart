@@ -53,9 +53,21 @@ class NextCwTrainerApp extends StatelessWidget {
           // System font size is honoured up to 1.3× (Pixel step 4 of 7);
           // beyond that the fixed-geometry training screens stop fitting
           // (DECISIONS.md "System font size: capped at 1.3").
-          builder: (context, child) => MediaQuery.withClampedTextScaling(
-            maxScaleFactor: kMaxTextScale,
-            child: child!,
+          //
+          // Android 15+ forces edge-to-edge, so with 3-button navigation the
+          // nav bar sits on top of every screen's bottom row (start buttons,
+          // keyboards). Keep all routes clear of the system bars at the
+          // bottom and sides once, here, instead of per screen; the strip
+          // behind the nav bar gets the page background.
+          builder: (context, child) => ColoredBox(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: SafeArea(
+              top: false,
+              child: MediaQuery.withClampedTextScaling(
+                maxScaleFactor: kMaxTextScale,
+                child: child!,
+              ),
+            ),
           ),
           home: const HomeScreen(),
         ),

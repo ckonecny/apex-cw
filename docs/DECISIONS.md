@@ -1037,3 +1037,14 @@ wouldn't like that either. Dropped with it: the "build or buy a Morserino-32,
 this app is not a replacement" paragraph. Factual references stay (Koch
 sequence "M32", the Morserino-terms table, firmware notes in DECISIONS/
 PORTING-MAP).
+
+## System bar insets: one SafeArea for all routes (2026-09-28)
+With targetSdk 35+ Android 15+ forces edge-to-edge, so the navigation bar
+draws over the app. Most screens only padded the top (AppBar), so on a
+Fairphone 6 with 3-button navigation the Hören start buttons sat under the
+nav bar. Fix: `MaterialApp.builder` wraps every route in
+`SafeArea(top: false)` on a `ColoredBox` with the page background — not per
+screen, because per-screen fixes get forgotten (same lesson as the shared
+engine config). Screens that already added `padding.bottom` themselves
+(CW keyboard, adventure) now see 0 there and are unchanged. Cost: the
+keyboard's darker surface no longer extends behind the nav bar.
