@@ -49,12 +49,18 @@ release"* in `docs/STATUS.md`.
 
 ## At release time
 
-1. Retake every screenshot on that list, in both languages (`tools/`).
-2. Check that both Markdown files still match the app.
-3. Build from the tagged commit: `./build.sh` (title page shows version and
-   commit; the script fails on broken internal links). The version is taken
-   from `android/pubspec.yaml` and goes into the file names
-   (`NextCWTrainer_Handbuch_v1.2.0.pdf`, …); the previous release's files are
-   deleted and the links in both READMEs are updated. Attach the PDFs to the
-   GitHub release under these versioned names.
-4. Clear the list in `docs/STATUS.md`.
+1. Bump `version:` in `android/pubspec.yaml`, commit ("Version X.Y.Z"), tag
+   `vX.Y.Z`, build the APK with `tools/build_release.sh vX.Y.Z` and install
+   it on the phone.
+2. Retake every screenshot on that list, in both languages (`tools/`), from
+   that release build, so `settings3.png` shows the tagged version and commit.
+3. Check that both Markdown files still match the app.
+4. With the tag still checked out and only the new screenshots changed, run
+   `./build.sh` (title page shows version and tagged commit — changes under
+   `img/` don't count as dirty; the script fails on broken internal links).
+   The version is taken from `android/pubspec.yaml` and goes into the file
+   names (`NextCWTrainer_Handbuch_v1.2.0.pdf`, …); the previous release's
+   files are deleted and the links in both READMEs are updated. Attach the
+   PDFs to the GitHub release under these versioned names.
+5. Clear the list in `docs/STATUS.md` and commit screenshots, built manual
+   and README links together ("Manual HTML/PDF built for vX.Y.Z").

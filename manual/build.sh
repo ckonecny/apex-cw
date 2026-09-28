@@ -30,7 +30,9 @@ FORMATS=${2:-both}
 
 VERSION=$(sed -n 's/^version: *\([^+ ]*\).*/\1/p' ../android/pubspec.yaml)
 COMMIT=$(git rev-parse --short=7 HEAD 2>/dev/null || echo unknown)
-[ -n "$(git status --porcelain --untracked-files=no -- . ../android 2>/dev/null)" ] && COMMIT="$COMMIT-dirty"
+# Screenshots don't count: at release they are taken from the tagged build
+# (Settings → Info shows its commit) and committed afterwards with the manual.
+[ -n "$(git status --porcelain --untracked-files=no -- . ':!img' ../android 2>/dev/null)" ] && COMMIT="$COMMIT-dirty"
 YEAR=$(date +%Y)
 MONTH_EN=$(LC_ALL=C date +%B)
 case "$MONTH_EN" in

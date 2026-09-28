@@ -1,9 +1,15 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private).
-Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new app icon, games order). Previous: v1.1.0 (2026-09-27, Hören typing mode, Koch character row, terminology pass); v1.0.0 (2026-09-26, first build handed out to other users).
+Latest tagged build: v1.2.1 (2026-09-28: author credits, GPL-3.0 licence page, licence guard). Previous: v1.2.0 (2026-09-28, text adventure Zork I–III in CW, new app icon, games order); v1.1.0 (2026-09-27, Hören typing mode, Koch character row, terminology pass); v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **v1.2.1 release (2026-09-28).** Author credits and "Danke" row in
+  Settings → Info, GPL-3.0 licence page (Lizenzen), licence guard test,
+  custom Koch default credited. APK built with `tools/build_release.sh`;
+  only `settings3.png` (DE+EN) retaken, the one screen that changed. Manual
+  release steps rewritten in `manual/README.md` (screenshots from the tagged
+  build; `build.sh` no longer counts `img/` changes as dirty).
 - **Author credits (2026-09-28, installed on the test phone).**
   Settings → Info: "Entwickelt von: Christian Konecny, OE1CKO" and a
   "Danke" row (Morserino-32 OE1WKL, icon Sia OE1LMR, Zork Infocom). Manual:
@@ -20,7 +26,7 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   block serial, home path and user name (`tools/githooks/`); release APKs are
   built with `tools/build_release.sh` from a clone under /tmp, so they carry
   no Mac path. v1.1.0 and v1.2.0 APK assets rebuilt that way and replaced on
-  GitHub. Open: v0.1.0 debug APK asset still contains Mac/pub-cache paths.
+  GitHub; the v0.1.0 debug APK asset (Mac/pub-cache paths) deleted.
 - **Licence: GPL-3.0 (2026-09-28, installed on the test phone).** Root
   `LICENSE` (GPL-3.0 text, identical to the firmware's), README "License"
   section, Settings → Info → "Lizenzen/Licences" opens Flutter's licence
