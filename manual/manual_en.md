@@ -66,7 +66,7 @@ The home screen has three groups:
 | | **CW Decoder** | Copy CW through the microphone |
 | | **WiFi Trx** | CW over the internet with other Morserinos and apps |
 | | **QSO Bot** | A simulated QSO partner |
-| **Play** | **Games** | Morsel, Morse Invaders, Memory Chain |
+| **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain |
 
 The **Listen** and **Send** tiles show your current Koch lesson and speed.
 **Send** also shows the trend of your last blocks (see [Trend](#trend)).
@@ -1260,6 +1260,10 @@ affiliated with them.
 **Continue** picks up where you left off. **Saved games** opens your saves.
 **New** starts over (after asking; your own saved games are kept).
 
+::: {.shots .one}
+![Choosing one of the three parts](img/en/adv_select.png)
+:::
+
 **The game screen.** At the top the status line with room, score and moves,
 below it the transcript. The newest answer is played in CW, and the word that
 is sounding is highlighted. Below that:
@@ -1273,6 +1277,10 @@ is sounding is highlighted. Below that:
 | **Pause** / **Resume** | Pauses playing; **Resume** goes on from the word where it paused – after **↻ Again** from the next word |
 | **Text** (eye) | Shows the whole answer at once; tap again to hide it, then the words reappear as they are played (e.g. with **Again**) |
 | **↶ Move** | Takes back the last command (up to 20) |
+
+::: {.shots .one}
+![Game screen with touch paddles](img/en/adv_game.png)
+:::
 
 **Keying commands.** With the touch paddles at the bottom (keyer mode
 Straight: the key) or a connected paddle (see
@@ -1317,6 +1325,14 @@ drawn to scale; the connections come from the story file.
   with the year (948 = the present, 776, 777): they are the same rooms at
   different times.
 
+::: {.shots .three}
+![Map: Visited](img/en/adv_map.png)
+
+![Confirmation before the whole map](img/en/adv_map_warn.png)
+
+![Map: Whole map](img/en/adv_map_whole.png)
+:::
+
 **Command overview (?).** The **?** in the title bar opens a list of the most
 important commands and, under **Playback**, the buttons above; at the
 bottom, **What it's about** briefly gives the
@@ -1337,6 +1353,10 @@ what happens when you die. The short forms work in all three parts:
 
 The game reads only the first **6 letters** of a word (`EXAMIN` is enough).
 Separate several commands in one line with a full stop: `TAKE LAMP. N`.
+
+::: {.shots .one}
+![Command overview, "What it's about" at the bottom](img/en/adv_help.png)
+:::
 
 **Settings** (⋮ → Settings; shared by all three parts):
 
@@ -1364,6 +1384,12 @@ Separate several commands in one line with a full stop: `TAKE LAMP. N`.
 - **Brief** = BRIEF (the long description on the first visit only),
   **Superbrief** = SUPERBRIEF (the room name only), **Verbose** = VERBOSE.
 
+::: {.shots}
+![Settings: speed & spacing, input](img/en/adv_settings.png)
+
+![Settings: played in CW, show text, rooms, map](img/en/adv_settings2.png)
+:::
+
 **Punctuation in the audio.** The screen always shows the text as the game
 writes it. Only for playing, characters that Morse doesn't have are replaced:
 
@@ -1390,6 +1416,10 @@ writes it. Only for playing, characters that Morse doesn't have are replaced:
   doesn't have this; it mainly helps with typing mistakes.
 - **End of the game:** after `QUIT` the app offers to load a saved game, take
   back the move, or restart.
+
+::: {.shots .one}
+![Saved games of one part](img/en/adv_saves.png)
+:::
 
 # Paddle and Morse key
 

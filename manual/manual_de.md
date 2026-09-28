@@ -67,7 +67,7 @@ Die Startseite hat drei Gruppen:
 | | **CW-Decoder** | CW über das Mikrofon mitlesen |
 | | **WiFi Trx** | CW über das Internet mit anderen Morserinos und Apps |
 | | **QSO Bot** | Ein simulierter QSO-Partner |
-| **Spielen** | **Spiele** | Morsel, Morse Invaders, Memory Chain |
+| **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain |
 
 Unter **Hören** und **Geben** zeigt die Kachel deine aktuelle Koch-Lektion und
 dein Tempo, bei **Geben** zusätzlich den Trend der letzten Blöcke (siehe
@@ -1294,6 +1294,10 @@ bzw. **Weiter** macht dort weiter, wo du aufgehört hast. **Spielstände** öffn
 deine gespeicherten Stände. **Neu** beginnt von vorn (nach Nachfrage; deine
 eigenen Spielstände bleiben erhalten).
 
+::: {.shots .one}
+![Auswahl der drei Teile](img/de/adv_select.png)
+:::
+
 **Der Spielbildschirm.** Oben die Statuszeile mit Raum, Punkten (Score) und
 Zügen (Moves), darunter der Verlauf. Die neueste Antwort wird in CW gespielt;
 das Wort, das gerade klingt, ist markiert. Darunter:
@@ -1307,6 +1311,10 @@ das Wort, das gerade klingt, ist markiert. Darunter:
 | **Pause** / **Weiter** | Hält das Abspielen an; **Weiter** spielt ab dem Wort weiter, bei dem angehalten wurde – nach **↻ Nochmal** ab dem folgenden Wort |
 | **Text** (Auge) | Zeigt die ganze Antwort sofort; nochmal tippen verdeckt sie wieder, die Wörter erscheinen dann wieder beim Abspielen (z. B. mit **Nochmal**) |
 | **↶ Zug** | Nimmt den letzten Befehl zurück (bis zu 20) |
+
+::: {.shots .one}
+![Spielbildschirm mit Touch-Paddles](img/de/adv_game.png)
+:::
 
 **Befehle geben.** Mit den Touch-Paddles unten (bei Keyer-Modus Straight:
 die Taste) oder einem angeschlossenen Paddle (siehe
@@ -1357,6 +1365,14 @@ der Spieldatei.
   der Jahreszahl (948 = Gegenwart, 776, 777): Es sind dieselben Räume zu
   verschiedenen Zeiten.
 
+::: {.shots .three}
+![Karte: Besucht](img/de/adv_map.png)
+
+![Nachfrage vor der ganzen Karte](img/de/adv_map_warn.png)
+
+![Karte: Ganze Karte](img/de/adv_map_whole.png)
+:::
+
 **Befehlsübersicht (?).** Das **?** in der Kopfzeile öffnet eine Liste der
 wichtigsten Befehle und unter **Abspielen** die Knöpfe oben; ganz unten
 steht unter **Worum es geht** kurz die
@@ -1378,6 +1394,10 @@ werden und was beim Tod passiert. Die Kurzformen gelten in allen drei Teilen:
 Das Spiel liest nur die ersten **6 Buchstaben** eines Worts (`EXAMIN`
 reicht). Mehrere Befehle in einer Zeile trennst du mit einem Punkt:
 `TAKE LAMP. N`.
+
+::: {.shots .one}
+![Befehlsübersicht, unten „Worum es geht“](img/de/adv_help.png)
+:::
 
 **Einstellungen** (⋮ → Einstellungen; gelten für alle drei Teile):
 
@@ -1406,6 +1426,12 @@ reicht). Mehrere Befehle in einer Zeile trennst du mit einem Punkt:
 - **Kurz** = BRIEF (die lange Beschreibung nur beim ersten Besuch),
   **Sehr kurz** = SUPERBRIEF (nur der Raumname), **Immer lang** = VERBOSE.
 
+::: {.shots}
+![Einstellungen: Tempo & Abstand, Eingabe](img/de/adv_settings.png)
+
+![Einstellungen: CW-Umfang, Text zeigen, Räume, Karte](img/de/adv_settings2.png)
+:::
+
 **Satzzeichen im Audio.** Auf dem Bildschirm steht der Text immer so, wie
 das Spiel ihn schreibt. Nur für das Abspielen werden Zeichen ersetzt, die es
 in Morse nicht gibt:
@@ -1433,6 +1459,10 @@ in Morse nicht gibt:
   Das Original kennt das nicht; es hilft vor allem bei Tippfehlern.
 - **Spielende:** Nach `QUIT` bietet die App an, einen Spielstand zu laden,
   den Zug zurückzunehmen oder neu zu starten.
+
+::: {.shots .one}
+![Spielstände eines Teils](img/de/adv_saves.png)
+:::
 
 # Paddle und Morsetaste
 

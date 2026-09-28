@@ -1,9 +1,16 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private).
-Latest tagged build: v1.1.0 (2026-09-27: Hören typing mode, Koch character row, terminology pass). Previous: v1.0.0 (2026-09-26, first build handed out to other users).
+Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new app icon, games order). Previous: v1.1.0 (2026-09-27, Hören typing mode, Koch character row, terminology pass); v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **v1.2.0 release (2026-09-28).** New app icon (design by Sia, the user's
+  friend; adaptive + legacy icons built by `android/tool/icon/make_icon.py`,
+  checked in the phone's app drawer). Games page order: Morse Invaders,
+  Text-Adventure, Morsel, Memory Chain (home tile subtitle follows). All
+  screenshots on the pending list retaken DE+EN, new adventure shots
+  (selection, game, map ×3, help, settings ×2, saves) added via
+  `manual/tools/insert.py`; manual HTML/PDF rebuilt.
 - **Text adventure follow-ups (2026-09-28, user requests), not yet
   user-tested.** Help sheet ends with "Worum es geht" (story, goal, points,
   moves, death per part); Text (eye) button toggles and hides the answer
@@ -562,30 +569,11 @@ HTML/PDF and screenshots are refreshed when the next version is cut. List
 every screenshot (both `img/de/` and `img/en/`) whose screen changed since
 the last release, with the reason. Clear this list after the release build.
 
-- `games.png` (de+en): new fourth card "Text-Adventure".
-- `home.png` (de+en): Spiele tile subtitle now ends with "· Adventure".
-- New shots for the "Text-Adventure" section (de+en), none exist yet:
-  selection, game screen while playing (paddle input; Pause / Text
-  buttons), ⚙ settings (now with Eingabe / Abschicken mit / Karte), command
-  sheet incl. "Worum es geht", saved games, map "Besucht" and "Ganze Karte"
-  + its warning (now with "Nicht mehr fragen").
-- `inv_lobby.png` (de+en): Koch-lesson hint no longer says "(Echo Trainer)";
-  EN now "The Send lesson, change it there".
-- `home.png` (de+en): v1.1.0 shots disagree (Send 76 % EN vs 72 % DE) because
-  practice blocks between the passes moved the trend; retake both from the
-  same restored prefs.
-- `hear_start.png` (de+en): weak-characters card cut off at the bottom
-  (scrolling middle); scroll or crop so it shows whole.
-- `hear_revealed.png` (en): back arrow still carries a tap-ripple tint; wait
-  for it to fade before the shot.
-- `hear_type.png`, `hear_type_retry.png` (de+en): typing view spacing changed
-  slightly (fixed-height attempts slot, fixed dot cells).
-- `hear_result.png` (de+en): "Auf dem Weg zu" card now shows chips
-  instead of text lists; scrollbar visible when the page scrolls.
-- `hear_revealed.png` (de+en): scrollbar at the right edge when the groups
-  don't fit.
+- (empty — cleared at v1.2.0)
 - Process note: build the manual *before* the version commit/tag, so the
-  title page shows the tagged commit (v1.1.0 shows 13bc0d4, tag is 117027c).
+  title page shows the tagged commit.
+- Adventure map shots: pinch zoom can't be injected over adb, so
+  `adv_map*.png` show the default zoom.
 
 ## Open questions
 

@@ -86,7 +86,7 @@ class Strings {
     'home_section_practice': ['Üben', 'Practice'],
     'home_section_free': ['Frei', 'Free'],
     'home_section_games': ['Spielen', 'Play'],
-    'home_games_subtitle': ['Morsel · Invaders · Memory Chain · Adventure', 'Morsel · Invaders · Memory Chain · Adventure'],
+    'home_games_subtitle': ['Invaders · Adventure · Morsel · Memory Chain', 'Invaders · Adventure · Morsel · Memory Chain'],
     'games_title': ['Spiele', 'Games'],
     'morsel_subtitle': ['Wort erraten · Hören und Geben', 'Guess the word · Listen and key'],
     'morsel_hint': ['Wort in CW hören, ganz zurückgeben – jede Runde langsamer', 'Hear the word in CW, key it back – slower each round'],

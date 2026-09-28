@@ -895,3 +895,14 @@ artifact): https://claude.ai/artifact/72w1sXjGBDmTx6TG4a4qVa.
   counts all) and death (I/II: SCORE-UPD −10 and RANDOMIZE-OBJECTS; Zork I
   ends at the third death, Zork III at the fourth) — from the historicalsource
   ZIL, not from memory.
+- **App icon (2026-09-28, v1.2.0)**: design by Sia (the user's friend),
+  delivered as a finished rounded-square JPEG (`android/tool/icon/
+  icon_source.jpg`). Launchers mask icons themselves, so
+  `tool/icon/make_icon.py` rebuilds the blue panel full bleed (a colour
+  plane fitted to the panel outside the logo) and lifts the logo with its
+  shadow off by its difference from that plane. Adaptive icon (API 26+):
+  opaque foreground with the logo at 56 % of the 108 dp layer, background
+  colour `#5874A8`; legacy `ic_launcher.png`: rounded square, logo at 78 %.
+  Re-run the script after changing the source.
+- **Games order (2026-09-28, user request)**: Morse Invaders, Text-Adventure,
+  Morsel, Memory Chain — on the games page and in the home tile subtitle.
