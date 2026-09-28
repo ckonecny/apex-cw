@@ -1,5 +1,7 @@
 # Next CW Trainer
 
+<img src="android/tool/icon/icon_rounded.png" alt="App icon" width="96" align="right">
+
 An Android app (Flutter UI + native Kotlin/C++ audio and keying) that brings
 the core CW/Morse **training** modes of the [Morserino-32](https://github.com/oe1wkl/Morserino-32)
 to a phone or tablet.
@@ -33,6 +35,13 @@ This port was built against **firmware version 9.0.0** (`VERSION_MAJOR`/
 `_MINOR`/`_PATCH` in `morsedefs.h` at the time this app was started) — later
 firmware changes aren't automatically reflected here and would need their own
 review against this app's behavior.
+
+## Download
+
+Ready-to-install APKs are attached to the
+[GitHub releases](https://github.com/ckonecny/next_cw_trainer/releases)
+(sideload: allow "install unknown apps"). **Settings → Info** in the app
+shows the version and the commit it was built from.
 
 ## User manual
 
@@ -107,10 +116,19 @@ characters, boosts and Koch unlocks.
 
 ### Play (games)
 
-- **Morsel** — Wordle-style word guessing: the word is played in CW, you
-  key your guess back.
 - **Morse Invaders** — arcade game: shoot falling characters by keying
   them, from your current Koch lesson.
+- **Text adventure** — Infocom's **Zork I, II and III** (1980–82), played
+  in CW: the game answers in Morse, you key your commands (touch or real
+  paddle, `<AR>` sends) or type them. The original story files, released by
+  Microsoft under the MIT License in 2025, run on the app's own Z-machine
+  interpreter. Replay by sentence, word or whole answer, pause, optional
+  text display, a hand-drawn map per part (visited rooms, or the whole map
+  with a spoiler warning), automatic and named saves, undo. Game text is
+  English and uses the full alphabet, digits and punctuation. Zork is a
+  trademark of its owners; this app is not affiliated with them.
+- **Morsel** — Wordle-style word guessing: the word is played in CW, you
+  key your guess back.
 - **Memory Chain** — one new character per round, key the whole chain from
   memory (Koch characters or call signs), high scores per mode.
 
@@ -174,13 +192,24 @@ Module-by-module details: `docs/PORTING-MAP.md`.
 | CW Decoder (microphone → text) | ✅ Supported | Goertzel + firmware decoder port |
 | WiFi Trx (MOPP over UDP, e.g. cq.morserino.info) | ✅ Supported | Foreground only; no background service yet |
 | QSO Bot (SOTA/POTA, Standard, Contest) | ✅ Supported | |
-| Games: Morsel, Morse Invaders, Memory Chain | ✅ Supported | Single player; Morsel not yet fully user-tested |
+| Games: Morse Invaders, Morsel, Memory Chain | ✅ Supported | Single player; Morsel not yet fully user-tested |
+| Text adventure: Zork I–III in CW | ✅ Supported | App-only (not in the firmware); own Z-machine v3 interpreter, maps, saves |
 | Settings, audio output routing, theme, text zoom, DE/EN UI | ✅ Supported | Android-native equivalents of device-only prefs |
 | Games: Trailblazer, Fox Hunt, Radio Cave, Fight the Pileup | 🚧 Not yet | In the backlog (single player) |
 | File Player (own text as practice content), Settings Snapshots / named presets | 🚧 Not yet | Low priority |
 | CW Memories | 🚧 Not yet | Not planned yet |
 | Physical controls, display hardware, LoRa, ESP‑NOW/multiplayer, iCW/Ext Trx, OTA/WiFi AP | ❌ Not applicable | No such hardware on a phone / handled by Android |
 | Practice Stats (`MorsePracticeStats.cpp`) | ❌ Not ported | Replaced by the app's own statistics |
+
+## Credits
+
+- Training design and algorithms: Willi Kraml, OE1WKL, and the Morserino-32
+  team (see above).
+- App icon: designed by Sia.
+- Zork I–III: Marc Blank, Dave Lebling, Bruce Daniels and Tim Anderson
+  (Infocom); story files from the
+  [historicalsource](https://github.com/historicalsource) repositories, MIT
+  License (see `android/assets/zork/`).
 
 ## Development
 
