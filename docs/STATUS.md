@@ -1,9 +1,13 @@
 # Status
 
-Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private).
+Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (public since 2026-09-28, GPL-3.0).
 Latest tagged build: v1.2.1 (2026-09-28: author credits, GPL-3.0 licence page, licence guard). Previous: v1.2.0 (2026-09-28, text adventure Zork I–III in CW, new app icon, games order); v1.1.0 (2026-09-27, Hören typing mode, Koch character row, terminology pass); v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **Repo public (2026-09-28, user request).** Needed for GPL-3.0: APK
+  recipients must be able to get the source; the licence page links to the
+  repo. Checked without login: repo, LICENSE, v1.2.1 release page, APK, PDFs
+  and source zip reachable. History scanned for credentials/keys before: none.
 - **v1.2.1 release (2026-09-28).** Author credits and "Danke" row in
   Settings → Info, GPL-3.0 licence page (Lizenzen), licence guard test,
   custom Koch default credited. APK built with `tools/build_release.sh`;

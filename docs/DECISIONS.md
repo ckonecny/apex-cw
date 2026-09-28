@@ -159,7 +159,8 @@ of `.dart_tool/flutter_build/dart_plugin_registrant.dart` into `libapp.so`
 data tables (word lists, abbreviations, call sign prefixes, QSO texts) and
 closely follows the code, so it is treated as a derivative work and released
 under GPL-3.0-or-later too; the repo had no licence before. Consequences:
-source stays public, every APK carries the licence texts (Settings → Info →
+source stays public (repo made public on GitHub 2026-09-28, before that
+the licence page linked to a private repo — the one gap), every APK carries the licence texts (Settings → Info →
 Licences via `showLicensePage`, entries registered in `lib/licenses.dart`).
 The GPL text is bundled as `assets/licenses/GPL-3.0.txt`, a copy of the root
 `LICENSE` (a test keeps them identical — Flutter assets can't live outside
@@ -981,4 +982,5 @@ artifact): https://claude.ai/artifact/72w1sXjGBDmTx6TG4a4qVa.
   Morserino-32/OE1WKL, the icon by Sia/OE1LMR and Zork/Infocom), on the
   manual title page, in its edition block and PDF author metadata, and in
   the README. Deliberately not on the home screen, and no contact address
-  (the repo is private; an e-mail in a handed-out PDF would be public).
+  (an e-mail in a handed-out PDF would be public; the repo is public too
+  since 2026-09-28).
