@@ -1,0 +1,208 @@
+# Zork III: full solution (7 points, Treasury of Zork) for the interpreter
+# test; seed 1. Written from the eristic.net walkthrough.
+# Lake
+take lamp
+turn on lamp
+s
+s
+s
+s
+turn off lamp
+drop lamp
+enter lake
+d
+!until golden amulet :: take object
+w
+s
+take torch
+!until to "II"\. :: z
+touch table
+take can
+z
+!until to "III"\. :: z
+touch table
+drop torch
+z
+n
+enter lake
+d
+take all
+u
+s
+# Key, aqueduct
+spray repellent on me
+s
+s
+e
+take key
+raise cover
+d
+n
+n
+n
+take torch
+# Cliff
+w
+w
+w
+take bread
+d
+take chest
+!until man :: z
+tie chest to rope
+!until grab onto the rope :: z
+grab rope
+d
+d
+s
+!until ship :: z
+hello sailor
+take vial
+# Land of Shadow
+e
+!until hooded figure :: z
+!until defenseless :: attack figure with sword
+take hood
+take cloak
+e
+e
+e
+# Royal Museum
+e
+e
+s
+s
+!until cleft opens :: z
+e
+n
+push gold machine south
+open stone door
+push gold machine east
+turn dial to 776
+sit in gold machine
+push button
+take ring
+!until marching away :: z
+open door
+w
+open wooden door
+n
+put ring under seat
+sit in gold machine
+turn dial to 948
+push button
+look under seat
+stand
+open door
+s
+open stone door
+e
+take all
+# Royal Puzzle
+w
+s
+d
+push east wall
+s
+s
+se
+push south wall
+n
+ne
+push south wall
+take book
+push south wall
+e
+ne
+push west wall
+sw
+nw
+ne
+push south wall
+sw
+push east wall
+ne
+push south wall
+nw
+n
+n
+n
+push east wall
+sw
+s
+se
+ne
+n
+push west wall
+nw
+push south wall
+again
+w
+nw
+nw
+push south wall
+se
+se
+se
+ne
+push west wall
+again
+sw
+push north wall
+again
+again
+nw
+u
+# Old man, mirror box
+n
+w
+n
+n
+w
+w
+n
+e
+ne
+!until wizened :: sw. ne
+wake man
+give bread to man
+open secret door
+n
+n
+drop can
+s
+push button
+n
+n
+n
+raise short pole
+push yellow wall
+push yellow wall
+lower short pole
+push mahogany wall
+push mahogany wall
+push mahogany wall
+raise short pole
+push white wall
+push white wall
+push white wall
+push white wall
+push pine wall
+n
+# Dungeon Master
+knock on door
+n
+e
+n
+n
+turn dial to 4
+push button
+s
+open door
+s
+dungeon master, go to parapet
+dungeon master, turn dial to 1
+dungeon master, push button
+unlock bronze door with key
+open bronze door
+s

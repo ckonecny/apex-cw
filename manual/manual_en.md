@@ -1156,10 +1156,13 @@ confirmation.
 
 # Games
 
-Under **Play → Games** there are three games. You play them all with the
-paddles or the adapter. They all use the keyer settings. They take the Koch
-lesson from **Send**, and Morsel and Memory Chain also let you change it for
-the game only. Each game shows short rules before you start.
+Under **Play → Games** there are four games. You play Morsel, Morse Invaders
+and Memory Chain with the paddles or the adapter. They use the keyer
+settings. They take the Koch lesson from **Send**, and Morsel and Memory
+Chain also let you change it for the game only. Each of these three shows
+short rules before you start. The [text adventure](#text-adventure) has its
+own speed and input settings; it also takes the keyer mode from the keyer
+settings.
 
 ::: {.shots .one}
 ![The games](img/en/games.png)
@@ -1242,6 +1245,151 @@ The high score list is kept per mode.
 ::: {.shots .one}
 ![Memory Chain before the start](img/en/mc_lobby.png)
 :::
+
+## Text adventure {#text-adventure}
+
+The three classic Infocom adventures **Zork I, II and III** (1980–82), played
+in CW: the game answers in Morse, and you enter your commands. Microsoft
+released the source code under the MIT License in 2025; the app plays the
+original story files with its own interpreter. The game text is in
+**English** only, and it uses the **full alphabet, digits and punctuation**,
+whatever your Koch lesson. Zork is a trademark of its owners; the app is not
+affiliated with them.
+
+**Selection.** Each part shows its score, moves and last room. **Start** or
+**Continue** picks up where you left off. **Saved games** opens your saves.
+**New** starts over (after asking; your own saved games are kept).
+
+**The game screen.** At the top the status line with room, score and moves,
+below it the transcript. The newest answer is played in CW, and the word that
+is sounding is highlighted. Below that:
+
+| Control | What it does |
+|---|---|
+| Speed bar | Listening and keying speed, character and word spacing; tap it for **Speed & spacing** |
+| **↻ Again** | The sentence that is playing (in the gap right after a word: that word's sentence; after the end: the last one), then paused |
+| Long press **↻ Again** | The whole answer from the start (like sending `?`) |
+| Tap a word | Only that word, then paused |
+| **Pause** / **Resume** | Pauses playing; **Resume** goes on from the word where it paused – after **↻ Again** from the next word |
+| **Text** (eye) | Shows the whole answer at once; tap again to hide it, then the words reappear as they are played (e.g. with **Again**) |
+| **↶ Move** | Takes back the last command (up to 20) |
+
+**Keying commands.** With the touch paddles at the bottom (keyer mode
+Straight: the key) or a connected paddle (see
+[Paddle and Morse key](#paddle-and-morse-key)). The decoder writes into the
+input line; the character being keyed is shown in orange as · and — after
+it. As soon as you start keying, the CW output stops.
+
+- **End of a word:** a pause separates words. As in the sending learn mode, a
+  word counts as finished after a pause of 2 × character spacing + 1 + word
+  spacing / 8 dits at keying speed (straight key: word spacing + 1 dits after
+  key-up).
+- **Sending:** **`<AR>`** (·—·—·) sends the command at once. With the setting
+  **"<AR> or K"**, a **K** as its own word also sends, i.e. after a word gap –
+  none of the three games has a word K. The **Send** button always works.
+- **Correcting:** **`<ERR>`** (8 dits; 7 or more count) deletes the last
+  word, as does the **⌫ Word** button. **✕ Line** clears the whole input.
+- A **?** on its own (then send) repeats the last answer and takes no move.
+- Other prosigns are ignored; a character that isn't recognised shows as `*`.
+
+With the setting **Input → Keyboard**, the on-screen keyboard replaces the
+paddles (for listening practice only): **␣** separates words, **⌫** deletes a
+character, **⏎** sends. A connected paddle works then too.
+
+**Map (🗺).** The map icon in the title bar opens a map of the current
+part. It starts at the current room (orange outline); pinch to
+zoom, drag to move, ⌖ goes back to the current room. Rooms carry their names
+from the game (English). Their positions are set by hand, because Zork isn't
+drawn to scale; the connections come from the story file.
+
+- **Visited** (default): only rooms you have been in and paths you have
+  walked – the map players used to draw on paper. No cheating. The paths are
+  saved with the game and taken back by **↶ Move**.
+- **Whole map ⚠**: every room of the part, including the ones you haven't
+  found yet (grey). That gives away solutions (hidden rooms, secret passages,
+  the way through the maze), so the app asks every time. **Don't ask again**
+  in the dialog turns the question off; turn it back on under ⋮ → Settings
+  → **Map**.
+- Dashed = up/down, ▸ = one way only. Distant connections (e.g. trap door,
+  chimney) show as a blue note under the room ("→ Cellar") instead of a long
+  line. Some paths only open during the game.
+- In Part III the museum rooms appear three times side by side, labelled
+  with the year (948 = the present, 776, 777): they are the same rooms at
+  different times.
+
+**Command overview (?).** The **?** in the title bar opens a list of the most
+important commands and, under **Playback**, the buttons above; at the
+bottom, **What it's about** briefly gives the
+story and goal of the current part, how points and moves are counted and
+what happens when you die. The short forms work in all three parts:
+
+| Command | Meaning |
+|---|---|
+| `N S E W`, `NE NW SE SW`, `U D`, `IN OUT` | Moving |
+| `L` | LOOK: describe the room again (takes a move) |
+| `I` | INVENTORY: what you carry |
+| `Z` | WAIT: wait one move |
+| `G` | AGAIN: repeat the last command |
+| `OOPS word` | Replaces a word the game did not know |
+| `TAKE`, `DROP`, `EXAMINE`, `READ`, `OPEN` … | Handling things (Zork has no `X` for EXAMINE) |
+| `SCORE`, `SAVE`, `RESTORE`, `RESTART`, `QUIT` | Game commands |
+| `<AR>`, `K`, `<ERR>`, `?` | Only in this app: send, send (as its own word, depending on the setting), delete the last word, again |
+
+The game reads only the first **6 letters** of a word (`EXAMIN` is enough).
+Separate several commands in one line with a full stop: `TAKE LAMP. N`.
+
+**Settings** (⋮ → Settings; shared by all three parts):
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Listening | Speed of the CW output | 10–60 WPM |
+| Keying | Keyer speed for your input | **as listening**, 10–60 WPM |
+| Character spacing | Pause between characters when playing; part of the word end when keying | 3–45 dits |
+| Word spacing | Pause between words; never below the character spacing; part of the word end when keying | 6–105 dits |
+| Input | Touch paddles or on-screen keyboard | **Paddle**, Keyboard |
+| Send with | What sends a keyed command (the Send button always works) | **`<AR>`**, `<AR>` or K, Button only |
+| Played in CW | What is played; the rest is only shown as text (italics) | **Everything**, First sentence, Room / message |
+| Show text | When the new answer becomes readable | Always, **After playing**, Only on tap |
+| Room descriptions | How much of a room is described | **Brief**, Superbrief, Verbose |
+| Map: warn before the whole map | Asks before **Whole map ⚠** | **On**, Off |
+
+- The adventure takes speed and spacing from your **Listen** profile the
+  first time you open it; after that they are its own values. You can also
+  change them from the speed bar, and they apply at once, even while playing.
+- **First sentence:** up to the first full stop, including a room name before
+  it. **Room / message:** only the name when you enter a room, otherwise the
+  first sentence of the answer.
+- **After playing:** each word appears once it has been played. **Only on
+  tap:** the new answer stays hidden until you tap **Text** or the box.
+- **Brief** = BRIEF (the long description on the first visit only),
+  **Superbrief** = SUPERBRIEF (the room name only), **Verbose** = VERBOSE.
+
+**Punctuation in the audio.** The screen always shows the text as the game
+writes it. Only for playing, characters that Morse doesn't have are replaced:
+
+| In the text | Played as |
+|---|---|
+| `'` `"` `( )` `[ ]` `*` `#` and others | left out |
+| `!` | `.` |
+| `;` | `,` |
+| `&` | `AND` |
+| Paragraph | double word gap |
+
+**Saved games.**
+
+- **Automatic:** saved after every command and when you leave, one slot per
+  part. Next time you continue exactly there.
+- **Your own saves:** as many as you like per part, via ⋮ → **Save** or the
+  game command `SAVE`. The name is suggested (room · score).
+- **Loading:** via ⋮ → **Load**, **Saved games** in the selection, or the
+  game command `RESTORE`. Tap to load; the current state is saved
+  automatically first. Long press to rename or delete.
+- **Restart:** ⋮ → **Restart** (the app asks first and offers to save
+  before) or the game command `RESTART` (the game asks).
+- **Undo (↶):** up to 20 commands while the game screen is open. The original
+  doesn't have this; it mainly helps with typing mistakes.
+- **End of the game:** after `QUIT` the app offers to load a saved game, take
+  back the move, or restart.
 
 # Paddle and Morse key
 

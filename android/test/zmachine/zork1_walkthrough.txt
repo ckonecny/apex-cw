@@ -1,0 +1,407 @@
+# Zork I, full 350-point solution for the interpreter test.
+# Route follows the eristic.net walkthrough; fights and waits use !until.
+open mailbox
+n
+n
+u
+take egg
+d
+open egg
+s
+e
+open window
+w
+take sack
+open sack
+take garlic
+w
+take sword
+take lamp
+move rug
+open trap door
+turn on lamp
+d
+drop egg
+n
+!until (troll.*(dies|disappears|black fog)|breathes his last|carcass) :: kill troll with sword
+drop sword
+w
+w
+w
+u
+take coins
+take key
+sw
+e
+s
+se
+odysseus
+e
+e
+open trophy case
+put coins in case
+drop key
+# painting
+open trap door
+d
+s
+e
+take painting
+w
+n
+u
+put painting in case
+# platinum bar
+d
+n
+e
+e
+e
+echo
+take bar
+w
+w
+w
+s
+u
+put bar in case
+# dam, trunk, trident
+d
+n
+e
+e
+e
+u
+e
+n
+take matchbook
+n
+take wrench
+take screwdriver
+push yellow button
+s
+s
+turn bolt with wrench
+drop wrench
+w
+!until (water level is now quite low|mud flat|reservoir is empty|now just a mud) :: wait
+n
+take trunk
+s
+sw
+sw
+w
+s
+u
+put trunk in case
+# trident and pump
+d
+n
+e
+n
+ne
+n
+n
+take pump
+n
+take trident
+u
+n
+n
+w
+d
+u
+put trident in case
+# temple: rope, torch, coffin
+e
+u
+take rope
+d
+w
+d
+n
+e
+e
+se
+e
+tie rope to railing
+d
+take torch
+turn off lamp
+s
+drop all except torch
+e
+take coffin
+open coffin
+take sceptre
+w
+s
+pray
+e
+s
+e
+w
+w
+put coffin in case
+put sceptre in case
+# Hades: skull
+d
+n
+e
+e
+se
+e
+d
+s
+take matchbook
+take bell
+s
+take candles
+take book
+blow out candles
+d
+d
+ring bell
+take candles
+light match
+light candles with match
+read book
+blow out candles
+drop book
+s
+take skull
+n
+u
+n
+n
+n
+w
+w
+s
+u
+put skull in case
+take sceptre
+# back to the temple for the tools
+d
+n
+e
+e
+se
+e
+d
+s
+take sack
+take lunch
+eat lunch
+take garlic
+put garlic in sack
+take pump
+take screwdriver
+take lamp
+inventory
+# river: emerald, scarab, pot of gold
+s
+d
+n
+n
+n
+e
+u
+e
+e
+inflate plastic with pump
+drop pump
+take garlic
+put screwdriver in sack
+put sceptre in sack
+get in boat
+launch
+!until buoy :: wait
+take buoy
+e
+get out of boat
+open buoy
+take emerald
+drop buoy
+take shovel
+ne
+!until scarab :: dig in sand with shovel
+drop shovel
+take scarab
+sw
+s
+s
+take sceptre from sack
+wave sceptre
+w
+w
+sw
+u
+u
+nw
+w
+w
+w
+put scarab in case
+put emerald in case
+put sceptre in case
+# pot of gold
+e
+e
+e
+e
+d
+d
+n
+take pot
+sw
+u
+u
+nw
+w
+w
+w
+put pot in case
+# coal mine: figurine, bracelet, diamond
+d
+n
+e
+e
+s
+s
+touch mirror
+n
+w
+n
+w
+n
+take figurine
+e
+put candles in basket
+take screwdriver from sack
+put screwdriver in basket
+drop torch
+turn on lamp
+n
+d
+take bracelet
+e
+ne
+se
+sw
+d
+d
+s
+take coal
+n
+u
+u
+n
+e
+s
+n
+u
+s
+put coal in basket
+take candles
+light match
+light candles with match
+put candles in basket
+lower basket
+n
+d
+e
+ne
+se
+sw
+d
+d
+w
+drop all
+w
+take coal
+take screwdriver
+take candles
+s
+open lid
+put coal in machine
+close lid
+turn switch with screwdriver
+open lid
+take diamond
+drop screwdriver
+n
+put candles in basket
+put diamond in basket
+e
+take lamp
+take bracelet
+take figurine
+take matchbook
+take garlic
+take sack
+e
+u
+u
+n
+e
+s
+n
+u
+s
+raise basket
+take diamond
+take candles
+blow out candles
+take torch
+w
+s
+e
+s
+d
+u
+put diamond in case
+put bracelet in case
+put figurine in case
+put torch in case
+# thief: chalice, egg, canary
+drop garlic
+drop candles
+e
+u
+take knife
+d
+w
+w
+w
+u
+!until (breathes his last|carcass has disappeared) :: kill thief with knife
+take chalice
+take egg
+d
+e
+e
+turn off lamp
+put chalice in case
+take canary
+put egg in case
+e
+e
+n
+n
+wind canary
+take bauble
+s
+e
+w
+w
+put canary in case
+put bauble in case
+# finale
+take map
+e
+e
+s
+w
+sw
+w

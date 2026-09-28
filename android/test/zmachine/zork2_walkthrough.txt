@@ -1,0 +1,339 @@
+# Zork II: full solution (400 points) for the interpreter test; seed 1.
+# Written from the eristic.net walkthrough (see zork1_walkthrough.txt).
+# Garden
+take lamp
+take sword
+s
+s
+s
+sw
+s
+se
+in
+take teapot
+out
+n
+ne
+fill teapot with water
+turn on lamp
+s
+sw
+sw
+se
+n
+se
+# Alice
+answer "well"
+e
+take necklace
+e
+enter bucket
+pour water into bucket
+z
+stand
+e
+take all
+eat green cake
+e
+drop orange cake
+throw red cake in pool
+take candies
+w
+eat blue cake
+# Robot
+nw
+take paper
+read paper
+drop paper
+robot, e
+e
+robot, s
+s
+take sphere
+robot, lift cage
+take sphere
+robot, n
+n
+robot, push triangular button
+w
+se
+!until Tea Room :: w. se
+w
+enter bucket
+fill teapot with water
+stand
+drop teapot
+w
+w
+nw
+# Dreary room, dragon
+open box
+take violin
+!until perfect health :: diagnose
+sw
+take string
+sw
+give candies to lizard
+drop necklace
+drop violin
+drop sphere
+n
+ne
+e
+n
+n
+in
+take all
+out
+s
+w
+sw
+n
+take brick
+n
+n
+u
+put mat under door
+open lid
+put opener in keyhole
+take opener
+drop opener
+take mat
+take key
+unlock door with key
+open door
+drop key
+n
+take blue sphere
+s
+d
+w
+n
+attack dragon with sword
+s
+attack dragon with sword
+s
+attack dragon with sword
+w
+# Princess
+e
+n
+n
+n
+kiss princess
+z
+s
+e
+e
+d
+s
+!until princess enters :: z
+z
+e
+e
+n
+in
+!until key :: z
+drop rose
+# Wizard rooms
+out
+s
+s
+w
+sw
+sw
+unlock door with gold key
+drop gold key
+take red sphere
+open door
+s
+w
+w
+throw sword at aquarium
+take clear sphere
+e
+put clear sphere on diamond stand
+put red sphere on ruby stand
+put blue sphere on sapphire stand
+take black sphere
+# Volcano
+e
+n
+n
+n
+d
+w
+take ruby
+s
+enter basket
+open receptacle
+put newspaper in receptacle
+light match
+burn newspaper with match
+read label
+drop label
+z
+land
+tie wire to hook
+stand
+take coin
+s
+open purple book
+take stamp
+n
+enter basket
+untie wire
+z
+z
+z
+land
+tie wire to hook
+stand
+s
+put brick in hole
+put string in brick
+light match
+burn string with match
+n
+s
+take crown
+read card
+n
+enter basket
+untie wire
+close receptacle
+!until Volcano Bottom :: z
+drop card
+drop matches
+stand
+n
+e
+e
+se
+sw
+sw
+drop crown
+drop stamp
+drop coin
+drop ruby
+# Statuette, bank
+n
+ne
+n
+n
+n
+w
+n
+n
+!until statuette :: open chest
+take statuette
+s
+w
+w
+nw
+w
+s
+take portrait
+n
+walk through north wall
+walk through south wall
+walk through north wall
+take bills
+walk through north wall
+drop bills
+drop portrait
+e
+e
+take bills
+take portrait
+walk through north wall
+s
+# Demon
+e
+e
+s
+s
+se
+w
+take can
+e
+sw
+sw
+take all
+s
+w
+s
+drop statuette
+drop bills
+drop portrait
+drop coin
+drop ruby
+drop gold key
+n
+e
+n
+take all
+s
+w
+s
+drop necklace
+drop violin
+drop crown
+drop stamp
+put black sphere in circle
+take necklace
+give necklace to demon
+take violin
+give violin to demon
+take crown
+give crown to demon
+take stamp
+give stamp to demon
+take key
+give key to demon
+take ruby
+give ruby to demon
+take zorkmid
+give zorkmid to demon
+take portrait
+give portrait to demon
+take bills
+give bills to demon
+take statuette
+give statuette to demon
+demon, give me the wand
+take wand
+# Menhir, oddly-angled rooms
+n
+e
+n
+n
+ne
+s
+wave wand at menhir
+say "float"
+sw
+take collar
+ne
+s
+d
+examine diamond
+w
+w
+w
+w
+se
+ne
+nw
+sw
+w
+# Crypt
+d
+put collar on cerberus
+e
+open door
+s
+spray repellent on me
+turn off lamp
+open secret door
+s

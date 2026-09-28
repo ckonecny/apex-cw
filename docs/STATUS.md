@@ -4,6 +4,63 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private)
 Latest tagged build: v1.1.0 (2026-09-27: Hören typing mode, Koch character row, terminology pass). Previous: v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **Text adventure follow-ups (2026-09-28, user requests), not yet
+  user-tested.** Help sheet ends with "Worum es geht" (story, goal, points,
+  moves, death per part); Text (eye) button toggles and hides the answer
+  again for a replay; "Stopp" → Pause / Weiter (resumes at the word); whole
+  map warns every time with "Nicht mehr fragen", switch back on in
+  Einstellungen → Karte. Nochmal: tap = sentence, hold = whole
+  answer; tapping a word plays only that word; sentence/word end paused (help section "Abspielen"). Tests + manual DE+EN updated.
+- **Text adventure step 5 (2026-09-28): Zork II / III solution tests and
+  maps, built and installed on 63061JEBF01551; map not yet seen on the
+  device (phone locked), not yet user-tested.** `zork2_walkthrough.txt`
+  (400/400) and `zork3_walkthrough.txt` (Treasury, 7/7) in
+  `zmachine_test.dart`. Found and fixed an interpreter crash in Zork II
+  (Wizard's "Fantasize" writes into static memory → writes outside dynamic
+  memory are dropped, see DECISIONS). Maps for Parts II (86 rooms) and III
+  (89 rooms, museum copies labelled 948/776/777); map tests now cover all
+  three parts. Manual DE+EN updated.
+- **Text adventure step 4: map for Zork I (2026-09-27), APK built, NOT yet
+  installed (phone was disconnected), not yet user-tested.** 🗺 in the game
+  screen's title bar → map page: "Besucht" (visited rooms + walked paths,
+  default) and "Ganze Karte ⚠" (all 110 rooms, unvisited grey, warning once
+  per part); pinch-zoom, starts on the current room, ⌖ recenters; dashed =
+  up/down, arrow = one way, blue notes for distant links. Layout
+  `assets/zork/zork1_map.json`, checked with `tool/zmap_svg.dart`
+  (SVG render). Walked paths saved with every save, undone with ↶. Tests in
+  `test/zmachine/adventure_map_test.dart` + two widget tests. Zork II/III:
+  no map button until their layouts exist (step 5).
+- **Text adventure step 3: keying commands (2026-09-27), built and
+  installed on 63061JEBF01551, touch keying checked on the device by
+  Claude, not yet user-tested.** Touch paddles / straight key (keyer mode
+  from the keyer settings) or hardware paddle; decoder line with the
+  character being keyed in orange; word end 2 × IC + 1 + IW/8 dits at the
+  new "Geben" speed (default "like listening"); `<AR>` sends, optional K
+  as its own word, or button only (setting "Abschicken mit"); `<ERR>` and
+  "⌫ Wort" delete the last word, "✕ Zeile" clears; keying stops playback;
+  setting "Eingabe" Paddle (default) / Tastatur. Widget tests cover the
+  keyer config, `<AR>`, K, `<ERR>`, button-only and a 360×640 @1.3 layout.
+  Manual DE+EN updated. Not yet checked: iambic squeeze letters and
+  `<AR>`/`<ERR>` by hand on the phone (adb taps can only make E/T).
+- **Text adventure Zork I–III, steps 1+2 (2026-09-27), built and installed
+  on 63061JEBF01551, checked on the device by Claude, not yet user-tested.**
+  Concept + mockups (private artifact):
+  https://claude.ai/artifact/72w1sXjGBDmTx6TG4a4qVa; decisions in
+  DECISIONS.md ("Text adventure"). Story files from historicalsource
+  (MIT, `android/assets/zork/`). Own Z-machine v3 interpreter
+  (`lib/zmachine/`); `test/zmachine/zmachine_test.dart` plays a full Zork I
+  solution to 350/350 plus save/restore/undo/restart; Zork II/III start
+  and take commands. Games hub card "Text-Adventure" → selection
+  (continue / saved games / new) → game screen: status line, transcript,
+  CW output of the newest answer with word highlight and follow-scroll,
+  banner shown but not played, ↻ Nochmal (long press: sentence), tap a
+  word to play from there, Stopp, Text, ↶ Zug (20), speed strip + sheet
+  (10–60 WPM, 3–45 / 6–105 dits, first values from the Hören profile), ⚙
+  CW-Umfang / Text zeigen / Raumbeschreibungen, ? command overview,
+  autosave + own saves (menu, in-game SAVE/RESTORE), restart, end panel.
+  Input: on-screen keyboard only (␣ = space). Manual DE+EN section
+  "Text-Adventure". Checked on device: new game (banner muted, words appear
+  after playing), command I, undo button, menu save, saved-games list.
 - **System font size capped at 1.3 + layout fixes for large fonts
   (2026-09-27), user-tested OK.** User
   report: at Pixel font step 5 the "Nächster Block" button text overflowed,
@@ -176,6 +233,12 @@ Latest tagged build: v1.1.0 (2026-09-27: Hören typing mode, Koch character row,
 
 ## Working / verified on device
 Everything above, tested on 63061JEBF01551.
+
+## Next steps — text adventure (user go-ahead 2026-09-27, one per session)
+1. ~~Step 3: keying commands~~ done 2026-09-27 (see Done).
+2. ~~Step 4: map~~ done for Zork I 2026-09-27 (see Done).
+3. ~~Step 5: Zork II / III solution tests + maps~~ done 2026-09-28.
+4. **User testing** of steps 3–5 (keying, maps); then commit.
 
 ## Next steps — requested by user (2026-09-23), to be done one per session
 1. ~~Output Case lower/UPPER setting not applied in Adaptive Copy mode.~~
@@ -499,6 +562,13 @@ HTML/PDF and screenshots are refreshed when the next version is cut. List
 every screenshot (both `img/de/` and `img/en/`) whose screen changed since
 the last release, with the reason. Clear this list after the release build.
 
+- `games.png` (de+en): new fourth card "Text-Adventure".
+- `home.png` (de+en): Spiele tile subtitle now ends with "· Adventure".
+- New shots for the "Text-Adventure" section (de+en), none exist yet:
+  selection, game screen while playing (paddle input; Pause / Text
+  buttons), ⚙ settings (now with Eingabe / Abschicken mit / Karte), command
+  sheet incl. "Worum es geht", saved games, map "Besucht" and "Ganze Karte"
+  + its warning (now with "Nicht mehr fragen").
 - `inv_lobby.png` (de+en): Koch-lesson hint no longer says "(Echo Trainer)";
   EN now "The Send lesson, change it there".
 - `home.png` (de+en): v1.1.0 shots disagree (Send 76 % EN vs 72 % DE) because
@@ -519,6 +589,12 @@ the last release, with the reason. Clear this list after the release build.
 
 ## Open questions
 
+- Text adventure: the automatic save can't be deleted (by design: it is
+  the running game, "Neu" replaces it). User asked 2026-09-27 whether that
+  is a bug; offered to add delete (part then shows "nicht begonnen").
+- Text adventure: speed/spacing start from the Hören profile (on the test
+  phone 21 WPM, 22/39 dits — very slow for long room descriptions, and the
+  keyed word end becomes 50 dits ≈ 2.9 s). Keep, or start at standard 3/7?
 - ~~QSO Bot: port all QSO types, or SOTA-only first?~~ All three firmware
   types (SOTA/POTA, Standard, Contest) ported 2026-09-25.
 - WiFi Transceiver / online relay (cq.morserino.info): background UDP socket

@@ -773,3 +773,125 @@ confirmed by the user on 2026-09-27:
   nothing to cap sensibly; enlarged, the fixed-geometry screens break.
 - Test: `android/test/text_scale_test.dart` pumps the home screen at scales
   0.85–2.0 on two phone sizes and fails on any overflow.
+
+## Text adventure: Zork I–III in CW (2026-09-27)
+App-only feature, no firmware counterpart (the firmware's own text adventure
+"Radio Cave" is unrelated and stays backlog). Concept with mockups (private
+artifact): https://claude.ai/artifact/72w1sXjGBDmTx6TG4a4qVa.
+
+- **Source and license.** Microsoft released Zork I–III under the MIT License
+  (Nov 2025, historicalsource/zork1–3). The compiled story files in each
+  repo's `COMPILED/` are used unmodified (`android/assets/zork/`, provenance
+  in its README); no ZIL compiler needed. The license covers the code, not
+  the "Zork" trademark (Microsoft says so explicitly), so the card and the
+  game screen say "Text-Adventure" / "Teil I–III"; the works' titles appear
+  only in the selection list and the credits, with a non-affiliation note.
+  No logo or box art.
+- **Own interpreter in Dart** (`lib/zmachine/zmachine.dart`, Z-machine v3
+  only — all three story files are v3). Not Frotz: GPL, and an NDK bridge for
+  something with no timing needs. Pure Dart, no audio/UI; testable headless.
+  Proof: `test/zmachine/zmachine_test.dart` plays a complete Zork I solution
+  (`zork1_walkthrough.txt`, route after eristic.net, fights as `!until`
+  loops) and requires 350/350 points. Fixed seed; `tool/zplay.dart` is the
+  dev player for writing/fixing walkthroughs.
+- **Own snapshot format ("NCWZ"), not Quetzal.** Autosave, save slots and
+  undo are taken *between* commands (machine sitting in `sread`), which
+  Quetzal can't express portably; export was declined by the user, so
+  portability buys nothing. In-game SAVE hands a snapshot to the host (new
+  slot, named "room · score"); in-game RESTORE pauses the machine until the
+  host picks a slot (`completeRestore`).
+- **Audio-only character replacement** (`lib/adventure/cw_text.dart`): the
+  screen shows the game's text unchanged; for `playOne()` `' " ( ) [ ] *`
+  etc. are dropped, `!` → `.`, `;` → `,`, `&` → AND, paragraphs get a double
+  word gap. `CwGenerator.kt`'s table is not extended (user decision).
+- **Playback = one `playOne()` per answer**, word highlight by counting the
+  generator's `char` events against the words' played lengths. This only
+  works because the audio string contains nothing but playable characters
+  (unknown ones would be skipped silently and desync the count).
+- **CW scope** "Room / message": the first line equals the status-line room
+  → room name only; otherwise first sentence. "First sentence" includes a
+  leading room-name line.
+- **Settings**: own prefs `adv.*` for all three games (wpm, one spacing pair
+  — user decision, same ranges/coupling as the Geben sheet; scope; show
+  text; verbosity). First visit copies wpm/spacing from the Hören profile.
+  Pushed to the generator on entry and before every play (rule 2).
+  Verbosity is applied by sending BRIEF/SUPERBRIEF/VERBOSE silently — checked
+  in all three games that these cost no move.
+- **Undo**: 20 snapshots in memory, not persisted (the original has none;
+  user approved).
+- **Input** (step 2): the Hören `CwKeyboard`, pass key = space. Paddle input
+  (step 3) will use `<AR>` / K / button to send and `<ERR>` = delete last
+  word (user decision).
+- **Keying** (step 3): shared `CwKeyer` + `MorseDecoder` (unknown = `*`),
+  like the QSO Bot; the keyer runs for the whole screen, so a hardware
+  paddle also works with Input = Keyboard. Keyer mode / CurtisB / ACS from
+  the keyer prefs, speed = own "Geben" value (`adv.giveWpm`, 0 = like
+  listening). Word end = the Geben learn mode's rule on the adventure's
+  spacing pair: 2 × IC + 1 + max(IW, IC + 4) / 8 dits (straight key
+  IW + 1), pushed with every speed/spacing change; dispose resets the
+  keyer's word gap to 7 (rule 2). `<AR>` decodes as `+` (same code; no game
+  uses `+`) and sends at once; "K" only counts when it is a whole word at a
+  word gap (no word K in the three dictionaries). Other prosigns are
+  dropped. Input is ignored unless the game waits for a command and the
+  screen is the top route (sheets, saves page). The first keyed element
+  stops playback (`stopOne`, which leaves the keyer running). Default input
+  = paddle (concept order).
+- **Map** (step 4, `lib/adventure/adventure_map.dart`,
+  `lib/ui/adventure_map_screen.dart`): rooms = children of the start room's
+  parent; exits = direction properties 31..19 (N E W S NE NW SE SW U D IN
+  OUT LAND, from `<DIRECTIONS …>` in 1dungeon.zil), by length: 1 = UEXIT,
+  4 = CEXIT, 5 = DEXIT → drawn; 2 = NEXIT, 3 = FEXIT → not (routine). Room
+  positions are hand-placed per game in `assets/zork/<id>_map.json`
+  (Zork I: 110 rooms), which also holds the TOUCHBIT attribute number (Zork I
+  3, Zork II 2, Zork III 9 — found by checking which attribute only the start
+  room has), FEXIT targets from the source ("extra": maze diodes, trap door,
+  grating, chimney) and "jumps": pairs too far apart for a line, drawn as a
+  note under both rooms. No images from Infocom/fan maps (not MIT).
+  "Visited" = TOUCHBIT rooms + walked paths; a path is recorded only when
+  one command moves between rooms the map connects (teleports and "N. N"
+  don't draw false paths). Walked paths are saved with every save (auto and
+  slots, key `walked`), truncated on undo, cleared on restart (menu and the
+  game's RESTART). "Whole map" asks every time (user request 2026-09-28;
+  first built as once per part), until "Don't ask again" in the dialog sets
+  `adv.mapWarn` = false; back on in the adventure settings (section Map).
+  Parts without a layout file show no map button. Tests: every room placed,
+  no overlaps, no line through another room, and every direction step of
+  the full Zork I solution walks a connected pair.
+- **Step 5 (2026-09-28)**: solution scripts for Zork II (400/400) and Zork
+  III (7/7, reaches the Treasury) at seed 1, written from the eristic.net
+  walkthroughs; random parts use `!until` (carousel/low room via "w. se",
+  wait-outs via `diagnose` until "perfect health"; the diamond maze was
+  stepped by the window's glow per DIAMOND-MOTION in 2actions.zil).
+  **Interpreter change:** storew/storeb (and word writes) outside dynamic memory are
+  now dropped. Zork II's PICK-ONE on the FANTASIES table (the Wizard's
+  "Fantasize") has no counter word, prints a garbage string and writes into
+  static memory; keeping the write corrupted code and crashed the game
+  (illegal opcode). Infocom's paging interpreters lost such writes. The
+  garbage line itself is the original's behaviour and stays.
+- **Maps II/III**: layout files add `"directions": 14` (CROSS = 18, not a
+  direction in Zork I), TOUCHBIT 2 / 9, and `labels` (free text; Zork III's
+  three museum copies 948/776/777). Routine exits from the ZIL: Zork II
+  balloon levels, bucket in the well, cage, cake sizes (Tea/Posts Room),
+  bank walls (Depository ↔ Small Room/Vault); Zork III viewing-table
+  visions, Beam Room → Hallway, mirror box in/out, Royal Puzzle, prison
+  cell rotation. Mirror box, table visions, viewing-room exits, ledge jumps
+  and the diamond stairway are notes, not lines. The map test's path check
+  skips Zork II's diamond maze (DIAMOND-LOSS drops you in a random room).
+- **Playback and help follow-ups (2026-09-28, user request)**: "Stopp"
+  became **Pause / Weiter**; resume replays from the start of the word that
+  was playing (the generator's `stopOne` can't hold mid-word; a word is the
+  unit the display and `_heard` already track). The **Text** (eye) button
+  toggles: hiding clears `_heard`, so the words reappear as they are played
+  again — in every "Show text" mode, including "Always" (which now starts an
+  answer with `_revealed` = true). Replay (user decision): **Nochmal tap =
+  the sentence** playing (during the gap right after a word: its sentence;
+  stopped: the paused/last word's), **hold = whole answer** (like `?`),
+  **tap a word = only that word**. Sentence and word end paused with Weiter
+  at the next word, so listening goes on where it was. The help
+  sheet explains this under "Abspielen". The command
+  sheet ends with "What it's about" per part: goal and scoring (Zork I 350,
+  II 400, III 7 "potential"), moves (MOVES counts parsed commands; Zork I/II
+  skip CLOCKER for SCORE/SAVE/BRIEF etc. — gmain.zil; Zork III's main.zil
+  counts all) and death (I/II: SCORE-UPD −10 and RANDOMIZE-OBJECTS; Zork I
+  ends at the third death, Zork III at the fourth) — from the historicalsource
+  ZIL, not from memory.

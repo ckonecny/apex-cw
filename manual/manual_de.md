@@ -1185,11 +1185,13 @@ es nach einer Rückfrage.
 
 # Spiele
 
-Unter **Spielen → Spiele** findest du drei Spiele. Du spielst alle mit den
-Paddles bzw. dem Adapter. Alle verwenden die Keyer-Einstellungen. Die
-Koch-Lektion übernehmen sie aus **Geben**; Morsel und Memory Chain lassen
-sie dich zusätzlich nur für das Spiel ändern. Jedes Spiel zeigt vor dem Start
-eine kurze Spielanleitung.
+Unter **Spielen → Spiele** findest du vier Spiele. Morsel, Morse Invaders
+und Memory Chain spielst du mit den Paddles bzw. dem Adapter. Sie verwenden
+die Keyer-Einstellungen. Die Koch-Lektion übernehmen sie aus **Geben**;
+Morsel und Memory Chain lassen sie dich zusätzlich nur für das Spiel ändern.
+Jedes dieser drei Spiele zeigt vor dem Start eine kurze Spielanleitung. Das
+[Text-Adventure](#text-adventure) hat eigene Einstellungen für Tempo und
+Eingabe; den Keyer-Modus nimmt es ebenfalls aus den Keyer-Einstellungen.
 
 ::: {.shots .one}
 ![Die Spiele](img/de/games.png)
@@ -1276,6 +1278,161 @@ Die Bestenliste wird je Modus geführt.
 ::: {.shots .one}
 ![Memory Chain vor dem Start](img/de/mc_lobby.png)
 :::
+
+## Text-Adventure {#text-adventure}
+
+Die drei klassischen Infocom-Abenteuer **Zork I, II und III** (1980–82),
+gespielt in CW: Das Spiel antwortet in Morse, du gibst deine Befehle ein.
+Microsoft hat den Quellcode 2025 unter der MIT-Lizenz freigegeben; die App
+spielt die Original-Spieldateien mit einem eigenen Interpreter. Der Spieltext
+ist nur auf **Englisch**, und er verwendet das **volle Alphabet, Ziffern und
+Satzzeichen** – unabhängig von deiner Koch-Lektion. Zork ist eine Marke ihrer
+Inhaber; die App ist mit ihnen nicht verbunden.
+
+**Auswahl.** Jeder Teil zeigt Punkte, Züge und den letzten Raum. **Starten**
+bzw. **Weiter** macht dort weiter, wo du aufgehört hast. **Spielstände** öffnet
+deine gespeicherten Stände. **Neu** beginnt von vorn (nach Nachfrage; deine
+eigenen Spielstände bleiben erhalten).
+
+**Der Spielbildschirm.** Oben die Statuszeile mit Raum, Punkten (Score) und
+Zügen (Moves), darunter der Verlauf. Die neueste Antwort wird in CW gespielt;
+das Wort, das gerade klingt, ist markiert. Darunter:
+
+| Bedienelement | Wirkung |
+|---|---|
+| Tempo-Leiste | Hör- und Gebetempo, Zeichen- und Wortabstand; Tippen öffnet **Tempo & Abstand** |
+| **↻ Nochmal** | Den Satz, der gerade läuft (in der Pause gleich nach einem Wort: dessen Satz; nach dem Ende: den letzten), dann Pause |
+| **↻ Nochmal** lang drücken | Die ganze Antwort von vorn (wie `?` abschicken) |
+| Wort antippen | Nur dieses Wort, dann Pause |
+| **Pause** / **Weiter** | Hält das Abspielen an; **Weiter** spielt ab dem Wort weiter, bei dem angehalten wurde – nach **↻ Nochmal** ab dem folgenden Wort |
+| **Text** (Auge) | Zeigt die ganze Antwort sofort; nochmal tippen verdeckt sie wieder, die Wörter erscheinen dann wieder beim Abspielen (z. B. mit **Nochmal**) |
+| **↶ Zug** | Nimmt den letzten Befehl zurück (bis zu 20) |
+
+**Befehle geben.** Mit den Touch-Paddles unten (bei Keyer-Modus Straight:
+die Taste) oder einem angeschlossenen Paddle (siehe
+[Paddle und Morsetaste](#paddle-und-morsetaste)). Der Decoder schreibt in der
+Eingabezeile mit; das Zeichen, das gerade entsteht, steht orange als · und —
+dahinter. Sobald du zu geben beginnst, stoppt die CW-Ausgabe.
+
+- **Wortende:** Eine Pause trennt die Wörter. Wie im Geben-Lernmodus gilt ein
+  Wort nach 2 × Zeichenabstand + 1 + Wortabstand / 8 Dits Pause im Gebetempo
+  als fertig (Handtaste: Wortabstand + 1 Dits nach dem Loslassen).
+- **Abschicken:** **`<AR>`** (·—·—·) schickt den Befehl sofort ab. Mit der
+  Einstellung **„<AR> oder K“** auch ein **K** als eigenes Wort, also nach
+  einer Wortpause – keines der drei Spiele kennt ein Wort K. Der Knopf
+  **Senden** geht immer.
+- **Korrigieren:** **`<ERR>`** (8 Dits; 7 oder mehr zählen) löscht das
+  letzte Wort, ebenso der Knopf **⌫ Wort**. **✕ Zeile** löscht die ganze
+  Eingabe.
+- Ein **?** allein (dann abschicken) wiederholt die letzte Antwort und kostet
+  keinen Spielzug.
+- Andere Prosigns werden ignoriert; ein nicht erkanntes Zeichen erscheint als
+  `*`.
+
+Mit der Einstellung **Eingabe → Tastatur** erscheint statt der Paddles die
+Bildschirmtastatur (für reines Hörtraining): **␣** trennt die Wörter, **⌫**
+löscht ein Zeichen, **⏎** schickt ab. Ein angeschlossenes Paddle funktioniert
+auch dann.
+
+**Karte (🗺).** Das Kartensymbol in der Kopfzeile öffnet eine Karte des
+aktuellen Teils. Sie startet beim aktuellen Raum (orange umrandet); mit
+zwei Fingern zoomen, mit einem verschieben, ⌖ springt zurück zum aktuellen
+Raum. Die Räume heißen wie im Spiel (Englisch). Die Lage der Räume ist von
+Hand gesetzt, weil Zork nicht maßstabsgetreu ist; die Verbindungen kommen aus
+der Spieldatei.
+
+- **Besucht** (Standard): nur Räume, in denen du warst, und die Wege, die du
+  gegangen bist – die Karte, die man früher auf Papier gezeichnet hat. Kein
+  Schummeln. Die Wege werden mit dem Spielstand gespeichert und bei **↶ Zug**
+  zurückgenommen.
+- **Ganze Karte ⚠**: alle Räume des Teils, auch die noch nicht gefundenen
+  (grau). Das verrät Lösungen (versteckte Räume, Geheimgänge, den Weg durchs
+  Labyrinth), deshalb fragt die App jedes Mal nach. Mit **Nicht mehr
+  fragen** im Dialog entfällt die Frage; einschalten lässt sie sich wieder
+  unter ⋮ → Einstellungen → **Karte**.
+- Gestrichelt = hinauf/hinunter, ▸ = nur in eine Richtung. Weit entfernte
+  Verbindungen (z. B. Falltür, Kamin) stehen als blauer Hinweis unter dem Raum
+  („→ Cellar“) statt als lange Linie. Manche Wege öffnen sich erst im Spiel.
+- In Teil III stehen die Museumsräume dreimal nebeneinander, beschriftet mit
+  der Jahreszahl (948 = Gegenwart, 776, 777): Es sind dieselben Räume zu
+  verschiedenen Zeiten.
+
+**Befehlsübersicht (?).** Das **?** in der Kopfzeile öffnet eine Liste der
+wichtigsten Befehle und unter **Abspielen** die Knöpfe oben; ganz unten
+steht unter **Worum es geht** kurz die
+Geschichte und das Ziel des aktuellen Teils, wie Punkte und Züge gezählt
+werden und was beim Tod passiert. Die Kurzformen gelten in allen drei Teilen:
+
+| Befehl | Bedeutung |
+|---|---|
+| `N S E W`, `NE NW SE SW`, `U D`, `IN OUT` | Gehen |
+| `L` | LOOK: Raum nochmal beschreiben (kostet einen Zug) |
+| `I` | INVENTORY: was du trägst |
+| `Z` | WAIT: einen Zug warten |
+| `G` | AGAIN: letzten Befehl wiederholen |
+| `OOPS wort` | Ersetzt ein Wort, das das Spiel nicht kannte |
+| `TAKE`, `DROP`, `EXAMINE`, `READ`, `OPEN` … | Mit Dingen umgehen (`X` für EXAMINE gibt es in Zork nicht) |
+| `SCORE`, `SAVE`, `RESTORE`, `RESTART`, `QUIT` | Spiel-Befehle |
+| `<AR>`, `K`, `<ERR>`, `?` | Nur in dieser App: abschicken, abschicken (als eigenes Wort, je nach Einstellung), letztes Wort löschen, Nochmal |
+
+Das Spiel liest nur die ersten **6 Buchstaben** eines Worts (`EXAMIN`
+reicht). Mehrere Befehle in einer Zeile trennst du mit einem Punkt:
+`TAKE LAMP. N`.
+
+**Einstellungen** (⋮ → Einstellungen; gelten für alle drei Teile):
+
+| Einstellung | Bedeutung | Werte |
+|---|---|---|
+| Hören | Tempo der CW-Ausgabe | 10–60 WPM |
+| Geben | Tempo des Keyers bei deiner Eingabe | **wie Hören**, 10–60 WPM |
+| Zeichenabstand | Pause zwischen Zeichen beim Abspielen; beim Geben Teil des Wortendes | 3–45 Dits |
+| Wortabstand | Pause zwischen Wörtern; nie kleiner als der Zeichenabstand; beim Geben Teil des Wortendes | 6–105 Dits |
+| Eingabe | Touch-Paddles oder Bildschirmtastatur | **Paddle**, Tastatur |
+| Abschicken mit | Womit ein gegebener Befehl abgeschickt wird (der Knopf Senden geht immer) | **`<AR>`**, `<AR>` oder K, Nur Knopf |
+| CW-Umfang | Was gemorst wird, der Rest steht nur als Text da (kursiv) | **Alles**, Erster Satz, Raum / Meldung |
+| Text zeigen | Wann die neue Antwort lesbar wird | Immer, **Nach Abspielen**, Nur auf Tippen |
+| Raumbeschreibungen | Wie ausführlich Räume beschrieben werden | **Kurz**, Sehr kurz, Immer lang |
+| Karte: Warnung vor der ganzen Karte | Fragt vor **Ganze Karte ⚠** nach | **Ein**, Aus |
+
+- Tempo und Abstände übernimmt das Adventure beim ersten Öffnen aus deinem
+  **Hören**-Profil; danach sind sie eigene Werte. Sie lassen sich auch über
+  die Tempo-Leiste ändern und wirken sofort, auch mitten im Abspielen.
+- **Erster Satz:** bis zum ersten Satzende; ein Raumname davor gehört dazu.
+  **Raum / Meldung:** Betrittst du einen Raum, nur sein Name, sonst der erste
+  Satz der Antwort.
+- **Nach Abspielen:** Jedes Wort erscheint, sobald es gemorst wurde.
+  **Nur auf Tippen:** Die neue Antwort bleibt verdeckt, bis du auf **Text**
+  oder die Fläche tippst.
+- **Kurz** = BRIEF (die lange Beschreibung nur beim ersten Besuch),
+  **Sehr kurz** = SUPERBRIEF (nur der Raumname), **Immer lang** = VERBOSE.
+
+**Satzzeichen im Audio.** Auf dem Bildschirm steht der Text immer so, wie
+das Spiel ihn schreibt. Nur für das Abspielen werden Zeichen ersetzt, die es
+in Morse nicht gibt:
+
+| Im Text | Gemorst als |
+|---|---|
+| `'` `"` `( )` `[ ]` `*` `#` und andere | weggelassen |
+| `!` | `.` |
+| `;` | `,` |
+| `&` | `AND` |
+| Absatz | doppelte Wortpause |
+
+**Spielstände.**
+
+- **Automatisch:** Nach jedem Befehl und beim Verlassen wird gespeichert, je
+  Teil ein Platz. Beim nächsten Öffnen geht es genau dort weiter.
+- **Eigene Spielstände:** beliebig viele je Teil, über ⋮ → **Speichern** oder
+  den Spielbefehl `SAVE`. Der Name wird vorgeschlagen (Raum · Punkte).
+- **Laden:** über ⋮ → **Laden**, **Spielstände** in der Auswahl oder den
+  Spielbefehl `RESTORE`. Tippen lädt; der aktuelle Stand wird vorher
+  automatisch gesichert. Lang drücken benennt um oder löscht.
+- **Neu starten:** ⋮ → **Neu starten** (die App fragt nach und bietet an,
+  vorher zu speichern) oder der Spielbefehl `RESTART` (das Spiel fragt nach).
+- **Zug zurück (↶):** bis zu 20 Befehle, solange der Spielbildschirm offen ist.
+  Das Original kennt das nicht; es hilft vor allem bei Tippfehlern.
+- **Spielende:** Nach `QUIT` bietet die App an, einen Spielstand zu laden,
+  den Zug zurückzunehmen oder neu zu starten.
 
 # Paddle und Morsetaste
 

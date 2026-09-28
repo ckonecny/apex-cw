@@ -1,8 +1,10 @@
-// Games hub: the firmware's single-player CW games (docs/PORTING-MAP.md).
+// Games hub: the firmware's single-player CW games (docs/PORTING-MAP.md)
+// plus the text adventures (app only).
 import 'package:flutter/material.dart';
 
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
+import 'adventure_select_screen.dart';
 import 'invaders_screen.dart';
 import 'memory_chain_screen.dart';
 import 'morsel_screen.dart';
@@ -57,6 +59,16 @@ class GamesScreen extends StatelessWidget {
               color: c.warning,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const MemoryChainScreen())),
+            ),
+            const SizedBox(height: 12),
+            _GameCard(
+              icon: Icons.castle_outlined,
+              title: Strings.t('adv_title'),
+              subtitle: Strings.t('adv_subtitle'),
+              hint: Strings.t('adv_hint'),
+              color: c.accent,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const AdventureSelectScreen())),
             ),
           ],
         ),
