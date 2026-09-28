@@ -10,6 +10,10 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   author on the title page, edition block and PDF metadata, one sentence in
   "Woher die App kommt"; Info table updated (DE+EN). README: byline and
   credits.
+- **Custom Koch default credited (2026-09-28, docs only).** The default
+  custom sequence is the order of the YouTube course by "Heinz – just me";
+  named with the playlist link in the manual's Koch-sequence section (DE+EN),
+  README credits and DECISIONS.
 - **v1.2.0 release (2026-09-28).** New app icon (design by Sia, the user's
   friend; adaptive + legacy icons built by `android/tool/icon/make_icon.py`,
   checked in the phone's app drawer). Games page order: Morse Invaders,

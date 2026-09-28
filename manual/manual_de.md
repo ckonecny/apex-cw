@@ -1625,7 +1625,9 @@ Reihenfolge so, dass sie an dieser Stelle beginnt.
 
 **Eigene:** Trage die Zeichen in der Reihenfolge ein, in der du sie lernen
 willst. Doppelte Zeichen werden ignoriert, die App zeigt die Zahl der
-erkannten Zeichen an. Voreingestellt ist `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?`.
+erkannten Zeichen an. Voreingestellt ist `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?`,
+die Reihenfolge des YouTube-Morsekurses von „Heinz – just me“
+([Playlist](https://www.youtube.com/watch?v=WhjCvgC0iHg&list=PLZjVloEmSdLgGGT_exNDoXzmnV-q0zmET)).
 
 Prosigns sind in der App nicht Teil der Koch-Reihenfolgen.
 

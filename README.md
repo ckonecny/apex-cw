@@ -209,6 +209,8 @@ Module-by-module details: `docs/PORTING-MAP.md`.
 - Training design and algorithms: Willi Kraml, OE1WKL, and the Morserino-32
   team (see above).
 - App icon: designed by Sia, OE1LMR.
+- Default custom Koch sequence: the order of the YouTube Morse course by
+  "Heinz – just me" ([playlist](https://www.youtube.com/watch?v=WhjCvgC0iHg&list=PLZjVloEmSdLgGGT_exNDoXzmnV-q0zmET)).
 - Zork I–III: Marc Blank, Dave Lebling, Bruce Daniels and Tim Anderson
   (Infocom); story files from the
   [historicalsource](https://github.com/historicalsource) repositories, MIT

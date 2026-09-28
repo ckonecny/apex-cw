@@ -132,6 +132,13 @@ Affects Koch generation generally (Classic and Adaptiv), not just Adaptive
 Copy — intentional, since this is a fidelity fix (CLAUDE.md rule 1), not an
 Adaptive-Copy-only behavior.
 
+## Default custom Koch sequence: "Heinz – just me" course order
+The Custom Koch Sequence default `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?` is
+the order of the YouTube Morse course by "Heinz – just me"
+(https://www.youtube.com/watch?v=WhjCvgC0iHg&list=PLZjVloEmSdLgGGT_exNDoXzmnV-q0zmET),
+chosen by the author. Credited in both manuals (Koch sequence section) and the
+README credits (2026-09-28).
+
 ## Changing a `?? default` doesn't reach a pref already persisted as ''
 2026-09-23: after changing the Custom Koch Sequence's code default from `''`
 to a real sequence, the Settings field still showed empty and the Koch

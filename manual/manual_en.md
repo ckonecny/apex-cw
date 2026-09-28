@@ -1580,7 +1580,9 @@ there.
 
 **Custom:** enter the characters in the order you want to learn them.
 Duplicates are ignored, and the app shows how many characters it found. The
-default is `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?`.
+default is `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?`, the order of the YouTube
+Morse course by "Heinz – just me"
+([playlist](https://www.youtube.com/watch?v=WhjCvgC0iHg&list=PLZjVloEmSdLgGGT_exNDoXzmnV-q0zmET)).
 
 Prosigns are not part of the Koch sequences in the app.
 
