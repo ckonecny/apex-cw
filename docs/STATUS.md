@@ -4,13 +4,19 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (private)
 Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new app icon, games order). Previous: v1.1.0 (2026-09-27, Hören typing mode, Koch character row, terminology pass); v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
-- **Author credits (2026-09-28, installed on 63061JEBF01551).**
+- **Author credits (2026-09-28, installed on the test phone).**
   Settings → Info: "Entwickelt von: Christian Konecny, OE1CKO" and a
   "Danke" row (Morserino-32 OE1WKL, icon Sia OE1LMR, Zork Infocom). Manual:
   author on the title page, edition block and PDF metadata, one sentence in
   "Woher die App kommt"; Info table updated (DE+EN). README: byline and
   credits.
-- **Licence: GPL-3.0 (2026-09-28, installed on 63061JEBF01551).** Root
+- **No local identifiers online (2026-09-28).** Device serial removed from
+  all tracked files (now in gitignored `CLAUDE.local.md`); local git hooks
+  block serial, home path and user name (`tools/githooks/`); release APKs are
+  built with `tools/build_release.sh` from a clone under /tmp, so they carry
+  no Mac path. v1.1.0 and v1.2.0 APK assets rebuilt that way and replaced on
+  GitHub. Open: v0.1.0 debug APK asset still contains Mac/pub-cache paths.
+- **Licence: GPL-3.0 (2026-09-28, installed on the test phone).** Root
   `LICENSE` (GPL-3.0 text, identical to the firmware's), README "License"
   section, Settings → Info → "Lizenzen/Licences" opens Flutter's licence
   page with the app's GPL (+ Morserino-32 credit), Zork MIT licence plus a
@@ -37,7 +43,7 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   Einstellungen → Karte. Nochmal: tap = sentence, hold = whole
   answer; tapping a word plays only that word; sentence/word end paused (help section "Abspielen"). Tests + manual DE+EN updated.
 - **Text adventure step 5 (2026-09-28): Zork II / III solution tests and
-  maps, built and installed on 63061JEBF01551; map not yet seen on the
+  maps, built and installed on the test phone; map not yet seen on the
   device (phone locked), not yet user-tested.** `zork2_walkthrough.txt`
   (400/400) and `zork3_walkthrough.txt` (Treasury, 7/7) in
   `zmachine_test.dart`. Found and fixed an interpreter crash in Zork II
@@ -56,7 +62,7 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   `test/zmachine/adventure_map_test.dart` + two widget tests. Zork II/III:
   no map button until their layouts exist (step 5).
 - **Text adventure step 3: keying commands (2026-09-27), built and
-  installed on 63061JEBF01551, touch keying checked on the device by
+  installed on the test phone, touch keying checked on the device by
   Claude, not yet user-tested.** Touch paddles / straight key (keyer mode
   from the keyer settings) or hardware paddle; decoder line with the
   character being keyed in orange; word end 2 × IC + 1 + IW/8 dits at the
@@ -68,7 +74,7 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   Manual DE+EN updated. Not yet checked: iambic squeeze letters and
   `<AR>`/`<ERR>` by hand on the phone (adb taps can only make E/T).
 - **Text adventure Zork I–III, steps 1+2 (2026-09-27), built and installed
-  on 63061JEBF01551, checked on the device by Claude, not yet user-tested.**
+  on the test phone, checked on the device by Claude, not yet user-tested.**
   Concept + mockups (private artifact):
   https://claude.ai/artifact/72w1sXjGBDmTx6TG4a4qVa; decisions in
   DECISIONS.md ("Text adventure"). Story files from historicalsource
@@ -98,10 +104,10 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   New test `test/text_scale_test.dart`. User-checked OK at font steps 4
   and 5. Follow-up: Android "Anzeigegröße" (display size) is now ignored
   (density pinned to the device default in `MainActivity`) — installed on
-  63061JEBF01551, user-tested OK (phone runs display size 356 dpi vs.
+  the test phone, user-tested OK (phone runs display size 356 dpi vs.
   stock 420, so the app now looks larger than before).
 - **Fix: practice-set "N eindeutige Zeichen erkannt" lagged one edit behind
-  (2026-09-27), built on top of 6e18eb7 and installed on 63061JEBF01551,
+  (2026-09-27), built on top of 6e18eb7 and installed on the test phone,
   not yet user-tested.** The Hören
   and Geben start pages (`generator_screen.dart`, `echo_trainer_screen.dart`)
   updated `_practiceChars` in `onPracticeCharsChanged` without `setState`, so
@@ -111,14 +117,14 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   on device: Übungsset, type/delete characters, the count follows every
   keystroke.
 - **Hören typing: steady layout (2026-09-27), built and installed on
-  63061JEBF01551, not yet user-tested:** the middle of the typing view no
+  the test phone, not yet user-tested:** the middle of the typing view no
   longer jumps when a group's result appears — progress dots sit in fixed
   16×16 cells (the bigger "current" dot used to shrink the row), the
   earlier-attempts slot has one fixed height sized for the solution list
   (18 px × attempts per word), and the cursor keeps its 2 px slot (transparent)
   in the result states.
 - **Koch unlock preview + Invaders hint (2026-09-27), built and installed
-  on 63061JEBF01551, not yet user-tested:** the 🔊 on the result screen's
+  on the test phone, not yet user-tested:** the 🔊 on the result screen's
   "Neues Zeichen freigeschaltet" row now opens the same tile as tapping a
   Koch character (character + code lighting up, played three times at the
   Hören WPM, tap cancels) via `showCharPlayback`/`playCharThrice`, instead
@@ -128,12 +134,12 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   "The Send lesson". Manual DE+EN updated.
 - **Release v1.1.0 (2026-09-27):** tag `v1.1.0` on 117027c (versionName
   1.1.0, Build 51); release APK built from the tag and installed on
-  63061JEBF01551. Manual screenshots retaken per the pending list, both
+  the test phone. Manual screenshots retaken per the pending list, both
   languages (light theme), plus new `hear_type`, `hear_type_retry`,
   `hear_type_sent`, `char_practice`; `insert.py` synced with the current
   captions/anchors; HTML/PDF rebuilt. The phone's own prefs/statistics were
   backed up before and restored after (see `manual/tools/README.md`).
-- **Hören typing mode (2026-09-27): built and installed on 63061JEBF01551,
+- **Hören typing mode (2026-09-27): built and installed on the test phone,
   user-tested OK (incl. correct answer and result page).** Concept + mockups (private artifact):
   https://claude.ai/artifact/733FKS7KDyoeJyiu1nmctd; decisions in
   DECISIONS.md ("Hören: typing mode ..."). Two start buttons Papier/Tippen
@@ -148,19 +154,19 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   attempts, back to start. Correct answer (✓) and result page confirmed by
   the user.
 - Hören + Geben: listening speed also starts at 10 WPM (was 5); stored
-  lower values are raised. Verified on 63061JEBF01551 (Geben Hören slider
+  lower values are raised. Verified on the test phone (Geben Hören slider
   leftmost = 10). Keyer/Trx/QSO Bot/games unchanged (5–60).
   Speed sliders (Hören page, Geben Hören/Geben) drawn without step dots and
   with equal value-column width, so both Geben rows look the same.
 - Geben: Gebetempo (answer speed cap) now starts at 10 WPM instead of 5
   (start page slider, ⚙ sheet, result stepper); leftmost notch = "wie
   Hören"; old values below 10 are raised. Manuals updated. Verified on
-  63061JEBF01551 (start page slider: leftmost = wie Hören, next notch = 10).
+  the test phone (start page slider: leftmost = wie Hören, next notch = 10).
 - Geben: the answer's word end now follows the Geben profile's spacing, as in
   the firmware (2·IC + 1 + IW/8 dits; straight key IW + 1), instead of a fixed
   6 dits. User report: group length 2 scored after the first character.
   Settings hint and both manuals updated. Built and installed on
-  63061JEBF01551 (2026-09-27); user confirmed it works.
+  the test phone (2026-09-27); user confirmed it works.
 - CW Keyer: all 5 modes, decode-to-text, CurtisB timing, AutoChar Spacing.
 - CW Generator + Koch Trainer: all content modes, LICW Carousel, Random
   Groups, Practice Set/Boost, weighted callsign generator.
@@ -184,10 +190,10 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   → `~/next_cw_trainer`) all updated. README/CLAUDE.md/docs now spell out
   that this project has no connection to Willi Kraml/OE1WKL beyond reusing
   algorithms/training logic read out of the firmware source. Old app
-  (`at.oe1wkl.morserino_mobile`) uninstalled from `63061JEBF01551`, new one
+  (`at.oe1wkl.morserino_mobile`) uninstalled from the test phone, new one
   built and installed successfully.
 
-- **WiFi Trx (2026-09-23), first version, installed on 63061JEBF01551 but
+- **WiFi Trx (2026-09-23), first version, installed on the test phone but
   not yet tried against a real server:** new home card "WiFi Trx". One
   endpoint (name or IP, default `cq.morserino.info`, empty = broadcast),
   connect/disconnect, receive (word-by-word playback at the sender's WPM +
@@ -207,13 +213,13 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   ranges/defaults, and a full chapter on how the adaptive mode decides.
   CLAUDE.md rule 10 added: keep both languages current with every
   user-visible change. Screenshots added 2026-09-26 (32 per language,
-  light theme, taken on 63061JEBF01551 via `manual/tools/`); manual now ~45
+  light theme, taken on the test phone via `manual/tools/`); manual now ~45
   pages. Three text corrections found while shooting (Send speed sliders,
   Memory Chain's own Koch lesson, decoder settings icon). Not yet reviewed
   by the user.
 
 - **Koch character tap → playback tile (2026-09-27), installed and checked
-  on 63061JEBF01551, not yet user-tested:** Sia's suggestion. Tap on a Koch
+  on the test phone, not yet user-tested:** Sia's suggestion. Tap on a Koch
   character in Hören/Geben plays it 3× with a centered tile (screen dimmed)
   showing the character and its code; each element lights up while it
   sounds, reset per repetition, tile closes itself; a tap anywhere or Back
@@ -235,7 +241,7 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   character, gear sheet. The Echo Trainer's old `fixedTarget` mode was
   removed; a Geben session was re-checked on device afterwards.
 
-- **UI terminology pass (2026-09-27), installed on 63061JEBF01551, not yet
+- **UI terminology pass (2026-09-27), installed on the test phone, not yet
   user-tested:** triggered by Sia's feedback ("Gruppen-Länge" vs "Wörter pro
   Block" for the same unit). Glossary + style rules in DECISIONS.md ("UI
   terminology glossary"). Firmware menu names are now translated instead of
@@ -257,7 +263,7 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   rank too). Both manuals updated.
 
 ## Working / verified on device
-Everything above, tested on 63061JEBF01551.
+Everything above, tested on the test phone.
 
 ## Next steps — text adventure (user go-ahead 2026-09-27, one per session)
 1. ~~Step 3: keying commands~~ done 2026-09-27 (see Done).
@@ -299,7 +305,7 @@ applied to its weak-chars chips and `_PreviewCharSheet`; `_KochCharsRow`
 param threaded from their screen's own `_outputCase` field.
 
 **2026-09-23 session: items 1, 2, 3, 4, 6 implemented, `flutter build apk
---debug` succeeded and installed on `63061JEBF01551`.** User confirmed on
+--debug` succeeded and installed on the test phone.** User confirmed on
 first on-device check: output case (1), InterChar/InterWord defaults +
 coupling (3, 4) all working. Custom Koch Sequence default (2) was **not**
 visible — Settings field stayed empty and Koch Trainer's Custom set still
@@ -366,7 +372,7 @@ engine into `AdaptiveCopyBody._finishBlock()` (spacing/char-speed steps and
 Koch-level unlock computed after each block), and a result-screen override
 UI (`_SuggestionRow`) letting the user accept/reject/adjust each proposal
 before it's applied on "Finish"/"Next Block", rather than it landing
-automatically. Built and installed on `63061JEBF01551`.
+automatically. Built and installed on the test phone.
 **Run through a real multi-block session on-device and confirmed working**
 (unlock, tempo/spacing step, override controls). Since then, fixed a unlock-
 threshold trap (100% high threshold was unreachable), a "spacing widened:
@@ -400,7 +406,7 @@ both (see docs/DECISIONS.md for the reasoning behind each choice):
 
 Engine test updated for the new hysteresis behavior + two new hysteresis
 tests (`adaptive_copy_engine_test.dart`), all passing. `flutter build apk
---debug` + install succeeded on `63061JEBF01551`. **Confirmed working
+--debug` + install succeeded on the test phone. **Confirmed working
 on-device** through a real session — user reported "funktioniert super".
 
 **Previous session (2026-09-21):** two more on-device reports acted on — (1) a
@@ -412,7 +418,7 @@ block that unlocks a new Koch character no longer also proposes a spacing-
 tighten/char-speed-up in that same block (`_finishBlock()` in
 `adaptive_copy_body.dart`) — a new character alone is enough to absorb at
 once, per user feedback ("wird mir das zu schnell"). Both built/installed on
-`63061JEBF01551`, not yet exercised through a real session. Also confirmed
+the test phone, not yet exercised through a real session. Also confirmed
 (not a bug): a block with 2 errors can still trigger a spacing-tighten
 suggestion — intended EMA-smoothing behavior, not a bug; see
 docs/ADAPTIVE-COPY.md "Also investigated this session, not a bug" for the
@@ -454,7 +460,7 @@ requested layout/readability fixes to `generator_screen.dart` and
   `info`/`accentPurple`, via a new `charTypeColor()` helper in
   `util/char_color.dart`) in the Classic log display, the Adaptiv review
   grid, and the marking screen (correct chars only — wrong stays red).
-Built and installed on `63061JEBF01551` earlier this session; exercised
+Built and installed on the test phone earlier this session; exercised
 live on-device through several Koch Trainer/Adaptiv sessions during this
 session's debugging (see "Known issues" below) with no problems noticed —
 user said it "sieht gut aus bis hier her" (looks good so far). Not a
@@ -462,7 +468,7 @@ per-change checklist verification, just general confirmation nothing broke.
 
 ## UI polish: dark-theme contrast, effective WPM, Koch coloring, Character Statistics screen (2026-09-23)
 Series of on-device UI reports acted on this session, all built and
-installed on `63061JEBF01551`, user-confirmed working:
+installed on the test phone, user-confirmed working:
 1. **Dark-theme contrast fix:** Adaptive Copy's status line and "Abstand
    anpassen" spacing block were using `c.textDisabled` (near-invisible on
    dark background) for text meant to be read. Swapped to `c.textMuted`
@@ -492,7 +498,7 @@ installed on `63061JEBF01551`, user-confirmed working:
    correct reps") that turned out not to be a bug — see docs/DECISIONS.md
    "Adaptive Copy's per-character unlock gate" and docs/ADAPTIVE-COPY.md
    "Also investigated this session, not a bug (2026-09-23)" for the full
-   on-device diagnosis (pulled `charStats` off `63061JEBF01551` directly).
+   on-device diagnosis (pulled `charStats` off the test phone directly).
 6. **Dark-theme Switch styling:** the Settings screen's toggle switches had
    a near-white off-state thumb and track outline that didn't follow the
    theme (Material 3 defaults, not previously overridden). Added
@@ -625,7 +631,7 @@ the last release, with the reason. Clear this list after the release build.
 Done (installed, partly user-confirmed): Paddle choice per group (Hören), block trend, think-time fix, Echo confirm tones, speed controls, 2 s wait, attempt indicator, stale-text fix. Reaktionszeit dropped. Next: 8c Verwechslungspaare, 8d benannte Presets, then Phase 8 test. Phase 5-7 testplans still with the user. See docs/training/P8-extras.md.
 Verwechslungspaare done (Geben stats + result page). Benannte Presets deferred by user.
 
-## Dead-code cleanup (2026-09-25), installed on 63061JEBF01551, not yet user-tested
+## Dead-code cleanup (2026-09-25), installed on the test phone, not yet user-tested
 Removed code that nothing uses:
 - Settings > WiFi Trx (Callsign/Name) plus `_TextPrefField`, which was used
   only there. The stored prefs `callsign`/`opName` are left orphaned on
@@ -640,7 +646,7 @@ Removed code that nothing uses:
   choice still runs internally via `generator.choosePaddle()` from the
   keyer callback in MainActivity.
 flutter analyze: no warnings. flutter test: all 42 pass. Next: install on
-63061JEBF01551 and do a quick check of Settings, Echo, the Koch generator
+the test phone and do a quick check of Settings, Echo, the Koch generator
 with Stop<Next>Rep, and WiFi Trx.
 
 ## Upstream check (2026-09-25)
@@ -654,7 +660,7 @@ Compared firmware commits V9.0..origin/master (V9.0.1 + 9.1 beta):
   does not apply to the app.
 
 
-## CW Keyer / WiFi Trx word gap, seconds display (2026-09-25), installed on 63061JEBF01551, not yet user-tested
+## CW Keyer / WiFi Trx word gap, seconds display (2026-09-25), installed on the test phone, not yet user-tested
 - CW Keyer: status chips at the top removed.
 - CW Keyer and WiFi Trx: ⚙ in the app bar with their own InterWord Spc
   (`profile.keyer|trx.interWordSpace`, default 7 dits instead of the Echo
@@ -679,7 +685,7 @@ Neu: `widgets/app_ui.dart` (`AppCard`, `AppButton`, `appBarTitle`). Alle App-Bar
 
 Geben-Titel heißt jetzt "Geben"/"Send" (statt "Echo Trainer"). Buttons einheitlich dezent (getönte Fläche, keine Umrandung, `AppButton`), Hören und Geben beide Teal; Keyer Violett, WiFi Trx Amber. Startseite: Space-Grotesk-Titel, Hinweiszeile je Kachel.
 
-## Morsel (backlog #1) + games tile (2026-09-25), installed on 63061JEBF01551, not yet user-tested
+## Morsel (backlog #1) + games tile (2026-09-25), installed on the test phone, not yet user-tested
 
 - New "Spielen" section on the start page -> `GamesScreen` -> `MorselScreen`.
 - Morsel single player per `MorseMorsel.cpp`: 10 words, clue 48 WPM -5 per

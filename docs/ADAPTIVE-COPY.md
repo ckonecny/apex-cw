@@ -97,7 +97,7 @@ confusion-pair matrix.
      `adaptiveEmaAlphaPct`/`adaptiveUnlockOccurrences` SharedPreferences
      keys, percent/int for slider-friendliness — convert to the 0..1
      doubles `AdaptiveCopyThresholds` expects at the call site). Built,
-     installed on `63061JEBF01551`. Not yet exercised on-device beyond
+     installed on the test phone. Not yet exercised on-device beyond
      "sliders move and persist" — no other code reads these values yet;
      that's step 5.
   5. ~~Wire `AdaptiveCopyEngine` into `AdaptiveCopyBody._finishBlock()`~~ —
@@ -120,7 +120,7 @@ confusion-pair matrix.
      below for the floor rationale). Result screen shows small notice chips
      (spacing tightened/widened, char speed increased, character unlocked)
      — new `ac_spacing_up`/`ac_spacing_down`/`ac_char_speed_up`/
-     `ac_char_unlocked` strings. Built, installed on `63061JEBF01551`.
+     `ac_char_unlocked` strings. Built, installed on the test phone.
      **Not yet run through a full multi-block session on-device** — only
      confirmed it builds/installs; behavior (does spacing actually tighten,
      does a char actually unlock) still needs a real test run. **← current
@@ -212,7 +212,7 @@ TODOs" below) is still open and is a different, bigger change.
 
 ## Starting point for the next session
 
-Steps 1–5 are done and built/installed on `63061JEBF01551`, but **not yet
+Steps 1–5 are done and built/installed on the test phone, but **not yet
 exercised through a real multi-block session** — that's step 6, and it's a
 user/device task, not something verifiable from the source alone:
 
@@ -283,7 +283,7 @@ Raised by the user after step 5 (engine wiring) landed; not yet designed or
 estimated, just captured so they aren't lost:
 
 - **User override on the result screen — DONE (2026-09-21, built/installed
-  on `63061JEBF01551`, not yet exercised at the device).** `_finishBlock()`
+  on the test phone, not yet exercised at the device).** `_finishBlock()`
   now only computes the engine's proposals (`_pendingWpm`,
   `_pendingInterChar`/`_pendingInterWord`, `_unlockedThisBlock`) instead of
   applying them. The result screen shows each as a tappable row
@@ -324,14 +324,14 @@ estimated, just captured so they aren't lost:
   `CharStatsStore`) rather than sharing Adaptive Copy's numbers outright.
   Revisit step 9's design before implementing it.
 - **Threshold sliders let High < Low be set — DONE (2026-09-21, built/
-  installed on `63061JEBF01551`, not yet exercised at the device).**
+  installed on the test phone, not yet exercised at the device).**
   `settings_screen.dart`'s two independent high/low sliders had no
   cross-validation. Replaced with a single `RangeSlider` (`_LabeledRangeSlider`,
   new widget) showing both thumbs on one track, low always ≤ high with a
   5-point minimum gap enforced in the `onChanged` handler (dragging one
   thumb into the other pushes it along rather than letting them cross).
 - **Unlock proposal not visually distinct on the result screen — DONE
-  (2026-09-21, built/installed on `63061JEBF01551`, not yet exercised at the
+  (2026-09-21, built/installed on the test phone, not yet exercised at the
   device).** It already had its own accept/reject checkbox from the override
   UI work above — that part was already done, just easy to miss since all
   three suggestion rows looked identical. Now: unlock row moved first, gets
@@ -340,7 +340,7 @@ estimated, just captured so they aren't lost:
   instead of a generic "New character unlocked" label.
 - **High threshold = 100% was a silent, permanent unlock trap — DONE
   (2026-09-21, found via on-device debug logging, built/installed on
-  `63061JEBF01551`).** User report: Koch level 5, 5 active chars, "Occurrences
+  the test phone).** User report: Koch level 5, 5 active chars, "Occurrences
   for Unlock" set to the minimum (5), 7 blocks in a row marked 100% correct —
   never unlocked. Root cause, confirmed via a temporary debug log of
   `CharStat.attempts`/`emaErrorRate`: attempts were all 46-63 (way past the
@@ -360,7 +360,7 @@ estimated, just captured so they aren't lost:
   never widens," a valid (if extreme) choice, not a trap — so only the high
   side was capped.
 - **"Spacing widened: 11→11" no-op notice — DONE (2026-09-21, built/
-  installed on `63061JEBF01551`).** User report after step 6 testing: a
+  installed on the test phone).** User report after step 6 testing: a
   spacing suggestion row showed identical before/after values. Root cause:
   `_finishBlock()` checked only `decision.spacingStep != TempoStep.none`
   before proposing a spacing change, not whether the clamp to
@@ -372,7 +372,7 @@ estimated, just captured so they aren't lost:
   `_pendingInterWord` (i.e. only propose a row at all) when it's a real
   change.
 - **Weak characters only reflected this block, not the character's actual
-  history — DONE (2026-09-21, built/installed on `63061JEBF01551`).** User
+  history — DONE (2026-09-21, built/installed on the test phone).** User
   report: a character marked wrong last block dropped off the "weak
   characters" list entirely as soon as a block didn't happen to include it
   (or did, and was right that once) — the display was built from
@@ -385,7 +385,7 @@ estimated, just captured so they aren't lost:
   capped at 5 shown. Chips now show the lifetime error-rate percentage
   instead of a raw this-block miss count.
 - **User override on which characters get drilled more — DONE (2026-09-21,
-  built/installed on `63061JEBF01551`, not yet exercised at the device).**
+  built/installed on the test phone, not yet exercised at the device).**
   This closes the "weak-character drill weight isn't a real lever yet" scope
   note from the override-UI entry above. The weak-character chips on the
   result screen are now tappable: each toggles whether that character is
@@ -403,7 +403,7 @@ estimated, just captured so they aren't lost:
   Classic mode (or Echo Trainer) within the same `GeneratorScreen` session
   doesn't inherit Adaptive Copy's leftover boost state.
 - **Reset character statistics — DONE (2026-09-21, built/installed on
-  `63061JEBF01551`).** New `CharStatsStore.reset()` (`char_stats.dart`)
+  the test phone).** New `CharStatsStore.reset()` (`char_stats.dart`)
   clears `stats` and removes the SharedPreferences key. Exposed in
   Settings under Adaptive Mode as a red `_ActionButton` ("Reset Character
   Statistics") gated behind an `AlertDialog` confirmation. Affects both
@@ -411,7 +411,7 @@ estimated, just captured so they aren't lost:
   Rand." — the dialog body says so, since it's not obvious from Adaptive
   Mode's settings section alone that this is a shared, cross-mode reset.
 - **Manual spacing control always visible — DONE (2026-09-21, built/
-  installed on `63061JEBF01551`, not yet exercised at the device).** User
+  installed on the test phone, not yet exercised at the device).** User
   request: "bei jeder Zusammenfassung und auch zu Beginn den Block zum
   Anpassen der Pausen einblenden." New `_buildSpacingControl()` in
   `adaptive_copy_body.dart` — a small "ABSTAND ANPASSEN" section with −/+
@@ -425,7 +425,7 @@ estimated, just captured so they aren't lost:
   suggestion row, which still only appears when the engine actually
   proposes a change.
 - **New Koch character no longer also speeds up in the same block — DONE
-  (2026-09-21, built/installed on `63061JEBF01551`, not yet exercised at
+  (2026-09-21, built/installed on the test phone, not yet exercised at
   the device).** User report: "in dem Moment wo ein neues Zeichen
   hinzukommt wird mir das zu schnell." Per "Decisions: weighting/recency
   questions" above, the unlock decision (`shouldUnlockNextChar`) and the
@@ -458,7 +458,7 @@ User report: thresholds at 70%/90%/30% EMA smoothing/20 occurrences, "große
 Anzahl an Durchläufen mit 0 Fehlern", the most-recently-learned character
 alone well past 20 correct — yet the next Koch character never unlocks.
 Root cause, confirmed by pulling `FlutterSharedPreferences.xml` off
-`63061JEBF01551` and inspecting `charStats` directly (`run-as
+the test phone and inspecting `charStats` directly (`run-as
 at.oe1cko.nextcwtrainer cat .../shared_prefs/FlutterSharedPreferences.xml`):
 user was at `kochLevel=12` with a custom sequence (`kochSeq=4`), so
 `shouldUnlockNextChar()` requires **all 12** active characters to individually

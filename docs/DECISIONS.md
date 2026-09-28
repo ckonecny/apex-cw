@@ -132,6 +132,27 @@ Affects Koch generation generally (Classic and Adaptiv), not just Adaptive
 Copy — intentional, since this is a fidelity fix (CLAUDE.md rule 1), not an
 Adaptive-Copy-only behavior.
 
+## No local identifiers online (2026-09-28)
+The device serial of the test phone had been written into STATUS.md,
+ADAPTIVE-COPY.md and CLAUDE.md on every "installed on …" line, and every
+release APK contained this Mac's home path: Flutter compiles the absolute path
+of `.dart_tool/flutter_build/dart_plugin_registrant.dart` into `libapp.so`
+(the old v0.1.0 debug APK even every pub-cache path). `--obfuscate
+--split-debug-info` does not remove it (tested). Now:
+- Docs say "the test phone"; the serial lives in the gitignored
+  `CLAUDE.local.md`.
+- `tools/githooks/` (install per clone with `tools/githooks/install.sh`):
+  pre-commit, commit-msg and pre-push hooks reject any string listed in
+  `.git/info/forbidden-strings` (local, never pushed, so the list itself
+  doesn't leak). Currently: the serial, the home path, the user name.
+- `tools/build_release.sh vX.Y.Z` clones the tag to `/tmp/nct-release`, builds
+  there (the path in the APK becomes `/private/tmp/nct-release/...`), and
+  refuses the result if the APK contains `$HOME`, the user name or a forbidden
+  string. v1.1.0 and v1.2.0 APKs on GitHub were rebuilt this way from their
+  tags (same versionCode) and replaced.
+- Not rewritten: git history still has the serial in old commits (harmless
+  identifier; a rewrite needs a force-push).
+
 ## Licence: GPL-3.0
 2026-09-28. The Morserino-32 firmware is GPL-3.0-or-later (header of
 `m32_v6.ino`, `reference/Software/LICENSE`). The app ports not just ideas but
@@ -504,8 +525,9 @@ commit count (monotonic without manual bumping; falls back to the pubspec
 build number outside a git checkout). `versionName` still comes from
 `pubspec.yaml` and is bumped by hand per release, with a matching `vX.Y.Z`
 git tag. Shown in Settings → Info via the settings channel (`getAppVersion`).
-Builds meant for others: `flutter build apk --release` from a clean, tagged
-tree (Commit must not show `-dirty`). Release builds are still signed with
+Builds meant for others: `tools/build_release.sh vX.Y.Z` (since 2026-09-28,
+see "No local identifiers online"), which builds the tag from a clean clone
+(Commit must not show `-dirty`). Release builds are still signed with
 this machine's debug key — fine for sideloading, but updates for recipients
 must be built on this machine (or with the same keystore).
 

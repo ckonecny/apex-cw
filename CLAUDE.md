@@ -71,5 +71,12 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
 ## Build / run
 
 From `android/`: `flutter build apk --debug`, then
-`adb install -r build/app/outputs/flutter-apk/app-debug.apk`. Last known
-test device: `63061JEBF01551` (may not still be the one connected).
+`adb install -r build/app/outputs/flutter-apk/app-debug.apk`. The test
+phone's serial is in `CLAUDE.local.md` (gitignored, local only). Release
+APKs only via `tools/build_release.sh vX.Y.Z` (builds the tag outside the
+home directory, so no Mac path ends up in the APK).
+
+**Never write device serials or other local identifiers into tracked files,
+commit messages or release notes** — say "the test phone". Strings listed in
+`.git/info/forbidden-strings` are blocked by local git hooks
+(`tools/githooks/`, installed with `tools/githooks/install.sh`).

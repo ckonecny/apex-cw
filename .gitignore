@@ -10,3 +10,6 @@ releases/
 # Manual build by-products
 manual/*.epub
 manual/tools/__pycache__/
+
+# Local-only notes for Claude (device serial etc.), never published
+CLAUDE.local.md
