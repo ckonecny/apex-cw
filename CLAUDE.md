@@ -68,6 +68,20 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
     (`manual/img/{de,en}/`, helpers in `manual/tools/`), run
     `manual/build.sh` (fails on broken links), clear the list.
 
+11. **Licences: everything must fit GPL-3.0-or-later** (the app ports GPL
+    firmware code). Before using *anything* from outside — pub package,
+    Gradle/native library, font, image, sound, data, text, code snippet,
+    ported content — find its licence. Incompatible or unclear (non-commercial,
+    no licence, "all rights reserved", source-available, GPL-2.0-only, CC
+    ND/NC, ...): **stop and warn the user before using it**, even if they asked
+    for it. Compatible: in the same change keep every licence reference
+    current — `android/lib/licenses.dart` (licence page; pub packages are
+    added by Flutter itself, but bundled sub-libraries and assets are not),
+    README "License", manual Info "Lizenzen/Licences" (DE+EN), credits where
+    due, `docs/DECISIONS.md`. `test/license_compat_test.dart` fails on new
+    unchecked packages, assets or Gradle libraries — never silence it without
+    that check.
+
 ## Build / run
 
 From `android/`: `flutter build apk --debug`, then

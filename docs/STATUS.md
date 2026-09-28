@@ -10,6 +10,11 @@ Latest tagged build: v1.2.0 (2026-09-28: text adventure Zork I–III in CW, new 
   author on the title page, edition block and PDF metadata, one sentence in
   "Woher die App kommt"; Info table updated (DE+EN). README: byline and
   credits.
+- **Licence guard (2026-09-28, installed on the test phone).** CLAUDE.md
+  rule 11 (check every outside thing against GPL-3.0-or-later, warn the user
+  if incompatible, keep licence references current) and
+  `test/license_compat_test.dart` (pub packages, assets, Gradle libraries).
+  SoLoud (zlib) added to the licence page, README and manual (DE+EN).
 - **No local identifiers online (2026-09-28).** Device serial removed from
   all tracked files (now in gitignored `CLAUDE.local.md`); local git hooks
   block serial, home path and user name (`tools/githooks/`); release APKs are

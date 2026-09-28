@@ -169,6 +169,23 @@ MIT/BSD/Apache — all GPL-compatible. "Zork" is a trademark not covered by the
 MIT licence: used only descriptively, never in app name/icon/store title, with
 a non-affiliation note.
 
+Guard (2026-09-28, user request: warn before anything that contradicts the
+licence, keep all licence references current): CLAUDE.md rule 11 plus
+`test/license_compat_test.dart`, which runs with every `flutter test`:
+- each pub package's LICENSE (Flutter SDK packages: the SDK's) must match a
+  GPL-compatible licence (MIT, BSD, Apache-2.0, zlib, ISC, MPL-2.0, LGPL,
+  GPL-3.0, OFL-1.1, Unlicense) and contain no incompatible terms (Commons
+  Clause, BSL, SSPL, Elastic, non-commercial, "Good, not Evil", CC-ND);
+- every file under `assets/` must sit under a prefix mapped to a licence
+  entry registered in `lib/licenses.dart`;
+- Gradle `implementation(...)`-style libraries must be on an allow-list
+  (empty today).
+Text heuristics, so the test is a tripwire, not a legal review: a pass
+doesn't replace reading the licence when adding something. Bundled
+sub-libraries a package's LICENSE doesn't mention are checked by hand: SoLoud
+inside flutter_soloud (zlib; decoders public domain/MIT-0) is on the licence
+page as its own entry.
+
 ## Default custom Koch sequence: "Heinz – just me" course order
 The Custom Koch Sequence default `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?` is
 the order of the YouTube Morse course by "Heinz – just me"

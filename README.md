@@ -227,8 +227,9 @@ licence.
 
 Bundled third-party material keeps its own licence: Zork I–III story files
 (MIT, `android/assets/zork/LICENSE`), the fonts Anonymous Pro and Space
-Grotesk (SIL Open Font License 1.1, `android/assets/fonts/OFL-*.txt`) and the
-Flutter packages (MIT/BSD/Apache). All licence texts are shown in the app
+Grotesk (SIL Open Font License 1.1, `android/assets/fonts/OFL-*.txt`), the
+SoLoud audio engine inside `flutter_soloud` (zlib) and the Flutter packages
+(MIT/BSD/Apache). All licence texts are shown in the app
 under Settings → Info → Licences.
 
 Zork is a trademark of its owners. This project is not affiliated with or
