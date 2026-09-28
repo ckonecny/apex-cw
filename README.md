@@ -49,8 +49,8 @@ shows the version and the commit it was built from.
 
 A detailed user manual in German and English — every setting with its range
 and default, and how the adaptive mode decides — is in [`manual/`](manual/):
-[Handbuch (PDF)](manual/NextCWTrainer_Handbuch_v1.2.0.pdf) ·
-[User Manual (PDF)](manual/NextCWTrainer_Manual_v1.2.0.pdf), also as HTML.
+[Handbuch (PDF)](manual/NextCWTrainer_Handbuch_v1.2.1.pdf) ·
+[User Manual (PDF)](manual/NextCWTrainer_Manual_v1.2.1.pdf), also as HTML.
 
 ## What the app covers
 

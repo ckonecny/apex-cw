@@ -602,16 +602,10 @@ error sign, see "Upstream check" below. It is needed for Morsel anyway.
 Per CLAUDE.md rule 10, only the Markdown sources are updated per change;
 HTML/PDF and screenshots are refreshed when the next version is cut. List
 every screenshot (both `img/de/` and `img/en/`) whose screen changed since
-the last release, with the reason. Clear this list after the release build.
+the last release, with the reason. Clear this list after the release build
+(steps: `manual/README.md` → "At release time").
 
-- `settings3.png` (DE+EN): Info card now starts with "Entwickelt von /
-  Developed by" and "Danke / Thanks" rows, and ends with a "Lizenzen /
-  Licences" row.
-- Process note: build the manual *before* the version commit/tag, so the
-  title page shows the tagged commit.
-- File names carry the version (`NextCWTrainer_Handbuch_v1.2.0.pdf`, …);
-  `build.sh` does this, deletes the previous release's files and updates
-  the README links. Upload the PDFs to the GitHub release under these names.
+- (none — cleared at v1.2.1)
 - Adventure map shots: pinch zoom can't be injected over adb, so
   `adv_map*.png` show the default zoom.
 
