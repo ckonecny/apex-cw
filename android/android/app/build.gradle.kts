@@ -95,7 +95,14 @@ android {
         }
     }
 
+    // Debug builds use the upload key too (when present) so a plain
+    // `flutter build apk --debug` installs over the test phone's current
+    // app without re-signing by hand. Other machines fall back to the
+    // default debug key.
     buildTypes {
+        debug {
+            if (uploadKey != null) signingConfig = signingConfigs.getByName("upload")
+        }
         release {
             signingConfig = signingConfigs.getByName(
                 if (uploadKey != null) "upload" else "debug")

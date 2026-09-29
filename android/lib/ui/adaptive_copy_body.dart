@@ -293,6 +293,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // the idle/start phase (and its setup controls) instead of leaving the
   // screen, without tearing down this whole widget.
   void _resetToIdle() {
+    // Leaving from the result screen (back button) counts as accepting the
+    // proposals shown there — otherwise a Koch unlock earned in the last
+    // block would be lost unless another block was started.
+    if (_phase == _Phase.result) _applyPendingDecision();
     _sessionActive = false;
     _checkTimer?.cancel();
     _completeSubmit(null);

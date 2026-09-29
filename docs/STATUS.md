@@ -4,6 +4,12 @@ Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (public s
 Latest tagged build: v1.2.2 (2026-09-28: nav bar no longer covers the bottom row on Android 15+ with 3-button navigation; first build signed with the upload key). Previous: v1.2.1 (2026-09-28: author credits, GPL-3.0 licence page, licence guard); v1.2.0 (2026-09-28, text adventure Zork I–III in CW, new app icon, games order); v1.1.0 (2026-09-27, Hören typing mode, Koch character row, terminology pass); v1.0.0 (2026-09-26, first build handed out to other users).
 
 ## Done
+- **Hören: Koch unlock kept when leaving from the result screen
+  (2026-09-29, installed and checked on the test phone).** Bug: an unlock earned in
+  the last block was only applied by "Next block"/"Finish", not by the back
+  button from the result screen. `AdaptiveCopyBody._resetToIdle` now applies
+  the pending proposals when the phase is `result` (leaving = accepting what
+  is shown, respecting the per-item toggles). Manual unchanged.
 - **v1.2.2 release (2026-09-28).** Nav bar fix (below). First release
   signed with the upload key: `build_release.sh` now ran end-to-end (APK +
   AAB); it had to get its own Gradle home outside `$HOME` because the AAB

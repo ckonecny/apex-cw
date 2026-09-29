@@ -1051,3 +1051,12 @@ screen, because per-screen fixes get forgotten (same lesson as the shared
 engine config). Screens that already added `padding.bottom` themselves
 (CW keyboard, adventure) now see 0 there and are unchanged. Cost: the
 keyboard's darker surface no longer extends behind the nav bar.
+
+## Debug builds signed with the upload key (2026-09-29)
+The test phone runs an app signed with the Play upload key (migrated
+2026-09-28), so a default debug-key APK failed with
+INSTALL_FAILED_UPDATE_INCOMPATIBLE and had to be re-signed by hand with
+apksigner. `app/build.gradle.kts` now signs the `debug` build type with the
+`upload` config whenever `android/key.properties` exists; without it (other
+machines) the normal debug key is used. Plain `flutter build apk --debug` +
+`adb install -r` works again.
