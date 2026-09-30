@@ -1,0 +1,16 @@
+name: Idee / Wunsch / Feature request
+description: Ein Vorschlag für die App / A suggestion for the app
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Was wünschst du dir? / What would you like?
+      description: Deutsch oder English
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Wofür brauchst du es? / What is it for?
+      description: Welches Problem löst es beim Üben? / Which problem does it solve in your practice?
