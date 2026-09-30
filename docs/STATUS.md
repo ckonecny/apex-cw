@@ -658,7 +658,8 @@ the last release, with the reason. Clear this list after the release build
 
 - `hear_stats.png`, `echo_stats.png`: rows now read "N Versuche · noch k nötig · unter X %", percent carries an "aktuell" caption, rule sentence under the intro; icon hidden on the sending track.
 - Morse tree shots: portrait and landscape (letters, and deep tree).
-- `home.png` (new "Lernen" tile; "Frei" is now one tile "Freie Modi", home no longer scrolls), plus a new hub shot "Freie Modi" (four tiles).
+- `home.png` (manual, DE+EN) (new "Lernen" tile; "Frei" is now one tile "Freie Modi", home no longer scrolls), plus a new hub shot "Freie Modi" (four tiles).
+- **Play Store:** the start-screen shot changed too (five cards, "Freie Modi", "Lernressourcen"). Retake the home raw shot in `store/raw/{de,en}/` (dark theme, test phone) and rebuild the graphics with `python3 store/make_graphics.py` before the next store upload; check the caption and the other raw shots for the old home layout.
 - New screens to shoot: learning-resources hub, character chart (one tile lit), Morse tree (letters; with
   digits and signs; one character lit), links page. Add them to the manual's
   "Learning resources" chapter with `manual/tools/insert.py`.
