@@ -950,12 +950,21 @@ The **📊 icon** in Listen and Send opens that training's statistics. Listen
 and Send have separate statistics.
 
 - **Listen** shows every active Koch character with its attempts (for example
-  "14/20 attempts") and its accuracy. A tick marks characters that meet the
-  unlock condition, and an hourglass marks those that aren't there yet. The
+  "14 attempts") and its **current** accuracy. A tick marks characters that
+  meet the unlock condition, and an hourglass marks those that aren't there
+  yet. Those also say what is missing ("6 more needed", "below 90 %"). The
   top shows "*x* of *y* characters ready". The characters that aren't ready
   come first, which helps when the unlock seems stuck.
 - **Send** shows the characters sorted by errors, the least reliable at the
   top. Below them are the **common mix-ups** across all blocks, as target →
+**The percentage is a moving average, not an overall rate.** Newer attempts
+count more than older ones: each attempt goes into the value with 20 %. A
+miss therefore lowers it at once (100 % becomes 80 % at most), and correct
+answers rebuild it slowly. A character can drop below the threshold after a
+single miss even if it was flawless before. The tick needs both: enough
+attempts (default 20) **and** a current accuracy above the threshold (default
+90 %). The bar shows only the attempts, not the accuracy.
+
   given, with a count.
 
 The **reset** icon deletes all of this training's statistics after a

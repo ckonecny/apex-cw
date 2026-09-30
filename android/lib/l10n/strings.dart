@@ -343,7 +343,16 @@ class Strings {
       'Übungsstand jedes aktiven Koch-Zeichens. Alle Zeichen müssen die Freischalt-Schwelle erreichen, bevor das nächste Zeichen freigeschaltet wird — nicht nur das zuletzt gelernte.',
       'Practice status of every active Koch character. All of them must clear the unlock threshold before the next character unlocks — not just the most recently learned one.'],
     'char_stats_ready_summary': ['{ready} von {total} Zeichen bereit', '{ready} of {total} characters ready'],
-    'char_stats_attempts': ['{n}/{floor} Versuche', '{n}/{floor} attempts'],
+    'char_stats_attempts': ['{n} Versuche', '{n} attempts'],
+    'char_stats_need_more': ['noch {k} nötig', '{k} more needed'],
+    'char_stats_below': ['unter {x} %', 'below {x} %'],
+    'char_stats_current': ['aktuell', 'current'],
+    'char_stats_rule': [
+      'Prozent = gleitender Durchschnitt, kein Gesamtschnitt: neuere Versuche zählen mehr. Ein Fehler senkt den Wert sofort, richtige Antworten bauen ihn langsam wieder auf. Häkchen ab {n} Versuchen und {x} %.',
+      'Percent = moving average, not an overall rate: newer attempts count more. A miss lowers the value at once, correct answers rebuild it slowly. Tick from {n} attempts and {x} %.'],
+    'char_stats_rule_echo': [
+      'Prozent = gleitender Durchschnitt, kein Gesamtschnitt: neuere Versuche zählen mehr.',
+      'Percent = moving average, not an overall rate: newer attempts count more.'],
     'char_stats_empty': ['Noch keine aktiven Zeichen.', 'No active characters yet.'],
 
     // ── Shared / terminology pass (see DECISIONS.md glossary) ────────────

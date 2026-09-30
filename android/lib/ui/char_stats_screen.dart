@@ -148,6 +148,14 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
       children: [
         Text(Strings.t(_isHear ? 'char_stats_desc' : 'char_stats_desc_echo'),
             style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint)),
+        const SizedBox(height: 8),
+        Text(
+            _isHear
+                ? Strings.t('char_stats_rule')
+                    .replaceFirst('{n}', '$_unlockOccurrences')
+                    .replaceFirst('{x}', '${(_highThreshold * 100).round()}')
+                : Strings.t('char_stats_rule_echo'),
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint)),
         const SizedBox(height: 12),
         if (_isHear) Container(
           width: double.infinity,
@@ -171,6 +179,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
             stat: r.stat,
             unlockOccurrences: _unlockOccurrences,
             highThreshold: _highThreshold,
+            showUnlock: _isHear,
             ready: r.ready,
             outputCase: _outputCase,
           ),
@@ -198,6 +207,7 @@ class _CharStatRow extends StatelessWidget {
   final CharStat stat;
   final int unlockOccurrences;
   final double highThreshold;
+  final bool showUnlock;
   final bool ready;
   final int outputCase;
   const _CharStatRow({
@@ -205,6 +215,7 @@ class _CharStatRow extends StatelessWidget {
     required this.stat,
     required this.unlockOccurrences,
     required this.highThreshold,
+    required this.showUnlock,
     required this.ready,
     required this.outputCase,
   });
@@ -216,6 +227,17 @@ class _CharStatRow extends StatelessWidget {
     final attemptsFrac = (stat.attempts / unlockOccurrences).clamp(0.0, 1.0);
     final display = outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase();
     final chColor = charTypeColor(ch, c);
+    // Why a hear row still shows the hourglass: spelled out instead of
+    // leaving it to the icon.
+    final reasons = <String>[
+      Strings.t('char_stats_attempts').replaceFirst('{n}', '${stat.attempts}'),
+      if (showUnlock && !ready && stat.attempts < unlockOccurrences)
+        Strings.t('char_stats_need_more')
+            .replaceFirst('{k}', '${unlockOccurrences - stat.attempts}'),
+      if (showUnlock && !ready && hitRate < highThreshold)
+        Strings.t('char_stats_below')
+            .replaceFirst('{x}', '${(highThreshold * 100).round()}'),
+    ];
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -240,10 +262,7 @@ class _CharStatRow extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-                Strings.t('char_stats_attempts')
-                    .replaceFirst('{n}', '${stat.attempts}')
-                    .replaceFirst('{floor}', '$unlockOccurrences'),
+            Text(reasons.join(' · '),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
             const SizedBox(height: 4),
             ClipRRect(
@@ -262,10 +281,14 @@ class _CharStatRow extends StatelessWidget {
           Text('${(hitRate * 100).toStringAsFixed(1)}%',
               style: TextStyle(fontFamily: 'CwMono', fontSize: 13, fontWeight: FontWeight.bold,
                   color: hitRate >= highThreshold ? c.accent : c.textMuted)),
-          const SizedBox(height: 4),
-          Icon(ready ? Icons.check_circle : Icons.hourglass_bottom,
-              size: 16, color: ready ? c.accent : c.textFaint),
+          Text(Strings.t('char_stats_current'),
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textFaint)),
         ]),
+        if (showUnlock) ...[
+          const SizedBox(width: 8),
+          Icon(ready ? Icons.check_circle : Icons.hourglass_bottom,
+              size: 18, color: ready ? c.accent : c.textFaint),
+        ],
       ]),
     );
   }

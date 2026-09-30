@@ -642,7 +642,12 @@ every screenshot (both `img/de/` and `img/en/`) whose screen changed since
 the last release, with the reason. Clear this list after the release build
 (steps: `manual/README.md` → "At release time").
 
-- (none — cleared at v1.2.1)
+- `hear_stats.png`, `echo_stats.png`: rows now read "N Versuche · noch k nötig · unter X %", percent carries an "aktuell" caption, rule sentence under the intro; icon hidden on the sending track.
+- Morse tree shots: portrait and landscape (letters, and deep tree).
+- `home.png` (new "Lernen" tile; "Frei" is now one tile "Freie Modi", home no longer scrolls), plus a new hub shot "Freie Modi" (four tiles).
+- New screens to shoot: learning-resources hub, character chart (one tile lit), Morse tree (letters; with
+  digits and signs; one character lit), links page. Add them to the manual's
+  "Learning resources" chapter with `manual/tools/insert.py`.
 - Adventure map shots: pinch zoom can't be injected over adb, so
   `adv_map*.png` show the default zoom.
 
@@ -659,6 +664,12 @@ the last release, with the reason. Clear this list after the release build
    done 2026-09-28 (pushed, URL live). Graphics done 2026-09-28
    (`store/make_graphics.py` → `store/out/`). Next: tag v1.3.0, closed test
    (12 testers × 14 days), then production.
+
+## Idea for later — richer character statistics (user, 2026-09-30)
+Tap a row in the statistics screen → detail sheet (overall rate errors/attempts
+next to the moving average; `errors`/`attempts` are already stored). To be
+combined with a more detailed statistics view; user still to decide what that
+should contain.
 
 ## Open questions
 

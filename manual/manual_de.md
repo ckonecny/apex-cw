@@ -974,12 +974,23 @@ Das **📊-Symbol** in Hören und Geben öffnet die Statistik dieses Trainings.
 Hören und Geben haben getrennte Statistiken.
 
 - **Hören** zeigt jedes aktive Koch-Zeichen mit seinen Versuchen (z. B.
-  „14/20 Versuche“) und seiner Trefferquote. Ein Häkchen markiert Zeichen, die
-  die Freischaltbedingung erfüllen, eine Sanduhr solche, die noch nicht so
-  weit sind. Oben steht „*x* von *y* Zeichen bereit“. Die noch nicht bereiten
-  Zeichen stehen zuerst, das hilft, wenn die Freischaltung scheinbar hängt.
+  „14 Versuche“) und seiner **aktuellen** Trefferquote. Ein Häkchen markiert
+  Zeichen, die die Freischaltbedingung erfüllen, eine Sanduhr solche, die noch
+  nicht so weit sind. Bei diesen steht dabei, woran es fehlt („noch 6 nötig“,
+  „unter 90 %“). Oben steht „*x* von *y* Zeichen bereit“. Die noch nicht
+  bereiten Zeichen stehen zuerst, das hilft, wenn die Freischaltung scheinbar
+  hängt.
 - **Geben** zeigt die Zeichen nach Fehlern sortiert, das unsicherste oben.
   Darunter stehen die **häufigen Verwechslungen** über alle Blöcke (Soll →
+**Die Prozentzahl ist ein gleitender Durchschnitt, keine Gesamtquote.**
+Neuere Versuche zählen mehr als ältere: Jeder Versuch geht mit 20 % in den
+Wert ein. Ein Fehler senkt ihn deshalb sofort (aus 100 % werden höchstens
+80 %), richtige Antworten bauen ihn danach langsam wieder auf. Ein Zeichen
+kann also nach einem einzigen Fehler unter die Schwelle fallen, auch wenn es
+davor fehlerfrei war. Das Häkchen braucht beides: genug Versuche (Standard 20)
+**und** eine aktuelle Quote über der Schwelle (Standard 90 %). Der Balken
+zeigt nur die Versuche, nicht die Quote.
+
   Gegeben, mit Anzahl).
 
 Mit dem Symbol **Zurücksetzen** löschst du nach einer Sicherheitsabfrage die
