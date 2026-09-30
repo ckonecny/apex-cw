@@ -18,18 +18,53 @@ class CharStat {
   // 1..20 draw weight — same range/formula the Echo Trainer's "Adapt. Rand."
   // used before this store existed (wrong: +2, right: -1, clamped).
   int weight = 1;
+  // Last [historyLen] results, oldest first, '1' = right / '0' = wrong. Feeds
+  // the result strip in the detail sheet; empty for data from before it existed.
+  String history = '';
+  // Epoch ms of the last attempt (0 = unknown / older data).
+  int lastTs = 0;
+
+  static const historyLen = 30;
 
   CharStat();
+
+  // Books one result into the strip and the timestamp — the single place, so
+  // record() and recordWord() cannot drift apart.
+  void _log(bool correct) {
+    final h = history + (correct ? '1' : '0');
+    history = h.length > historyLen ? h.substring(h.length - historyLen) : h;
+    lastTs = DateTime.now().millisecondsSinceEpoch;
+  }
 
   CharStat.fromJson(Map<String, dynamic> j)
       : attempts = j['a'] as int? ?? 0,
         errors = j['e'] as int? ?? 0,
         emaErrorRate = (j['ema'] as num?)?.toDouble() ?? 0.0,
         lastBlock = j['lb'] as int? ?? 0,
-        weight = j['w'] as int? ?? 1;
+        weight = j['w'] as int? ?? 1,
+        history = j['h'] as String? ?? '',
+        lastTs = j['t'] as int? ?? 0;
 
-  Map<String, dynamic> toJson() =>
-      {'a': attempts, 'e': errors, 'ema': emaErrorRate, 'lb': lastBlock, 'w': weight};
+  Map<String, dynamic> toJson() => {
+        'a': attempts, 'e': errors, 'ema': emaErrorRate, 'lb': lastBlock, 'w': weight,
+        if (history.isNotEmpty) 'h': history,
+        if (lastTs > 0) 't': lastTs,
+      };
+
+  // Share of right answers over all attempts; null before the first one.
+  double? get overallRate => attempts == 0 ? null : (attempts - errors) / attempts;
+
+  // How many right answers in a row lift the moving average to `threshold`
+  // (hit rate) — 0 if already there, null if that would take absurdly long
+  // (threshold 1.0). Same EMA step as CharStatsStore.record.
+  int? correctsToReach(double threshold) {
+    var ema = emaErrorRate;
+    for (var n = 0; n <= 100; n++) {
+      if (1 - ema >= threshold) return n;
+      ema *= 1 - _emaAlpha;
+    }
+    return null;
+  }
 }
 
 class CharStatsStore {
@@ -125,6 +160,7 @@ class CharStatsStore {
     if (!correct) s.errors++;
     s.emaErrorRate = _emaAlpha * (correct ? 0 : 1) + (1 - _emaAlpha) * s.emaErrorRate;
     s.lastBlock = block;
+    s._log(correct);
     s.weight = (correct ? s.weight - 1 : s.weight + 2).clamp(1, 20);
   }
 
@@ -149,6 +185,7 @@ class CharStatsStore {
         if (!correct) s.errors++;
         s.emaErrorRate = _emaAlpha * (correct ? 0 : 1) + (1 - _emaAlpha) * s.emaErrorRate;
         s.lastBlock = block;
+        s._log(correct);
       }
       s.weight = (s.weight + weight).clamp(1, 20);
     }

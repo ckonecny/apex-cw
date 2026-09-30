@@ -1108,3 +1108,34 @@ machines) the normal debug key is used. Plain `flutter build apk --debug` +
   "Schlüssel ändern" → "Java KeyStore exportieren und hochladen" (PEPK).
   App signing key SHA-256 now 98:D9:CD:80:…:47:BD:F2:72 = `nct-upload.jks`,
   which is also the upload key.
+
+## Statistics: detail sheet, per-char history and timestamp (2026-09-30, user request)
+- Tap on a row in "Statistik Hören/Geben" opens a bottom sheet
+  (`ui/widgets/char_stat_sheet.dart`). The row itself now spells out why a
+  Hören character is still not ready ("noch k nötig", "unter X %"), the
+  percent is labelled "aktuell" (it is the moving average, α = 0.2, that the
+  unlock rule uses — not an overall rate).
+- `CharStat` got two fields, both written only when present so old data loads
+  unchanged: `h` = last 30 results as a '1'/'0' string, `t` = epoch ms of the
+  last attempt. **No back-fill:** they fill from the next practice on. Chosen
+  over `lastBlock` for "last practised" because the block counter restarts
+  every session. `t` is also the groundwork for the long-term progress view
+  the user wants (dated aggregates would still have to be added).
+- "Right answers in a row until the threshold" is computed from the EMA step
+  itself (`CharStat.correctsToReach`), capped at 100 (→ null).
+- Hearing mix-ups are **not** available: Adaptive Copy only marks positions
+  as wrong, it never sees what the user heard. Only the Send track records
+  confusion pairs; the sheet says so instead of showing an empty list.
+- The sheet's "Anhören" pushes wpm/spacing/sidetone itself before playing
+  (rule 2) — wpm and spacing from the track's own profile.
+
+### Correction (2026-09-30): Send has an unlock too, the statistics now show it
+The 2026-09-30 sheet first treated Send as "no unlock" — copied from the old
+P4 note ("The echo view has no unlock display") without checking.
+`evaluateEchoBlock` (`echo_suggestions.dart`) does unlock the next Koch
+character on the Send track with the same rule (occurrences floor + hit rate
+≥ threshold on every active char; Koch + random content only). The statistics
+screen and the detail sheet now show ready/hourglass, the "x of y ready" box,
+the reasons and the unlock gap on **both** tracks. Sort order differs on
+purpose: Listen = not-ready first, Send = weakest first. Only the mix-ups
+stay Send-only (Listen has no typed character to compare).

@@ -10,12 +10,15 @@
 // 2026-09-23).
 import '../content/training_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/char_stats.dart';
 import '../content/cw_content.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
+import 'widgets/char_playback_overlay.dart';
+import 'widgets/char_stat_sheet.dart';
 import '../util/char_color.dart';
 
 class CharStatsScreen extends StatefulWidget {
@@ -62,6 +65,31 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
       _loading = false;
     });
   }
+
+  // Plays the character like a tap in the Koch overview. Rule 2: the shared
+  // native generator/tone keep whatever the last screen set, so wpm, spacing
+  // and the sidetone are pushed here from this track's own settings.
+  Future<void> _listen(String ch) async {
+    final p = await SharedPreferences.getInstance();
+    final pf = await TrainingProfile.open(widget.track);
+    final wpm = TrainingProfile.clampWpm(pf.getInt('wpm'));
+    final iws = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
+    const tone = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+    await tone.invokeMethod('setFreq', p.getInt('pitch') ?? 600);
+    await tone.invokeMethod('setEnvelopeMs',
+        ((p.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
+    if (!mounted) return;
+    await showCharPlayback(context,
+        ch: ch, outputCase: _outputCase,
+        play: () => playCharThrice(ch, wpm: wpm, interWordSpace: iws));
+  }
+
+  Future<void> _openDetail(String ch, CharStat stat, bool ready) =>
+      showCharStatSheet(context,
+          ch: ch, stat: stat, isHear: _isHear, ready: ready,
+          unlockOccurrences: _unlockOccurrences, highThreshold: _highThreshold,
+          outputCase: _outputCase, pairs: _store.pairs,
+          onListen: () => _listen(ch));
 
   // Irreversible, so a short confirmation guards against a stray tap.
   Future<void> _confirmReset() async {
@@ -130,13 +158,13 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
       final s = _store.stats[ch] ?? CharStat();
       final attemptsOk = s.attempts >= _unlockOccurrences;
       final emaOk = (1 - s.emaErrorRate) >= _highThreshold;
-      return (ch: ch, stat: s, ready: _isHear && attemptsOk && emaOk);
+      return (ch: ch, stat: s, ready: attemptsOk && emaOk);
     }).toList();
     // Not-ready characters first (least attempts first within that group) —
     // whatever's actually blocking the unlock surfaces at the top instead of
     // being buried among characters that are already long since mastered.
     rows.sort((a, b) {
-      // Sending has no unlock rule: weakest characters first.
+      // Sending: weakest characters first (they also come up more often).
       if (!_isHear) return b.stat.emaErrorRate.compareTo(a.stat.emaErrorRate);
       if (a.ready != b.ready) return a.ready ? 1 : -1;
       return a.stat.attempts.compareTo(b.stat.attempts);
@@ -150,14 +178,12 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
             style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint)),
         const SizedBox(height: 8),
         Text(
-            _isHear
-                ? Strings.t('char_stats_rule')
-                    .replaceFirst('{n}', '$_unlockOccurrences')
-                    .replaceFirst('{x}', '${(_highThreshold * 100).round()}')
-                : Strings.t('char_stats_rule_echo'),
+            Strings.t('char_stats_rule')
+                .replaceFirst('{n}', '$_unlockOccurrences')
+                .replaceFirst('{x}', '${(_highThreshold * 100).round()}'),
             style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint)),
         const SizedBox(height: 12),
-        if (_isHear) Container(
+        Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
@@ -172,31 +198,17 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
               style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
         ),
-        if (_isHear) const SizedBox(height: 16),
+        const SizedBox(height: 16),
         for (final r in rows)
           _CharStatRow(
             ch: r.ch,
             stat: r.stat,
             unlockOccurrences: _unlockOccurrences,
             highThreshold: _highThreshold,
-            showUnlock: _isHear,
             ready: r.ready,
+            onTap: () => _openDetail(r.ch, r.stat, r.ready),
             outputCase: _outputCase,
           ),
-        if (!_isHear && _store.pairs.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          Text(Strings.t('pairs_title'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
-                  fontWeight: FontWeight.bold, color: c.textPrimary)),
-          const SizedBox(height: 8),
-          for (final e in _store.topPairs())
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Text(
-                  '${(_outputCase == 1 ? e.key : e.key.toLowerCase()).replaceFirst('>', ' → ')}   ${e.value}×',
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.warning)),
-            ),
-        ],
       ],
     );
   }
@@ -207,17 +219,17 @@ class _CharStatRow extends StatelessWidget {
   final CharStat stat;
   final int unlockOccurrences;
   final double highThreshold;
-  final bool showUnlock;
   final bool ready;
   final int outputCase;
+  final VoidCallback onTap;
   const _CharStatRow({
     required this.ch,
     required this.stat,
     required this.unlockOccurrences,
     required this.highThreshold,
-    required this.showUnlock,
     required this.ready,
     required this.outputCase,
+    required this.onTap,
   });
 
   @override
@@ -231,14 +243,16 @@ class _CharStatRow extends StatelessWidget {
     // leaving it to the icon.
     final reasons = <String>[
       Strings.t('char_stats_attempts').replaceFirst('{n}', '${stat.attempts}'),
-      if (showUnlock && !ready && stat.attempts < unlockOccurrences)
+      if (!ready && stat.attempts < unlockOccurrences)
         Strings.t('char_stats_need_more')
             .replaceFirst('{k}', '${unlockOccurrences - stat.attempts}'),
-      if (showUnlock && !ready && hitRate < highThreshold)
+      if (!ready && hitRate < highThreshold)
         Strings.t('char_stats_below')
             .replaceFirst('{x}', '${(highThreshold * 100).round()}'),
     ];
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
@@ -284,12 +298,10 @@ class _CharStatRow extends StatelessWidget {
           Text(Strings.t('char_stats_current'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textFaint)),
         ]),
-        if (showUnlock) ...[
-          const SizedBox(width: 8),
-          Icon(ready ? Icons.check_circle : Icons.hourglass_bottom,
-              size: 18, color: ready ? c.accent : c.textFaint),
-        ],
+        const SizedBox(width: 8),
+        Icon(ready ? Icons.check_circle : Icons.hourglass_bottom,
+            size: 18, color: ready ? c.accent : c.textFaint),
       ]),
-    );
+    ));
   }
 }

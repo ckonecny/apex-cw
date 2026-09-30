@@ -978,9 +978,11 @@ Hören und Geben haben getrennte Statistiken.
   „unter 90 %“). Oben steht „*x* von *y* Zeichen bereit“. Die noch nicht
   bereiten Zeichen stehen zuerst, das hilft, wenn die Freischaltung scheinbar
   hängt.
-- **Geben** zeigt die Zeichen nach Fehlern sortiert, das unsicherste oben.
-  Darunter stehen die **häufigen Verwechslungen** über alle Blöcke (Soll →
-  Gegeben, mit Anzahl).
+- **Geben** zeigt dasselbe (Versuche, aktuelle Quote, Häkchen oder Sanduhr,
+  „*x* von *y* bereit“), die Zeichen sind aber nach Fehlern sortiert, das
+  unsicherste oben. Die Freischaltung gilt auch hier, sie greift bei Koch mit
+  Zufallszeichen. Verwechslungen stehen nicht in der Übersicht, sondern je
+  Zeichen in der Detailansicht.
 
 **Die Prozentzahl ist ein gleitender Durchschnitt, keine Gesamtquote.**
 Neuere Versuche zählen mehr als ältere: Jeder Versuch geht mit 20 % in den
@@ -991,6 +993,27 @@ davor fehlerfrei war. Das Häkchen braucht beides: genug Versuche (Standard 20)
 **und** eine aktuelle Quote über der Schwelle (Standard 90 %). Der Balken
 zeigt nur die Versuche, nicht die Quote.
 
+**Tippe auf ein Zeichen**, dann öffnet sich seine Detailansicht:
+
+- **Gesamt** – Trefferquote über alle Versuche, mit Fehlern und Versuchen.
+- **Aktuell (gleitend)** – der Wert aus der Liste, mit Pfeil: ▲ besser,
+  ▼ schlechter oder ► wie die Gesamtquote (ab 3 Prozentpunkten Abstand, erst
+  ab 5 Versuchen). So siehst du, ob ein Einbruch ein Ausrutscher war.
+- **Letzte 30 Versuche** – ein Streifen aus grünen (richtig) und roten
+  (falsch) Balken, rechts das Neueste. Er füllt sich erst beim Üben, ältere
+  Daten haben keinen Verlauf.
+- **Zuletzt geübt** – heute, gestern oder vor *n* Tagen (ebenfalls erst ab
+  dem nächsten Üben).
+- **Übungsgewicht** – von 1 bis 20. Je höher, desto öfter kommt das Zeichen
+  in adaptiven Übungen dran.
+- **Freischaltung** – was noch fehlt: wie viele Versuche und wie
+  viele richtige Antworten in Folge, bis die Quote wieder über der Schwelle
+  liegt.
+- **Verwechslungen** (nur Geben) – was du stattdessen gegeben hast. Beim
+  Hören markierst du nur, was falsch war, deshalb wird dort nicht erfasst,
+  was du gehört hast.
+- **Anhören** – spielt das Zeichen dreimal ab, mit dem Tempo dieses Trainings.
+
 Mit dem Symbol **Zurücksetzen** löschst du nach einer Sicherheitsabfrage die
 gesamte Statistik dieses Trainings – Fehlerquoten, Gewichte und
 Verwechslungen. Die Statistik des anderen Trainings bleibt erhalten. Das lässt
@@ -999,7 +1022,7 @@ sich nicht rückgängig machen.
 ::: {.shots}
 ![Statistik Hören: Versuche, Trefferquote, bereit](img/de/hear_stats.png)
 
-![Statistik Geben mit häufigen Verwechslungen](img/de/echo_stats.png)
+![Statistik Geben](img/de/echo_stats.png)
 :::
 
 # CW Keyer

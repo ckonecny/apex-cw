@@ -287,7 +287,6 @@ class Strings {
     // ── Echo Trainer screen ──────────────────────────────────────────────
     'echo_trainer_title': ['Echo Trainer', 'Echo Trainer'],
     'echo_status_idle': ['Drücke START', 'Press START'],
-    'pairs_title': ['Häufige Verwechslungen (Soll → Gegeben)', 'Common mix-ups (target → given)'],
   'pairs_block': ['Verwechslungen', 'Mix-ups'],
   'echo_attempt': ['Versuch {n} von {max}', 'Attempt {n} of {max}'],
     'echo_status_playing': ['Anhören …', 'Listening …'],
@@ -370,7 +369,7 @@ class Strings {
     // ── Character statistics screen ──────────────────────────────────────
     'char_stats_title_hear': ['Statistik Hören', 'Statistics: listening'],
     'char_stats_title_echo': ['Statistik Geben', 'Statistics: sending'],
-    'char_stats_desc_echo': ['Wie sicher du jedes aktive Koch-Zeichen gibst. Die Zeichen mit den meisten Fehlern stehen oben und kommen in Zufallsgruppen mit Koch-Lektion öfter dran.', 'How reliably you send each active Koch character. The characters with the most errors are on top and come up more often in random groups with a Koch lesson.'],
+    'char_stats_desc_echo': ['Wie sicher du jedes aktive Koch-Zeichen gibst. Alle Zeichen müssen die Freischalt-Schwelle erreichen, bevor das nächste freigeschaltet wird. Die Zeichen mit den meisten Fehlern stehen oben und kommen in Zufallsgruppen mit Koch-Lektion öfter dran.', 'How reliably you send each active Koch character. All of them must clear the unlock threshold before the next one unlocks. The characters with the most errors are on top and come up more often in random groups with a Koch lesson.'],
     'char_stats_desc': [
       'Übungsstand jedes aktiven Koch-Zeichens. Alle Zeichen müssen die Freischalt-Schwelle erreichen, bevor das nächste Zeichen freigeschaltet wird — nicht nur das zuletzt gelernte.',
       'Practice status of every active Koch character. All of them must clear the unlock threshold before the next character unlocks — not just the most recently learned one.'],
@@ -382,9 +381,29 @@ class Strings {
     'char_stats_rule': [
       'Prozent = gleitender Durchschnitt, kein Gesamtschnitt: neuere Versuche zählen mehr. Ein Fehler senkt den Wert sofort, richtige Antworten bauen ihn langsam wieder auf. Häkchen ab {n} Versuchen und {x} %.',
       'Percent = moving average, not an overall rate: newer attempts count more. A miss lowers the value at once, correct answers rebuild it slowly. Tick from {n} attempts and {x} %.'],
-    'char_stats_rule_echo': [
-      'Prozent = gleitender Durchschnitt, kein Gesamtschnitt: neuere Versuche zählen mehr.',
-      'Percent = moving average, not an overall rate: newer attempts count more.'],
+'cs_overall': ['Gesamt', 'Overall'],
+    'cs_overall_value': ['{p} % · {e} Fehler bei {n} Versuchen', '{p} % · {e} errors in {n} attempts'],
+    'cs_current': ['Aktuell (gleitend)', 'Current (moving)'],
+    'cs_trend_up': ['besser als gesamt', 'better than overall'],
+    'cs_trend_down': ['schlechter als gesamt', 'worse than overall'],
+    'cs_trend_same': ['wie gesamt', 'same as overall'],
+    'cs_strip': ['Letzte {n} Versuche', 'Last {n} attempts'],
+    'cs_strip_empty': ['Der Verlauf füllt sich beim Üben.', 'The history fills up as you practise.'],
+    'cs_strip_legend': ['grün richtig · rot falsch, rechts das Neueste', 'green right · red wrong, newest on the right'],
+    'cs_last': ['Zuletzt geübt', 'Last practised'],
+    'cs_today': ['heute', 'today'],
+    'cs_yesterday': ['gestern', 'yesterday'],
+    'cs_days_ago': ['vor {n} Tagen', '{n} days ago'],
+    'cs_weight': ['Übungsgewicht', 'Practice weight'],
+    'cs_weight_value': ['{w} von 20 – je höher, desto öfter kommt das Zeichen dran', '{w} of 20 – the higher, the more often the character comes up'],
+    'cs_unlock': ['Freischaltung', 'Unlock'],
+    'cs_unlock_ready': ['erfüllt', 'met'],
+    'cs_unlock_attempts': ['noch {k} Versuche nötig', '{k} more attempts needed'],
+    'cs_unlock_rate': ['{c} richtige in Folge bringen den Wert auf {t} %', '{c} right in a row bring the value to {t} %'],
+    'cs_mixups': ['Verwechslungen', 'Mix-ups'],
+    'cs_mixups_hear': ['Beim Hören markierst du nur, was falsch war. Was du stattdessen gehört hast, wird nicht erfasst.', 'In Listen you only mark what was wrong. What you heard instead is not recorded.'],
+    'cs_mixups_none': ['Keine erfasst.', 'None recorded.'],
+    'cs_listen': ['Anhören', 'Listen'],
     'char_stats_empty': ['Noch keine aktiven Zeichen.', 'No active characters yet.'],
 
     // ── Shared / terminology pass (see DECISIONS.md glossary) ────────────

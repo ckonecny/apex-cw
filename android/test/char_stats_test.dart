@@ -75,4 +75,39 @@ void main() {
       expect(st.stats['A']!.attempts, 2);
     });
   });
+
+  test('history keeps the last 30 results, overall rate and timestamp', () {
+    final store = CharStatsStore(CharStatsStore.hear);
+    for (var i = 0; i < 40; i++) { store.record('s', i % 10 != 0); }
+    final s = store.stats['s']!;
+    expect(s.history.length, CharStat.historyLen);
+    expect(s.history.endsWith('1'), isTrue);
+    expect(s.attempts, 40);
+    expect(s.errors, 4);
+    expect(s.overallRate, closeTo(0.9, 1e-9));
+    expect(s.lastTs, greaterThan(0));
+    expect(CharStat().overallRate, isNull);
+  });
+
+  test('history and timestamp survive save/load; old data without them loads', () {
+    final s = CharStat()..history = '1101'..lastTs = 123;
+    final back = CharStat.fromJson(s.toJson());
+    expect(back.history, '1101');
+    expect(back.lastTs, 123);
+    final old = CharStat.fromJson({'a': 5, 'e': 1});
+    expect(old.history, '');
+    expect(old.lastTs, 0);
+  });
+
+  test('correctsToReach counts right answers until the moving rate is back', () {
+    final store = CharStatsStore(CharStatsStore.hear);
+    store.record('i', false); // ema 0.2 -> hit rate 80 %
+    final s = store.stats['i']!;
+    final n = s.correctsToReach(0.90)!;
+    expect(n, 4); // 0.2 * 0.8^4 = 0.082 <= 0.10, 0.8^3 -> 0.102 > 0.10
+    for (var i = 0; i < n; i++) { store.record('i', true); }
+    expect(1 - s.emaErrorRate, greaterThanOrEqualTo(0.90));
+    expect(CharStat().correctsToReach(0.90), 0);
+    expect(store.stats['i']!.correctsToReach(1.0), isNull);
+  });
 }

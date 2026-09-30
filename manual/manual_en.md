@@ -953,9 +953,11 @@ and Send have separate statistics.
   yet. Those also say what is missing ("6 more needed", "below 90 %"). The
   top shows "*x* of *y* characters ready". The characters that aren't ready
   come first, which helps when the unlock seems stuck.
-- **Send** shows the characters sorted by errors, the least reliable at the
-  top. Below them are the **common mix-ups** across all blocks, as target →
-  given, with a count.
+- **Send** shows the same (attempts, current accuracy, tick or hourglass,
+  "*x* of *y* ready"), but the characters are sorted by errors, the least
+  reliable at the top. The unlock applies here too, for Koch with random
+  characters. Mix-ups are not listed in the overview; you find them per
+  character in the detail view.
 
 **The percentage is a moving average, not an overall rate.** Newer attempts
 count more than older ones: each attempt goes into the value with 20 %. A
@@ -965,6 +967,25 @@ single miss even if it was flawless before. The tick needs both: enough
 attempts (default 20) **and** a current accuracy above the threshold (default
 90 %). The bar shows only the attempts, not the accuracy.
 
+**Tap a character** to open its detail view:
+
+- **Overall** – accuracy over all attempts, with errors and attempts.
+- **Current (moving)** – the value from the list, with an arrow: ▲ better,
+  ▼ worse or ► same as the overall rate (from 3 percentage points apart, and
+  only from 5 attempts). It shows whether a dip was a slip.
+- **Last 30 attempts** – a strip of green (right) and red (wrong) bars,
+  newest on the right. It fills up as you practise; older data has no
+  history.
+- **Last practised** – today, yesterday or *n* days ago (also only from the
+  next practice on).
+- **Practice weight** – from 1 to 20. The higher, the more often the
+  character comes up in adaptive exercises.
+- **Unlock** – what is still missing: how many attempts and how
+  many right answers in a row until the rate is back above the threshold.
+- **Mix-ups** (Send only) – what you sent instead. In Listen you only mark
+  what was wrong, so what you heard is not recorded there.
+- **Listen** – plays the character three times, at this training's speed.
+
 The **reset** icon deletes all of this training's statistics after a
 confirmation: error rates, weights and mix-ups. The other training's
 statistics are kept. This cannot be undone.
@@ -972,7 +993,7 @@ statistics are kept. This cannot be undone.
 ::: {.shots}
 ![Listen statistics: attempts, accuracy, ready](img/en/hear_stats.png)
 
-![Send statistics with common mix-ups](img/en/echo_stats.png)
+![Send statistics](img/en/echo_stats.png)
 :::
 
 # CW Keyer

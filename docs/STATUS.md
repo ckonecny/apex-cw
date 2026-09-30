@@ -657,6 +657,7 @@ the last release, with the reason. Clear this list after the release build
 (steps: `manual/README.md` → "At release time").
 
 - `hear_stats.png`, `echo_stats.png`: rows now read "N Versuche · noch k nötig · unter X %", percent carries an "aktuell" caption, rule sentence under the intro; icon hidden on the sending track.
+- New: character detail sheet (Hören, e.g. a not-ready char; Geben with mix-ups) in the "Zeichenstatistik" chapter, DE+EN, via `manual/tools/insert.py`.
 - Morse tree shots: portrait and landscape (letters, and deep tree).
 - `home.png` (manual, DE+EN) (new "Lernen" tile; "Frei" is now one tile "Freie Modi", home no longer scrolls), plus a new hub shot "Freie Modi" (four tiles).
 - **Play Store:** the start-screen shot changed too (five cards, "Freie Modi", "Lernressourcen"). Retake the home raw shot in `store/raw/{de,en}/` (dark theme, test phone) and rebuild the graphics with `python3 store/make_graphics.py` before the next store upload; check the caption and the other raw shots for the old home layout.
@@ -666,11 +667,14 @@ the last release, with the reason. Clear this list after the release build
 - Adventure map shots: pinch zoom can't be injected over adb, so
   `adv_map*.png` show the default zoom.
 
-## Idea for later — richer character statistics (user, 2026-09-30)
-Tap a row in the statistics screen → detail sheet (overall rate errors/attempts
-next to the moving average; `errors`/`attempts` are already stored). To be
-combined with a more detailed statistics view; user still to decide what that
-should contain.
+## Character statistics — detail sheet (user, 2026-09-30)
+Step 1 done (pending on-device check): tap a row → sheet with overall vs.
+moving rate + trend arrow, last-30 strip, last practised, draw weight, unlock
+gap (both tracks), mix-ups of that char (Send), "Anhören". New per-char fields
+`h` (history) and `t` (timestamp) in `charStats.<track>`; they fill from now
+on, no back-fill. **Long term (user):** a progress view over weeks — needs
+dated per-block/per-day aggregates and per-char tempo/reaction time (not
+stored yet); user still to decide what the detailed statistics should show.
 
 ## Next steps — Play Store (user, 2026-09-28)
 1. User: developer account (identity check pending). Upload keystore
