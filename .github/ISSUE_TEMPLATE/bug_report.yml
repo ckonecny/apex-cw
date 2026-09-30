@@ -1,0 +1,28 @@
+name: Fehler melden / Report a bug
+description: Etwas funktioniert nicht richtig / Something does not work
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Was ist passiert? / What happened?
+      description: Und was hast du erwartet? / And what did you expect? (Deutsch oder English)
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Wie kann man es nachstellen? / How to reproduce?
+      description: Kurz, z. B. "Hören → Tippen → Start → …" / Briefly, e.g. "Listen → Typing → Start → …"
+  - type: input
+    id: env
+    attributes:
+      label: App-Version, Handy, Android / App version, phone, Android
+      description: Die App-Version steht unter Einstellungen → Info. / The app version is under Settings → Info.
+      placeholder: "1.2.2, Pixel 8, Android 15"
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        Bitte keine persönlichen Daten oder Seriennummern eintragen. / Please do not include personal data or serial numbers.
