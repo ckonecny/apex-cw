@@ -4,14 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
 import '../content/charset_content.dart';
 import '../content/training_profile.dart';
-import 'keyer_screen.dart';
 import 'generator_screen.dart';
 import 'echo_trainer_screen.dart';
 import 'settings_screen.dart';
-import 'wifi_trx_screen.dart';
-import 'qso_bot_screen.dart';
+import 'free_screen.dart';
 import 'games_screen.dart';
-import 'decoder_screen.dart';
+import 'learn_screen.dart';
 import '../theme/app_colors.dart';
 import '../l10n/strings.dart';
 
@@ -91,12 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         body: LayoutBuilder(builder: (context, box) {
-          // The seven cards share the screen height; when that gets too
+          // The five cards share the screen height; when that gets too
           // tight for their text (large system font, small screen), they
           // switch to a fixed minimum height and the page scrolls instead.
           final f = textScaleOf(context);
           final minCard = 76 * f;
-          final needed = 7 * minCard + 4 * 8 + 2 * 16 + 3 * 23 * f + 8 + 24;
+          final needed = 5 * minCard + 1 * 8 + 3 * 16 + 4 * 23 * f + 8 + 24;
           final scroll = box.maxHeight < needed;
           Widget card(Widget w) => scroll ? SizedBox(height: minCard, child: w) : Expanded(child: w);
           final column = Column(
@@ -123,35 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16),
             _SectionLabel(Strings.t('home_section_free')),
             card(_ModeCard(
-              icon: Icons.tune,
-              title: 'CW Keyer',
-              subtitle: Strings.t('home_keyer_subtitle'),
+              icon: Icons.lock_open_outlined,
+              title: Strings.t('free_title'),
+              subtitle: Strings.t('home_free_subtitle'),
               color: c.accentPurple,
-              onTap: () => _open(const KeyerScreen()),
-            )),
-            const SizedBox(height: 8),
-            card(_ModeCard(
-              icon: Icons.hearing,
-              title: Strings.t('dec_title'),
-              subtitle: Strings.t('home_decoder_subtitle'),
-              color: c.accentPurple,
-              onTap: () => _open(const DecoderScreen()),
-            )),
-            const SizedBox(height: 8),
-            card(_ModeCard(
-              icon: Icons.wifi,
-              title: 'WiFi Trx',
-              subtitle: Strings.t('home_wifitrx_subtitle'),
-              color: c.warning,
-              onTap: () => _open(const WifiTrxScreen()),
-            )),
-            const SizedBox(height: 8),
-            card(_ModeCard(
-              icon: Icons.forum_outlined,
-              title: 'QSO Bot',
-              subtitle: Strings.t('home_qso_subtitle'),
-              color: c.warning,
-              onTap: () => _open(const QsoBotScreen()),
+              onTap: () => _open(const FreeScreen()),
             )),
             const SizedBox(height: 16),
             _SectionLabel(Strings.t('home_section_games')),
@@ -161,6 +135,15 @@ class _HomeScreenState extends State<HomeScreen> {
               subtitle: Strings.t('home_games_subtitle'),
               color: c.info,
               onTap: () => _open(const GamesScreen()),
+            )),
+            const SizedBox(height: 16),
+            _SectionLabel(Strings.t('home_section_learn')),
+            card(_ModeCard(
+              icon: Icons.school_outlined,
+              title: Strings.t('learn_title'),
+              subtitle: Strings.t('home_learn_subtitle'),
+              color: c.accent,
+              onTap: () => _open(const LearnScreen()),
             )),
           ],
           );

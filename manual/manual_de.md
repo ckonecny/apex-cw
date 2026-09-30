@@ -59,17 +59,15 @@ gehen Einstellungen und Statistiken verloren.
 
 ## Die Startseite
 
-Die Startseite hat drei Gruppen:
+Die Startseite hat vier Gruppen:
 
 | Gruppe | Kachel | Wofür |
 |---|---|---|
 | **Üben** | **Hören** | Mitschreiben üben: CW Generator und Koch Trainer im Blockablauf |
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
-| **Frei** | **CW Keyer** | Frei tasten, mit Mitschrift als Text |
-| | **CW-Decoder** | CW über das Mikrofon mitlesen |
-| | **WiFi Trx** | CW über das Internet mit anderen Morserinos und Apps |
-| | **QSO Bot** | Ein simulierter QSO-Partner |
+| **Frei** | **Freie Modi** | Öffnet vier Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) und **QSO Bot** (ein simulierter QSO-Partner) |
 | **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain |
+| **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
 
 Unter **Hören** und **Geben** zeigt die Kachel deine aktuelle Koch-Lektion und
 dein Tempo, bei **Geben** zusätzlich den Trend der letzten Blöcke (siehe
@@ -982,6 +980,8 @@ Hören und Geben haben getrennte Statistiken.
   hängt.
 - **Geben** zeigt die Zeichen nach Fehlern sortiert, das unsicherste oben.
   Darunter stehen die **häufigen Verwechslungen** über alle Blöcke (Soll →
+  Gegeben, mit Anzahl).
+
 **Die Prozentzahl ist ein gleitender Durchschnitt, keine Gesamtquote.**
 Neuere Versuche zählen mehr als ältere: Jeder Versuch geht mit 20 % in den
 Wert ein. Ein Fehler senkt ihn deshalb sofort (aus 100 % werden höchstens
@@ -990,8 +990,6 @@ kann also nach einem einzigen Fehler unter die Schwelle fallen, auch wenn es
 davor fehlerfrei war. Das Häkchen braucht beides: genug Versuche (Standard 20)
 **und** eine aktuelle Quote über der Schwelle (Standard 90 %). Der Balken
 zeigt nur die Versuche, nicht die Quote.
-
-  Gegeben, mit Anzahl).
 
 Mit dem Symbol **Zurücksetzen** löschst du nach einer Sicherheitsabfrage die
 gesamte Statistik dieses Trainings – Fehlerquoten, Gewichte und
@@ -1476,6 +1474,56 @@ in Morse nicht gibt:
 ::: {.shots .one}
 ![Spielstände eines Teils](img/de/adv_saves.png)
 :::
+
+# Lernressourcen
+
+Unter **Lernen → Lernressourcen** findest du Hilfen zum CW-Lernen, die kein
+eigenes Training sind.
+
+## Morse-Baum
+
+Der Morse-Baum zeigt alle Codes in einem Bild: Vom Punkt ganz oben geht ein
+**Punkt nach links und ein Strich nach rechts**. Die Linien zeigen es auch:
+ein Punkt ist eine gepunktete Linie, ein Strich eine dicke durchgezogene. Ein Zeichen steht dort, wo
+sein Code endet – du liest den Code ab, indem du dem Weg nach unten folgst.
+Auf den ersten vier Ebenen stehen die Buchstaben. **Ziffern und Zeichen**
+blendet die fünfte Ebene mit Ziffern und Zeichen ein; der Baum lässt sich
+dann seitwärts verschieben.
+
+Tippe auf ein Zeichen, um es zu hören. Es klingt mit deiner **Tonhöhe**
+(Einstellungen → Allgemein) und mit dem Tempo, das unter dem Baum steht.
+Dieses Tempo startet mit deinem Tempo aus **Hören** und lässt sich hier mit
+**–** und **+** ändern (10–60 WPM); die Änderung gilt nur für diese Seite.
+Während das Zeichen klingt, leuchtet der Weg von oben Element für Element auf:
+Punkt oder Strich ist genau dann hervorgehoben, wenn du ihn hörst. Unter dem
+Baum steht der Code noch einmal als Punkte und Striche.
+
+**Dreh das Telefon quer** für einen größeren Baum: Der Baum ist der einzige
+Bildschirm der App, der auch im Querformat funktioniert. Dort stehen die
+Bedienelemente in einer Zeile über dem Baum, und mit **Ziffern und Zeichen**
+passt der ganze Baum ohne Scrollen auf den Bildschirm. Der Rest der App
+bleibt im Hochformat.
+
+Den Baum zeichnet die App aus derselben Codetabelle, mit der sie auch spielt
+und decodiert. Er stimmt also immer mit dem überein, was du hörst.
+
+## Zeichentabelle
+
+Die Zeichentabelle listet alle Zeichen der App mit ihrem Code, gruppiert in
+**Buchstaben**, **Ziffern**, **Satzzeichen** und **Prosigns** (SK, KN, KA, AS,
+VE, BK). Jeder Code ist als Punkte und Striche gezeichnet.
+
+Tippe auf ein Zeichen: Es klingt mit deiner Tonhöhe, und seine Punkte und
+Striche leuchten auf, während sie erklingen. Das Tempo startet mit dem Wert aus
+dem Training Hören; mit **−** und **+** änderst du es nur für diese Ansicht.
+Die Tonhöhe stellst du unter Einstellungen → Allgemein ein.
+
+## Links
+
+Eine Liste externer Seiten zum CW-Lernen: die Videoreihe von Heinz („just me“)
+auf YouTube, LCWO, VBand und die Morserino-32-Homepage. Ein Tipp öffnet die
+Seite im Browser. Es sind eigenständige Angebote, die mit dieser App nicht
+verbunden sind; die App verlinkt sie nur und zeigt nichts von deren Inhalt.
 
 # Paddle und Morsetaste
 

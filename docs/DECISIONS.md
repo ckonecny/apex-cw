@@ -1052,6 +1052,49 @@ engine config). Screens that already added `padding.bottom` themselves
 (CW keyboard, adventure) now see 0 there and are unchanged. Cost: the
 keyboard's darker surface no longer extends behind the nav bar.
 
+## Learning resources: Morse tree and links (2026-09-29, user request)
+New home tile "Lernressourcen" (own group "Lernen") opens a hub with tiles,
+built like the games hub (the tile widget is now the shared `HubCard` in
+`widgets/app_ui.dart`). Entries: interactive **Morse tree**,
+**Character chart** and **Links**.
+- **Tree is drawn from `MorseDecoder.table`**, not from a picture: the
+  dichotomic tree is a mathematical structure, and neither the cryptomuseum
+  PDF nor the Wikipedia SVG (own licence per file, CC BY-SA possible) is
+  copied or embedded. Levels 1–4 letters; "Ziffern und Zeichen" adds level 5
+  (digits, `/ = +`, KA KN AS VE). Codes longer than five elements (some
+  punctuation, BK, SK) are not in the tree.
+- **Playback via the shared generator** (rule 2): the screen pushes pitch,
+  tone softness and wpm on entry and stops the keyer; wpm starts from the
+  Listen profile, ±1 on the screen is local and not saved. Path lighting is
+  driven by the generator's elementOn/elementOff events, like the tap tile.
+  Prosigns are played as `<XX>` (rule 3).
+- **Dit/dah edges look different** (user request 2026-09-29): a dit edge is
+  a row of dots, a dah edge one thick solid line; lit ones in the accent
+  colour, unlit ones in `textFaint`.
+- **Landscape allowed on the tree screen only** (user request 2026-09-29,
+  exception to the portrait lock in `main.dart`/manifest): `initState` calls
+  `setPreferredOrientations` with portrait + both landscapes, `dispose` locks
+  portrait again. Flutter's call overrides the manifest's `screenOrientation`
+  at run time. Landscape layout: one slim control row on top, tree fills the
+  rest; the deep tree (32 slots at ≥ 24 dp) fits without scrolling.
+- **Links open in the external browser** (`url_launcher`, BSD-3-Clause,
+  GPL-compatible; the licence guard test passes). Names as text only, no
+  logos, plus a non-affiliation note. The app already had INTERNET
+  (MOPP/WiFi Trx).
+- **Character chart is own drawing** (`morse_chart_screen.dart`): a tile grid
+  (letters, digits, punctuation, prosigns) built from `MorseDecoder.table`,
+  code as dots and bars; the cryptomuseum PDF is not copied. Playback and
+  lighting as in the tree (rule 2 config push, `<XX>` for prosigns, elementOn/
+  Off events). Portrait only (no landscape exception needed). Tile order is
+  fixed in the screen; the codes come from the table, so they cannot diverge.
+
+## Home: free modes grouped one level down (2026-09-29, user request)
+The home screen scrolled with its eight cards and the scroll bar was
+unwanted. CW Keyer, CW Decoder, WiFi Trx and QSO Bot moved into a hub
+(`free_screen.dart`, "Freie Modi") built from `HubCard` like the games hub.
+Home now has five cards in four groups; the fit formula in `home_screen.dart`
+counts five cards, and the scroll fallback stays for huge system fonts.
+
 ## Debug builds signed with the upload key (2026-09-29)
 The test phone runs an app signed with the Play upload key (migrated
 2026-09-28), so a default debug-key APK failed with
@@ -1060,3 +1103,8 @@ apksigner. `app/build.gradle.kts` now signs the `debug` build type with the
 `upload` config whenever `android/key.properties` exists; without it (other
 machines) the normal debug key is used. Plain `flutter build apk --debug` +
 `adb install -r` works again.
+- **Done 2026-09-29:** the console had already generated a Google key when
+  the app was created (before any upload); replaced via App-Signatur →
+  "Schlüssel ändern" → "Java KeyStore exportieren und hochladen" (PEPK).
+  App signing key SHA-256 now 98:D9:CD:80:…:47:BD:F2:72 = `nct-upload.jks`,
+  which is also the upload key.

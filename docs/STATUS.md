@@ -10,6 +10,20 @@ Latest tagged build: v1.2.2 (2026-09-28: nav bar no longer covers the bottom row
   button from the result screen. `AdaptiveCopyBody._resetToIdle` now applies
   the pending proposals when the phase is `result` (leaving = accepting what
   is shown, respecting the per-item toggles). Manual unchanged.
+- **Learning resources: Morse tree + links (2026-09-29, installed and checked
+  on the test phone, not committed).** Home tile "Lernressourcen" (own group
+  "Lernen") → hub → interactive Morse tree (tap = plays at the set pitch and
+  Listen wpm, path lights element by element; dit edges dotted, dah edges
+  thick solid; landscape allowed on this screen only; "Ziffern und Zeichen" adds
+  level 5, centred, scrolls sideways) and a links page (Heinz playlist, LCWO,
+  VBand, Morserino; opens in the browser, checked: YouTube app opens). New
+  dependency `url_launcher` (BSD-3). Manual chapter "Lernressourcen/Learning
+  resources" (DE+EN) and home table updated. Analyze clean, tests pass. The
+  home screen now scrolls on the test phone (8 cards). Open: one early tap on
+  W lit the path of N (not reproduced after the layout fix; watch it);
+  1.3× font on the home screen not checked; character chart added as the
+  second tile (installed and checked on the test phone: tiles, lit elements). Debug APK on the phone is re-signed with the upload key
+  (apksigner from Android Studio's JDK), like before.
 - **v1.2.2 release (2026-09-28).** Nav bar fix (below). First release
   signed with the upload key: `build_release.sh` now ran end-to-end (APK +
   AAB); it had to get its own Gradle home outside `$HOME` because the AAB
@@ -651,6 +665,12 @@ the last release, with the reason. Clear this list after the release build
 - Adventure map shots: pinch zoom can't be injected over adb, so
   `adv_map*.png` show the default zoom.
 
+## Idea for later — richer character statistics (user, 2026-09-30)
+Tap a row in the statistics screen → detail sheet (overall rate errors/attempts
+next to the moving average; `errors`/`attempts` are already stored). To be
+combined with a more detailed statistics view; user still to decide what that
+should contain.
+
 ## Next steps — Play Store (user, 2026-09-28)
 1. User: developer account (identity check pending). Upload keystore
    created 2026-09-28 (CN=OE1CKO, outside the repo, backed up by the user),
@@ -664,12 +684,6 @@ the last release, with the reason. Clear this list after the release build
    done 2026-09-28 (pushed, URL live). Graphics done 2026-09-28
    (`store/make_graphics.py` → `store/out/`). Next: tag v1.3.0, closed test
    (12 testers × 14 days), then production.
-
-## Idea for later — richer character statistics (user, 2026-09-30)
-Tap a row in the statistics screen → detail sheet (overall rate errors/attempts
-next to the moving average; `errors`/`attempts` are already stored). To be
-combined with a more detailed statistics view; user still to decide what that
-should contain.
 
 ## Open questions
 

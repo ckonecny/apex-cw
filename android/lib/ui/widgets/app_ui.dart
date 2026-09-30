@@ -191,3 +191,56 @@ class _ScrollHintState extends State<ScrollHint> {
     });
   }
 }
+
+/// Big tappable tile of a hub page (games, learning resources): icon,
+/// title, subtitle and a faint hint line.
+class HubCard extends StatelessWidget {
+  final IconData icon;
+  final String title, subtitle, hint;
+  final Color color;
+  final VoidCallback onTap;
+
+  const HubCard({required this.icon, required this.title, required this.subtitle,
+      required this.hint, required this.color, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Material(
+      color: c.surface,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          child: Row(children: [
+            Container(
+              width: 56, height: 56,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(icon, color: color, size: 30),
+            ),
+            const SizedBox(width: 16),
+            Expanded(child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: TextStyle(
+                    fontFamily: 'CwMono', fontSize: 20, color: c.textPrimary)),
+                const SizedBox(height: 4),
+                Text(subtitle, style: TextStyle(
+                    fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                const SizedBox(height: 6),
+                Text(hint, style: TextStyle(
+                    fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+              ],
+            )),
+            Icon(Icons.chevron_right, color: c.textFaint),
+          ]),
+        ),
+      ),
+    );
+  }
+}

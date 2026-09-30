@@ -57,17 +57,15 @@ the old version, and that deletes your settings and statistics.
 
 ## The home screen
 
-The home screen has three groups:
+The home screen has four groups:
 
 | Group | Tile | What for |
 |---|---|---|
 | **Practice** | **Listen** | Practice copying: CW Generator and Koch Trainer in the block flow |
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
-| **Free** | **CW Keyer** | Key freely, with the text decoded on screen |
-| | **CW Decoder** | Copy CW through the microphone |
-| | **WiFi Trx** | CW over the internet with other Morserinos and apps |
-| | **QSO Bot** | A simulated QSO partner |
+| **Free** | **Free modes** | Opens four tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) and **QSO Bot** (a simulated QSO partner) |
 | **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain |
+| **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
 
 The **Listen** and **Send** tiles show your current Koch lesson and speed.
 **Send** also shows the trend of your last blocks (see [Trend](#trend)).
@@ -957,6 +955,8 @@ and Send have separate statistics.
   come first, which helps when the unlock seems stuck.
 - **Send** shows the characters sorted by errors, the least reliable at the
   top. Below them are the **common mix-ups** across all blocks, as target →
+  given, with a count.
+
 **The percentage is a moving average, not an overall rate.** Newer attempts
 count more than older ones: each attempt goes into the value with 20 %. A
 miss therefore lowers it at once (100 % becomes 80 % at most), and correct
@@ -964,8 +964,6 @@ answers rebuild it slowly. A character can drop below the threshold after a
 single miss even if it was flawless before. The tick needs both: enough
 attempts (default 20) **and** a current accuracy above the threshold (default
 90 %). The bar shows only the attempts, not the accuracy.
-
-  given, with a count.
 
 The **reset** icon deletes all of this training's statistics after a
 confirmation: error rates, weights and mix-ups. The other training's
@@ -1430,6 +1428,51 @@ writes it. Only for playing, characters that Morse doesn't have are replaced:
 ::: {.shots .one}
 ![Saved games of one part](img/en/adv_saves.png)
 :::
+
+# Learning resources
+
+Under **Learn → Learning resources** you find help for learning CW that is
+not a training of its own.
+
+## Morse tree
+
+The Morse tree shows all codes in one picture: from the dot at the top, a
+**dit goes left and a dah goes right**. The lines show it too: a dit is a
+dotted line, a dah a thick solid one. A character sits where its code ends,
+so you can read every code by following the path down to it. Letters are on
+the first four levels. **Digits and signs** adds the fifth level with digits
+and signs; the tree then scrolls sideways.
+
+Tap a character to hear it. It sounds at your **pitch** (Settings → General) and at the speed shown below the tree. That speed starts at your
+**Listen** speed and can be changed here with **–** and **+** (10–60 WPM); the
+change applies only to this screen. While the character sounds, the path from
+the top lights up element by element: dit or dah is highlighted exactly when
+you hear it. Below the tree the code is shown once more as dits and dahs.
+
+**Turn the phone sideways** for a bigger tree: the tree screen is the only
+one in the app that also works in landscape. There the controls sit in one
+row above the tree, and with **Digits and signs** the whole tree fits on the
+screen without scrolling. The rest of the app stays in portrait.
+
+The tree is drawn by the app from the same code table it uses for playing and
+decoding, so it always matches what you hear.
+
+## Character chart
+
+The character chart lists every character of the app with its code, grouped
+into **Letters**, **Digits**, **Punctuation** and **Prosigns** (SK, KN, KA, AS,
+VE, BK). Each code is drawn as dots and dashes.
+
+Tap a character: it sounds at your pitch, and its dots and dashes light up as
+they sound. The speed starts at the value from the Listen training; **−** and
+**+** change it for this view only. Set the pitch under Settings → General.
+
+## Links
+
+A list of external sites for learning CW: the video course by Heinz ("just me")
+on YouTube, LCWO, VBand and the Morserino-32 homepage. A tap opens the site in
+your browser. These are independent offers that are not affiliated with this
+app; the app only links to them and shows nothing of their content.
 
 # Paddle and Morse key
 
