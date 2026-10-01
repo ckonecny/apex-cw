@@ -74,8 +74,10 @@ The gear icon at the top right opens the **global settings** (chapter
 [Settings](#settings)). Anything that concerns only one training is set up
 directly inside that training.
 
-::: {.shots .one}
+::: {.shots}
 ![The home screen](img/en/home.png)
+
+![Free modes: five tiles](img/en/freemodes.png)
 :::
 
 ## Controls inside the trainings
@@ -997,6 +999,12 @@ attempts (default 20) **and** a current accuracy above the threshold (default
   what was wrong, so what you heard is not recorded there.
 - **Listen** – plays the character three times, at this training's speed.
 
+::: {.shots}
+![Detail view in Listen: weekly curve, unlock](img/en/hear_char_detail.png)
+
+![Detail view in Send: last 30 attempts, curve, mix-ups](img/en/echo_char_detail.png)
+:::
+
 **Progress tab.** At the top, switch between *Characters* (the list above)
 and *Progress*. Progress shows how practice develops over time, separately for
 each training. It fills up from the day this feature was added; earlier
@@ -1016,6 +1024,14 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
   while the cells scroll. **Weakest first** sorts by the latest hit rate. Tap
   a character to open its detail view.
 
+::: {.shots .three}
+![Progress tab (Listen): hit rate, speed and days practised over 12 weeks](img/en/hear_progress.png)
+
+![Below it the heatmap: all characters, week by week](img/en/hear_progress2.png)
+
+![Progress tab (Send)](img/en/echo_progress.png)
+:::
+
 The **reset** icon deletes all of this training's statistics after a
 confirmation: error rates, weights, mix-ups and the progress. The other training's
 statistics are kept. This cannot be undone.
@@ -1023,7 +1039,7 @@ statistics are kept. This cannot be undone.
 ::: {.shots}
 ![Listen statistics: attempts, accuracy, ready](img/en/hear_stats.png)
 
-![Send statistics](img/en/echo_stats.png)
+![Send statistics with common mix-ups](img/en/echo_stats.png)
 :::
 
 # CW Keyer
@@ -1268,6 +1284,12 @@ Progress is saved automatically. When you open a text you have started, the app
 asks: **Continue** or **Start over**. The list shows how much of each text you
 have heard.
 
+::: {.shots}
+![Own texts: the library](img/en/own_library.png)
+
+![A text playing (display: After playing)](img/en/own_player.png)
+:::
+
 ## Settings (⚙)
 
 - **Character spacing** and **word spacing** in dits, as in the trainings.
@@ -1279,6 +1301,10 @@ have heard.
 Speed, spacing and display apply to all texts. Pitch and tone softness come
 from the general [settings](#settings). The display stays on while you are in
 a text.
+
+::: {.shots .one}
+![⚙ sheet of Own texts](img/en/own_sheet.png)
+:::
 
 # Games
 
@@ -1552,6 +1578,10 @@ writes it. Only for playing, characters that Morse doesn't have are replaced:
 Under **Learn → Learning resources** you find help for learning CW that is
 not a training of its own.
 
+::: {.shots .one}
+![Learning resources: Morse tree, character chart, links](img/en/res_hub.png)
+:::
+
 ## Morse tree
 
 The Morse tree shows all codes in one picture: from the dot at the top, a
@@ -1567,10 +1597,22 @@ change applies only to this screen. While the character sounds, the path from
 the top lights up element by element: dit or dah is highlighted exactly when
 you hear it. Below the tree the code is shown once more as dits and dahs.
 
+::: {.shots}
+![Morse tree: the path to Q lights up](img/en/tree_letters.png)
+
+![With digits and signs: the tree scrolls sideways](img/en/tree_deep.png)
+:::
+
 **Turn the phone sideways** for a bigger tree: the tree screen is the only
 one in the app that also works in landscape. There the controls sit in one
 row above the tree, and with **Digits and signs** the whole tree fits on the
 screen without scrolling. The rest of the app stays in portrait.
+
+::: {.shots .wide}
+![Landscape: letters](img/en/tree_letters_land.png)
+
+![Landscape with digits and signs: the whole tree fits](img/en/tree_deep_land.png)
+:::
 
 The tree is drawn by the app from the same code table it uses for playing and
 decoding, so it always matches what you hear.
@@ -1585,12 +1627,20 @@ Tap a character: it sounds at your pitch, and its dots and dashes light up as
 they sound. The speed starts at the value from the Listen training; **−** and
 **+** change it for this view only. Set the pitch under Settings → General.
 
+::: {.shots .one}
+![Character chart: a character lights up while it plays](img/en/chart.png)
+:::
+
 ## Links
 
 A list of external sites for learning CW: the video course by Heinz ("just me")
 on YouTube, LCWO, VBand and the Morserino-32 homepage. A tap opens the site in
 your browser. These are independent offers that are not affiliated with this
 app; the app only links to them and shows nothing of their content.
+
+::: {.shots .one}
+![Links to courses and practice sites](img/en/links.png)
+:::
 
 # Paddle and Morse key
 

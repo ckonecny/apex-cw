@@ -6,6 +6,17 @@ item in `STATUS.md` is done, move it here (CLAUDE.md rule 13). Open feature
 ideas and deferred bugs are GitHub issues (rule 12), not listed here.
 
 ## Done
+- **v1.3.0 release (2026-10-01).** Version 1.3.0+3, tag `v1.3.0` (fab962b),
+  `tools/build_release.sh` → APK + AAB, installed over the debug build on the
+  test phone (same upload key, data kept). Contents since v1.2.2: learning
+  resources (Morse tree, character chart, links), grouped start screen
+  ("Freie Modi"), statistics with detail sheet and progress tab (#16),
+  adaptive straight key (#17), own texts (#8, File Player port), analyzer
+  clean-up and part-file refactors. Manual: ~30 new/retaken screenshots DE+EN
+  (`insert.py` extended, `.shots.wide` for landscape), HTML/PDF built for
+  v1.3.0; store raw shots retaken. Own texts: pasting from the real clipboard
+  and a text near the 20,000-character limit were not tried on the phone;
+  follow-ups #21–#24.
 - **Adaptive straight key, issue #17 (2026-10-01, stages 1-7 installed and
   checked on the test phone, not committed).** `StraightKeyDecoder.kt`
   (firmware decoder port) in `CwKeyer.tickStraight`; setting "Starttempo

@@ -71,6 +71,7 @@ nav#TOC > ul > li li { font-weight: normal; }
          margin: 1em 0 1.6em; }
 .shots figure { margin: 0; width: 44%; max-width: 270px; text-align: center; }
 .shots.three figure { width: 30%; max-width: 230px; }
+.shots.wide figure { width: 100%; max-width: 520px; }
 /* A single screenshot floats beside the text instead of standing alone. */
 .shots.one { float: right; margin: .2em 0 1em 1.5em; width: 36%; max-width: 250px; }
 .shots.one figure { width: 100%; }
@@ -100,6 +101,7 @@ h1 { clear: both; }
   tr, pre, .shots { page-break-inside: avoid; }
   .shots figure { max-width: 5.4cm; }
   .shots.three figure { max-width: 4.6cm; }
+  .shots.wide figure { max-width: 11cm; }
   .shots.one { width: 5.2cm; }
   a { color: inherit; text-decoration: none; }
 }

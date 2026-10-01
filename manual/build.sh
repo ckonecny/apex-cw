@@ -33,6 +33,9 @@ COMMIT=$(git rev-parse --short=7 HEAD 2>/dev/null || echo unknown)
 # Screenshots don't count: at release they are taken from the tagged build
 # (Settings → Info shows its commit) and committed afterwards with the manual.
 [ -n "$(git status --porcelain --untracked-files=no -- . ':!img' ../android 2>/dev/null)" ] && COMMIT="$COMMIT-dirty"
+# MANUAL_COMMIT=<hash>: state the release commit although manual sources (not
+# app code) changed after the tag, e.g. screenshots inserted at release time.
+COMMIT=${MANUAL_COMMIT:-$COMMIT}
 YEAR=$(date +%Y)
 MONTH_EN=$(LC_ALL=C date +%B)
 case "$MONTH_EN" in

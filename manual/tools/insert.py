@@ -1,7 +1,8 @@
 # Inserts screenshot blocks after anchor paragraphs. Each entry: (de_anchor, en_anchor, [(img, de_caption, en_caption)])
 P = [
 ("stellst du dagegen direkt in diesem Training ein.", "is set up\ndirectly inside that training.",
- [("home", "Die Startseite", "The home screen")]),
+ [("home", "Die Startseite", "The home screen"),
+  ("freemodes", "Freie Modi: fünf Kacheln", "Free modes: five tiles")]),
 ("Lektionen gibt es deshalb nur sehr wenige davon.", "very few of them.",
  [("hear_start", "Startansicht von Hören: Zeichenvorrat, Inhalt, Koch-Lektion, schwache Zeichen, Abstand und Tempo", "Listen start view: character set, content, Koch lesson, weak characters, spacing and speed")]),
 ("[Einzelzeichen üben](#einzelzeichen-üben)).", "[Practicing a single character](#practicing-a-single-character)).",
@@ -76,6 +77,34 @@ P = [
   ("settings2", "Audioausgabe und Rufzeichen", "Audio output and call signs"),
   ("settings3", "vband Paddle, Key-Events, Info", "vband Paddle, key events, Info")]),
 ]
+
+# --- v1.3.0 additions ---------------------------------------------------
+P += [
+("Anhören** – spielt das Zeichen dreimal ab, mit dem Tempo dieses Trainings.", "**Listen** – plays the character three times, at this training's speed.",
+ [("hear_char_detail", "Detailansicht in Hören: Kurve pro Woche, Freischaltung", "Detail view in Listen: weekly curve, unlock"),
+  ("echo_char_detail", "Detailansicht in Geben: letzte 30 Versuche, Kurve, Verwechslungen", "Detail view in Send: last 30 attempts, curve, mix-ups")]),
+("Tippe auf ein Zeichen, um seine\n  Detailansicht zu öffnen.", "Tap\n  a character to open its detail view.",
+ [("hear_progress", "Reiter Verlauf (Hören): Quote, Tempo und Übungstage über 12 Wochen", "Progress tab (Listen): hit rate, speed and days practised over 12 weeks"),
+  ("hear_progress2", "Darunter die Heatmap: alle Zeichen, Woche für Woche", "Below it the heatmap: all characters, week by week"),
+  ("echo_progress", "Reiter Verlauf (Geben)", "Progress tab (Send)")]),
+("bei jedem Text, wie viel du schon gehört hast.", "have heard.",
+ [("own_library", "Eigene Texte: die Bibliothek", "Own texts: the library"),
+  ("own_player", "Ein Text wird gespielt (Anzeige: Nach Abspielen)", "A text playing (display: After playing)")]),
+("an, solange du in einem Text bist.", "a text.",
+ [("own_sheet", "⚙-Blatt der Eigenen Texte", "⚙ sheet of Own texts")]),
+("eigenes Training sind.", "not a training of its own.",
+ [("res_hub", "Lernressourcen: Morse-Baum, Zeichentabelle, Links", "Learning resources: Morse tree, character chart, links")]),
+("Baum steht der Code noch einmal als Punkte und Striche.", "dits and dahs.",
+ [("tree_letters", "Morse-Baum: Weg zum Q leuchtet auf", "Morse tree: the path to Q lights up"),
+  ("tree_deep", "Mit Ziffern und Zeichen: der Baum scrollt seitwärts", "With digits and signs: the tree scrolls sideways")]),
+("bleibt im Hochformat.", "stays in portrait.",
+ [("tree_letters_land", "Querformat: Buchstaben", "Landscape: letters"),
+  ("tree_deep_land", "Querformat mit Ziffern und Zeichen: der ganze Baum passt", "Landscape with digits and signs: the whole tree fits")], "shots wide"),
+("Die Tonhöhe stellst du unter Einstellungen → Allgemein ein.", "Set the pitch under Settings → General.",
+ [("chart", "Zeichentabelle: ein Zeichen leuchtet beim Abspielen", "Character chart: a character lights up while it plays")]),
+("die App verlinkt sie nur und zeigt nichts von deren Inhalt.", "the app only links to them and shows nothing of their content.",
+ [("links", "Links zu Kursen und Übungsseiten", "Links to courses and practice sites")]),
+]
 import re, os
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 for lang, ai in (('de', 0), ('en', 1)):
@@ -86,7 +115,7 @@ for lang, ai in (('de', 0), ('en', 1)):
         i = s.find(anchor); assert i >= 0, (lang, anchor)
         j = s.find('\n\n', i + len(anchor) - 1)
         if j < 0: j = len(s)
-        cls = {1: 'shots one', 3: 'shots three'}.get(len(imgs), 'shots')
+        cls = entry[3] if len(entry) > 3 else {1: 'shots one', 3: 'shots three'}.get(len(imgs), 'shots')
         block = f'\n\n::: {{.{cls.replace(" ", " .")}}}\n' + '\n\n'.join(
             f'![{c[1 + ai]}](img/{lang}/{c[0]}.png)' for c in imgs) + '\n:::'
         s = s[:j] + block + s[j:]

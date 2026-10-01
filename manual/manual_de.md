@@ -77,8 +77,10 @@ Rechts oben öffnet das Zahnrad die **globalen Einstellungen** (Kapitel
 [Einstellungen](#einstellungen)). Alles, was nur ein einzelnes Training
 betrifft, stellst du dagegen direkt in diesem Training ein.
 
-::: {.shots .one}
+::: {.shots}
 ![Die Startseite](img/de/home.png)
+
+![Freie Modi: fünf Kacheln](img/de/freemodes.png)
 :::
 
 ## Bedienelemente in den Trainings
@@ -1027,6 +1029,12 @@ zeigt nur die Versuche, nicht die Quote.
   was du gehört hast.
 - **Anhören** – spielt das Zeichen dreimal ab, mit dem Tempo dieses Trainings.
 
+::: {.shots}
+![Detailansicht in Hören: Kurve pro Woche, Freischaltung](img/de/hear_char_detail.png)
+
+![Detailansicht in Geben: letzte 30 Versuche, Kurve, Verwechslungen](img/de/echo_char_detail.png)
+:::
+
 **Reiter Verlauf.** Oben schaltest du zwischen *Zeichen* (die Liste oben)
 und *Verlauf* um. Der Verlauf zeigt, wie sich das Üben über die Zeit
 entwickelt, getrennt für jedes Training. Er füllt sich ab dem Tag, an dem es
@@ -1049,6 +1057,14 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
   sortiert nach der letzten Trefferquote. Tippe auf ein Zeichen, um seine
   Detailansicht zu öffnen.
 
+::: {.shots .three}
+![Reiter Verlauf (Hören): Quote, Tempo und Übungstage über 12 Wochen](img/de/hear_progress.png)
+
+![Darunter die Heatmap: alle Zeichen, Woche für Woche](img/de/hear_progress2.png)
+
+![Reiter Verlauf (Geben)](img/de/echo_progress.png)
+:::
+
 Mit dem Symbol **Zurücksetzen** löschst du nach einer Sicherheitsabfrage die
 gesamte Statistik dieses Trainings – Fehlerquoten, Gewichte,
 Verwechslungen und den Verlauf. Die Statistik des anderen Trainings bleibt erhalten. Das lässt
@@ -1057,7 +1073,7 @@ sich nicht rückgängig machen.
 ::: {.shots}
 ![Statistik Hören: Versuche, Trefferquote, bereit](img/de/hear_stats.png)
 
-![Statistik Geben](img/de/echo_stats.png)
+![Statistik Geben mit häufigen Verwechslungen](img/de/echo_stats.png)
 :::
 
 # CW Keyer
@@ -1310,6 +1326,12 @@ Der Fortschritt wird automatisch gespeichert. Öffnest du einen begonnenen Text
 erneut, fragt die App: **Weiterhören** oder **Neu starten**. In der Liste steht
 bei jedem Text, wie viel du schon gehört hast.
 
+::: {.shots}
+![Eigene Texte: die Bibliothek](img/de/own_library.png)
+
+![Ein Text wird gespielt (Anzeige: Nach Abspielen)](img/de/own_player.png)
+:::
+
 ## Einstellungen (⚙)
 
 - **Zeichenabstand** und **Wortabstand** in Dits, wie bei den Trainings. Sie
@@ -1321,6 +1343,10 @@ bei jedem Text, wie viel du schon gehört hast.
 Tempo, Abstände und Anzeige gelten für alle Texte. Tonhöhe und Klangweichheit
 kommen aus den allgemeinen [Einstellungen](#einstellungen). Das Display bleibt
 an, solange du in einem Text bist.
+
+::: {.shots .one}
+![⚙-Blatt der Eigenen Texte](img/de/own_sheet.png)
+:::
 
 # Spiele
 
@@ -1608,6 +1634,10 @@ in Morse nicht gibt:
 Unter **Lernen → Lernressourcen** findest du Hilfen zum CW-Lernen, die kein
 eigenes Training sind.
 
+::: {.shots .one}
+![Lernressourcen: Morse-Baum, Zeichentabelle, Links](img/de/res_hub.png)
+:::
+
 ## Morse-Baum
 
 Der Morse-Baum zeigt alle Codes in einem Bild: Vom Punkt ganz oben geht ein
@@ -1626,11 +1656,23 @@ Während das Zeichen klingt, leuchtet der Weg von oben Element für Element auf:
 Punkt oder Strich ist genau dann hervorgehoben, wenn du ihn hörst. Unter dem
 Baum steht der Code noch einmal als Punkte und Striche.
 
+::: {.shots}
+![Morse-Baum: Weg zum Q leuchtet auf](img/de/tree_letters.png)
+
+![Mit Ziffern und Zeichen: der Baum scrollt seitwärts](img/de/tree_deep.png)
+:::
+
 **Dreh das Telefon quer** für einen größeren Baum: Der Baum ist der einzige
 Bildschirm der App, der auch im Querformat funktioniert. Dort stehen die
 Bedienelemente in einer Zeile über dem Baum, und mit **Ziffern und Zeichen**
 passt der ganze Baum ohne Scrollen auf den Bildschirm. Der Rest der App
 bleibt im Hochformat.
+
+::: {.shots .wide}
+![Querformat: Buchstaben](img/de/tree_letters_land.png)
+
+![Querformat mit Ziffern und Zeichen: der ganze Baum passt](img/de/tree_deep_land.png)
+:::
 
 Den Baum zeichnet die App aus derselben Codetabelle, mit der sie auch spielt
 und decodiert. Er stimmt also immer mit dem überein, was du hörst.
@@ -1646,12 +1688,20 @@ Striche leuchten auf, während sie erklingen. Das Tempo startet mit dem Wert aus
 dem Training Hören; mit **−** und **+** änderst du es nur für diese Ansicht.
 Die Tonhöhe stellst du unter Einstellungen → Allgemein ein.
 
+::: {.shots .one}
+![Zeichentabelle: ein Zeichen leuchtet beim Abspielen](img/de/chart.png)
+:::
+
 ## Links
 
 Eine Liste externer Seiten zum CW-Lernen: die Videoreihe von Heinz („just me“)
 auf YouTube, LCWO, VBand und die Morserino-32-Homepage. Ein Tipp öffnet die
 Seite im Browser. Es sind eigenständige Angebote, die mit dieser App nicht
 verbunden sind; die App verlinkt sie nur und zeigt nichts von deren Inhalt.
+
+::: {.shots .one}
+![Links zu Kursen und Übungsseiten](img/de/links.png)
+:::
 
 # Paddle und Morsetaste
 
