@@ -184,7 +184,7 @@ Module-by-module details: `docs/PORTING-MAP.md`.
 | CW Decoder (microphone → text) | ✅ Supported | Goertzel + firmware decoder port |
 | WiFi Trx (MOPP over UDP, e.g. cq.morserino.info) | ✅ Supported | Foreground only; no background service yet |
 | QSO Bot (SOTA/POTA, Standard, Contest) | ✅ Supported | |
-| Games: Morse Invaders, Morsel, Memory Chain | ✅ Supported | Single player; Morsel not yet fully user-tested |
+| Games: Morse Invaders, Morsel, Memory Chain | ✅ Supported | Single player |
 | Text adventure: Zork I–III in CW | ✅ Supported | App-only (not in the firmware); own Z-machine v3 interpreter, maps, saves |
 | Settings, audio output routing, theme, text zoom, DE/EN UI | ✅ Supported | Android-native equivalents of device-only prefs |
 | Games: Trailblazer, Fox Hunt, Radio Cave, Fight the Pileup | 🚧 Not yet | GitHub issues #13–#15 (single player) |

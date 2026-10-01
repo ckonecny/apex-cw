@@ -4,7 +4,7 @@
 > Entwurfshistorie; maßgeblich sind `docs/DECISIONS.md` und der Code.
 
 **Einstieg für jede Session zu diesem Thema.** Nur diese Datei und die
-Spec der aktuellen Phase lesen. `docs/TRAINING-CONCEPT.md` ist das
+Spec der aktuellen Phase lesen. `docs/archive/TRAINING-CONCEPT.md` ist das
 Zielbild und wird nur gelesen, wenn eine Phase neu spezifiziert wird, und
 auch dann nur die Abschnitte, die in der Tabelle unten stehen.
 

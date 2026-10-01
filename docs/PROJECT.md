@@ -25,9 +25,8 @@ scope/hardware-distinction, and the paddle-adapter note (vband etc.).
   of STATUS.md), `DECISIONS.md` (why things are built the way they are),
   `PORTING-MAP.md` (firmware module -> Android module -> status),
   `ADAPTIVE-COPY.md` (how the adaptive Hören block works),
-  `TRAINING-CONCEPT.md` (target picture of the training rework),
   `PLAY-LISTING.md` (Play Store texts and console answers),
-  `archive/training/` (finished phase specs of that rework, history only).
+  `archive/` (concept and phase specs of the finished training rework, history only).
 - `PRIVACY.md` (repo root) — privacy policy, linked from the Play listing.
 - `store/`, `tools/` — Play Store graphics script; release build and git hooks.
 - `CLAUDE.md` (repo root) — session-start rules; read that first, it's short

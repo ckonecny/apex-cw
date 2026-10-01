@@ -19,8 +19,8 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | `MorsePreferences.cpp` NVS persistence | `SharedPreferences` | Done (equivalent, different storage) |
 | `MorseTextEntry.cpp` (on-device char picker) | Flutter native text fields | N/A — superseded by touch keyboard |
 | Display layer (`DisplayWrapper`, `M32OledLGFX`) | Flutter widgets | N/A — superseded |
-| `MorseWiFi.cpp` / cwForTx() (WiFi Trx UDP protocol) | `lib/net/mopp.dart`, `lib/net/mopp_client.dart`, `lib/ui/wifi_trx_screen.dart` | First version: single server/peer, send + receive, in foreground only. Not yet tested against a real server. ESP-NOW/LoRa: N/A |
-| `MorseMorsel.cpp` (Morsel, word guessing) | `lib/ui/morsel_screen.dart` (via `games_screen.dart`) | Ported, single player (2026-09-25), not yet user-tested |
+| `MorseWiFi.cpp` / cwForTx() (WiFi Trx UDP protocol) | `lib/net/mopp.dart`, `lib/net/mopp_client.dart`, `lib/ui/wifi_trx_screen.dart` | Single server/peer, send + receive, in foreground only (2026-09-25), user-tested OK. ESP-NOW/LoRa: N/A |
+| `MorseMorsel.cpp` (Morsel, word guessing) | `lib/ui/morsel_screen.dart` (via `games_screen.dart`) | Ported, single player (2026-09-25), user-tested OK |
 | `MorseMemoryChain.cpp` (Memory Chain) | `lib/ui/memory_chain_screen.dart` (via `games_screen.dart`) | Ported (2026-09-25), user-tested OK |
 | `MorseGridEngine.cpp`, `MorseGridScore.cpp`, `MorseTrailblazer.cpp`, `MorseFoxHunt.cpp` (grid games) | — | GitHub issue #13 |
 | `MorseGame.cpp`, `MorseGameMode.cpp`, `GameSprite.cpp` (Morse Invaders) | `lib/ui/invaders_screen.dart` (via `games_screen.dart`), effects in `CwTonePlugin.kt` | Ported (2026-09-25), user-tested OK |

@@ -1,5 +1,8 @@
 # Trainingskonzept: Hören, Echo und Einstellungen (Entwurf)
 
+> **Archiv.** Umbau abgeschlossen; Entwurfshistorie. Einzelne Punkte (Snapshots,
+> benannte Presets) wurden nie gebaut. Maßgeblich sind `docs/DECISIONS.md` und der Code.
+
 Status: **Zielbild.** Erstellt 2026-09-23. Die Umsetzung läuft in Phasen,
 jede wird vor dem Bauen einzeln genauer spezifiziert. Fahrplan, Status und
 Phasen-Specs: `docs/archive/training/README.md`. Offene Fragen (Abschnitt 9) werden
