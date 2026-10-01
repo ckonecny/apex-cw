@@ -797,6 +797,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   Future<void> _finishBlock() async {
     final p = await SharedPreferences.getInstance();
     await _charStats.load(p);
+    _charStats.wpm = _activeWpm;
     var total = 0, correct = 0;
     final results = <bool>[];
     for (var g = 0; g < _sentGroups.length; g++) {

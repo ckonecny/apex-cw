@@ -110,4 +110,46 @@ void main() {
     expect(CharStat().correctsToReach(0.90), 0);
     expect(store.stats['i']!.correctsToReach(1.0), isNull);
   });
+
+  test('per-day aggregates: overall, tempo and per character; save/load', () async {
+    SharedPreferences.setMockInitialValues({});
+    final p = await SharedPreferences.getInstance();
+    final store = CharStatsStore(CharStatsStore.hear);
+    store.now = () => DateTime(2026, 10, 1, 9);
+    store.wpm = 20;
+    store.record('a', true);
+    store.record('a', false);
+    store.wpm = 22;
+    store.record('b', true);
+    store.now = () => DateTime(2026, 10, 2, 9);
+    store.record('b', true);
+    await store.save(p);
+
+    final back = CharStatsStore(CharStatsStore.hear);
+    await back.load(p);
+    expect(back.days.keys.toList()..sort(), ['2026-10-01', '2026-10-02']);
+    final d = back.days['2026-10-01']!;
+    expect([d.attempts, d.errors], [3, 1]);
+    expect(d.chars['a'], [2, 1]);
+    expect(d.wm, 22);
+    expect(d.avgWpm, closeTo(62 / 3, 0.001));
+    expect(d.rate, closeTo(2 / 3, 0.001));
+    // The echo track keeps its own days.
+    final echo = CharStatsStore(CharStatsStore.echo);
+    await echo.load(p);
+    expect(echo.days, isEmpty);
+    await back.reset(p);
+    final again = CharStatsStore(CharStatsStore.hear);
+    await again.load(p);
+    expect(again.days, isEmpty);
+  });
+
+  test('recordWord books the days too, without wpm when unknown', () {
+    final store = CharStatsStore(CharStatsStore.echo);
+    store.now = () => DateTime(2026, 10, 1);
+    store.recordWord('CAT', 'CXT');
+    final d = store.days['2026-10-01']!;
+    expect([d.attempts, d.errors], [2, 1]); // C right, A wrong, T not counted
+    expect(d.avgWpm, isNull);
+  });
 }

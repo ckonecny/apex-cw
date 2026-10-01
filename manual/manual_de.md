@@ -1002,6 +1002,10 @@ zeigt nur die Versuche, nicht die Quote.
 - **Letzte 30 Versuche** – ein Streifen aus grünen (richtig) und roten
   (falsch) Balken, rechts das Neueste. Er füllt sich erst beim Üben, ältere
   Daten haben keinen Verlauf.
+- **Trefferquote pro Woche** – eine Kurve der letzten 12 Wochen für dieses
+  Zeichen (Reiter *Treffer*; gestrichelt: die Freischalt-Schwelle) oder die
+  Zahl der Versuche pro Woche (Reiter *Versuche*). Wochen ohne Übung bleiben
+  leer.
 - **Zuletzt geübt** – heute, gestern oder vor *n* Tagen (ebenfalls erst ab
   dem nächsten Üben).
 - **Übungsgewicht** – von 1 bis 20. Je höher, desto öfter kommt das Zeichen
@@ -1014,9 +1018,31 @@ zeigt nur die Versuche, nicht die Quote.
   was du gehört hast.
 - **Anhören** – spielt das Zeichen dreimal ab, mit dem Tempo dieses Trainings.
 
+**Reiter Verlauf.** Oben schaltest du zwischen *Zeichen* (die Liste oben)
+und *Verlauf* um. Der Verlauf zeigt, wie sich das Üben über die Zeit
+entwickelt, getrennt für jedes Training. Er füllt sich ab dem Tag, an dem es
+die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
+**12 Wochen** oder **Alles**:
+
+- **Trefferquote, WPM und Übungstage** oben. Quote und WPM sind die des
+  letzten Tages (4 Wochen), der letzten Woche (12 Wochen) oder des letzten
+  Monats (Alles, ab etwa einem halben Jahr) mit Übung, gewichtet nach
+  Versuchen, mit Pfeil gegenüber dem Zeitraum davor. „Übungstage“ liest sich
+  wie *42/88*.
+- **Trefferquote pro Tag / Woche / Monat** und **Tempo (WPM)** als Kurven.
+  Zeiträume ohne Übung sind Lücken, keine Null.
+- **Übungstage**: ein Kästchen pro Tag (4 Wochen), sonst ein Balken pro Woche
+  oder Monat.
+- **Alle Zeichen, Woche für Woche**: eine Heatmap, Zeichen untereinander,
+  Wochen nebeneinander, von rot (unter 60 %) bis grün (ab 90 %). Eine Zelle
+  mit weniger als 5 Versuchen bleibt leer. Die Zeichen und die Wochen-
+  überschriften bleiben stehen, nur die Zellen scrollen. **Schwächste zuerst**
+  sortiert nach der letzten Trefferquote. Tippe auf ein Zeichen, um seine
+  Detailansicht zu öffnen.
+
 Mit dem Symbol **Zurücksetzen** löschst du nach einer Sicherheitsabfrage die
-gesamte Statistik dieses Trainings – Fehlerquoten, Gewichte und
-Verwechslungen. Die Statistik des anderen Trainings bleibt erhalten. Das lässt
+gesamte Statistik dieses Trainings – Fehlerquoten, Gewichte,
+Verwechslungen und den Verlauf. Die Statistik des anderen Trainings bleibt erhalten. Das lässt
 sich nicht rückgängig machen.
 
 ::: {.shots}

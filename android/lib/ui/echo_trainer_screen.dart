@@ -327,6 +327,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Block flow: every echo content feeds the Geben track, once per word
   // after the first attempt (docs/archive/training/P6-echo-vorschlaege.md).
   Future<void> _applyBlockFeedback(String target, String received) async {
+    _charStats.wpm = _wpm;
     final pair = _charStats.recordWord(target, received);
     if (pair != null) _blockPairs.add(pair);
     final p = await SharedPreferences.getInstance();

@@ -1139,3 +1139,39 @@ screen and the detail sheet now show ready/hourglass, the "x of y ready" box,
 the reasons and the unlock gap on **both** tracks. Sort order differs on
 purpose: Listen = not-ready first, Send = weakest first. Only the mix-ups
 stay Send-only (Listen has no typed character to compare).
+
+## Progress view over time: decisions and data collection (2026-10-01, user request)
+Issue #16, merged with #4. Decided with the user:
+- **Dropped:** CSV export and backup/restore (not wanted at all). #4 closed.
+- **Data (done):** per-day aggregates, separate per track (Hören/Geben), kept
+  in `CharStatsStore.days` (`charStats.<track>.days`): attempts, errors,
+  wpm sum (average) and day maximum, and per character [attempts, errors].
+  Booked in `record` / `recordWord`, the same single place as the history
+  strip. wpm is set by the screen before recording (hear: block wpm, send:
+  hearing wpm). **No back-fill**; a statistics reset wipes the days too.
+  Storage is one JSON string per track, rewritten on every save (~0.5 KB per
+  active day, a few hundred KB after years at most).
+- **View (next, after a mockup is approved):** overall rate, speed, curve per
+  character (in the detail sheet), overview of all characters, practice
+  time/days. Lives behind the existing statistics icon of Hören and Geben.
+  Charts drawn with `CustomPaint`, no package (no licence check needed).
+- **Later, own issues:** per-character speed/reaction time (#19), mix-ups over
+  time (#20).
+
+### Progress view: UI as built (2026-10-01, approved mockup)
+- Stats screen gets a switch "Zeichen | Verlauf" (`SegmentedButton`); the
+  Verlauf tab is `ui/progress_view.dart`, series logic in
+  `content/progress_series.dart` (pure Dart, tested).
+- Range 4 weeks / 12 weeks / All. Buckets: day / week (Monday start) / month;
+  "All" turns to months beyond 26 weeks. Empty buckets stay gaps in the curves.
+- KPIs = latest bucket **with practice**, weighted by attempts (rate, wpm; wpm
+  ignores attempts without a wpm), arrow vs. the previous bucket with practice
+  (±3 points flat band). Days practised = "d/t", t counted from the start of
+  the range (All: from the first practice day). No practice time (not stored).
+- Heatmap: weekly (4-week range uses 7-day blocks), cell colour only from 5
+  attempts, red (≤ 60 %) → amber → accent (≥ 90 %); characters and header stay,
+  cells scroll; "Weakest first" sort; tap opens the detail sheet. No
+  "stays weak" verdict text (no criterion defined).
+- Detail sheet: "Trefferquote pro Woche" (12 weeks) with tabs Hits | Attempts,
+  threshold dashed. Not the moving average, not the overall rate.
+- Charts: `ui/widgets/progress_charts.dart` (`CustomPaint`, no package).

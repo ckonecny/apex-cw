@@ -976,6 +976,9 @@ attempts (default 20) **and** a current accuracy above the threshold (default
 - **Last 30 attempts** – a strip of green (right) and red (wrong) bars,
   newest on the right. It fills up as you practise; older data has no
   history.
+- **Hit rate per week** – a curve of the last 12 weeks for this character
+  (tab *Hits*; dashed: the unlock threshold) or the number of attempts per
+  week (tab *Attempts*). Weeks without practice are left out.
 - **Last practised** – today, yesterday or *n* days ago (also only from the
   next practice on).
 - **Practice weight** – from 1 to 20. The higher, the more often the
@@ -986,8 +989,27 @@ attempts (default 20) **and** a current accuracy above the threshold (default
   what was wrong, so what you heard is not recorded there.
 - **Listen** – plays the character three times, at this training's speed.
 
+**Progress tab.** At the top, switch between *Characters* (the list above)
+and *Progress*. Progress shows how practice develops over time, separately for
+each training. It fills up from the day this feature was added; earlier
+practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
+
+- **Hit rate, WPM and days practised** at the top. Hit rate and WPM are those
+  of the latest day (4 weeks), week (12 weeks) or month (All, from about half
+  a year on) with practice, weighted by attempts, with an arrow against the
+  period before. "Days practised" reads like *42/88*.
+- **Hit rate per day / week / month** and **speed (WPM)** as curves. Periods
+  without practice are gaps, not zero.
+- **Days practised**: one box per day (4 weeks), otherwise a bar per week or
+  month.
+- **All characters, week by week**: a heatmap, characters down, weeks across,
+  from red (below 60 %) to green (from 90 %). A cell with fewer than 5
+  attempts stays empty. The characters and the week headings stay in place
+  while the cells scroll. **Weakest first** sorts by the latest hit rate. Tap
+  a character to open its detail view.
+
 The **reset** icon deletes all of this training's statistics after a
-confirmation: error rates, weights and mix-ups. The other training's
+confirmation: error rates, weights, mix-ups and the progress. The other training's
 statistics are kept. This cannot be undone.
 
 ::: {.shots}

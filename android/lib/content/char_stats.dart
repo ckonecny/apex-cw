@@ -67,6 +67,39 @@ class CharStat {
   }
 }
 
+// One calendar day of practice in one track (progress view, issue #16).
+// `ws` is the sum of the wpm of every attempt (average = ws / attempts), `wm`
+// the highest wpm seen that day, `chars` maps a character to [attempts, errors].
+class DayStat {
+  int attempts = 0;
+  int errors = 0;
+  int ws = 0;
+  int wm = 0;
+  final Map<String, List<int>> chars = {};
+
+  DayStat();
+
+  DayStat.fromJson(Map<String, dynamic> j)
+      : attempts = j['a'] as int? ?? 0,
+        errors = j['e'] as int? ?? 0,
+        ws = j['ws'] as int? ?? 0,
+        wm = j['wm'] as int? ?? 0 {
+    (j['c'] as Map<String, dynamic>? ?? const {}).forEach((k, v) {
+      final l = (v as List).cast<int>();
+      chars[k] = [l[0], l[1]];
+    });
+  }
+
+  Map<String, dynamic> toJson() =>
+      {'a': attempts, 'e': errors, 'ws': ws, 'wm': wm, 'c': chars};
+
+  double? get rate => attempts == 0 ? null : (attempts - errors) / attempts;
+  double? get avgWpm => attempts == 0 || ws == 0 ? null : ws / attempts;
+}
+
+String dayKey(DateTime d) =>
+    '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
 class CharStatsStore {
   static const hear = 'hear';
   static const echo = 'echo';
@@ -82,6 +115,27 @@ class CharStatsStore {
   final Map<String, int> pairs = {};
 
   String get _pairsKey => '$_key.pairs';
+  String get _daysKey => '$_key.days';
+
+  // Per-day aggregates, key = dayKey. Fill from the day this existed; no
+  // back-fill. `wpm` is set by the screen before it records (0 = unknown).
+  final Map<String, DayStat> days = {};
+  int wpm = 0;
+  // Overridable for tests.
+  DateTime Function() now = DateTime.now;
+
+  void _logDay(String char, bool correct) {
+    final d = days.putIfAbsent(dayKey(now()), () => DayStat());
+    d.attempts++;
+    if (!correct) d.errors++;
+    if (wpm > 0) {
+      d.ws += wpm;
+      if (wpm > d.wm) d.wm = wpm;
+    }
+    final c = d.chars.putIfAbsent(char, () => [0, 0]);
+    c[0]++;
+    if (!correct) c[1]++;
+  }
 
   List<MapEntry<String, int>> topPairs([int n = 10]) {
     final l = pairs.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
@@ -121,6 +175,12 @@ class CharStatsStore {
     await migrateIfNeeded(p);
     stats.clear();
     pairs.clear();
+    days.clear();
+    final dp = p.getString(_daysKey);
+    if (dp != null && dp.isNotEmpty) {
+      (jsonDecode(dp) as Map<String, dynamic>)
+          .forEach((k, v) => days[k] = DayStat.fromJson(v as Map<String, dynamic>));
+    }
     final rp = p.getString(_pairsKey);
     if (rp != null && rp.isNotEmpty) {
       (jsonDecode(rp) as Map<String, dynamic>).forEach((k, v) => pairs[k] = v as int);
@@ -137,12 +197,17 @@ class CharStatsStore {
     stats.forEach((k, v) => encoded[k] = v.toJson());
     await p.setString(_key, jsonEncode(encoded));
     await p.setString(_pairsKey, jsonEncode(pairs));
+    if (days.isNotEmpty) {
+      await p.setString(_daysKey, jsonEncode(days.map((k, v) => MapEntry(k, v.toJson()))));
+    }
   }
 
   // Wipes this track's per-character history only.
   Future<void> reset(SharedPreferences p) async {
     stats.clear();
     pairs.clear();
+    days.clear();
+    await p.remove(_daysKey);
     await p.remove(_key);
     await p.remove(_pairsKey);
   }
@@ -161,6 +226,7 @@ class CharStatsStore {
     s.emaErrorRate = _emaAlpha * (correct ? 0 : 1) + (1 - _emaAlpha) * s.emaErrorRate;
     s.lastBlock = block;
     s._log(correct);
+    _logDay(char, correct);
     s.weight = (correct ? s.weight - 1 : s.weight + 2).clamp(1, 20);
   }
 
@@ -186,6 +252,7 @@ class CharStatsStore {
         s.emaErrorRate = _emaAlpha * (correct ? 0 : 1) + (1 - _emaAlpha) * s.emaErrorRate;
         s.lastBlock = block;
         s._log(correct);
+        _logDay(ch, correct);
       }
       s.weight = (s.weight + weight).clamp(1, 20);
     }

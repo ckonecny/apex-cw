@@ -27,6 +27,7 @@ the last release, with the reason. Clear this list after the release build
 (steps: `manual/README.md` → "At release time").
 
 - `hear_stats.png`, `echo_stats.png`: rows now read "N Versuche · noch k nötig · unter X %", percent carries an "aktuell" caption, rule sentence under the intro; icon hidden on the sending track.
+- New: progress tab ("Verlauf") in `hear_stats`/`echo_stats` style, one shot per training (12 weeks, with data), and the character detail sheet now has the weekly curve — both in the "Zeichenstatistik" chapter, DE+EN.
 - New: character detail sheet (Hören, e.g. a not-ready char; Geben with mix-ups) in the "Zeichenstatistik" chapter, DE+EN, via `manual/tools/insert.py`.
 - Morse tree shots: portrait and landscape (letters, and deep tree).
 - `home.png` (manual, DE+EN) (new "Lernen" tile; "Frei" is now one tile "Freie Modi", home no longer scrolls), plus a new hub shot "Freie Modi" (four tiles).

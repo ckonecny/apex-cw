@@ -5,9 +5,11 @@
 // both are shown side by side (user 2026-09-30, docs/STATUS.md).
 import 'package:flutter/material.dart';
 import '../../content/char_stats.dart';
+import '../../content/progress_series.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import '../../util/char_color.dart';
+import 'progress_charts.dart';
 
 // Difference in percentage points below which "current" counts as equal to
 // "overall" (same band as the block trend, block_history.dart).
@@ -23,6 +25,7 @@ Future<void> showCharStatSheet(
   required double highThreshold,
   required int outputCase,
   required Map<String, int> pairs,
+  required Map<String, DayStat> days,
   required Future<void> Function() onListen,
 }) {
   final c = AppColors.of(context);
@@ -34,7 +37,7 @@ Future<void> showCharStatSheet(
     builder: (_) => _CharStatSheet(
       ch: ch, stat: stat, isHear: isHear, ready: ready,
       unlockOccurrences: unlockOccurrences, highThreshold: highThreshold,
-      outputCase: outputCase, pairs: pairs, onListen: onListen,
+      outputCase: outputCase, pairs: pairs, days: days, onListen: onListen,
     ),
   );
 }
@@ -46,11 +49,13 @@ class _CharStatSheet extends StatelessWidget {
   final int unlockOccurrences, outputCase;
   final double highThreshold;
   final Map<String, int> pairs;
+  final Map<String, DayStat> days;
   final Future<void> Function() onListen;
   const _CharStatSheet({
     required this.ch, required this.stat, required this.isHear, required this.ready,
     required this.unlockOccurrences, required this.highThreshold,
-    required this.outputCase, required this.pairs, required this.onListen,
+    required this.outputCase, required this.pairs, required this.days,
+    required this.onListen,
   });
 
   static String _pct(double v) => (v * 100).toStringAsFixed(1);
@@ -182,6 +187,8 @@ class _CharStatSheet extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(Strings.t('cs_strip_legend'), style: faint),
                     ])),
+          section(Strings.t('pr_curve_title'),
+              _CharCurve(ch: ch, days: days, highThreshold: highThreshold)),
           if (last != null) section(Strings.t('cs_last'), Text(last, style: mono)),
           section(Strings.t('cs_weight'),
               Text(Strings.t('cs_weight_value').replaceFirst('{w}', '${stat.weight}'),
@@ -208,5 +215,85 @@ class _CharStatSheet extends StatelessWidget {
         ]),
       ),
     );
+  }
+}
+
+// Weekly hit rate / attempts of one character over the last 12 weeks, from the
+// per-day aggregates (same buckets as the progress view).
+class _CharCurve extends StatefulWidget {
+  final String ch;
+  final Map<String, DayStat> days;
+  final double highThreshold;
+  const _CharCurve({required this.ch, required this.days, required this.highThreshold});
+
+  @override
+  State<_CharCurve> createState() => _CharCurveState();
+}
+
+class _CharCurveState extends State<_CharCurve> {
+  bool _hits = true;
+
+  static TextStyle _label(AppColors c, bool on) =>
+      TextStyle(fontFamily: 'CwMono', fontSize: 13, color: on ? c.accent : c.textMuted);
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final faint = TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint);
+    final s = buildSeries(widget.days, ProgressRange.weeks12, DateTime.now());
+    final attempts = [for (final b in s.buckets) b.charAttempts(widget.ch)];
+    if (attempts.every((a) => a == 0)) {
+      return Text(Strings.t('pr_curve_empty'), style: faint);
+    }
+    final first = bucketLabel(s.buckets.first.start, s.granularity);
+    final last = bucketLabel(s.buckets.last.start, s.granularity);
+    final rates = [
+      for (final b in s.buckets) b.charRate(widget.ch) == null ? null : b.charRate(widget.ch)! * 100
+    ];
+    final present = rates.whereType<double>();
+    final lo = ((present.reduce((a, b) => a < b ? a : b) / 10).floor() * 10).clamp(0, 90).toDouble();
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      chipsThemed(
+        context,
+        Wrap(spacing: 8, children: [
+          ChoiceChip(
+              label: Text(Strings.t('pr_curve_hits')),
+              selected: _hits,
+              labelStyle: _label(c, _hits),
+              onSelected: (_) => setState(() => _hits = true)),
+          ChoiceChip(
+              label: Text(Strings.t('pr_curve_attempts')),
+              selected: !_hits,
+              labelStyle: _label(c, !_hits),
+              onSelected: (_) => setState(() => _hits = false)),
+        ]),
+      ),
+      const SizedBox(height: 8),
+      if (_hits)
+        ProgressLineChart(
+          values: rates,
+          yMin: lo,
+          yMax: 100,
+          yLabel: (v) => '${v.round()} %',
+          firstLabel: first,
+          lastLabel: last,
+          color: c.accent,
+          threshold: widget.highThreshold * 100,
+        )
+      else
+        ProgressBars(
+          values: [for (final a in attempts) a.toDouble()],
+          max: attempts.reduce((a, b) => a > b ? a : b).toDouble(),
+          color: c.info,
+          firstLabel: first,
+          lastLabel: last,
+        ),
+      const SizedBox(height: 4),
+      Text(
+          _hits
+              ? Strings.t('pr_curve_note').replaceFirst('{t}', '${(widget.highThreshold * 100).round()}')
+              : Strings.t('pr_curve_note_attempts'),
+          style: faint),
+    ]);
   }
 }

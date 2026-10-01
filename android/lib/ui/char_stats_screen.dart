@@ -18,6 +18,7 @@ import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart';
+import 'progress_view.dart';
 import 'widgets/char_stat_sheet.dart';
 import '../util/char_color.dart';
 
@@ -38,6 +39,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
   int _unlockOccurrences = 20;
   double _highThreshold = 0.90;
   int _outputCase = 0;
+  int _tab = 0; // 0 = Zeichen, 1 = Verlauf
 
   @override
   void initState() {
@@ -88,8 +90,16 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
       showCharStatSheet(context,
           ch: ch, stat: stat, isHear: _isHear, ready: ready,
           unlockOccurrences: _unlockOccurrences, highThreshold: _highThreshold,
-          outputCase: _outputCase, pairs: _store.pairs,
+          outputCase: _outputCase, pairs: _store.pairs, days: _store.days,
           onListen: () => _listen(ch));
+
+  bool _isReady(CharStat s) =>
+      s.attempts >= _unlockOccurrences && (1 - s.emaErrorRate) >= _highThreshold;
+
+  Future<void> _openChar(String ch) {
+    final s = _store.stats[ch] ?? CharStat();
+    return _openDetail(ch, s, _isReady(s));
+  }
 
   // Irreversible, so a short confirmation guards against a stray tap.
   Future<void> _confirmReset() async {
@@ -143,7 +153,44 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
       ),
       body: _loading
           ? Center(child: CircularProgressIndicator(color: c.accent))
-          : _buildBody(c),
+          : Column(children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: SegmentedButton<int>(
+                    showSelectedIcon: false,
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.resolveWith((st) =>
+                          st.contains(WidgetState.selected)
+                              ? c.accent.withValues(alpha: 0.18)
+                              : Colors.transparent),
+                      foregroundColor: WidgetStateProperty.resolveWith((st) =>
+                          st.contains(WidgetState.selected) ? c.accent : c.textMuted),
+                      side: WidgetStatePropertyAll(BorderSide(color: c.borderAlt)),
+                      textStyle: const WidgetStatePropertyAll(
+                          TextStyle(fontFamily: 'CwMono', fontSize: 14)),
+                    ),
+                    segments: [
+                      ButtonSegment(value: 0, label: Text(Strings.t('pr_tab_chars'))),
+                      ButtonSegment(value: 1, label: Text(Strings.t('pr_tab_progress'))),
+                    ],
+                    selected: {_tab},
+                    onSelectionChanged: (v) => setState(() => _tab = v.first),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: _tab == 0
+                    ? _buildBody(c)
+                    : ProgressView(
+                        days: _store.days,
+                        order: _active,
+                        outputCase: _outputCase,
+                        onChar: _openChar,
+                      ),
+              ),
+            ]),
     );
   }
 
