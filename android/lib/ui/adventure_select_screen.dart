@@ -63,7 +63,7 @@ class _AdventureSelectScreenState extends State<AdventureSelectScreen> {
     final c = AppColors.of(context);
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => Scaffold(
+      builder: (context, _, _) => Scaffold(
         backgroundColor: c.background,
         appBar: AppBar(
           backgroundColor: c.background,
@@ -102,7 +102,7 @@ class _AdventureSelectScreenState extends State<AdventureSelectScreen> {
             .replaceAll('{r}', a.room);
     return AppCard(
       margin: const EdgeInsets.only(bottom: 10),
-      borderColor: a != null ? c.accent.withOpacity(0.5) : null,
+      borderColor: a != null ? c.accent.withValues(alpha: 0.5) : null,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(g.title, style: TextStyle(fontFamily: 'CwMono', fontSize: 15,
             fontWeight: FontWeight.bold, color: c.textPrimary)),

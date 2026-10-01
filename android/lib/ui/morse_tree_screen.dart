@@ -198,7 +198,7 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
         MediaQuery.orientationOf(context) == Orientation.landscape;
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => Scaffold(
+      builder: (context, _, _) => Scaffold(
         backgroundColor: c.background,
         appBar: AppBar(
           backgroundColor: c.background,

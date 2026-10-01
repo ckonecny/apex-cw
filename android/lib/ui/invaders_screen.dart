@@ -493,7 +493,7 @@ class _InvadersScreenState extends State<InvadersScreen>
     final c = AppColors.of(context);
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => PopScope(
+      builder: (context, _, _) => PopScope(
         canPop: _phase == _Phase.menu,
         onPopInvokedWithResult: (didPop, _) {
           if (didPop) return;
@@ -712,7 +712,7 @@ class _InvadersScreenState extends State<InvadersScreen>
       _ => const SizedBox.shrink(),
     };
     return Container(
-      color: c.surfaceDark.withOpacity(_phase == _Phase.countdown ? 1 : 0.75),
+      color: c.surfaceDark.withValues(alpha: _phase == _Phase.countdown ? 1 : 0.75),
       alignment: Alignment.center,
       child: content,
     );

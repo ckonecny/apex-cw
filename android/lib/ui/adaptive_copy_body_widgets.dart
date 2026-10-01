@@ -21,7 +21,7 @@ class SuggestionRow extends StatelessWidget {
   // is already in flight, or when there's no next character to preview.
   final VoidCallback? onPreview;
 
-  const SuggestionRow({
+  const SuggestionRow({super.key, 
     required this.width,
     required this.accepted,
     required this.onToggle,
@@ -46,10 +46,10 @@ class SuggestionRow extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
           decoration: BoxDecoration(
-            color: accepted ? c.accent.withOpacity(highlight ? 0.2 : 0.12) : c.surface,
+            color: accepted ? c.accent.withValues(alpha: highlight ? 0.2 : 0.12) : c.surface,
             borderRadius: BorderRadius.circular(14),
             border: highlight ? Border.all(
-                color: accepted ? c.accent.withOpacity(0.8) : c.border, width: 1.5) : null,
+                color: accepted ? c.accent.withValues(alpha: 0.8) : c.border, width: 1.5) : null,
           ),
           child: Row(children: [
             _TapTarget(

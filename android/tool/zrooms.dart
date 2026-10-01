@@ -25,6 +25,7 @@ void main(List<String> args) {
         default: ex.add('$d:len${b.length}');
       }
     });
+    // ignore: avoid_print
     print('$r\t${z.objectName(r)}\t${ex.join(' ')}');
   }
 }

@@ -72,7 +72,8 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   Future<void> _loadPrefs() async {
     final p = await SharedPreferences.getInstance();
     final pf = await TrainingProfile.open(TrainingProfile.hear);
-    if (mounted) setState(() {
+    if (mounted) {
+      setState(() {
       _wpm            = TrainingProfile.clampWpm(pf.getInt('wpm'));
       _kochLevel      = pf.getInt('kochLevel')      ?? 5;
       _choice         = CharsetChoice.load(pf);
@@ -94,6 +95,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
       _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
     });
+    }
     _genChannel.invokeMethod('setKochChars', _activeKochChars);
     await _restorePracticeCharsAndBoost();
     // Sidetone pitch/envelope: left at whatever another screen last set otherwise.
@@ -183,7 +185,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     // matching comment in settings_screen.dart's build().
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => PopScope(
+      builder: (context, _, _) => PopScope(
       // While a block/session is actively running, the back button returns
       // to this screen's own setup/start state instead of leaving the
       // screen entirely — see _exitPracticeToSetup().

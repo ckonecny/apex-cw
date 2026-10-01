@@ -173,10 +173,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _loadPaddleDesc() async {
     final result = await _settingsChannel.invokeMapMethod<String, String>('getPaddleChars');
-    if (result != null && mounted) setState(() {
+    if (result != null && mounted) {
+      setState(() {
       _ditDesc = result['dit'] ?? '?';
       _dahDesc = result['dah'] ?? '?';
     });
+    }
   }
 
   void _onSettingsEvent(dynamic raw) {
@@ -291,7 +293,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // next unrelated rebuild (e.g. a slider drag), not immediately like Theme.
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => Scaffold(
+      builder: (context, _, _) => Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
         backgroundColor: c.background,
@@ -555,9 +557,9 @@ class _ActionButton extends StatelessWidget {
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.07),
+        color: color.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(children: [
         Icon(icon, color: color, size: 20),
@@ -581,9 +583,9 @@ class _LearnCard extends StatelessWidget {
         ? c.accent : c.warning;
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: color.withOpacity(0.07),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.07),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color.withOpacity(0.4))),
+          border: Border.all(color: color.withValues(alpha: 0.4))),
       child: Row(children: [
         state == _LearnState.done
             ? Icon(Icons.check_circle, color: color)

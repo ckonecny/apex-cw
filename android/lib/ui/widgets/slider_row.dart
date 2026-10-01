@@ -30,7 +30,7 @@ class SliderRow extends StatelessWidget {
             activeTrackColor: c.accent,
             inactiveTrackColor: c.border,
             thumbColor: c.accent,
-            overlayColor: c.accent.withOpacity(0.1),
+            overlayColor: c.accent.withValues(alpha: 0.1),
             trackHeight: 3,
             // No step dots: Flutter draws them only when the track is long
             // enough, so rows of different width looked different.

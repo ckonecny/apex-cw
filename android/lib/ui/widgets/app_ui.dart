@@ -98,7 +98,7 @@ class AppButton extends StatelessWidget {
     return SizedBox(height: height, child: primary
         ? ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: color.withOpacity(0.18), foregroundColor: color,
+              backgroundColor: color.withValues(alpha: 0.18), foregroundColor: color,
               elevation: 0, shape: shape, padding: padding),
             onPressed: onTap, child: text)
         : ElevatedButton(
@@ -181,7 +181,7 @@ class _ScrollHintState extends State<ScrollHint> {
               child: DecoratedBox(decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                  colors: [bg.withOpacity(0), bg],
+                  colors: [bg.withValues(alpha: 0), bg],
                 ),
               )),
             ),
@@ -200,7 +200,7 @@ class HubCard extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
 
-  const HubCard({required this.icon, required this.title, required this.subtitle,
+  const HubCard({super.key, required this.icon, required this.title, required this.subtitle,
       required this.hint, required this.color, required this.onTap});
 
   @override
@@ -218,7 +218,7 @@ class HubCard extends StatelessWidget {
             Container(
               width: 56, height: 56,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.15),
+                color: color.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(icon, color: color, size: 30),

@@ -456,7 +456,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
     final c = AppColors.of(context);
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => PopScope(
+      builder: (context, _, _) => PopScope(
         canPop: _phase == _Phase.lobby,
         onPopInvokedWithResult: (didPop, _) {
           if (!didPop) _toLobby();
@@ -495,7 +495,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
             label: Text(labels[i], style: _mono(13, i == selected ? c.accent : c.textMuted)),
             selected: i == selected,
             showCheckmark: false,
-            selectedColor: c.accent.withOpacity(0.18),
+            selectedColor: c.accent.withValues(alpha: 0.18),
             backgroundColor: c.surface,
             side: BorderSide.none,
             onSelected: (_) => onSel(i),

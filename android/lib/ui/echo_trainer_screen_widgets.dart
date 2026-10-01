@@ -64,8 +64,8 @@ class _StatsBar extends StatelessWidget {
   Widget _chip(String t, Color c) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
     decoration: BoxDecoration(
-      color: c.withOpacity(0.1), borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: c.withOpacity(0.3)),
+      color: c.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: c.withValues(alpha: 0.3)),
     ),
     child: Text(t, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c)),
   );

@@ -42,7 +42,7 @@ class NextCwTrainerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => ValueListenableBuilder<ThemeMode>(
+      builder: (context, _, _) => ValueListenableBuilder<ThemeMode>(
         valueListenable: ThemeController.mode,
         builder: (context, mode, _) => MaterialApp(
           title: 'Next CW Trainer',

@@ -20,7 +20,7 @@ class FreeScreen extends StatelessWidget {
         Navigator.push(context, MaterialPageRoute(builder: (_) => s));
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => Scaffold(
+      builder: (context, _, _) => Scaffold(
         backgroundColor: c.background,
         appBar: AppBar(
           backgroundColor: c.background,

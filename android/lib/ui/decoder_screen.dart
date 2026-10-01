@@ -303,7 +303,7 @@ class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserv
             duration: const Duration(milliseconds: 80),
             width: w * frac(_levelDb),
             decoration: BoxDecoration(
-                color: (_tone ? c.accent : c.info).withOpacity(0.7),
+                color: (_tone ? c.accent : c.info).withValues(alpha: 0.7),
                 borderRadius: BorderRadius.circular(7)),
           ),
           if (_running)
@@ -323,7 +323,7 @@ class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserv
             label: Text(labels[i], style: _mono(13, i == selected ? c.accent : c.textMuted)),
             selected: i == selected,
             showCheckmark: false,
-            selectedColor: c.accent.withOpacity(0.18),
+            selectedColor: c.accent.withValues(alpha: 0.18),
             backgroundColor: c.background,
             side: BorderSide.none,
             onSelected: (_) => onSel(i),
@@ -369,7 +369,7 @@ class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserv
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
                 value: _monitor,
-                activeColor: c.accent,
+                activeThumbColor: c.accent,
                 title: Text(Strings.t('dec_monitor'), style: _mono(15, c.textPrimary)),
                 subtitle: Text(Strings.t('dec_monitor_hint'), style: _mono(12, c.textMuted)),
                 onChanged: (v) => apply(() {

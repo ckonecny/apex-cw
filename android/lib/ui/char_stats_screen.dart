@@ -258,7 +258,7 @@ class _CharStatRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: c.surfaceAlt,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: ready ? c.accent.withOpacity(0.4) : c.borderAlt),
+        border: Border.all(color: ready ? c.accent.withValues(alpha: 0.4) : c.borderAlt),
       ),
       child: Row(children: [
         Container(
@@ -266,7 +266,7 @@ class _CharStatRow extends StatelessWidget {
           height: 32,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: chColor.withOpacity(0.12),
+            color: chColor.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(display,

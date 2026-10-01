@@ -3,7 +3,7 @@ import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 
 class SettingsDivider extends StatelessWidget {
-  const SettingsDivider();
+  const SettingsDivider({super.key});
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
@@ -13,7 +13,7 @@ class SettingsDivider extends StatelessWidget {
 
 class SettingsSectionHeader extends StatelessWidget {
   final String text;
-  const SettingsSectionHeader(this.text);
+  const SettingsSectionHeader(this.text, {super.key});
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
@@ -25,7 +25,7 @@ class SettingsSectionHeader extends StatelessWidget {
 
 class SettingsCard extends StatelessWidget {
   final List<Widget> children;
-  const SettingsCard({required this.children});
+  const SettingsCard({super.key, required this.children});
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
@@ -43,7 +43,7 @@ class LabeledSlider extends StatelessWidget {
   final double value, min, max;
   final int divisions;
   final ValueChanged<double> onChanged;
-  const LabeledSlider({required this.label, required this.value, required this.min,
+  const LabeledSlider({super.key, required this.label, required this.value, required this.min,
       required this.max, required this.divisions, required this.display,
       required this.onChanged});
 
@@ -65,7 +65,7 @@ class LabeledSlider extends StatelessWidget {
           activeTrackColor: c.accent,
           inactiveTrackColor: c.border,
           thumbColor: c.accent,
-          overlayColor: c.accent.withOpacity(0.1),
+          overlayColor: c.accent.withValues(alpha: 0.1),
           trackHeight: 3,
         ),
         child: Slider(value: value, min: min, max: max, divisions: divisions, onChanged: onChanged),
@@ -84,7 +84,7 @@ class LabeledRangeSlider extends StatelessWidget {
   final double min, max;
   final int divisions;
   final ValueChanged<RangeValues> onChanged;
-  const LabeledRangeSlider({required this.label, required this.values, required this.min,
+  const LabeledRangeSlider({super.key, required this.label, required this.values, required this.min,
       required this.max, required this.divisions, required this.display,
       required this.onChanged});
 
@@ -106,7 +106,7 @@ class LabeledRangeSlider extends StatelessWidget {
           activeTrackColor: c.accent,
           inactiveTrackColor: c.border,
           thumbColor: c.accent,
-          overlayColor: c.accent.withOpacity(0.1),
+          overlayColor: c.accent.withValues(alpha: 0.1),
           trackHeight: 3,
         ),
         child: RangeSlider(values: values, min: min, max: max, divisions: divisions, onChanged: onChanged),
@@ -120,7 +120,7 @@ class ToggleRow extends StatelessWidget {
   final String label;
   final bool value;
   final ValueChanged<bool> onChanged;
-  const ToggleRow({required this.label, required this.value, required this.onChanged});
+  const ToggleRow({super.key, required this.label, required this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +134,7 @@ class ToggleRow extends StatelessWidget {
       Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: c.accent,
+        activeThumbColor: c.accent,
         inactiveTrackColor: c.border,
         // Default Material off-thumb is near-white — glares against the dark
         // background/border, looking like an accidentally-highlighted control.
@@ -154,7 +154,7 @@ class CharSetField extends StatelessWidget {
   final String label, initialValue, countLabel;
   final String? hint;
   final ValueChanged<String> onChanged;
-  const CharSetField({required this.label, required this.initialValue,
+  const CharSetField({super.key, required this.label, required this.initialValue,
       required this.onChanged, required this.countLabel, this.hint});
 
   @override
@@ -199,7 +199,7 @@ class SegmentRow extends StatelessWidget {
   final List<String> options;
   final int selected;
   final ValueChanged<int> onChanged;
-  const SegmentRow({required this.label, required this.options,
+  const SegmentRow({super.key, required this.label, required this.options,
       required this.selected, required this.onChanged});
 
   @override
@@ -225,7 +225,7 @@ class SegmentRow extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
-                  color: active ? c.accent.withOpacity(0.15) : c.background,
+                  color: active ? c.accent.withValues(alpha: 0.15) : c.background,
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: active ? c.accent : c.border),
                 ),

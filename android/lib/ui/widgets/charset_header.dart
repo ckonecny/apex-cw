@@ -75,7 +75,7 @@ class CharsetHeader extends StatelessWidget {
           Expanded(child: SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: c.accent, inactiveTrackColor: c.border,
-              thumbColor: c.accent, overlayColor: c.accent.withOpacity(0.1), trackHeight: 3,
+              thumbColor: c.accent, overlayColor: c.accent.withValues(alpha: 0.1), trackHeight: 3,
             ),
             child: Slider(
               value: kochLevel.clamp(2, kochSequence.length).toDouble(),
@@ -164,7 +164,7 @@ class _Chips extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               decoration: BoxDecoration(
-                color: i == selected ? c.accent.withOpacity(0.15) : c.surface,
+                color: i == selected ? c.accent.withValues(alpha: 0.15) : c.surface,
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(color: i == selected ? c.accent : c.border),
               ),

@@ -294,7 +294,9 @@ class _MorselScreenState extends State<MorselScreen> {
   // spell without input, go back to the lobby after a long one.
   void _idleTick() {
     if (_phase != _Phase.playing || _evaluated || _guess.isNotEmpty ||
-        !_clueDone || _cluePlaying || _touchDit || _touchDah) return;
+        !_clueDone || _cluePlaying || _touchDit || _touchDah) {
+      return;
+    }
     final now = DateTime.now();
     if (now.difference(_idleSince).inMilliseconds > _idleExitMs) {
       _toLobby();
@@ -398,7 +400,11 @@ class _MorselScreenState extends State<MorselScreen> {
     _totalAdjMs += raw + guesses * _guessPenaltyS * 1000 +
         (skipped ? _skipPenaltyS * 1000 : 0);
     _totalGuesses += guesses;
-    if (skipped) _skipped++; else _solved++;
+    if (skipped) {
+      _skipped++;
+    } else {
+      _solved++;
+    }
     _wordIndex++;
     if (_wordIndex >= _game.length) {
       _endPlay();
@@ -466,7 +472,7 @@ class _MorselScreenState extends State<MorselScreen> {
     final c = AppColors.of(context);
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => PopScope(
+      builder: (context, _, _) => PopScope(
         canPop: _phase == _Phase.lobby,
         onPopInvokedWithResult: (didPop, _) {
           if (!didPop) _toLobby();
@@ -569,7 +575,7 @@ class _MorselScreenState extends State<MorselScreen> {
                   i == _wlenOpt ? c.accent : c.textMuted)),
               selected: i == _wlenOpt,
               showCheckmark: false,
-              selectedColor: c.accent.withOpacity(0.18),
+              selectedColor: c.accent.withValues(alpha: 0.18),
               backgroundColor: c.surface,
               side: BorderSide.none,
               onSelected: (_) async {

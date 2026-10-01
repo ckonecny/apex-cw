@@ -43,13 +43,15 @@ class _KeyerScreenState extends State<KeyerScreen> {
     super.initState();
     KeepScreenOn.enable();
     _decoder = MorseDecoder(onChar: (ch) {
-      if (mounted) setState(() {
+      if (mounted) {
+        setState(() {
         // Cap only to bound memory; the display scrolls, so this must be far
         // more than fits on screen (a small cap here made the text shift
         // after ~4 lines even with free space left).
         final t = _decodedText + ch;
         _decodedText = t.length > _maxText ? t.substring(t.length - _maxText) : t;
       });
+      }
     });
     _symbolStream.receiveBroadcastStream().listen((sym) => _decoder.add(sym as String));
     _loadPrefsAndInit();
@@ -57,11 +59,13 @@ class _KeyerScreenState extends State<KeyerScreen> {
 
   Future<void> _loadPrefsAndInit() async {
     final prefs = await SharedPreferences.getInstance();
-    if (mounted) setState(() {
+    if (mounted) {
+      setState(() {
       _wpm        = prefs.getInt('wpm')        ?? 20;
       _keyerMode  = prefs.getInt('keyerMode')  ?? 0;
       _outputCase = (prefs.getInt('outputCase') ?? 0).clamp(0, 1);
     });
+    }
     final pitch = prefs.getInt('pitch') ?? 600;
     final toneSoftness = (prefs.getInt('toneSoftness') ?? 4).clamp(0, 8);
     final curtisBDit = (prefs.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);

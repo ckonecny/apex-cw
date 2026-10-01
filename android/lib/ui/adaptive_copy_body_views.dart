@@ -76,10 +76,10 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: included ? c.warning.withOpacity(0.15) : c.surfaceAlt,
+                color: included ? c.warning.withValues(alpha: 0.15) : c.surfaceAlt,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                    color: included ? c.warning.withOpacity(0.5) : c.border),
+                    color: included ? c.warning.withValues(alpha: 0.5) : c.border),
               ),
               child: Text('${_displayChar(e.key)}  ${(e.value * 100).round()}%',
                   style: TextStyle(fontFamily: 'CwMono', fontSize: 13 * scale,
@@ -297,7 +297,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
         const SizedBox(height: 14),
         SizedBox(height: 28 * f, child: badge == null ? null : Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(color: badgeColor.withOpacity(0.13),
+          decoration: BoxDecoration(color: badgeColor.withValues(alpha: 0.13),
               borderRadius: BorderRadius.circular(14)),
           child: Text(badge, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: badgeColor)),
         )),
@@ -427,7 +427,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
         width: width,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: hasError ? c.danger.withOpacity(0.13) : c.surfaceAlt,
+          color: hasError ? c.danger.withValues(alpha: 0.13) : c.surfaceAlt,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: hasError ? c.danger : c.border),
         ),
@@ -493,7 +493,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                   width: 56, height: 56,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: wrong ? c.danger.withOpacity(0.18) : c.surfaceAlt,
+                    color: wrong ? c.danger.withValues(alpha: 0.18) : c.surfaceAlt,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: wrong ? c.danger : c.border),
                   ),
@@ -539,9 +539,9 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                     .replaceFirst('{ewpm}', '$_effectiveTextWpm')
                     .replaceFirst('{ic}', '$_effectiveInterChar')
                     .replaceFirst('{iw}', '$_effectiveInterWord') +
-                    (_trend == null ? '' : ' · ' + Strings.t('trend_line')
+                    (_trend == null ? '' : ' · ${Strings.t('trend_line')
                         .replaceFirst('{pct}', '${_trend!.percent}')
-                        .replaceFirst('{arrow}', _trend!.arrow)),
+                        .replaceFirst('{arrow}', _trend!.arrow)}'),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
             const SizedBox(height: 20),
             _buildSpacingControl(context, scale: 1.2),

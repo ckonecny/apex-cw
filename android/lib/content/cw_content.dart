@@ -53,7 +53,7 @@ List<String> licwCarouselChars(int start) {
     if (s > 6) buf.write(_licwAllKochChars.substring(18, 18 + (3 * s - 18)));
   }
   final rotated = buf.toString().split('').where((c) => !prosigns.contains(c)).join();
-  return (rotated.toUpperCase() + '-@:').split('');
+  return ('${rotated.toUpperCase()}-@:').split('');
 }
 
 // seq: 0=M32, 1=LCWO, 2=CW Academy, 3=LICW, 4=Custom (matches M32 "Koch Sequence")

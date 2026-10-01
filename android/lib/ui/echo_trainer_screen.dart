@@ -250,7 +250,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<void> _loadPrefs() async {
     final p = await SharedPreferences.getInstance();
     final pf = await TrainingProfile.open(TrainingProfile.echo);
-    if (mounted) setState(() {
+    if (mounted) {
+      setState(() {
       _wpm            = TrainingProfile.clampWpm(pf.getInt('wpm'));
       _kochLevel      = pf.getInt('kochLevel')      ?? 5;
       _echoThinkTime  = p.getInt('echoThinkTime')  ?? 8;
@@ -289,6 +290,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
       _currentWpm     = _wpm;
     });
+    }
     _genChannel.invokeMethod('setKochChars', _activeKochChars);
     await _charStats.load(p);
     if (mounted) setState(() {});
@@ -559,10 +561,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: _excludedBoost.contains(e.key) ? c.surfaceAlt : c.danger.withOpacity(0.1),
+                    color: _excludedBoost.contains(e.key) ? c.surfaceAlt : c.danger.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: _excludedBoost.contains(e.key) ? c.border : c.danger.withOpacity(0.4)),
+                        color: _excludedBoost.contains(e.key) ? c.border : c.danger.withValues(alpha: 0.4)),
                   ),
                   child: Text('${cs(e.key)}  ${(e.value * 100).round()}%',
                       style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
@@ -683,7 +685,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (mounted) setState(() => _state = _State.idle);
   }
 
-  /// Plays a marker string (start "VVV<KA>" / end "+") via the native playOne()
+  /// Plays a marker string (start "VVV`<KA>`" / end "+") via the native playOne()
   /// and waits for its genuine completion.
   Future<void> _playSignal(String morse) async {
     final completer = Completer<void>();
@@ -710,11 +712,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _repeats++;
     _attempt = '';
 
-    if (mounted) setState(() {
+    if (mounted) {
+      setState(() {
       _targetVisible = false;
       _revealVisible = false;
       _state = _State.playing;
     });
+    }
 
     // Echo Prompt = Display only: no audio at all, just show the target briefly
     // (mirrors the real device's "silentEcho": genTimer skips almost instantly).
@@ -846,7 +850,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     var wrong = -1;
     if (a != t) {
       wrong = 0;
-      while (wrong < t.length && wrong < a.length && t[wrong] == a[wrong]) wrong++;
+      while (wrong < t.length && wrong < a.length && t[wrong] == a[wrong]) {
+        wrong++;
+      }
     }
     _blockResults.add(WordResult(_targetPlain, _firstAttempt, _repeats, outcome, wrong));
   }
@@ -857,10 +863,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _wordCounter++;
     if (_wordCounter >= _blockSize) {
       await _computeSuggestions();
-      if (mounted) setState(() {
+      if (mounted) {
+        setState(() {
         _state = _State.idle;
         _showResult = true;
       });
+      }
       _sessionActive = false;
       _genSub?.cancel(); _genSub = null;
       _keyerChannel.invokeMethod('stop');
@@ -913,7 +921,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // matching comment in settings_screen.dart's build().
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => PopScope(
+      builder: (context, _, _) => PopScope(
       // While a block runs, back returns to the idle view instead of leaving
       // (same as the Hören block view).
       canPop: _state == _State.idle,

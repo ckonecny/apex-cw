@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // in settings_screen.dart's build().
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) {
+      builder: (context, _, _) {
         final hearInfo = _hear == null ? '' : _profileInfo(_hear!);
         final giveInfo = _echo == null ? '' : _profileInfo(_echo!) +
             (_trend != null ? ' · ${_trend!.percent} % ${_trend!.arrow}' : '');
@@ -199,7 +199,7 @@ class _ModeCard extends StatelessWidget {
               Container(
                 width: 48, height: 48,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
+                  color: color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(icon, color: color, size: 26),

@@ -166,7 +166,7 @@ class _MorseChartScreenState extends State<MorseChartScreen> {
     final c = AppColors.of(context);
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, __) => Scaffold(
+      builder: (context, _, _) => Scaffold(
         backgroundColor: c.background,
         appBar: AppBar(
           backgroundColor: c.background,

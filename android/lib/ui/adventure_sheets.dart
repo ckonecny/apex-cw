@@ -362,7 +362,7 @@ class _AdventureSavesScreenState extends State<AdventureSavesScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
-              border: auto ? Border.all(color: c.accent.withOpacity(0.5)) : null,
+              border: auto ? Border.all(color: c.accent.withValues(alpha: 0.5)) : null,
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [

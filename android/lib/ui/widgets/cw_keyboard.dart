@@ -83,7 +83,7 @@ class CwKeyboard extends StatelessWidget {
         if (hasPro) for (final k in kKeyboardProsigns) unit(ch(k)) else gap(7),
         unit(_ActionKey(
             height: keyH, enabled: enabled, haptic: haptic, onTap: onSubmit,
-            color: c.accent.withOpacity(submitFaded ? 0.45 : 1),
+            color: c.accent.withValues(alpha: submitFaded ? 0.45 : 1),
             child: Text(submitLabel, style: TextStyle(fontFamily: 'CwMono',
                 fontSize: hasPro ? 13 : 16, fontWeight: FontWeight.bold, color: c.background))),
             hasPro ? 5 : 8),

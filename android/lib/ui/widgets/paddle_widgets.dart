@@ -54,13 +54,13 @@ class _StraightKeyPaddleState extends State<StraightKeyPaddle> {
           duration: const Duration(milliseconds: 30),
           height: 90,
           decoration: BoxDecoration(
-            color: _pressed ? color.withOpacity(0.3) : c.surface,
+            color: _pressed ? color.withValues(alpha: 0.3) : c.surface,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Center(child: Text(Strings.t('paddle_key'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: color.withOpacity(_pressed ? 1.0 : 0.75)))),
+                  color: color.withValues(alpha: _pressed ? 1.0 : 0.75)))),
         ),
       ),
     );
@@ -92,13 +92,13 @@ class _PaddleButtonState extends State<PaddleButton> {
         duration: const Duration(milliseconds: 30),
         height: widget.height,
         decoration: BoxDecoration(
-          color: _pressed ? widget.color.withOpacity(0.3) : c.surface,
+          color: _pressed ? widget.color.withValues(alpha: 0.3) : c.surface,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Center(child: Text(widget.label,
             style: TextStyle(fontFamily: 'CwMono', fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: widget.color.withOpacity(_pressed ? 1.0 : 0.75)))),
+                color: widget.color.withValues(alpha: _pressed ? 1.0 : 0.75)))),
       ),
     );
   }

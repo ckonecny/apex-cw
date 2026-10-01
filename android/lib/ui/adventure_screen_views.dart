@@ -95,7 +95,7 @@ extension _AdventureViews on _AdventureScreenState {
             decorationColor: i == cur ? c.accent : c.textDisabled,
             decorationThickness: 2);
       } else if (i == cur) {
-        st = st.copyWith(backgroundColor: c.accent.withOpacity(0.3));
+        st = st.copyWith(backgroundColor: c.accent.withValues(alpha: 0.3));
       }
       spans.add(TextSpan(
         text: w.display,

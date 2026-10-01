@@ -54,7 +54,7 @@ class _AdventureMapScreenState extends State<AdventureMapScreen> {
     if (r == null) return;
     final p = _pos(r);
     _ctl.value = Matrix4.identity()
-      ..translate(viewport.width / 2 - p.dx, viewport.height / 2 - p.dy);
+      ..translateByDouble(viewport.width / 2 - p.dx, viewport.height / 2 - p.dy, 0, 1);
   }
 
   Future<void> _setWhole(bool whole) async {
