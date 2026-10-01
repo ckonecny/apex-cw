@@ -9,7 +9,9 @@ short description 80, full description 4000 characters.
 ## App details
 
 - **App name:** Next CW Trainer
-- **Default language:** Deutsch (de-DE); translation: English (en-US)
+- **Package name:** at.oe1cko.nextcwtrainer (permanent)
+- **Default language:** English (en-US) — the fallback for every device
+  language without a translation; translation: Deutsch (de-DE)
 - **App or game:** App · **Category:** Education · **Free**
 - **Contact e-mail:** oe1ckoapps@gmail.com
 - **Website:** https://github.com/ckonecny/next_cw_trainer
@@ -112,7 +114,8 @@ All built by `python3 store/make_graphics.py` into `store/out/`:
 
 **App access:** all functions available without login.
 **Ads:** No.
-**Content rating (IARC):** Reference/education utility; no violence, sex,
+**Content rating (IARC):** questionnaire category "All other app types"
+(not Game, not Social/communication); no violence, sex,
 language, drugs, gambling; users can interact online: **Yes** (WiFi Trx
 exchanges Morse text with other users on public servers); no sharing of
 location; no purchases. (Zork contains mild fantasy combat in text.)
