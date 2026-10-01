@@ -596,6 +596,11 @@ dits and dahs and how long a word pause has to be. At the far left ("same as
 prompt"), the listening speed applies to the answer too. The lowest sending
 speed is 10 WPM.
 
+With the **straight key** (keyer mode Straight) there is no set sending speed:
+the app measures it from your keying
+([see below](#straight-key-automatic-speed)). The **Send** row is then
+disabled and shows the measured speed.
+
 ## The result page
 
 After the last word of a block the result page appears:
@@ -643,7 +648,8 @@ apply to the Send profile. There are two differences:
   2 × character spacing + 1 + word spacing / 8   (dits at the answer speed)
   ```
 
-  With a straight key it is word spacing + 1 dits. Example: character
+  With a straight key it is word spacing + 1 dits, measured at your own speed
+  (up to 30 WPM; above that the shorter straight-key gaps apply). Example: character
   spacing 28, word spacing 40, answer speed 18 WPM gives 62 dits, about 4 s.
   That is how long you may pause between the characters of a group, and how
   long the app waits after the last character before it scores. If that is
@@ -836,7 +842,9 @@ use **Adjust spacing**, and in Send use the speed controls.
 Send has one extra suggestion: **Sending speed increased** (+1 WPM). It only
 appears if you have set a sending speed **below** the listening speed and the
 block reached at least the high threshold. It starts **unticked**, because the
-sending speed is a deliberate choice.
+sending speed is a deliberate choice. With the straight key this suggestion
+is dropped, and so are the tighter/wider spacing suggestions; listening
+speed and new characters are still suggested.
 
 ## Accepting, rejecting, adjusting suggestions
 
@@ -1599,7 +1607,8 @@ These settings apply wherever you key.
 | Mode | How the keyer reads the paddles (see below) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
 | CurtisB dit timing | Iambic B and Ultimatic only: from what percentage of a dit a press on the other paddle is already stored | 0–100 % in steps of 5 (**75 %**) |
 | CurtisB dah timing | The same for dahs | 0–100 % in steps of 5 (**45 %**) |
-| Auto character spacing | Enforces a minimum pause between characters so they don't run together | **Off** / 2 / 3 / 4 dits |
+| Auto character spacing | Enforces a minimum pause between characters so they don't run together. Not available for Straight | **Off** / 2 / 3 / 4 dits |
+| Straight key start speed | Straight only (replaces Auto character spacing): first estimate for the speed measurement, see [Straight key](#straight-key-automatic-speed) | 5–40 WPM (**15**) |
 
 **The keyer modes**
 
@@ -1615,7 +1624,26 @@ These settings apply wherever you key.
   both paddles produces no alternating sequence.
 - **Straight**: a straight key. The tone is on for as long as the key is
   pressed. With touch, a single **KEY** area appears. With an adapter, the
-  dit contact acts as the key.
+  dit contact acts as the key. The speed is measured, see below.
+
+### Straight key: automatic speed
+
+With the straight key you don't set a speed. The app measures it from your
+keying, like the Morserino: from the length of your dits and dahs (a running
+average) it derives the speed, the dit/dah threshold and the character and
+word gaps. If you key more slowly, longer pauses are allowed automatically.
+
+- The first estimate is the **Straight key start speed** (Settings → Keyer).
+  If you key much more slowly, set it to your speed, otherwise a slow S can be
+  read as three E at first.
+- After about two to four characters the measurement has settled. The very
+  first character can still be misread.
+- The measurement restarts every time you enter a screen.
+- The **WPM slider** is disabled and moves by itself to your measured speed
+  (Keyer, WiFi Trx, Echo Trainer, QSO Bot and others). It is not saved and
+  does not change the paddle speed.
+- WiFi Trx sends the measured speed along. The Echo Trainer statistics store
+  it as your sending speed.
 
 ## Audio output
 

@@ -30,6 +30,9 @@ class EchoSuggestionInput {
   // Empty for word/callsign content.
   final List<String> activeChars;
   final CharStatsStore stats;
+  // Straight key: the Gebe-Tempo is measured and the spacing is the operator's
+  // own, so no Gebe-Tempo or spacing proposals (Hör-Tempo stays).
+  final bool straightKey;
 
   const EchoSuggestionInput({
     required this.firstTry,
@@ -43,6 +46,7 @@ class EchoSuggestionInput {
     required this.kochTotal,
     required this.activeChars,
     required this.stats,
+    this.straightKey = false,
   });
 }
 
@@ -93,7 +97,7 @@ EchoSuggestions evaluateEchoBlock(AdaptiveCopyEngine engine, EchoSuggestionInput
     ic = (i.interCharSpace + 1).clamp(3, i.maxInterCharSpace);
     iw = (i.interWordSpace + 1).clamp(7, i.maxInterWordSpace);
   }
-  if (ic == i.interCharSpace && iw == i.interWordSpace) { ic = null; iw = null; }
+  if (ic == i.interCharSpace && iw == i.interWordSpace || i.straightKey) { ic = null; iw = null; }
 
   final newWpm = (decision.charSpeedStep == TempoStep.up && mayRise) ? i.wpm + 1 : null;
 
@@ -101,6 +105,7 @@ EchoSuggestions evaluateEchoBlock(AdaptiveCopyEngine engine, EchoSuggestionInput
   // automatic (decision 10). Not in the block where a char was added.
   int? newAnswer;
   if (!unlock &&
+      !i.straightKey &&
       rate >= engine.thresholds.highThreshold &&
       i.answerWpmMax > 0 &&
       i.answerWpmMax < i.wpm) {

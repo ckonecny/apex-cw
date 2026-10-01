@@ -88,6 +88,11 @@ class _InvadersScreenState extends State<InvadersScreen>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
   static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  StreamSubscription? _wpmSub;
+  int _measuredWpm = 15;   // straight key: measured speed (display and timing only)
+  // Keying speed that counts: the measured one for the straight key.
+  int get _effWpm => _keyerMode == 4 ? _measuredWpm : _wpm;
   static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
   final _random = Random();
@@ -142,6 +147,7 @@ class _InvadersScreenState extends State<InvadersScreen>
     _gen++;
     _ticker.dispose();
     _symbolSub?.cancel();
+    _wpmSub?.cancel();
     _keyerChannel.invokeMethod('setInputs', {'dit': false, 'dah': false});
     _keyerChannel.invokeMethod('stop');
     _toneChannel.invokeMethod('stopEffect');
@@ -165,6 +171,7 @@ class _InvadersScreenState extends State<InvadersScreen>
     _pool = kochActiveChars(_koch, seq);
     _wpm = (p.getInt('wpm') ?? 20).clamp(5, 60);
     _keyerMode = p.getInt('keyerMode') ?? 0;
+    _measuredWpm = (p.getInt('straightStartWpm') ?? 15).clamp(5, 40);
     _pitch = p.getInt('pitch') ?? 600;
     _upper = (p.getInt('outputCase') ?? 0) == 1;
     _startLevel = (p.getInt('invadersStartLevel') ?? 1).clamp(1, _maxStartLevel);
@@ -187,6 +194,9 @@ class _InvadersScreenState extends State<InvadersScreen>
     await _keyerChannel.invokeMethod('stop');
 
     _symbolSub = _symbolStream.receiveBroadcastStream().listen(_onSymbol);
+    _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
+      if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
+    });
     if (mounted) setState(() => _ready = true);
   }
 
@@ -320,7 +330,7 @@ class _InvadersScreenState extends State<InvadersScreen>
     for (var i = 0; i < _hiN; i++) {
       if (i >= _hi.length || _score > _hi[i].score) {
         if (_score == 0) return -1;
-        _hi.insert(i, _HighScore(_score, _koch, _subLevel, _wpm));
+        _hi.insert(i, _HighScore(_score, _koch, _subLevel, _effWpm));
         if (_hi.length > _hiN) _hi.removeLast();
         _saveHi();
         return i;
@@ -441,7 +451,7 @@ class _InvadersScreenState extends State<InvadersScreen>
     final v = _inv[idx];
     v.active = false;
     v.explodeFrame = 1;
-    final speedMult = _wpm / 10.0;
+    final speedMult = _effWpm / 10.0;
     final urgencyMult = v.y > _fieldBottom * 0.7 ? 2.0 : 1.0;
     _streak++;
     final streakMult = _streak >= 20 ? 3.0 : _streak >= 10 ? 2.0 : _streak >= 5 ? 1.5 : 1.0;
@@ -577,9 +587,9 @@ class _InvadersScreenState extends State<InvadersScreen>
         const SizedBox(height: 16),
         AppCaption(Strings.t('inv_key_wpm')),
         const SizedBox(height: 8),
-        _stepper(c, '$_wpm WPM', Strings.t('inv_wpm_hint'),
-            _wpm > 5 ? () => _changeWpm(-1) : null,
-            _wpm < 60 ? () => _changeWpm(1) : null),
+        _stepper(c, '$_effWpm WPM', Strings.t('inv_wpm_hint'),
+            _keyerMode != 4 && _wpm > 5 ? () => _changeWpm(-1) : null,
+            _keyerMode != 4 && _wpm < 60 ? () => _changeWpm(1) : null),
         const SizedBox(height: 24),
         AppButton(label: Strings.t('inv_start'), color: c.accent, onTap: _startGame),
         const SizedBox(height: 24),
@@ -657,13 +667,13 @@ class _InvadersScreenState extends State<InvadersScreen>
           IconButton(
             visualDensity: VisualDensity.compact,
             icon: Icon(Icons.remove, size: 18, color: c.textMuted),
-            onPressed: () => _changeWpm(-1),
+            onPressed: _keyerMode == 4 ? null : () => _changeWpm(-1),
           ),
-          Text('$_wpm WPM', style: _mono(12, c.textMuted)),
+          Text('$_effWpm WPM', style: _mono(12, c.textMuted)),
           IconButton(
             visualDensity: VisualDensity.compact,
             icon: Icon(Icons.add, size: 18, color: c.textMuted),
-            onPressed: () => _changeWpm(1),
+            onPressed: _keyerMode == 4 ? null : () => _changeWpm(1),
           ),
           Expanded(child: Text(_lastDecoded.isEmpty ? '' : _decodedLabel(_lastDecoded),
               textAlign: TextAlign.center, style: _mono(24, c.textPrimary, bold: true))),
@@ -730,7 +740,7 @@ class _InvadersScreenState extends State<InvadersScreen>
             const SizedBox(height: 12),
             Text('${Strings.t('inv_score')}  $_score', style: _mono(30, c.info)),
             const SizedBox(height: 10),
-            Text('$_koch-$_subLevel   $_wpm WPM', style: _mono(14, c.textPrimary)),
+            Text('$_koch-$_subLevel   $_effWpm WPM', style: _mono(14, c.textPrimary)),
             if (total > 0) ...[
               const SizedBox(height: 6),
               Text('${Strings.t('inv_accuracy')}: ${_hits * 100 ~/ total}%',

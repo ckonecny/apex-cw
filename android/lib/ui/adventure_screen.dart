@@ -46,7 +46,10 @@ class AdventureSettings {
 
   static const verbs = ['brief', 'superbrief', 'verbose'];
 
-  int get keyWpm => giveWpm == 0 ? wpm : giveWpm;
+  /// Straight key: the measured speed (display only, null for paddles).
+  int? straightWpm;
+
+  int get keyWpm => straightWpm ?? (giveWpm == 0 ? wpm : giveWpm);
 
   /// When a keyed word counts as finished: silence after its last
   /// character, in dits at the keying speed — the Geben learn mode's rule
@@ -118,6 +121,8 @@ class _AdventureScreenState extends State<AdventureScreen> {
   static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
   static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
   static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  StreamSubscription? _wpmSub;
   static const _undoMax = 20;
 
   late final AdventureStore _store = AdventureStore(widget.game.id);
@@ -171,6 +176,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
     KeepScreenOn.disable();
     _genSub?.cancel();
     _symSub?.cancel();
+    _wpmSub?.cancel();
     _genChannel.invokeMethod('stopOne');
     _keyerChannel.invokeMethod('stop');
     // Don't leave the long word end on the shared keyer (rule 2).
@@ -191,6 +197,13 @@ class _AdventureScreenState extends State<AdventureScreen> {
       _genSub = cwGenEvents.listen(_onGenEvent);
       _keyerMode = p.getInt('keyerMode') ?? 0;
       await _keyerChannel.invokeMethod('setMode', _keyerMode);
+      if (_keyerMode == 4) {
+        // Straight key: the speed is measured; the tempo strip and sheet only show it.
+        _s.straightWpm = (p.getInt('straightStartWpm') ?? 15).clamp(5, 40);
+        _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
+          if (mounted) setState(() => _s.straightWpm = (w as int).clamp(5, 60));
+        });
+      }
       await _keyerChannel.invokeMethod('setCurtisBTiming', {
         'dit': (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100),
         'dah': (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100),

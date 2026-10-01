@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,9 @@ class _KeyerScreenState extends State<KeyerScreen> {
   static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
   static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
   static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  StreamSubscription? _wpmSub;
+  int _measuredWpm = 15;   // straight key: display only, never saved
 
   // Decoded text (mirrors the real device's CW Keyer, which decodes keyed
   // input via keyerTable/displayDecodedMorse() rather than showing raw
@@ -54,6 +58,9 @@ class _KeyerScreenState extends State<KeyerScreen> {
       }
     });
     _symbolStream.receiveBroadcastStream().listen((sym) => _decoder.add(sym as String));
+    _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
+      if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
+    });
     _loadPrefsAndInit();
   }
 
@@ -91,6 +98,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
   @override
   void dispose() {
     KeepScreenOn.disable();
+    _wpmSub?.cancel();
     _keyerChannel.invokeMethod('stop');
     super.dispose();
   }
@@ -175,16 +183,22 @@ class _KeyerScreenState extends State<KeyerScreen> {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           child: AppCard(
             padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
-            child: SliderRow(
-              label: 'WPM', value: _wpm.toDouble(), min: 5, max: 60, divisions: 55,
-              showTicks: true,
-              onChanged: (d) {
-                final v = d.round();
-                setState(() => _wpm = v);
-                _keyerChannel.invokeMethod('setWpm', v);
-                _saveWpm();
-              },
-            ),
+            // Straight key: the speed is measured from the operator's keying, so
+            // the slider is disabled and just follows the measured value.
+            child: _keyerMode == 4
+                ? SliderRow(
+                    label: 'WPM', value: _measuredWpm.toDouble(), min: 5, max: 60,
+                    divisions: 55, showTicks: true, onChanged: null)
+                : SliderRow(
+                    label: 'WPM', value: _wpm.toDouble(), min: 5, max: 60, divisions: 55,
+                    showTicks: true,
+                    onChanged: (d) {
+                      final v = d.round();
+                      setState(() => _wpm = v);
+                      _keyerChannel.invokeMethod('setWpm', v);
+                      _saveWpm();
+                    },
+                  ),
           ),
         ),
 

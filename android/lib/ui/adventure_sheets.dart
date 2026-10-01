@@ -47,6 +47,10 @@ List<Widget> _tempoRows(AppColors c, AdventureSettings s, void Function(VoidCall
     _stepper(c, Strings.t('adv_hear'), '${s.wpm} WPM', null,
         s.wpm > 10 ? () => change(() => s.wpm--) : null,
         s.wpm < 60 ? () => change(() => s.wpm++) : null),
+    if (s.straightWpm != null)
+      _stepper(c, Strings.t('adv_give'), '${s.straightWpm} WPM',
+          Strings.t('adv_give_measured'), null, null)
+    else
     _stepper(c, Strings.t('adv_give'),
         s.giveWpm == 0 ? Strings.t('adv_give_like') : '${s.giveWpm} WPM',
         s.giveWpm == 0 ? '${s.wpm} WPM' : null,

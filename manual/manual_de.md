@@ -610,6 +610,11 @@ deine Dits und Dahs erzeugt und wie lang eine Wortpause sein muss. Ganz links
 („wie Hören“) gilt das Hörtempo auch für die Antwort. Das niedrigste
 Gebetempo ist 10 WPM.
 
+Mit der **Handtaste** (Keyer-Modus Straight) gibt es kein eingestelltes
+Gebetempo: Die App misst es aus deinem Tasten
+([siehe unten](#handtaste-automatisches-tempo)). Die Zeile **Geben** ist dann
+deaktiviert und zeigt das gemessene Tempo.
+
 ## Die Ergebnisseite
 
 Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
@@ -659,7 +664,9 @@ aber für das Profil von Geben. Zwei Unterschiede:
   2 × Zeichenabstand + 1 + Wortabstand / 8   (Dits im Gebetempo)
   ```
 
-  Mit der Handtaste sind es Wortabstand + 1 Dits. Beispiel: Zeichenabstand
+  Mit der Handtaste sind es Wortabstand + 1 Dits, gemessen an deinem eigenen
+  Tempo (bis 30 WPM; darüber gelten die kürzeren Abstände der Handtaste).
+  Beispiel: Zeichenabstand
   28, Wortabstand 40, Gebetempo 18 WPM ergibt 62 Dits, also rund 4 s. So
   lange darfst du auch zwischen den Zeichen einer Gruppe überlegen, und so
   lange wartet die App nach dem letzten Zeichen, bevor sie bewertet. Ist dir
@@ -856,7 +863,9 @@ Bei Geben gibt es einen zusätzlichen Vorschlag: **Gebetempo erhöht**
 (+1 WPM). Er erscheint nur, wenn du ein Gebetempo **unterhalb** des Hörtempos
 eingestellt hast und der Block mindestens die obere Schwelle erreicht hat. Er
 ist anfangs **nicht angehakt**, weil das Gebetempo eine bewusste Entscheidung
-ist.
+ist. Mit der Handtaste (Straight) entfällt dieser Vorschlag, ebenso die
+Vorschläge zu engeren oder weiteren Abständen; Hörtempo und neue Zeichen
+werden weiterhin vorgeschlagen.
 
 ## Vorschläge annehmen, ablehnen, anpassen
 
@@ -1657,7 +1666,8 @@ Diese Einstellungen gelten überall, wo du tastest.
 | Modus | Wie der Keyer die Paddles auswertet (siehe unten) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
 | CurtisB Dit-Timing | Nur Iambic B und Ultimatic: ab wie viel Prozent eines Dits ein Druck auf das andere Paddle schon gespeichert wird | 0–100 % in 5er-Schritten (**75 %**) |
 | CurtisB Dah-Timing | Dasselbe für Dahs | 0–100 % in 5er-Schritten (**45 %**) |
-| Auto-Zeichenabstand | Erzwingt eine Mindestpause zwischen Zeichen, damit sie nicht zusammenlaufen | **Aus** / 2 / 3 / 4 Dits |
+| Auto-Zeichenabstand | Erzwingt eine Mindestpause zwischen Zeichen, damit sie nicht zusammenlaufen. Bei Straight nicht verfügbar | **Aus** / 2 / 3 / 4 Dits |
+| Starttempo Handtaste | Nur bei Straight (ersetzt Auto-Zeichenabstand): erste Schätzung für die Tempo-Messung, siehe [Handtaste](#handtaste-automatisches-tempo) | 5–40 WPM (**15**) |
 
 **Die Keyer-Modi**
 
@@ -1674,7 +1684,27 @@ Diese Einstellungen gelten überall, wo du tastest.
   beider Paddles erzeugt keine Wechselfolge.
 - **Straight** – Handtaste: Der Ton ist an, solange die Taste gedrückt ist.
   Mit Touch erscheint dann eine einzelne Taste **TASTE**, mit einem Adapter
-  wirkt der Dit-Kontakt als Taste.
+  wirkt der Dit-Kontakt als Taste. Das Tempo wird dabei gemessen, siehe unten.
+
+### Handtaste: automatisches Tempo
+
+Bei der Handtaste stellst du kein Tempo ein. Die App misst es aus deinem
+Tasten, wie der Morserino: Aus der Länge deiner Punkte und Striche (gleitender
+Mittelwert) ergeben sich das Tempo, die Grenze zwischen Punkt und Strich sowie
+Zeichen- und Wortabstand. Wer langsamer tastet, bekommt automatisch längere
+Pausen zugelassen.
+
+- Als erste Schätzung dient das **Starttempo Handtaste** (Einstellungen →
+  Keyer). Gibst du deutlich langsamer, stell es auf dein Tempo, sonst kann ein
+  langsames S anfangs als drei E erkannt werden.
+- Nach etwa zwei bis vier Zeichen hat sich die Messung eingestellt. Das erste
+  Zeichen kann noch danebengehen.
+- Die Messung beginnt bei jedem Betreten eines Bildschirms neu.
+- Der **WPM-Regler** ist deaktiviert und bewegt sich selbst auf dein
+  gemessenes Tempo (Keyer, WiFi Trx, Echo Trainer, QSO Bot u. a.). Er wird nicht
+  gespeichert und ändert das Paddle-Tempo nicht.
+- WiFi Trx sendet das gemessene Tempo mit. Die Statistik beim Echo Trainer
+  speichert es als dein Gebetempo.
 
 ## Audioausgabe
 

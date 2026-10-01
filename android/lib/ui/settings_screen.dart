@@ -46,6 +46,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // "AutoChar Spc" (M32 posACS, default 0=off): minimum pause enforced
   // between characters — 1/2/3 = 2/3/4 dits.
   int  _acs = 0;
+  // Start speed estimate for the straight key (the measurement adapts from there).
+  int  _straightStartWpm = 15;
   // "Tone Shift" (M32 posEchoToneShift, default 1): shifts the operator's own
   // echoed-answer sidetone in the Echo Trainer up/down a half-tone from the
   // target word's pitch, so the two are audibly distinguishable. Has no
@@ -131,6 +133,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _curtisBDitTiming = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
       _curtisBDahTiming = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
       _acs              = (p.getInt('acs') ?? 0).clamp(0, 3);
+      _straightStartWpm = (p.getInt('straightStartWpm') ?? 15).clamp(5, 40);
       // clamp() guards against stale values from the old 1..8 multiplier scale
       // genDisplayMode/echoDisplayMode: new int-valued keys (old genDisplay/echoPrompt
       // keys were bool — renamed to avoid a SharedPreferences type-cast crash on upgrade)
@@ -153,6 +156,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setInt('curtisBDitTiming', _curtisBDitTiming);
     await p.setInt('curtisBDahTiming', _curtisBDahTiming);
     await p.setInt('acs',            _acs);
+    await p.setInt('straightStartWpm', _straightStartWpm);
     await p.setInt('callLengthOpt',   _callLengthOpt);
     await p.setInt('callRegionOpt',   _callRegionOpt);
     await p.setBool('callCommonOnly', _callCommonOnly);
@@ -282,6 +286,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _saveLive();
   }
 
+  Future<void> _applyStraightStartWpm(int v) async {
+    setState(() => _straightStartWpm = v);
+    await _settingsChannel.invokeMethod('setStraightStartWpm', v);
+    _saveLive();
+  }
+
   // ── Build ─────────────────────────────────────────────────────────────────
 
   @override
@@ -384,13 +394,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onChanged: (v) => _applyCurtisBTiming(dah: v.round())),
             ],
             const SettingsDivider(),
-            SegmentRow(
-              label: Strings.t('settings_acs'),
-              options: [Strings.t('opt_off'), for (final n in [2, 3, 4])
-                  Strings.t('unit_dits').replaceFirst('{n}', '$n')],
-              selected: _acs,
-              onChanged: _applyAcs,
-            ),
+            // Straight key: no AutoChar Spc (a paddle aid), but the start speed
+            // of the adaptive measurement.
+            if (_keyerMode == 4)
+              LabeledSlider(label: Strings.t('settings_straight_start'),
+                  value: _straightStartWpm.toDouble(),
+                  min: 5, max: 40, divisions: 35, display: '$_straightStartWpm WPM',
+                  onChanged: (v) => _applyStraightStartWpm(v.round()))
+            else
+              SegmentRow(
+                label: Strings.t('settings_acs'),
+                options: [Strings.t('opt_off'), for (final n in [2, 3, 4])
+                    Strings.t('unit_dits').replaceFirst('{n}', '$n')],
+                selected: _acs,
+                onChanged: _applyAcs,
+              ),
           ]),
 
           const SizedBox(height: 24),

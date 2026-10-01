@@ -8,7 +8,15 @@ class CwKeyer(private val tone: CwTonePlugin) {
     enum class Mode { IAMBIC_A, IAMBIC_B, ULTIMATIC, NON_SQUEEZE, STRAIGHT }
 
     @Volatile var wpm: Int = 20
+    // Setting the mode restarts the straight-key speed measurement from the
+    // straight-key start WPM (screens push the mode on entry, so each screen
+    // starts fresh). The paddle WPM above plays no part for the straight key.
     @Volatile var mode: Mode = Mode.IAMBIC_A
+        set(v) { field = v; straightDecoder.reset(straightStartWpm) }
+
+    // Start speed estimate of the straight-key measurement (general setting).
+    @Volatile var straightStartWpm: Int = 15
+        set(v) { field = v; straightDecoder.reset(v) }
 
     // "CurtisB DitT%"/"CurtisB DahT%" (0-100, defaults 75/45 match the real
     // device's MorsePreferences.cpp): how far into the CURRENT element,
@@ -32,11 +40,23 @@ class CwKeyer(private val tone: CwTonePlugin) {
     // Trx modes use (InterWord Spc - 1) dits (m32_v6.ino, interWordTimer).
     @Volatile var wordGapDits: Int = 6
 
-    // Straight key word gap in dits, counted from key-up. Default 7; the Echo
-    // Trainer sets (InterWord Spc + 1) like the firmware's straight-key
-    // decoder does in echo mode (MorseDecoder.cpp INTERCHAR_ lacktime).
-    // setInterWordSpace resets it to 7, so other screens never inherit it.
-    @Volatile var straightWordGapDits: Int = 7
+    // Straight key: echo word gap in dits (InterWord Spc + 1), 0 = none. Only
+    // the Echo Trainer and Adventure set it, like the firmware's decoder in echo
+    // mode (MorseDecoder.cpp INTERCHAR_ lacktime); otherwise the decoder uses
+    // its measured-speed word gap. setInterWordSpace resets it to 0, so other
+    // screens never inherit it.
+    @Volatile var straightWordGapDits: Int = 0
+
+    // Adaptive straight-key decoder (own measurement, never used by paddles).
+    // It restarts from straightStartWpm whenever the keyer is (re)started.
+    private val straightDecoder = StraightKeyDecoder()
+    val measuredWpm: Int get() = straightDecoder.wpm
+
+    // Display only: reports the measured straight-key WPM whenever it changes
+    // (own channel, so the symbol stream stays untouched). null = nobody listens.
+    var onMeasuredWpm: ((Int) -> Unit)? = null
+    @Volatile private var reportedWpm = -1
+    fun resendMeasuredWpm() { reportedWpm = -1 }
 
     private val ditMs  get() = (1200.0 / wpm).roundToInt()
     private val dahMs  get() = ditMs * 3
@@ -69,10 +89,6 @@ class CwKeyer(private val tone: CwTonePlugin) {
 
     // Straight key state (keyer-thread only)
     private var skPrevDown   = false
-    private var skDownAt     = 0L
-    private var skUpAt       = 0L
-    private var skWaitingGap = false
-    private var skWordGapSent = false
 
     // Word-gap detection (keyer-thread only): the character-boundary gap
     // above fires quickly (matches the real device's tight iambic timing),
@@ -101,7 +117,11 @@ class CwKeyer(private val tone: CwTonePlugin) {
         keyIsDown = false
         idleSince = 0L; wordGapSent = false
         acsGateUntil = 0L
-        skUpAt = 0L; skWaitingGap = false; skWordGapSent = false
+        skPrevDown = false
+        // Keeps the measured speed across stop/start (Echo Trainer restarts the
+        // keyer per word); the mode setter is what restarts the measurement.
+        straightDecoder.softReset()
+        reportedWpm = -1
         CwAudioNative.setPlaying(false)
         thread = Thread({
             while (!Thread.currentThread().isInterrupted) {
@@ -233,40 +253,21 @@ class CwKeyer(private val tone: CwTonePlugin) {
 
     private fun tickStraight(now: Long) {
         val keyDown = dit
+        straightDecoder.echoWordGapDits = straightWordGapDits
         when {
             keyDown && !skPrevDown -> {
-                // Key down
-                skDownAt     = now
-                skWaitingGap = false
                 setKey(true)
+                straightDecoder.keyDown(now)
             }
             !keyDown && skPrevDown -> {
-                // Key up — classify by duration
                 setKey(false)
-                val dur = now - skDownAt
-                onSymbol?.invoke(if (dur < ditMs * 2) "·" else "—")
-                skUpAt        = now
-                skWaitingGap  = true
-                skWordGapSent = false
+                straightDecoder.keyUp(now)?.let { onSymbol?.invoke(it) }
             }
-            !keyDown && skWaitingGap -> {
-                // Silence after key-up — emit char separator after 3 dits
-                if (now - skUpAt >= ditMs * 3) {
-                    onSymbol?.invoke(" ")
-                    skWaitingGap = false
-                }
-            }
-            !keyDown && !skWaitingGap && !skWordGapSent && skUpAt != 0L -> {
-                // Still idle well past the character gap — that's a word gap
-                // (see the iambic path's idleSince/wordGapSent for why this is
-                // a separate "  " event rather than another plain " ").
-                if (now - skUpAt >= ditMs * straightWordGapDits) {
-                    onSymbol?.invoke("  ")
-                    skWordGapSent = true
-                }
-            }
+            !keyDown -> straightDecoder.tick(now)?.let { onSymbol?.invoke(it) }
         }
         skPrevDown = keyDown
+        val m = straightDecoder.wpm
+        if (m != reportedWpm) { reportedWpm = m; onMeasuredWpm?.invoke(m) }
     }
 
     private fun decideDit(d: Boolean, h: Boolean, dm: Boolean, hm: Boolean): Boolean {

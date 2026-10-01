@@ -42,11 +42,12 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
   static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
   static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
   static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
   static const _genEvents    = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
 
   final _client  = MoppClient();
   final _encoder = MoppEncoder();
-  StreamSubscription? _symSub, _genSub, _rxSub;
+  StreamSubscription? _symSub, _genSub, _rxSub, _wpmSub;
 
   List<_Svc> _services = [];
   String _svcId = '';
@@ -59,6 +60,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
   bool _connecting = false;
   String _status = '';
   int _wpm = 20;
+  int _measuredWpm = 15;   // straight key: measured speed, sent in the packets
   int _keyerMode = 0;
   int _outputCase = 0;
   final List<_Seg> _log = [];
@@ -74,6 +76,9 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     super.initState();
     KeepScreenOn.enable();
     _symSub = _symbolStream.receiveBroadcastStream().listen((s) => _onSymbol(s as String));
+    _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
+      if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
+    });
     _genSub = _genEvents.receiveBroadcastStream().listen((e) {
       if (e is Map && e['type'] == 'done') _playDone();
     });
@@ -125,6 +130,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     KeepScreenOn.disable();
     _playGuard?.cancel();
     _symSub?.cancel();
+    _wpmSub?.cancel();
     _genSub?.cancel();
     _rxSub?.cancel();
     _client.close();
@@ -169,11 +175,13 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
   void _onSymbol(String s) {
     if (!_connected) { _encoder.reset(); return; }
     Uint8List? pkt;
+    // Straight key: the packets carry the measured speed, like the firmware.
+    final w = _keyerMode == 4 ? _measuredWpm : _wpm;
     switch (s) {
-      case '·':  _encoder.element(1, _wpm); break;
-      case '—':  _encoder.element(2, _wpm); break;
-      case ' ':  if (_encoder.hasPending) _encoder.element(0, _wpm); break;
-      case '  ': if (_encoder.hasPending) pkt = _encoder.element(3, _wpm); break;
+      case '·':  _encoder.element(1, w); break;
+      case '—':  _encoder.element(2, w); break;
+      case ' ':  if (_encoder.hasPending) _encoder.element(0, w); break;
+      case '  ': if (_encoder.hasPending) pkt = _encoder.element(3, w); break;
     }
     if (pkt != null) _sendPacket(pkt);
   }
@@ -445,12 +453,16 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(children: [
-          Text('$_wpm WPM', style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent)),
-          Expanded(child: Slider(
-            value: _wpm.toDouble(), min: 5, max: 60, divisions: 55,
-            onChanged: (v) => setState(() => _wpm = v.round()),
-            onChangeEnd: (v) => _setWpm(v.round()),
-          )),
+          Text('${_keyerMode == 4 ? _measuredWpm : _wpm} WPM', style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent)),
+          // Straight key: disabled, follows the measured speed.
+          Expanded(child: _keyerMode == 4
+              ? Slider(value: _measuredWpm.toDouble(), min: 5, max: 60,
+                  divisions: 55, onChanged: null)
+              : Slider(
+                  value: _wpm.toDouble(), min: 5, max: 60, divisions: 55,
+                  onChanged: (v) => setState(() => _wpm = v.round()),
+                  onChangeEnd: (v) => _setWpm(v.round()),
+                )),
         ]),
       ),
       Expanded(

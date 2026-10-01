@@ -64,6 +64,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   static const _genEvents     = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
   static const _keyerChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
   static const _symbolStream  = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  StreamSubscription? _wpmSub;
+  int _measuredWpm = 15;   // straight key: measured speed, display and timeouts only
   static const _toneChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
   static const _dispCodeOnly    = 1;  // Sound only
@@ -219,7 +222,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Safety net only: the keyer normally reports the word gap by itself.
   int get _answerSafetyMs => max(
       3000,
-      ((max(_answerEndDits, _answerEndDitsStraight) + 20) * 1200 / _answerWpm)
+      ((max(_answerEndDits, _answerEndDitsStraight) + 20) * 1200 /
+              (_keyerMode == 4 ? _measuredWpm : _answerWpm))
           .round());
 
   @override
@@ -227,6 +231,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     super.initState();
     KeepScreenOn.enable();
     _decoder = MorseDecoder(onChar: _onDecodedChar);
+    _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
+      if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
+    });
     _loadPrefs();
   }
 
@@ -267,6 +274,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _boostLevel     = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
       _choice         = CharsetChoice.load(pf);
       _keyerMode      = p.getInt('keyerMode')      ?? 0;
+      _measuredWpm    = (p.getInt('straightStartWpm') ?? 15).clamp(5, 40);
       _curtisBDitTiming = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
       _curtisBDahTiming = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
       _acs              = (p.getInt('acs') ?? 0).clamp(0, 3);
@@ -327,7 +335,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Block flow: every echo content feeds the Geben track, once per word
   // after the first attempt (docs/archive/training/P6-echo-vorschlaege.md).
   Future<void> _applyBlockFeedback(String target, String received) async {
-    _charStats.wpm = _wpm;
+    // Straight key: the speed the operator actually keyed (measured).
+    _charStats.wpm = _keyerMode == 4 ? _measuredWpm : _wpm;
     final pair = _charStats.recordWord(target, received);
     if (pair != null) _blockPairs.add(pair);
     final p = await SharedPreferences.getInstance();
@@ -365,6 +374,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         kochTotal: _koch ? _activeKochChars.length : 0,
         activeChars: charContent ? kochActiveChars(_kochLevel, _activeKochChars) : const [],
         stats: _charStats,
+        straightKey: _keyerMode == 4,
       ),
     );
     await p.setDouble('echoBlockEma', s.blockEma);
@@ -463,7 +473,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   }
 
   Widget _tempoStepper(AppColors c, String label, String value,
-      VoidCallback onMinus, VoidCallback onPlus) {
+      VoidCallback? onMinus, VoidCallback? onPlus) {
     return Row(mainAxisSize: MainAxisSize.min, children: [
       Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
       IconButton(
@@ -481,9 +491,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     return Wrap(alignment: WrapAlignment.center, spacing: 8, children: [
       _tempoStepper(c, Strings.t('block_hear'), '$_wpm WPM',
           () => _setHearWpm(_wpm - 1), () => _setHearWpm(_wpm + 1)),
-      _tempoStepper(c, Strings.t('block_give'),
-          _answerWpmMax == 0 ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax WPM',
-          () => _stepGiveWpm(-1), () => _stepGiveWpm(1)),
+      // Straight key: the Geben speed is measured, so the stepper is disabled.
+      if (_keyerMode == 4)
+        _tempoStepper(c, Strings.t('block_give'), '$_measuredWpm WPM', null, null)
+      else
+        _tempoStepper(c, Strings.t('block_give'),
+            _answerWpmMax == 0 ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax WPM',
+            () => _stepGiveWpm(-1), () => _stepGiveWpm(1)),
     ]);
   }
 
@@ -593,12 +607,20 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _silenceTimer?.cancel();
     _genSub?.cancel();
     _symbolSub?.cancel();
+    _wpmSub?.cancel();
     _genChannel.invokeMethod('stop');
     _keyerChannel.invokeMethod('stop');
     // Don't leave the long echo word gap on the shared keyer (rule 2).
     _keyerChannel.invokeMethod('setInterWordSpace', 7);
     super.dispose();
   }
+
+  /// Straight key: the Geben speed is measured from the keying, so the row is
+  /// disabled and just follows it (display only, nothing saved).
+  Widget _straightGiveRow() => SliderRow(
+      label: Strings.t('block_give'), labelWidth: 56, valueWidth: 84,
+      value: _measuredWpm.toDouble().clamp(kGiveWpmMin - 1.0, 60.0), min: kGiveWpmMin - 1.0, max: 60,
+      divisions: 61 - kGiveWpmMin, display: '$_measuredWpm', onChanged: null);
 
   int get _answerWpm =>
       _answerWpmMax > 0 ? min(_currentWpm, _answerWpmMax) : _currentWpm;
@@ -1015,6 +1037,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                   divisions: 60 - TrainingProfile.minWpm,
                   onChanged: (v) { setState(() => _wpm = v.round()); _savePrefs(); }),
               // Leftmost notch (kGiveWpmMin - 1) = "same as Hören".
+              if (_keyerMode == 4) _straightGiveRow()
+              else
               SliderRow(label: Strings.t('block_give'), labelWidth: 56, valueWidth: 84,
                   value: (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax).toDouble(),
                   min: kGiveWpmMin - 1.0, max: 60, divisions: 61 - kGiveWpmMin,
@@ -1026,6 +1050,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
           ],
           if (!_showResult) ...[
+          // Straight key: Geben speed (measured), also while answering.
+          if (_keyerMode == 4 && _state != _State.idle)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _straightGiveRow(),
+            ),
           // ── Touch paddle ─────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),

@@ -71,6 +71,9 @@ class _MorselScreenState extends State<MorselScreen> {
   static const _genEvents    = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
   static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
   static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  StreamSubscription? _wpmSub;
+  int _measuredWpm = 15;   // straight key: measured speed (display and timing only)
   static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
   // Letter -> dit/dah pattern. The clue goes out as exact patterns, not
@@ -141,6 +144,7 @@ class _MorselScreenState extends State<MorselScreen> {
     _idleTimer?.cancel();
     _genSub?.cancel();
     _symbolSub?.cancel();
+    _wpmSub?.cancel();
     _genChannel.invokeMethod('stop');
     _keyerChannel.invokeMethod('stop');
     super.dispose();
@@ -162,6 +166,7 @@ class _MorselScreenState extends State<MorselScreen> {
         .clamp(_startWpmMin, _startWpmDefault);
     _keyWpm = (p.getInt('wpm') ?? 20).clamp(5, 60);
     _keyerMode = p.getInt('keyerMode') ?? 0;
+    _measuredWpm = (p.getInt('straightStartWpm') ?? 15).clamp(5, 40);
     _wordGapDits = (p.getInt('profile.keyer.interWordSpace') ??
         TrainingProfile.defaultInterWord(TrainingProfile.keyer)).clamp(6, 105);
     _pitch = p.getInt('pitch') ?? 600;
@@ -182,6 +187,9 @@ class _MorselScreenState extends State<MorselScreen> {
 
     _genSub = _genEvents.receiveBroadcastStream().listen(_onGenEvent);
     _symbolSub = _symbolStream.receiveBroadcastStream().listen(_onSymbol);
+    _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
+      if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
+    });
     if (mounted) setState(() => _ready = true);
   }
 
@@ -331,7 +339,8 @@ class _MorselScreenState extends State<MorselScreen> {
   void _armSubmit() {
     _submitTimer?.cancel();
     if (_guess.length != _target.length) return;
-    final ditMs = 1200 / _keyWpm;
+    // Straight key: the pause scales with the measured speed.
+    final ditMs = 1200 / (_keyerMode == 4 ? _measuredWpm : _keyWpm);
     final gapMs = max(1200, ((_wordGapDits + 1) * ditMs).round());
     _submitTimer = Timer(Duration(milliseconds: gapMs), () {
       if (_touchDit || _touchDah) { _armSubmit(); return; }
@@ -649,13 +658,13 @@ class _MorselScreenState extends State<MorselScreen> {
           IconButton(
             visualDensity: VisualDensity.compact,
             icon: Icon(Icons.remove, size: 18, color: c.textMuted),
-            onPressed: () => _changeKeyWpm(-1),
+            onPressed: _keyerMode == 4 ? null : () => _changeKeyWpm(-1),
           ),
-          Text('${Strings.t('msl_key')} $_keyWpm WPM', style: _mono(12, c.textMuted)),
+          Text('${Strings.t('msl_key')} ${_keyerMode == 4 ? _measuredWpm : _keyWpm} WPM', style: _mono(12, c.textMuted)),
           IconButton(
             visualDensity: VisualDensity.compact,
             icon: Icon(Icons.add, size: 18, color: c.textMuted),
-            onPressed: () => _changeKeyWpm(1),
+            onPressed: _keyerMode == 4 ? null : () => _changeKeyWpm(1),
           ),
           const Spacer(),
           TextButton(

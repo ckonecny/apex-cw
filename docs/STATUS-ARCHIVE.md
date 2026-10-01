@@ -6,6 +6,13 @@ item in `STATUS.md` is done, move it here (CLAUDE.md rule 13). Open feature
 ideas and deferred bugs are GitHub issues (rule 12), not listed here.
 
 ## Done
+- **Adaptive straight key, issue #17 (2026-10-01, stages 1-7 installed and
+  checked on the test phone, not committed).** `StraightKeyDecoder.kt`
+  (firmware decoder port) in `CwKeyer.tickStraight`; setting "Starttempo
+  Handtaste"; measured WPM over `cw_straight_wpm` shown as disabled WPM
+  controls in Keyer, WiFi Trx, Echo, Adventure, Morsel, Invaders, Char
+  Practice, QSO Bot; Trx packets and Echo stats use it; Echo suggestions
+  without Gebe-Tempo/spacing for Straight; manual DE+EN updated.
 - **Hören: Koch unlock kept when leaving from the result screen
   (2026-09-29, installed and checked on the test phone).** Bug: an unlock earned in
   the last block was only applied by "Next block"/"Finish", not by the back

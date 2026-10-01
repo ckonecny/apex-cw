@@ -37,6 +37,9 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
   static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
   static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
   static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  StreamSubscription? _wpmSub;
+  int _measuredWpm = 15;   // straight key: measured speed (display and timing only)
   static const _genEvents    = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
 
   StreamSubscription? _symSub, _genSub;
@@ -81,6 +84,12 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
     KeepScreenOn.enable();
     _decoder = MorseDecoder(onChar: _onDecodedChar, unknown: '*');
     _symSub = _symbolStream.receiveBroadcastStream().listen((s) => _decoder.add(s as String));
+    // Straight key: the bot follows the measured speed, like it follows the set one.
+    _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
+      if (!mounted) return;
+      setState(() => _measuredWpm = (w as int).clamp(5, 60));
+      if (_keyerMode == 4) _bot?.userWpm = _measuredWpm;
+    });
     _genSub = _genEvents.receiveBroadcastStream().listen(_onGenEvent);
     _init();
   }
@@ -88,6 +97,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
   Future<void> _init() async {
     final p = await SharedPreferences.getInstance();
     _keyerMode   = p.getInt('keyerMode') ?? 0;
+    _measuredWpm = (p.getInt('straightStartWpm') ?? 15).clamp(5, 40);
     _outputCase  = (p.getInt('outputCase') ?? 0).clamp(0, 1);
     _wpm         = (p.getInt('qsoBotWpm') ?? p.getInt('wpm') ?? 20).clamp(5, 60);
     _type        = (p.getInt('qsoBotType') ?? 0).clamp(0, 2);
@@ -135,6 +145,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
     _tickTimer?.cancel();
     _playGuard?.cancel();
     _symSub?.cancel();
+    _wpmSub?.cancel();
     _genSub?.cancel();
     _genChannel.invokeMethod('stop');   // also restarts the keyer …
     _keyerChannel.invokeMethod('stop'); // … which we then stop, like KeyerScreen
@@ -185,7 +196,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
       level: QsoLevel.values[_level],
       contestType: _contestType,
       userCall: _myCall,
-      userWpm: _wpm,
+      userWpm: _keyerMode == 4 ? _measuredWpm : _wpm,
       interWordDits: _interWord,
       nextCall: _nextCall,
       play: _playBot,
@@ -568,12 +579,16 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(children: [
-          Text('$_wpm WPM', style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent)),
-          Expanded(child: Slider(
-            value: _wpm.toDouble(), min: 5, max: 60, divisions: 55,
-            onChanged: (v) => setState(() => _wpm = v.round()),
-            onChangeEnd: (v) => _setWpm(v.round()),
-          )),
+          Text('${_keyerMode == 4 ? _measuredWpm : _wpm} WPM', style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent)),
+          // Straight key: disabled, follows the measured speed.
+          Expanded(child: _keyerMode == 4
+              ? Slider(value: _measuredWpm.toDouble(), min: 5, max: 60,
+                  divisions: 55, onChanged: null)
+              : Slider(
+                  value: _wpm.toDouble(), min: 5, max: 60, divisions: 55,
+                  onChanged: (v) => setState(() => _wpm = v.round()),
+                  onChangeEnd: (v) => _setWpm(v.round()),
+                )),
         ]),
       ),
       Expanded(

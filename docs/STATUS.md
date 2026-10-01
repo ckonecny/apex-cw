@@ -18,6 +18,10 @@ preparation", `docs/PLAY-LISTING.md`).
 4. Closed test: 12 testers × 14 days.
 5. Production.
 
+## In progress: adaptive straight key (issue #17)
+All 7 stages done and tested on the test phone, not committed yet (details in
+`docs/DECISIONS.md` and the archive). Next: ask for the commit (`Closes #17`).
+
 ## Manual: pending for next release
 
 Per CLAUDE.md rule 10, only the Markdown sources are updated per change;
@@ -37,3 +41,4 @@ the last release, with the reason. Clear this list after the release build
   "Learning resources" chapter with `manual/tools/insert.py`.
 - Adventure map shots: pinch zoom can't be injected over adb, so
   `adv_map*.png` show the default zoom.
+- Issue #17 (straight key): the settings screenshot with the Keyer card (`settings*.png`: new row "Starttempo Handtaste" in Straight mode), `keyer.png` (WPM slider disabled in Straight), `echo_result*.png` (Geben row disabled in Straight), `qso.png`, `adv_settings*.png`/tempo sheet (measured row). Text already updated (DE+EN).

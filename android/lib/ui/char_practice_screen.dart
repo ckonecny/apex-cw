@@ -32,6 +32,9 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
   static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
   static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
   static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  StreamSubscription? _wpmSub;
+  int _measuredWpm = 15;   // straight key: measured speed (display and timing only)
   static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
   // Settings, read from the Geben profile and the global keyer/tone prefs
@@ -78,7 +81,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
   int get _startDeadlineMs => _pauseS * 1000;
 
   // Safety net only: the keyer normally reports the character gap itself.
-  int get _answerSafetyMs => max(3000, (20 * 1200 / _answerWpm).round());
+  int get _answerSafetyMs => max(3000, (20 * 1200 / (_keyerMode == 4 ? _measuredWpm : _answerWpm)).round());
 
   @override
   void initState() {
@@ -98,6 +101,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
     _toneShift    = (p.getInt('toneShift') ?? 1).clamp(0, 2);
     _toneSoftness = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
     _keyerMode    = p.getInt('keyerMode') ?? 0;
+    _measuredWpm  = (p.getInt('straightStartWpm') ?? 15).clamp(5, 40);
     _curtisBDit   = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
     _curtisBDah   = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
     _acs          = (p.getInt('acs') ?? 0).clamp(0, 3);
@@ -115,6 +119,9 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
 
     _genSub = cwGenEvents.listen(_onGenEvent);
     _symbolSub = _symbolStream.receiveBroadcastStream().listen(_onSymbol);
+    _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
+      if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
+    });
     setState(() => _ready = true);
     await _play();
   }
@@ -126,6 +133,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
     _timer?.cancel();
     _genSub?.cancel();
     _symbolSub?.cancel();
+    _wpmSub?.cancel();
     _genChannel.invokeMethod('stopOne');
     _keyerChannel.invokeMethod('stop');
     super.dispose();

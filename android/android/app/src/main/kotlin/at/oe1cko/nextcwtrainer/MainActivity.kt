@@ -57,6 +57,7 @@ class MainActivity : FlutterActivity() {
         private const val SYMBOL_CHANNEL   = "at.oe1cko.nextcwtrainer/cw_symbols"
         private const val KEYER_CHANNEL    = "at.oe1cko.nextcwtrainer/cw_keyer"
         private const val GEN_CHANNEL      = "at.oe1cko.nextcwtrainer/cw_generator"
+        private const val STRAIGHT_WPM_CHANNEL = "at.oe1cko.nextcwtrainer/cw_straight_wpm"
         private const val GEN_EV_CHANNEL   = "at.oe1cko.nextcwtrainer/cw_gen_events"
         private const val SETTINGS_CHANNEL = "at.oe1cko.nextcwtrainer/settings"
         private const val SETTINGS_EV      = "at.oe1cko.nextcwtrainer/settings_events"
@@ -94,6 +95,16 @@ class MainActivity : FlutterActivity() {
                     keyer.onSymbol = { sym -> runOnUiThread { events.success(sym) } }
                 }
                 override fun onCancel(args: Any?) { keyer.onSymbol = null }
+            })
+
+        // ── Measured straight-key WPM → Dart (display only) ───────────────────
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, STRAIGHT_WPM_CHANNEL)
+            .setStreamHandler(object : EventChannel.StreamHandler {
+                override fun onListen(args: Any?, events: EventChannel.EventSink) {
+                    keyer.onMeasuredWpm = { w -> runOnUiThread { events.success(w) } }
+                    keyer.resendMeasuredWpm()
+                }
+                override fun onCancel(args: Any?) { keyer.onMeasuredWpm = null }
             })
 
         // ── Generator events → Dart ────────────────────────────────────────────
@@ -140,15 +151,19 @@ class MainActivity : FlutterActivity() {
                     }
                     "setInterWordSpace" -> {
                         keyer.wordGapDits = ((call.arguments as? Number)?.toInt() ?: 7).coerceAtLeast(2) - 1
-                        keyer.straightWordGapDits = 7
+                        keyer.straightWordGapDits = 0
                         result.success(null)
                     }
                     "setStraightWordGap" -> {
-                        keyer.straightWordGapDits = ((call.arguments as? Number)?.toInt() ?: 7).coerceAtLeast(3)
+                        keyer.straightWordGapDits = ((call.arguments as? Number)?.toInt() ?: 0).coerceAtLeast(0)
                         result.success(null)
                     }
                     "setAcs" -> {
                         keyer.acsValue = (call.arguments as? Number)?.toInt() ?: 0
+                        result.success(null)
+                    }
+                    "setStraightStartWpm" -> {
+                        keyer.straightStartWpm = ((call.arguments as? Number)?.toInt() ?: 15).coerceIn(5, 40)
                         result.success(null)
                     }
                     "setInputs" -> {
@@ -299,6 +314,10 @@ class MainActivity : FlutterActivity() {
                         keyer.acsValue = (call.arguments as? Number)?.toInt() ?: 0
                         result.success(null)
                     }
+                    "setStraightStartWpm" -> {
+                        keyer.straightStartWpm = ((call.arguments as? Number)?.toInt() ?: 15).coerceIn(5, 40)
+                        result.success(null)
+                    }
                     "startKeyDiag" -> { keyDiagMode = true;  result.success(null) }
                     "stopKeyDiag"  -> { keyDiagMode = false; result.success(null) }
                     "setKeepScreenOn" -> {
@@ -351,6 +370,13 @@ class MainActivity : FlutterActivity() {
                 }
             }
 
+        // Straight-key start WPM: a general setting stored by Flutter's
+        // SharedPreferences (ints are stored as Long); read once at startup,
+        // the settings screen pushes later changes.
+        try {
+            val fp = getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+            keyer.straightStartWpm = fp.getLong("flutter.straightStartWpm", 15L).toInt().coerceIn(5, 40)
+        } catch (_: Exception) {}
         keyer.start()
     }
 

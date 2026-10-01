@@ -12,6 +12,7 @@ EchoSuggestionInput input({
   int answerMax = 0,
   int ic = 10,
   int iw = 20,
+  bool straight = false,
 }) =>
     EchoSuggestionInput(
       firstTry: firstTry,
@@ -25,6 +26,7 @@ EchoSuggestionInput input({
       kochTotal: kochTotal,
       activeChars: active,
       stats: stats ?? CharStatsStore(CharStatsStore.echo),
+      straightKey: straight,
     );
 
 final good = List.filled(10, true);
@@ -94,6 +96,16 @@ void main() {
     expect(evaluateEchoBlock(e, input(firstTry: good, answerMax: 0)).newAnswerWpmMax, isNull);
     expect(evaluateEchoBlock(e, input(firstTry: good, answerMax: 20)).newAnswerWpmMax, isNull);
     expect(evaluateEchoBlock(e, input(firstTry: bad, answerMax: 15)).newAnswerWpmMax, isNull);
+  });
+
+  test('straight key: no Gebe-Tempo or spacing proposals', () {
+    final e = AdaptiveCopyEngine();
+    for (var n = 0; n < 4; n++) {
+      final s = evaluateEchoBlock(e, input(firstTry: good, answerMax: 15, ic: 8, iw: 15, straight: true));
+      expect(s.newAnswerWpmMax, isNull);
+      expect(s.newInterChar, isNull);
+      expect(s.newInterWord, isNull);
+    }
   });
 
   test('weak chars come from the echo stats', () {
