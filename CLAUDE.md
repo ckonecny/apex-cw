@@ -103,6 +103,13 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
     what is open or current, short entries, details belong in `DECISIONS.md`,
     the archive or the issue. Aim for well under 150 lines.
 
+14. **No deprecated APIs, stay future-proof.** Don't write deprecated
+    Flutter/Dart/Android/Gradle APIs in new or changed code, and don't copy
+    them from existing code. If you notice a deprecation (analyzer hint,
+    build warning), use the replacement right away (e.g. `withValues(alpha:)`
+    instead of `withOpacity`) instead of leaving it for later. `flutter
+    analyze` should stay at zero issues.
+
 ## Build / run
 
 From `android/`: `flutter build apk --debug`, then
