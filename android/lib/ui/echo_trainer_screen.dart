@@ -32,7 +32,7 @@ part 'echo_trainer_screen_widgets.dart';
 
 enum _State { idle, playing, receiving, correct, wrong }
 
-/// Outcome of one word in block mode (docs/training/P5-echo-bloecke.md):
+/// Outcome of one word in block mode (docs/archive/training/P5-echo-bloecke.md):
 /// first try right, right after a repeat, or given up (revealed).
 enum WordOutcome { first, afterRepeat, failed }
 
@@ -73,13 +73,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   _State _state    = _State.idle;
   int    _wpm      = 20;
   int    _kochLevel = 5;
-  // Character set + content (docs/training/P7), stored in the Geben profile.
+  // Character set + content (docs/archive/training/P7), stored in the Geben profile.
   CharsetChoice _choice = const CharsetChoice(CharSet.koch, ContentKind.random);
   bool get _koch => _choice.set == CharSet.koch;
   // "Adapt. Rand." (KOCH_ADAPTIVE): weighted-random character draw — wrong
   // answers raise a character's weight (drawn more often), right answers
   // lower it, within [1,20]. Backed by CharStatsStore's own
-  // echo track (separate from hearing, docs/training/P4-zeichenstatistik.md).
+  // echo track (separate from hearing, docs/archive/training/P4-zeichenstatistik.md).
   final CharStatsStore _charStats = CharStatsStore(CharStatsStore.echo);
   int    _kochSeq         = 0;
   String _customKochChars = 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
@@ -230,7 +230,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _loadPrefs();
   }
 
-  // Per-training settings (docs/training/P3). The sheet only saves; reloading
+  // Per-training settings (docs/archive/training/P3). The sheet only saves; reloading
   // picks the values up. Prompt/answer config is pushed at every session and
   // word start (_applyPromptConfig/_applyAnswerConfig), so nothing else to do.
   Future<void> _openSettingsSheet() async {
@@ -325,7 +325,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       List.generate(_groupLength.clamp(2, 8), (_) => _pickAdaptiveChar()).join();
 
   // Block flow: every echo content feeds the Geben track, once per word
-  // after the first attempt (docs/training/P6-echo-vorschlaege.md).
+  // after the first attempt (docs/archive/training/P6-echo-vorschlaege.md).
   Future<void> _applyBlockFeedback(String target, String received) async {
     final pair = _charStats.recordWord(target, received);
     if (pair != null) _blockPairs.add(pair);
@@ -334,7 +334,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   }
 
   // Block end: feed the first-try results to the adaptive engine and keep
-  // the proposals for the result page (docs/training/P6). Nothing is applied.
+  // the proposals for the result page (docs/archive/training/P6). Nothing is applied.
   Future<void> _computeSuggestions() async {
     _boostChars = [];   // a boost lasts one block
     final p = await SharedPreferences.getInstance();
@@ -383,7 +383,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   AdaptiveCopyEngine? _echoEngine;
 
   // Result page -> next block: writes what is still ticked into the profile
-  // / prefs and sets the boost set (docs/training/P6, step 6d). Native
+  // / prefs and sets the boost set (docs/archive/training/P6, step 6d). Native
   // values are pushed by _applyPromptConfig/_applyAnswerConfig at start.
   Future<void> _applyAccepted({required bool boost}) async {
     final s = _suggestions;

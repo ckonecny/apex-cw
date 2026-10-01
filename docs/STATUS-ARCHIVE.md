@@ -401,9 +401,9 @@ changes:
 ## In progress: Trainings-Umbau Hören/Echo/Einstellungen (2026-09-23)
 Phased rollout, one phase at a time: spec → user approval → implement →
 install → user test → next phase. **Entry point for every session on this:
-`docs/training/README.md`** (phase table + status + spec template); target
-picture: `docs/TRAINING-CONCEPT.md`. Current: **Phases 1 and 2 done and device-tested 2026-09-25; Phase 3 done and device-tested (3a–3e); Phase 4 (char stats split hear/echo, 📊 in each training) done and device-tested; Phase 5 (block flow + result page in Echo, display only; `docs/training/P5-echo-bloecke.md`) done (5a–5c device-checked stepwise; no full testplan, user decision 2026-10-01); Phase 6 (adaptive suggestions in Echo block flow; `docs/training/P6-echo-vorschlaege.md`) done, 6a–6d device-checked stepwise, no full testplan; Phase 7 (Koch as char set, start page with Hören/Geben, classic flow removed, unified practice view; `docs/training/P7-zeichenvorrat-startseite.md`) implemented 7a–7g and device-checked stepwise, no full testplan); next: Phase 8 (extras: Reaktionszeit, Trend, Verwechslungspaare, paddle choice Wiederholen/Weiter in the Hören block view) (P2 spec: `docs/training/P2-trainingsprofile.md`)
-approval** (`docs/training/P1-echo-grundlagen.md`): fixes Echo Trainer never
+`docs/archive/training/README.md`** (phase table + status + spec template); target
+picture: `docs/TRAINING-CONCEPT.md`. Current: **Phases 1 and 2 done and device-tested 2026-09-25; Phase 3 done and device-tested (3a–3e); Phase 4 (char stats split hear/echo, 📊 in each training) done and device-tested; Phase 5 (block flow + result page in Echo, display only; `docs/archive/training/P5-echo-bloecke.md`) done (5a–5c device-checked stepwise; no full testplan, user decision 2026-10-01); Phase 6 (adaptive suggestions in Echo block flow; `docs/archive/training/P6-echo-vorschlaege.md`) done, 6a–6d device-checked stepwise, no full testplan; Phase 7 (Koch as char set, start page with Hören/Geben, classic flow removed, unified practice view; `docs/archive/training/P7-zeichenvorrat-startseite.md`) implemented 7a–7g and device-checked stepwise, no full testplan); next: Phase 8 (extras: Reaktionszeit, Trend, Verwechslungspaare, paddle choice Wiederholen/Weiter in the Hören block view) (P2 spec: `docs/archive/training/P2-trainingsprofile.md`)
+approval** (`docs/archive/training/P1-echo-grundlagen.md`): fixes Echo Trainer never
 pushing spacing/Practice Set/Boost to the generator and never setting the
 keyer WPM (rule 2), adds a firmware-style answer speed cap ("Gebe-Tempo"),
 (Adaptive Speed deliberately untouched until phases 5/6).
@@ -609,7 +609,7 @@ on, no back-fill. The long-term progress view is issue #16.
 
 
 ## Trainings-Umbau Phase 8 (2026-09-25)
-Done (installed, partly user-confirmed): Paddle choice per group (Hören), block trend, think-time fix, Echo confirm tones, speed controls, 2 s wait, attempt indicator, stale-text fix. Reaktionszeit dropped. The Phase 5–8 testplans are dropped (user decision 2026-10-01: risk accepted, issues surface in normal use). See docs/training/P8-extras.md.
+Done (installed, partly user-confirmed): Paddle choice per group (Hören), block trend, think-time fix, Echo confirm tones, speed controls, 2 s wait, attempt indicator, stale-text fix. Reaktionszeit dropped. The Phase 5–8 testplans are dropped (user decision 2026-10-01: risk accepted, issues surface in normal use). See docs/archive/training/P8-extras.md.
 Verwechslungspaare done (Geben stats + result page). Benannte Presets dropped (user, 2026-10-01).
 
 ## Dead-code cleanup (2026-09-25), installed on the test phone, user-tested OK

@@ -1,5 +1,8 @@
 # Trainings-Umbau: Fahrplan
 
+> **Archiv.** Der Umbau ist abgeschlossen (Phasen 1–8). Diese Dateien bleiben als
+> Entwurfshistorie; maßgeblich sind `docs/DECISIONS.md` und der Code.
+
 **Einstieg für jede Session zu diesem Thema.** Nur diese Datei und die
 Spec der aktuellen Phase lesen. `docs/TRAINING-CONCEPT.md` ist das
 Zielbild und wird nur gelesen, wenn eine Phase neu spezifiziert wird, und
@@ -24,7 +27,7 @@ Kleine Phasen dürfen Spec und Umsetzung in einer Session haben. Große
 Phasen: eine Session für die Spec und eine oder mehrere für die Umsetzung.
 
 **Session-Start (zum Kopieren):**
-> Trainings-Umbau: lies `docs/training/README.md` und die Spec der
+> Trainings-Umbau: lies `docs/archive/training/README.md` und die Spec der
 > aktuellen Phase. Dann weiter mit dem nächsten offenen Schritt.
 
 ## Phasen
@@ -37,9 +40,9 @@ Phasen: eine Session für die Spec und eine oder mehrere für die Umsetzung.
 | 4 | Getrennte Zeichenstatistik Hören/Geben | **abgeschlossen** | [P4](P4-zeichenstatistik.md) | 5.3, 5.6 | 5 |
 | 5 | Adaptiver Echo-Ablauf, nur Anzeige (Blöcke, Ergebnis-Seite) | **abgeschlossen** | [P5](P5-echo-bloecke.md) | 5.1, 5.5 | 7 |
 | 6 | Adaptive Vorschläge beim Echo (nur Blockablauf) | **abgeschlossen** | [P6](P6-echo-vorschlaege.md) | 5.4 | 6, 7, 8 |
-| 7 | Koch als Zeichenvorrat, neue Startseite; **Klassisch-Ablauf überall entfernen, Adaptiv wird Standard, Übungsdarstellung überall wie Koch-Hören-Adaptiv** | **umgesetzt, Testplan durch User offen** | [P7](P7-zeichenvorrat-startseite.md) | 3 | 1, 3 |
-| 8 | Extras: benannte Presets, Verwechslungspaare, Trend, Paddle-Wahl (Reaktionszeit gestrichen) | **in Umsetzung** (Paddle, Trend, Paare fertig; Presets zurückgestellt) | [P8](P8-extras.md) | 7 (Phase 8) | – |
-| 9 | Eigener Text (File Player) als weiterer Zeichenvorrat | offen, niedrige Priorität | – | – | – |
+| 7 | Koch als Zeichenvorrat, neue Startseite; **Klassisch-Ablauf überall entfernen, Adaptiv wird Standard, Übungsdarstellung überall wie Koch-Hören-Adaptiv** | **abgeschlossen** (kein Gesamttest, User-Entscheidung 2026-10-01) | [P7](P7-zeichenvorrat-startseite.md) | 3 | 1, 3 |
+| 8 | Extras: Verwechslungspaare, Trend, Paddle-Wahl (Reaktionszeit gestrichen) | **abgeschlossen** (Presets gestrichen, User-Entscheidung 2026-10-01) | [P8](P8-extras.md) | 7 (Phase 8) | – |
+| 9 | Eigener Text (File Player) | **ausgelagert:** GitHub-Issue #8 | – | – | – |
 
 Status-Werte: offen → Spec in Arbeit → Spec zur Freigabe → Spec
 freigegeben → in Umsetzung → Install ausstehend → Test durch User →

@@ -1,5 +1,5 @@
 // Pure-Dart suggestion logic for the Echo Trainer's block flow
-// (docs/training/P6-echo-vorschlaege.md). Reuses AdaptiveCopyEngine for the
+// (docs/archive/training/P6-echo-vorschlaege.md). Reuses AdaptiveCopyEngine for the
 // block EMA / tempo steps and the unlock check; this file only adds the
 // Echo-specific rules (first-try rate, Gebe-Tempo, lock while Koch chars are
 // still open). Proposals only — nothing here changes any setting.

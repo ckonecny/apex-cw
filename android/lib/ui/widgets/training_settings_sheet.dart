@@ -10,7 +10,7 @@ import '../../theme/app_colors.dart';
 import 'setting_rows.dart';
 
 /// Parts of the per-training settings a screen can show, see
-/// docs/training/P3-einstellungen-in-screens.md.
+/// docs/archive/training/P3-einstellungen-in-screens.md.
 enum TrainingSection { content, spacing, wordSpacing, wordSelection, echoFlow, hearFlow, adaptive, kochSequence }
 
 /// Opens the settings sheet for one training profile ([TrainingProfile.hear]
@@ -394,7 +394,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
 
   List<Widget> _wordSelection() {
     final k = _choice.content;
-    // Only what fits the chosen content (docs/training/P7, decision 8).
+    // Only what fits the chosen content (docs/archive/training/P7, decision 8).
     final rows = <Widget>[
       if (_choice.engine.usesRandomOption)
         SegmentRow(

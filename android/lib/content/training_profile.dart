@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'charset_content.dart';
 
-/// Per-training settings ("profiles"), see docs/training/P2-trainingsprofile.md.
+/// Per-training settings ("profiles"), see docs/archive/training/P2-trainingsprofile.md.
 ///
 /// Hearing (CW Generator / Koch generator / Adaptive Copy) and Sending (Echo
 /// Trainer) each keep their own copy of these fields, stored as

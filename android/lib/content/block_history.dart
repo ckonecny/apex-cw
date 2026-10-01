@@ -1,5 +1,5 @@
 // Quote der letzten Blöcke pro Training (Hören / Geben) für die Trendanzeige
-// auf der Ergebnis-Seite. docs/training/P8-extras.md, Punkt Trend.
+// auf der Ergebnis-Seite. docs/archive/training/P8-extras.md, Punkt Trend.
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _window = 5;

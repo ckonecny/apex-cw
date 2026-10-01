@@ -31,7 +31,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   String _practiceChars = '';
   int  _wpm        = 20;
   int  _kochLevel  = 5;
-  // Character set + content (docs/training/P7), stored in the Hören profile.
+  // Character set + content (docs/archive/training/P7), stored in the Hören profile.
   CharsetChoice _choice = const CharsetChoice(CharSet.koch, ContentKind.random);
   bool get _koch => _choice.set == CharSet.koch;
   int  _outputCase = 0;   // 0=lower, 1=UPPER — display only, content stays uppercase internally
@@ -105,7 +105,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     await _toneChannel.invokeMethod('setEnvelopeMs', (toneSoftness + 1).toDouble());
   }
 
-  // Per-training settings (docs/training/P3). The sheet only saves; reloading
+  // Per-training settings (docs/archive/training/P3). The sheet only saves; reloading
   // re-reads the profile and pushes practice set/boost to the shared native
   // generator (rule 2). Spacing, wpm etc. are pushed when a block starts.
   Future<void> _openSettingsSheet() async {
@@ -166,7 +166,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   }
 
   // Koch character: tap plays it with the code overlay, long press opens the
-  // echo drill (docs/training/P7, decision 6). The drill is the former Learn
+  // echo drill (docs/archive/training/P7, decision 6). The drill is the former Learn
   // New Chr / Preview Char (Koch::getNewChar()/getKochChar()).
   Future<void> _onCharTap(String ch) => showCharPlayback(context,
       ch: ch, outputCase: _outputCase,

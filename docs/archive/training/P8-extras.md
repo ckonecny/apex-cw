@@ -1,6 +1,6 @@
 # Phase 8: Extras
 
-Status: **teilweise umgesetzt (Paddle, Trend, Verwechslungspaare fertig; Reaktionszeit gestrichen; Presets zurückgestellt)** · Stand: 2026-09-25
+Status: **abgeschlossen** (Reaktionszeit und benannte Presets gestrichen, User-Entscheidung 2026-10-01) · Stand: 2026-09-25
 
 ## Ziel
 

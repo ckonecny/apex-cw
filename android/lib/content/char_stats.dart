@@ -71,14 +71,14 @@ class CharStatsStore {
   static const hear = 'hear';
   static const echo = 'echo';
 
-  // Two separate tracks (docs/training/P4-zeichenstatistik.md): what is
+  // Two separate tracks (docs/archive/training/P4-zeichenstatistik.md): what is
   // heard wrongly is not what is sent wrongly. Stored as `charStats.<track>`.
   final String track;
   CharStatsStore([this.track = hear]);
 
   final Map<String, CharStat> stats = {};
   // Confusions "T>G" (target > given, '–' = left out) → count, first wrong
-  // char of each first attempt only. Display only (docs/training/P8).
+  // char of each first attempt only. Display only (docs/archive/training/P8).
   final Map<String, int> pairs = {};
 
   String get _pairsKey => '$_key.pairs';
@@ -164,7 +164,7 @@ class CharStatsStore {
     s.weight = (correct ? s.weight - 1 : s.weight + 2).clamp(1, 20);
   }
 
-  // Books one Echo word after its FIRST attempt (docs/training/P6). Weights
+  // Books one Echo word after its FIRST attempt (docs/archive/training/P6). Weights
   // follow Koch::increaseWordProbability / decreaseWordProbability in
   // MorsePreferences.cpp: first wrong char +4, its neighbours +2 (only if a
   // different char), a fully right word -1 per char. Attempts/errors/EMA:

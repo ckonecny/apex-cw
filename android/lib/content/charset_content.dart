@@ -1,6 +1,6 @@
 import 'training_profile.dart';
 
-/// Character set and content of a training (docs/training/P7-zeichenvorrat-startseite.md).
+/// Character set and content of a training (docs/archive/training/P7-zeichenvorrat-startseite.md).
 ///
 /// Koch is not a mode but a character set: the firmware's `kochActive` only
 /// filters the characters and weights them.

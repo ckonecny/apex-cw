@@ -1713,8 +1713,7 @@ WiFi setup page. Instead of the firmware's Practice Stats, the app has its
 own, more detailed [character statistics](#character-statistics).
 
 Not done yet, but planned: the games Trailblazer, Fox Hunt, Radio Cave and
-Fight the Pileup, the File Player (your own text as practice content), saved
-settings profiles and CW Memories.
+Fight the Pileup and the File Player (your own text as practice content).
 
 # Troubleshooting
 

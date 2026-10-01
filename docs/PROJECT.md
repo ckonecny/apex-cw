@@ -1,8 +1,10 @@
 # Project
 
-Next CW Trainer: an Android app (Flutter + native Kotlin/C++) that ports the
-Morserino-32's CW **training** modes (Keyer, Generator, Koch Trainer, Echo
-Trainer) to a phone. Independent project, not affiliated with the original —
+Next CW Trainer: an Android app (Flutter + native Kotlin/C++), a CW trainer
+in its own right. It ports the Morserino-32's CW training modes (keyer,
+generator/Koch trainer, echo trainer, decoder, WiFi Trx, QSO bot, games) to a
+phone and adds app-only features (e.g. typing mode, text adventure, character
+statistics). Independent project, not affiliated with the original —
 its only connection to Willi Kraml/OE1WKL or the Morserino-32 team is that
 its algorithms and training logic were read out of their firmware source;
 full credit for that design/curriculum goes to Willi Kraml, OE1WKL, and the
@@ -21,7 +23,13 @@ scope/hardware-distinction, and the paddle-adapter note (vband etc.).
 - `docs/` — this folder. `STATUS.md` (current state, next steps,
   organisational open points), `STATUS-ARCHIVE.md` (finished items, moved out
   of STATUS.md), `DECISIONS.md` (why things are built the way they are),
-  `PORTING-MAP.md` (firmware module -> Android module -> status).
+  `PORTING-MAP.md` (firmware module -> Android module -> status),
+  `ADAPTIVE-COPY.md` (how the adaptive Hören block works),
+  `TRAINING-CONCEPT.md` (target picture of the training rework),
+  `PLAY-LISTING.md` (Play Store texts and console answers),
+  `archive/training/` (finished phase specs of that rework, history only).
+- `PRIVACY.md` (repo root) — privacy policy, linked from the Play listing.
+- `store/`, `tools/` — Play Store graphics script; release build and git hooks.
 - `CLAUDE.md` (repo root) — session-start rules; read that first, it's short
   on purpose and points here for depth.
 

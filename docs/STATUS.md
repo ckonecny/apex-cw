@@ -11,7 +11,7 @@ only the current state, organisational steps and hints for the next session.
 Done so far: upload key and signing, privacy policy, store texts and graphics
 (details in `docs/STATUS-ARCHIVE.md`, `docs/DECISIONS.md` "Play Store
 preparation", `docs/PLAY-LISTING.md`).
-1. User: developer account (identity check pending).
+1. User: developer account (identity check passed).
 2. Retake the home raw shot for the store (see the pending list below), then
    rebuild the graphics with `python3 store/make_graphics.py`.
 3. Tag v1.3.0, build with `tools/build_release.sh`, upload the AAB.

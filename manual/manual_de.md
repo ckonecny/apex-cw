@@ -1768,8 +1768,7 @@ und die WLAN-Einrichtungsseite. Statt der Practice Stats der Firmware hat die
 App ihre eigene, ausführlichere [Zeichenstatistik](#zeichenstatistik).
 
 Noch nicht umgesetzt, aber geplant: die Spiele Trailblazer, Fox Hunt, Radio
-Cave und Fight the Pileup, der File Player (eigene Texte als Übungsinhalt),
-gespeicherte Einstellungs-Profile und CW Memories.
+Cave und Fight the Pileup sowie der File Player (eigene Texte als Übungsinhalt).
 
 # Hilfe bei Problemen
 

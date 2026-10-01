@@ -22,10 +22,10 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | `MorseWiFi.cpp` / cwForTx() (WiFi Trx UDP protocol) | `lib/net/mopp.dart`, `lib/net/mopp_client.dart`, `lib/ui/wifi_trx_screen.dart` | First version: single server/peer, send + receive, in foreground only. Not yet tested against a real server. ESP-NOW/LoRa: N/A |
 | `MorseMorsel.cpp` (Morsel, word guessing) | `lib/ui/morsel_screen.dart` (via `games_screen.dart`) | Ported, single player (2026-09-25), not yet user-tested |
 | `MorseMemoryChain.cpp` (Memory Chain) | `lib/ui/memory_chain_screen.dart` (via `games_screen.dart`) | Ported (2026-09-25), user-tested OK |
-| `MorseGridEngine.cpp`, `MorseGridScore.cpp`, `MorseTrailblazer.cpp`, `MorseFoxHunt.cpp` (grid games) | — | Backlog #3 |
+| `MorseGridEngine.cpp`, `MorseGridScore.cpp`, `MorseTrailblazer.cpp`, `MorseFoxHunt.cpp` (grid games) | — | GitHub issue #13 |
 | `MorseGame.cpp`, `MorseGameMode.cpp`, `GameSprite.cpp` (Morse Invaders) | `lib/ui/invaders_screen.dart` (via `games_screen.dart`), effects in `CwTonePlugin.kt` | Ported (2026-09-25), user-tested OK |
-| `MorseRadioCave.cpp` (Radio Cave, text adventure) | — | Backlog #5 |
-| `MorsePileup.cpp` (Fight the Pileup) | — | Backlog #6, single player only |
+| `MorseRadioCave.cpp` (Radio Cave, text adventure) | — | GitHub issue #14 |
+| `MorsePileup.cpp` (Fight the Pileup) | — | GitHub issue #15, single player only |
 | Multiplayer of all games (`MorseGridNet.cpp`, ESP-NOW parts of Morsel/Pileup) | — | N/A: ESP-NOW does not exist on a phone |
 | `MorseQsoBot.cpp`, `MorseQsoBotMatch.h`, `qso_content.h` | `lib/content/qso_bot.dart`, `lib/ui/qso_bot_screen.dart`, call zones in `CallsignData.kt` | Ported (2026-09-25), user-tested OK |
 | `goertzel.cpp` (mic CW decode) | `lib/keyer/cw_audio_decoder.dart`, `MicInput.kt`, `lib/ui/decoder_screen.dart` | Ported (2026-09-25), user-tested OK |
@@ -36,12 +36,8 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | LoRa (RadioLib) | — | N/A — no hardware |
 | Bluetooth (`MorseBluetooth.cpp`) | — | N/A — Android handles BT/HID natively |
 | Accessibility voice clips (`CONFIG_AUDIO_A11Y`) | — | N/A — not evaluated |
-| — (no firmware equivalent) | Hören typing mode: `lib/ui/adaptive_copy_body.dart` + new keyboard widget | Done 2026-09-27, user-tested OK (see DECISIONS.md) |
-| — (no firmware equivalent) | Text adventure (Zork I–III): `lib/zmachine/`, `lib/adventure/`, `lib/ui/adventure_*.dart` | Steps 1–5 done 2026-09-28 (interpreter + solution tests for Zork I–III, game screen with CW output, keyboard and paddle input, maps for all three parts); user testing open (see STATUS.md) |
-| — (no firmware equivalent) | `lib/l10n/strings.dart` | Done — app-only DE/EN switch |
-| — (no firmware equivalent) | `lib/theme/*`, `lib/ui/widgets/pinch_zoom_text.dart` | Done — app-only theme/text-size |
 
-Order and effort for the backlog rows: `docs/STATUS.md`, section "Backlog".
+Open rows are tracked as GitHub issues (CLAUDE.md rule 12).
 
 ## Dead code
 None known. The Dart prototype files (commit 85cfd8f) and unused handlers,

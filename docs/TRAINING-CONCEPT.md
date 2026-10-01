@@ -2,7 +2,7 @@
 
 Status: **Zielbild.** Erstellt 2026-09-23. Die Umsetzung läuft in Phasen,
 jede wird vor dem Bauen einzeln genauer spezifiziert. Fahrplan, Status und
-Phasen-Specs: `docs/training/README.md`. Offene Fragen (Abschnitt 9) werden
+Phasen-Specs: `docs/archive/training/README.md`. Offene Fragen (Abschnitt 9) werden
 in der Phase geklärt, der sie zugeordnet sind.
 
 Ziel: Der Echo Trainer bekommt denselben adaptiven Block-Ablauf wie der
@@ -354,7 +354,7 @@ Aufbau wie der adaptive Koch-Generator, damit beide Trainings gleich aussehen.
 ## 7. Umsetzung in Phasen
 
 Die Phasenliste mit Status und die Detail-Specs stehen in
-`docs/training/README.md`. Kurzfassung:
+`docs/archive/training/README.md`. Kurzfassung:
 
 1. Echo-Grundlagen: Singleton-Fehler, Gebe-Tempo, Adaptive Speed ±1
 2. Trainingsprofile (Datenebene)

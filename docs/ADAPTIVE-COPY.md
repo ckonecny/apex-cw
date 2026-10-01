@@ -1,6 +1,6 @@
 # Adaptive Copy Mode — Design Notes
 
-> **Stand seit Phase 7:** Der Klassisch-Ablauf und der Klassisch/Adaptiv-Umschalter sind entfernt; Hören läuft immer als adaptiver Block, für Koch, Alle Zeichen und Übungsset (`docs/training/P7-zeichenvorrat-startseite.md`). Die Abschnitte unten beschreiben die Entstehung und nennen teils Klassisch, `kochMode` und die alten Home-Karten.
+> **Stand seit Phase 7:** Der Klassisch-Ablauf und der Klassisch/Adaptiv-Umschalter sind entfernt; Hören läuft immer als adaptiver Block, für Koch, Alle Zeichen und Übungsset (`docs/archive/training/P7-zeichenvorrat-startseite.md`). Die Abschnitte unten beschreiben die Entstehung und nennen teils Klassisch, `kochMode` und die alten Home-Karten.
 
 Status: planned, not started. Not a firmware port — this concept has no
 `reference/` equivalent; it originates from a separate ESP32 CW-trainer
@@ -42,7 +42,7 @@ confusion-pair matrix.
   - **Priority: build the Koch Trainer (`kochMode: true`) side first.** The
     non-Koch CW Generator and later Echo Trainer reuse of the same flow are
     explicitly follow-ups, not part of the first working version.
-- **Character stats: same model as the Echo Trainer, one track each (hear/echo since Phase 4, see docs/training/P4-zeichenstatistik.md).**
+- **Character stats: same model as the Echo Trainer, one track each (hear/echo since Phase 4, see docs/archive/training/P4-zeichenstatistik.md).**
   New `CharStatsStore` (attempts, errors, moving error rate, last-seen
   block) replaces Echo Trainer's current ad-hoc `Map<String,int>`
   `_adaptiveWeight` (`adaptiveWeights` SharedPreferences key, used only by
