@@ -8,6 +8,7 @@ import 'char_practice_screen.dart';
 import 'adaptive_copy_body.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
+import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
 import '../l10n/strings.dart';
 import '../content/training_profile.dart';
@@ -283,7 +284,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           if (!_keyboardShown) Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Column(children: [
-              _SliderRow(
+              SliderRow(
                 label: 'WPM', value: _wpm.toDouble(),
                 min: TrainingProfile.minWpm.toDouble(), max: 60,
                 divisions: 60 - TrainingProfile.minWpm,
@@ -330,42 +331,3 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
 }
 
 // ── Sub-widgets ──
-
-class _SliderRow extends StatelessWidget {
-  final String label;
-  final double value, min, max;
-  final int divisions;
-  final ValueChanged<double> onChanged;
-  const _SliderRow({required this.label, required this.value, required this.min,
-      required this.max, required this.divisions, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    return Row(
-    children: [
-      SizedBox(width: 50, child: Text(label,
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
-              color: c.textMuted))),
-      Expanded(child: SliderTheme(
-        data: SliderTheme.of(context).copyWith(
-          activeTrackColor: c.accent,
-          inactiveTrackColor: c.border,
-          thumbColor: c.accent,
-          overlayColor: c.accent.withOpacity(0.1),
-          trackHeight: 3,
-          // No step dots: Flutter draws them only when the track is long
-          // enough, so rows of different width looked different.
-          tickMarkShape: SliderTickMarkShape.noTickMark,
-        ),
-        child: Slider(value: value, min: min, max: max,
-            divisions: divisions, onChanged: onChanged),
-      )),
-      SizedBox(width: 40, child: Text(value.round().toString(),
-          textAlign: TextAlign.right,
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
-              color: c.accent))),
-    ],
-  );
-  }
-}

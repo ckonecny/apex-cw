@@ -22,6 +22,7 @@ import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
+import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
 import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
@@ -994,12 +995,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(children: [
-              _SliderRow(label: Strings.t('block_hear'), value: _wpm.toDouble(),
+              SliderRow(label: Strings.t('block_hear'), labelWidth: 56, valueWidth: 84, value: _wpm.toDouble(),
                   min: TrainingProfile.minWpm.toDouble(), max: 60,
                   divisions: 60 - TrainingProfile.minWpm,
                   onChanged: (v) { setState(() => _wpm = v.round()); _savePrefs(); }),
               // Leftmost notch (kGiveWpmMin - 1) = "same as Hören".
-              _SliderRow(label: Strings.t('block_give'),
+              SliderRow(label: Strings.t('block_give'), labelWidth: 56, valueWidth: 84,
                   value: (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax).toDouble(),
                   min: kGiveWpmMin - 1.0, max: 60, divisions: 61 - kGiveWpmMin,
                   display: _answerWpmMax == 0
@@ -1316,46 +1317,4 @@ class _StatsBar extends StatelessWidget {
     ),
     child: Text(t, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c)),
   );
-}
-
-class _SliderRow extends StatelessWidget {
-  final String label;
-  final double value, min, max;
-  final int divisions;
-  final ValueChanged<double> onChanged;
-  final String? display;
-  const _SliderRow({required this.label, required this.value, required this.min,
-      required this.max, required this.divisions, required this.onChanged,
-      this.display});
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    return Row(
-    children: [
-      SizedBox(width: 56, child: Text(label,
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
-              color: c.textMuted))),
-      Expanded(child: SliderTheme(
-        data: SliderTheme.of(context).copyWith(
-          activeTrackColor: c.accent,
-          inactiveTrackColor: c.border,
-          thumbColor: c.accent,
-          overlayColor: c.accent.withOpacity(0.1),
-          trackHeight: 3,
-          // No step dots: Flutter draws them only when the track is long
-          // enough, so rows of different width looked different.
-          tickMarkShape: SliderTickMarkShape.noTickMark,
-        ),
-        child: Slider(value: value, min: min, max: max,
-            divisions: divisions, onChanged: onChanged),
-      )),
-      // Same width in both rows so Hören and Geben tracks line up.
-      SizedBox(width: 84, child: Text(display ?? value.round().toString(),
-          textAlign: TextAlign.right,
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
-              color: c.accent))),
-    ],
-  );
-  }
 }

@@ -9,6 +9,7 @@ import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
+import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
 
 class KeyerScreen extends StatefulWidget {
@@ -170,9 +171,11 @@ class _KeyerScreenState extends State<KeyerScreen> {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           child: AppCard(
             padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
-            child: _SliderRow(
+            child: SliderRow(
               label: 'WPM', value: _wpm.toDouble(), min: 5, max: 60, divisions: 55,
-              onChanged: (v) {
+              showTicks: true,
+              onChanged: (d) {
+                final v = d.round();
                 setState(() => _wpm = v);
                 _keyerChannel.invokeMethod('setWpm', v);
                 _saveWpm();
@@ -194,38 +197,4 @@ class _KeyerScreenState extends State<KeyerScreen> {
 }
 
 // ── Sub-widgets ──────────────────────────────────────────────────────────────
-
-class _SliderRow extends StatelessWidget {
-  final String label;
-  final double value, min, max;
-  final int divisions;
-  final ValueChanged<int> onChanged;
-  const _SliderRow({required this.label, required this.value, required this.min,
-      required this.max, required this.divisions, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    return Row(children: [
-    SizedBox(width: 50, child: Text(label,
-        style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
-            color: c.textMuted))),
-    Expanded(child: SliderTheme(
-      data: SliderTheme.of(context).copyWith(
-        activeTrackColor: c.accent,
-        inactiveTrackColor: c.border,
-        thumbColor: c.accent,
-        overlayColor: c.accent.withOpacity(0.1),
-        trackHeight: 3,
-      ),
-      child: Slider(value: value, min: min, max: max, divisions: divisions,
-          onChanged: (v) => onChanged(v.round())),
-    )),
-    SizedBox(width: 40, child: Text(value.round().toString(),
-        textAlign: TextAlign.right,
-        style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
-            color: c.accent))),
-  ]);
-  }
-}
 
