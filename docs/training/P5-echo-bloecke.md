@@ -1,6 +1,6 @@
 # Phase 5: Adaptiver Echo-Ablauf, nur Anzeige (Blöcke, Ergebnis-Seite)
 
-Status: **abgeschlossen** (Gesamttest des Testplans vom User später) · Stand: 2026-09-25
+Status: **abgeschlossen** (kein Gesamttest, User-Entscheidung 2026-10-01) · Stand: 2026-09-25
 
 ## Ziel
 
@@ -115,25 +115,6 @@ Prüfung: alle drei Ausgänge erscheinen richtig, Sprache/Dunkelmodus ok.
 
 **5d: Doku.** STATUS, DECISIONS, README-Tabelle, dieses Dokument.
 
-## Testplan (User, auf dem Gerät)
-
-- [ ] Standard ist Klassisch, Ablauf und Anzeige wie bisher.
-- [ ] ⚙ → Ablauf: Blockweise wählbar, Wert bleibt nach Neustart.
-- [ ] Blockweise mit 3 Wörtern: Fortschritt `Wort n / 3` und Punktereihe
-      stimmen.
-- [ ] Ein Wort sofort richtig → ●. Erst nach Wiederholung richtig → ◐.
-      Nie richtig (aufgedeckt) → ○.
-- [ ] Am Blockende hört man `+`, dann erscheint die Ergebnis-Seite.
-- [ ] Erstversuch-Prozent und Zahlen stimmen mit dem überein, was ich
-      gemacht habe.
-- [ ] Wortliste zeigt Ziel und meine Antwort, erstes falsches Zeichen rot.
-- [ ] "Nächster Block" startet sauber einen neuen Block, "Beenden" führt
-      zurück in den Ausgangszustand.
-- [ ] Stopp mitten im Block: keine Ergebnis-Seite.
-- [ ] Koch-Echo (auch "Adapt. Rand.") und normales Echo verhalten sich
-      gleich. Learn New Chr bleibt ohne Blockanzeige.
-- [ ] Tempo, Abstände, Statistik unverändert zu Phase 4.
-
 ## Ergebnis
 
 Umgesetzt wie spezifiziert, 5a–5c einzeln installiert und vom User
@@ -141,5 +122,4 @@ geprüft. Abweichungen: keine. Kleinigkeit: "Nächster Block" startet über
 `_startSession`, deshalb wird am Anfang jedes Blocks wieder `vvv<ka>`
 gespielt. Code: `echo_trainer_screen.dart` (`WordResult`, `_recordWord`,
 `_buildBlockProgress`, `_buildBlockResult`), Sheet-Auswahl in
-`training_settings_sheet.dart`. Nacharbeit: Gesamttest des Testplans durch
-den User zu einem späteren Zeitpunkt.
+`training_settings_sheet.dart`. Kein Gesamttest (User-Entscheidung 2026-10-01).

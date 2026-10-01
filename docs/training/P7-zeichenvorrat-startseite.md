@@ -1,6 +1,6 @@
 # Phase 7: Zeichenvorrat, neue Startseite, Klassisch entfällt
 
-Status: **umgesetzt 7a–7g, Testplan durch User offen** · Stand: 2026-09-25
+Status: **umgesetzt 7a–7g, kein Gesamttest, User-Entscheidung 2026-10-01** · Stand: 2026-09-25
 
 ## Ziel
 
@@ -211,29 +211,6 @@ starten direkt in den Block, Tests und Analyzer sauber.
 **7g: Doku.** README-Tabelle, STATUS, DECISIONS, CLAUDE.md (falls
 Screen-Namen dort stehen), `docs/ADAPTIVE-COPY.md` (Hinweis Zeichenvorrat),
 diese Spec (Ergebnis).
-
-## Testplan (User, auf dem Gerät)
-
-- [ ] Startseite: CW Keyer, Hören, Geben, WiFi Trx. Kein "Koch Trainer".
-- [ ] Hören und Geben: Zeichenvorrat und Inhalt wählbar, Auswahl bleibt
-      nach Neustart, getrennt für Hören und Geben.
-- [ ] Koch-Lektion: nur die freigeschalteten Zeichen kommen vor
-      (Zufall, Wörter, Abkürzungen, Gemischt), in beiden Screens.
-- [ ] Alle Zeichen: Zufall (mit Zeichenauswahl), Wörter, Abkürzungen,
-      Rufzeichen, Gemischt.
-- [ ] Übungsset: nur eigene Zeichen, nur Zufall wählbar.
-- [ ] ⚙ zeigt nur Regler, die zum Inhalt passen (Zufall → Gruppen-Länge,
-      Wörter → Max. Wortlänge, …).
-- [ ] Beide Screens laufen nur blockweise mit Ergebnis-Seite. Nirgends
-      "Klassisch", kein Endlosablauf, kein Adaptive Speed.
-- [ ] Hören mit Alle Zeichen/Übungsset: Ergebnis und Tempo-/Abstands-
-      Vorschläge, keine Zeichen-Freischaltung.
-- [ ] Koch-Zeichen antippen → Anhören mit Code-Kachel; lange drücken → Mit Echo üben (geändert 2026-09-27).
-- [ ] Koch-Freischaltung, Boost und Schwachzeichen funktionieren in Hören
-      und Geben wie zuvor.
-- [ ] Alte Einstellungen (Lektion, Tempo, Abstände, Statistik) sind nach
-      dem Update noch da.
-- [ ] Sprache, Dunkelmodus, schmales Display.
 
 ## Ergebnis
 

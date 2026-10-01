@@ -18,8 +18,9 @@ scope/hardware-distinction, and the paddle-adapter note (vband etc.).
   HTML/PDF via `manual/build.sh`). Markdown kept in sync with every
   user-visible change; HTML/PDF and screenshots refreshed per release
   (CLAUDE.md rule 10).
-- `docs/` — this folder. `STATUS.md` (current state, next steps, open
-  questions), `DECISIONS.md` (why things are built the way they are),
+- `docs/` — this folder. `STATUS.md` (current state, next steps,
+  organisational open points), `STATUS-ARCHIVE.md` (finished items, moved out
+  of STATUS.md), `DECISIONS.md` (why things are built the way they are),
   `PORTING-MAP.md` (firmware module -> Android module -> status).
 - `CLAUDE.md` (repo root) — session-start rules; read that first, it's short
   on purpose and points here for depth.

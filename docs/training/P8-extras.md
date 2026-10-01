@@ -98,17 +98,6 @@ Jeder Schritt: bauen, installieren, kurz prüfen, dann "passt".
   Einstellungen ändern, Preset laden, alles ist wieder wie vorher.
 - **8e Docs.** STATUS, README, DECISIONS, diese Spec ("Ergebnis").
 
-## Testplan
-
-- [ ] Hören: Block aufdecken, Dit wiederholt, Dah geht weiter.
-- [ ] Nach 6 Blöcken zeigt die Ergebnis-Seite einen Trend, getrennt für
-      Hören und Geben.
-- [ ] Geben: ein Zeichen absichtlich falsch geben, das Paar steht danach
-      in der Statistik und auf der Ergebnis-Seite.
-- [ ] Preset speichern, Einstellungen ändern, Preset laden: alles wie
-      gespeichert. Ein Preset des Hörens erscheint nicht beim Geben.
-- [ ] Statistik "Geben" zurücksetzen löscht auch die Paare.
-
 ## Ergebnis
 
 Zwischenstand (2026-09-25), noch nicht abgeschlossen:

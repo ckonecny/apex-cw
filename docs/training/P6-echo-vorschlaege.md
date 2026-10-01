@@ -1,6 +1,6 @@
 # Phase 6: Adaptive Vorschläge beim Echo
 
-Status: **abgeschlossen** (Gesamttest des Testplans vom User später) · Stand: 2026-09-25
+Status: **abgeschlossen** (kein Gesamttest, User-Entscheidung 2026-10-01) · Stand: 2026-09-25
 
 ## Ziel
 
@@ -171,25 +171,6 @@ Werte, Neustart behält sie.
 
 **6e: Doku.** STATUS, DECISIONS, README-Tabelle, Ergebnis hier.
 
-## Testplan (User, auf dem Gerät)
-
-- [ ] Blockweise, Koch-Echo: nach einem Block erscheinen Vorschläge nur, wenn
-      ein Auslöser zutrifft.
-- [ ] Viele Wörter fehlerfrei: "Neues Zeichen" erscheint mit Stern und
-      "Anhören". Annehmen: Lektion im ⚙ ist +1.
-- [ ] Solange noch Koch-Zeichen offen sind, kommt kein "Hör-Tempo hoch".
-- [ ] Nach neuem Zeichen im selben Block kein Tempo-Anstieg.
-- [ ] Zwei gute Blöcke ohne offene Zeichen: erst Abstand enger, dann WPM +1.
-- [ ] Viele Fehler: Abstand wird weiter vorgeschlagen.
-- [ ] Gebe-Tempo unter Hör-Tempo und gute Quote: Vorschlag, Häkchen aus.
-- [ ] Ein Zeichen absichtlich oft falsch geben: es erscheint als Chip, kommt
-      im Block danach öfter.
-- [ ] 📊 Geben: Werte auch in Echo mit Wörtern/Zufall, nicht nur "Adapt.
-      Rand.". Hören bleibt unverändert.
-- [ ] Nicht angehakte Vorschläge ändern nichts.
-- [ ] Learn New Chr / Preview Char unverändert, ohne Statistik.
-- [ ] Neustart: übernommene Werte bleiben.
-
 ## Ergebnis
 
 Umgesetzt wie spezifiziert, 6a–6d einzeln installiert und vom User geprüft
@@ -205,5 +186,5 @@ Code: `content/echo_suggestions.dart` (Regeln, Tests in
 `echo_trainer_screen.dart` (`_computeSuggestions`, `_buildSuggestionRows`,
 `_applyAccepted`), `SuggestionRow` jetzt öffentlich in
 `adaptive_copy_body.dart`. Block-EMA unter `echoBlockEma` (global, nicht pro
-Profil). Nacharbeit: Gesamttest des Testplans durch den User später; Klassisch
+Profil). Kein Gesamttest (User-Entscheidung 2026-10-01); Klassisch
 entfernen in Phase 7.
