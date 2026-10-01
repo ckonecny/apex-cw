@@ -63,7 +63,7 @@ The home screen has four groups:
 |---|---|---|
 | **Practice** | **Listen** | Practice copying: CW Generator and Koch Trainer in the block flow |
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
-| **Free** | **Free modes** | Opens four tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) and **QSO Bot** (a simulated QSO partner) |
+| **Free** | **Free modes** | Opens five tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) and **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) |
 | **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
 
@@ -1213,6 +1213,73 @@ confirmation.
 ![QSO Bot settings](img/en/qso_sheet.png)
 :::
 
+# Own texts {#own-texts}
+
+**Own texts** lets you listen to any text as Morse code – a weather report, a
+newspaper article, a book chapter or a list of call signs. You find it under
+**Free modes**.
+
+## Adding texts
+
+1. In any app, copy a text to the clipboard.
+2. In **Own texts**, tap **Paste from clipboard**.
+3. Give the text a title (the first words are suggested) and tap **Add**.
+
+You can add as many texts as you like. A text can be at most 20,000 characters
+long. The ⋮ menu next to a text renames or deletes it (after asking). You can't
+edit a text in the app: to change one, paste the corrected version. The texts
+stay on your device.
+
+## What is sent
+
+The text is always shown as you pasted it. Only the audio replaces characters
+Morse doesn't have:
+
+- Umlauts and ß: Ä → AE, Ö → OE, Ü → UE, ß → SS. Other accents are dropped
+  (é → E).
+- `!` becomes `.`, `;` becomes `,`, `&` becomes AND, dashes become `-`. A dash
+  standing alone between spaces is skipped.
+- Quotation marks, brackets and other special characters are not sent.
+- Write **prosigns** in angle or square brackets, e.g. `<KA>` or `[SK]`; they
+  are sent as one character. A pair of letters without brackets is always two
+  letters.
+
+A paragraph break in the text is sent as a double word gap.
+
+## Playing
+
+Tap a text, then ▶. At the top you set the **speed** (WPM) with the slider or
+⊖/⊕ – also **while** the text plays; the change applies at once.
+
+| Button | Effect |
+|---|---|
+| ▶ / ⏸ | Play; pause (then it goes on from the start of the current word) |
+| **Word** | Repeat the current word, then pause |
+| **Sentence** | Repeat the current sentence, then pause |
+| **Start** | The whole text from the beginning |
+| ⏮ / ⏭ | To the start of the previous / next sentence |
+| ‹ / › | One word back / forward |
+
+Tap any word in the text to listen from there. Pinch with two fingers to make
+the text larger or smaller. At the end the text starts again from the
+beginning.
+
+Progress is saved automatically. When you open a text you have started, the app
+asks: **Continue** or **Start over**. The list shows how much of each text you
+have heard.
+
+## Settings (⚙)
+
+- **Character spacing** and **word spacing** in dits, as in the trainings.
+  They also apply while playing.
+- **Show text**: **Always**; **After playing** (each word appears once it has
+  been sent – the default); **Only on tap** (the text stays hidden until you
+  show it with the eye icon at the top).
+
+Speed, spacing and display apply to all texts. Pitch and tone softness come
+from the general [settings](#settings). The display stays on while you are in
+a text.
+
 # Games
 
 Under **Play → Games** there are four games. You play Morsel, Morse Invaders
@@ -1763,7 +1830,7 @@ WiFi setup page. Instead of the firmware's Practice Stats, the app has its
 own, more detailed [character statistics](#character-statistics).
 
 Not done yet, but planned: the games Trailblazer, Fox Hunt, Radio Cave and
-Fight the Pileup and the File Player (your own text as practice content).
+Fight the Pileup.
 
 # Troubleshooting
 

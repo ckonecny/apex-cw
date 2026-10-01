@@ -29,7 +29,7 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | Multiplayer of all games (`MorseGridNet.cpp`, ESP-NOW parts of Morsel/Pileup) | — | N/A: ESP-NOW does not exist on a phone |
 | `MorseQsoBot.cpp`, `MorseQsoBotMatch.h`, `qso_content.h` | `lib/content/qso_bot.dart`, `lib/ui/qso_bot_screen.dart`, call zones in `CallsignData.kt` | Ported (2026-09-25), user-tested OK |
 | `goertzel.cpp` (mic CW decode) | `lib/keyer/cw_audio_decoder.dart`, `MicInput.kt`, `lib/ui/decoder_screen.dart` | Ported (2026-09-25), user-tested OK |
-| File Player / multi-part file builder | — | GitHub issue #8 |
+| File Player / multi-part file builder | `lib/owntexts/`, `lib/ui/own_texts_screen.dart`, `lib/ui/own_text_player_screen.dart` | Implemented (2026-10-01, issue #8), clipboard instead of file, see DECISIONS.md |
 | Snapshots (doWriteSnapshot/doReadSnapshot) | — | Dropped (user decision 2026-10-01) |
 | CW Memories (config tool) | — | Dropped (user decision 2026-10-01) |
 | Practice Stats (`MorsePracticeStats.cpp`) | — | Will not be ported: the app has its own statistics (see DECISIONS.md) |

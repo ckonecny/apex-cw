@@ -18,9 +18,12 @@ preparation", `docs/PLAY-LISTING.md`).
 4. Closed test: 12 testers × 14 days.
 5. Production.
 
-## In progress: adaptive straight key (issue #17)
-All 7 stages done and tested on the test phone, not committed yet (details in
-`docs/DECISIONS.md` and the archive). Next: ask for the commit (`Closes #17`).
+## In progress: own texts (issue #8)
+Implemented and checked on the test phone (library, playback, tap to jump,
+live tempo, Continue/Start over); manual DE+EN written; not committed yet.
+Not tried on the phone: pasting from the real clipboard (the test text was
+copied into the app folder), a text near the 20,000-character limit. Next:
+ask for the commit (`Closes #8`). Follow-ups: #21, #22, #23, #24.
 
 ## Manual: pending for next release
 
@@ -42,3 +45,4 @@ the last release, with the reason. Clear this list after the release build
 - Adventure map shots: pinch zoom can't be injected over adb, so
   `adv_map*.png` show the default zoom.
 - Issue #17 (straight key): the settings screenshot with the Keyer card (`settings*.png`: new row "Starttempo Handtaste" in Straight mode), `keyer.png` (WPM slider disabled in Straight), `echo_result*.png` (Geben row disabled in Straight), `qso.png`, `adv_settings*.png`/tempo sheet (measured row). Text already updated (DE+EN).
+- Issue #8 (own texts): `home.png` is unchanged, but the "Freie Modi" hub shot now has five tiles; new shots: library ("Eigene Texte", with one text), player (text playing, "after playing" mode) and its ⚙ sheet. Add them to the new "Own texts"/"Eigene Texte" chapter with `manual/tools/insert.py`.

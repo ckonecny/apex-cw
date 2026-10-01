@@ -92,6 +92,56 @@ class Strings {
     'free_decoder_hint': ['Fremdes CW über das Mikrofon lesen', 'Read other CW through the microphone'],
     'free_wifi_hint': ['Mit anderen Morserinos und Apps funken', 'Talk to other Morserinos and apps'],
     'free_qso_hint': ['Mit einem simulierten Partner üben', 'Practise with a simulated partner'],
+    'free_ot_hint': ['Eigene Texte aus der Zwischenablage hören', 'Listen to your own texts from the clipboard'],
+
+    // ── Own texts (issue #8) ─────────────────────────────────────────────
+    'ot_title': ['Eigene Texte', 'Own texts'],
+    'ot_subtitle': ['Texte als Morse hören', 'Hear texts as Morse'],
+    'ot_paste': ['Aus Zwischenablage einfügen', 'Paste from clipboard'],
+    'ot_empty': [
+      'Noch keine Texte. Kopiere einen Text in die Zwischenablage (aus einer beliebigen App) und tippe auf „Aus Zwischenablage einfügen“.',
+      'No texts yet. Copy a text to the clipboard (from any app) and tap "Paste from clipboard".'
+    ],
+    'ot_clip_empty': ['Die Zwischenablage enthält keinen Text.', 'The clipboard has no text.'],
+    'ot_no_morse': ['Im Text steht nichts, was sich morsen lässt.', 'Nothing in the text can be sent in Morse.'],
+    'ot_too_long': [
+      'Der Text ist zu lang ({n} Zeichen, höchstens {max}).',
+      'The text is too long ({n} characters, at most {max}).'
+    ],
+    'ot_add_title': ['Text hinzufügen', 'Add text'],
+    'ot_add_info': ['{n} Wörter', '{n} words'],
+    'ot_add': ['Hinzufügen', 'Add'],
+    'ot_save': ['Speichern', 'Save'],
+    'ot_title_label': ['Titel', 'Title'],
+    'ot_rename': ['Umbenennen', 'Rename'],
+    'ot_delete': ['Löschen', 'Delete'],
+    'ot_delete_q': ['Text löschen?', 'Delete text?'],
+    'ot_words': ['{n} Wörter', '{n} words'],
+    'ot_progress': ['{p} % gehört', '{p}% heard'],
+    'ot_resume_q': ['Weiterhören?', 'Continue listening?'],
+    'ot_resume_info': [
+      'Du warst bei Wort {n} von {m} ({p} %).',
+      'You were at word {n} of {m} ({p}%).'
+    ],
+    'ot_continue': ['Weiterhören', 'Continue'],
+    'ot_restart_text': ['Neu starten', 'Start over'],
+    'ot_toggle_text': ['Text zeigen / verdecken', 'Show / hide text'],
+    'ot_settings': ['Einstellungen', 'Settings'],
+    'ot_slower': ['Langsamer', 'Slower'],
+    'ot_faster': ['Schneller', 'Faster'],
+    'ot_word': ['Wort', 'Word'],
+    'ot_sentence': ['Satz', 'Sentence'],
+    'ot_restart': ['Anfang', 'Start'],
+    'ot_play': ['Abspielen', 'Play'],
+    'ot_pause': ['Pause', 'Pause'],
+    'ot_word_back': ['Ein Wort zurück', 'Back one word'],
+    'ot_word_fwd': ['Ein Wort vor', 'Forward one word'],
+    'ot_sentence_back': ['Ein Satz zurück', 'Back one sentence'],
+    'ot_sentence_fwd': ['Ein Satz vor', 'Forward one sentence'],
+    'ot_show_desc': [
+      '„Nach Abspielen“: jedes Wort erscheint, sobald es gemorst wurde. „Nur auf Tippen“: der Text bleibt verdeckt, bis du ihn zeigst. Der Text erscheint immer so, wie du ihn eingefügt hast; nur fürs Audio werden Zeichen ersetzt, die es in Morse nicht gibt (Ä → AE, ß → SS …).',
+      '"After playing": each word appears once it has been played. "Only on tap": the text stays hidden until you show it. The text is always shown as you pasted it; only the audio replaces characters Morse doesn\'t have (Ä → AE, ß → SS …).'
+    ],
     'home_section_games': ['Spielen', 'Play'],
     'home_games_subtitle': ['Invaders · Adventure · Morsel · Memory Chain', 'Invaders · Adventure · Morsel · Memory Chain'],
     'games_title': ['Spiele', 'Games'],

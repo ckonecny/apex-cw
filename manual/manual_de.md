@@ -65,7 +65,7 @@ Die Startseite hat vier Gruppen:
 |---|---|---|
 | **Üben** | **Hören** | Mitschreiben üben: CW Generator und Koch Trainer im Blockablauf |
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
-| **Frei** | **Freie Modi** | Öffnet vier Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) und **QSO Bot** (ein simulierter QSO-Partner) |
+| **Frei** | **Freie Modi** | Öffnet fünf Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) |
 | **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
 
@@ -1252,6 +1252,76 @@ es nach einer Rückfrage.
 ![Einstellungen des QSO Bots](img/de/qso_sheet.png)
 :::
 
+# Eigene Texte {#eigene-texte}
+
+Mit **Eigene Texte** hörst du beliebige Texte als Morse – einen Wetterbericht,
+einen Zeitungsartikel, ein Buchkapitel oder eine Rufzeichenliste. Du findest
+den Modus unter **Freie Modi**.
+
+## Texte hinzufügen
+
+1. Kopiere in einer beliebigen App einen Text in die Zwischenablage.
+2. Tippe in **Eigene Texte** auf **Aus Zwischenablage einfügen**.
+3. Gib dem Text einen Titel (vorgeschlagen werden die ersten Wörter) und
+   tippe auf **Hinzufügen**.
+
+Du kannst beliebig viele Texte hinzufügen. Ein Text darf höchstens 20 000
+Zeichen lang sein. Über das Menü ⋮ neben einem Text benennst du ihn um oder
+löschst ihn (nach einer Rückfrage). Bearbeiten kannst du einen Text in der App
+nicht: Füge dazu die korrigierte Fassung einfach neu ein. Die Texte bleiben auf
+deinem Gerät.
+
+## Was gemorst wird
+
+Der Text erscheint immer so, wie du ihn eingefügt hast. Nur für den Ton werden
+Zeichen ersetzt, die es in Morse nicht gibt:
+
+- Umlaute und ß: Ä → AE, Ö → OE, Ü → UE, ß → SS. Andere Akzente fallen weg
+  (é → E).
+- `!` wird zu `.`, `;` zu `,`, `&` zu AND, Gedankenstriche zu `-`. Ein
+  Gedankenstrich allein zwischen Leerzeichen wird übersprungen.
+- Anführungszeichen, Klammern und andere Sonderzeichen werden nicht gemorst.
+- **Prosigns** schreibst du in spitzen oder eckigen Klammern, z. B. `<KA>` oder
+  `[SK]`; sie werden als ein Zeichen gemorst. Ein Buchstabenpaar ohne Klammern
+  sind immer zwei Buchstaben.
+
+Ein Absatz im Text wird mit einer doppelten Wortlücke gemorst.
+
+## Abspielen
+
+Tippe auf einen Text, dann auf ▶. Ganz oben stellst du das **Tempo** (WPM) mit
+dem Regler oder ⊖/⊕ ein – auch **während** der Text läuft; die Änderung gilt
+sofort.
+
+| Taste | Wirkung |
+|---|---|
+| ▶ / ⏸ | Abspielen; Pause (danach geht es am Anfang des aktuellen Wortes weiter) |
+| **Wort** | Das aktuelle Wort wiederholen, dann pausieren |
+| **Satz** | Den aktuellen Satz wiederholen, dann pausieren |
+| **Anfang** | Den ganzen Text von vorn |
+| ⏮ / ⏭ | Zum Anfang des vorigen / nächsten Satzes |
+| ‹ / › | Ein Wort zurück / vor |
+
+Tippe auf ein beliebiges Wort im Text, um von dort an zu hören. Mit zwei
+Fingern ziehst du die Schrift größer oder kleiner. Am Ende des Textes beginnt
+er wieder von vorn.
+
+Der Fortschritt wird automatisch gespeichert. Öffnest du einen begonnenen Text
+erneut, fragt die App: **Weiterhören** oder **Neu starten**. In der Liste steht
+bei jedem Text, wie viel du schon gehört hast.
+
+## Einstellungen (⚙)
+
+- **Zeichenabstand** und **Wortabstand** in Dits, wie bei den Trainings. Sie
+  gelten auch während der Wiedergabe.
+- **Text zeigen**: **Immer**; **Nach Abspielen** (jedes Wort erscheint, sobald
+  es gemorst wurde – das ist die Voreinstellung); **Nur auf Tippen** (der Text
+  bleibt verdeckt, bis du ihn mit dem Auge-Symbol oben zeigst).
+
+Tempo, Abstände und Anzeige gelten für alle Texte. Tonhöhe und Klangweichheit
+kommen aus den allgemeinen [Einstellungen](#einstellungen). Das Display bleibt
+an, solange du in einem Text bist.
+
 # Spiele
 
 Unter **Spielen → Spiele** findest du vier Spiele. Morsel, Morse Invaders
@@ -1824,7 +1894,7 @@ und die WLAN-Einrichtungsseite. Statt der Practice Stats der Firmware hat die
 App ihre eigene, ausführlichere [Zeichenstatistik](#zeichenstatistik).
 
 Noch nicht umgesetzt, aber geplant: die Spiele Trailblazer, Fox Hunt, Radio
-Cave und Fight the Pileup sowie der File Player (eigene Texte als Übungsinhalt).
+Cave und Fight the Pileup.
 
 # Hilfe bei Problemen
 
