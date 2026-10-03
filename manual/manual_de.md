@@ -69,6 +69,10 @@ Die Startseite hat vier Gruppen:
 | **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
 
+Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
+Übungsminuten von heute, deine Serie und die Woche von Montag bis Sonntag als
+Punkte. Tippe darauf, um die [Erfolge-Seite](#tagesziel) zu öffnen.
+
 Unter **Hören** und **Geben** zeigt die Kachel deine aktuelle Koch-Lektion und
 dein Tempo, bei **Geben** zusätzlich den Trend der letzten Blöcke (siehe
 [Trend](#trend)).
@@ -978,6 +982,38 @@ Einige Hinweise:
   Freischaltung** oder die hohe Schwelle. Geht sie dir zu langsam, senke die
   Werte.
 
+# Tagesziel und Serie {#tagesziel}
+
+Kurz und regelmäßig üben schlägt lang und selten. Die App zählt deshalb deine
+**aktive Übungszeit** und zeigt sie auf der Startseite.
+
+**Was zählt.** Zeit in den Trainings (Hören, Geben, Spiele, Adventure, QSO Bot,
+Eigene Texte, Morsetaste), solange du aktiv bist: Du hast in den letzten
+20 Sekunden den Bildschirm berührt oder getastet, oder ein Block läuft
+(Mitschreiben auf Papier). CW-Decoder, WiFi Trx und die Nachschlageseiten
+(Tabelle, Baum) zählen nicht. Ein Tag läuft von 04:00 bis 04:00 Uhr, Üben nach
+Mitternacht zählt also noch für den Abend davor.
+
+**Die Karte.** Der Ring füllt sich zum Tagesziel und zeigt einen Haken, sobald
+es erreicht ist. Daneben: die Serie (Tage in Folge mit erreichtem Ziel) und die
+Woche als Punkte: gefüllt = Ziel erreicht, Ring = offen oder verpasst, Ring mit
+Strich = freier Tag. Auf kleinen Bildschirmen oder bei großer Systemschrift
+schrumpft die Karte auf eine Zeile, damit alle Kacheln sichtbar bleiben.
+
+**Freier Tag.** Ein verpasster Tag pro Woche (Montag bis Sonntag) unterbricht
+die Serie nicht. Er zählt nicht als Übungstag, er überbrückt nur die Lücke. Ein
+zweiter verpasster Tag in derselben Woche beendet die Serie. Das lässt sich
+abschalten.
+
+**Erfolge-Seite.** Tippe auf die Karte. Sie zeigt heute und diese Woche in
+Minuten. Das Zahnrad öffnet die Einstellungen dazu:
+
+| Einstellung | Bedeutung | Werte |
+|---|---|---|
+| Tagesziel | Minuten aktive Übungszeit pro Tag | 5 / **10** / 15 / 20 / 30 / 60 min |
+| Freier Tag pro Woche | Überbrückt einen verpassten Tag pro Woche | **An** / Aus |
+| Tagesziel und Erfolge anzeigen | Blendet die Karte aus und stoppt die Aufzeichnung. Die Daten bleiben erhalten; hier oder unter **Einstellungen → Allgemein** wieder einschalten | **An** / Aus |
+
 # Zeichenstatistik
 
 Das **📊-Symbol** in Hören und Geben öffnet die Statistik dieses Trainings.
@@ -1778,6 +1814,7 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 | Tonhöhe (Hz) | Frequenz des Mithörtons und der gespielten Zeichen | 300–900 Hz in 50-Hz-Schritten (**600 Hz**) |
 | Tonweichheit | Anstiegs- und Abfallzeit des Tons. Größere Werte klingen weicher und klicken weniger, besonders bei kurzen Dits | 1–9 ms (**5 ms**) |
 | Schreibweise | Zeichen in Klein- oder Großbuchstaben anzeigen. Betrifft nur die Anzeige | **klein** / GROSS |
+| Tagesziel und Erfolge anzeigen | Blendet die Karte auf der Startseite ein oder aus und schaltet die Aufzeichnung der Übungszeit an oder aus. Gespeicherte Daten bleiben erhalten | **An** / Aus |
 
 ## Störungen {#stoerungen}
 

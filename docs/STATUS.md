@@ -28,14 +28,14 @@ shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
 ## Manual: pending for next release
-(none — all screenshots retaken for v1.4.0, manual built)
+- `home.png` (DE+EN): daily goal card at the top (#31).
+- New: achievements page and its settings (#31); `settings1.png`: new switch in General.
 
 ## In progress: daily goal series (#3)
-Branch `feature/practice-log`: #30 practice log implemented (clock, sessions,
-milestones, tests; see `docs/DECISIONS.md` 2026-10-03), **not yet installed on
-the test phone, not committed**. Next: #31 (goal card, mockup approved: card at
-the top of home, all tiles without scrolling, tap opens the achievements
-screen, switch in general settings), then #32–#35.
+Branch `feature/practice-log` (neither pushed nor merged). #30 practice log
+(c88039e) and #31 goal card, achievements page and settings are committed;
+a real streak across days is unit-tested only. Next: #32 reminder, #33 spaced
+sessions, #34 achievements, #35 weekly review.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

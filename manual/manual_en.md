@@ -67,6 +67,10 @@ The home screen has four groups:
 | **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
 
+At the very top sits the **daily goal card**: a ring with your active
+practice minutes today, your streak, and the week Monday to Sunday as dots.
+Tap it to open the [Achievements page](#daily-goal).
+
 The **Listen** and **Send** tiles show your current Koch lesson and speed.
 **Send** also shows the trend of your last blocks (see [Trend](#trend)).
 
@@ -953,6 +957,37 @@ Some notes:
 - If unlocking goes too fast for you, raise **Occurrences for unlock** or the
   high threshold. If it's too slow, lower them.
 
+# Daily goal and streak {#daily-goal}
+
+Short, regular practice beats long, rare sessions. The app therefore counts
+your **active practice time** and shows it on the home screen.
+
+**What counts.** Time in the trainings (Listen, Send, games, adventure, QSO
+Bot, Own texts, Morse key) while you are active: you touched the screen or
+keyed within the last 20 seconds, or a block is playing (copying on paper).
+The CW Decoder, WiFi Trx and the reference screens (chart, tree) do not count.
+A day runs from 04:00 to 04:00, so practice after midnight still counts for
+the evening before.
+
+**The card.** The ring fills up towards your daily goal and shows a check mark
+once it is reached. Next to it: the streak (days in a row on which you met the
+goal) and the week as dots: filled = goal met, ring = open or missed, a ring
+with a dash = free day. On a small screen or with a large system font the card
+shrinks to one line, so all tiles stay visible.
+
+**Free day.** One missed day per week (Monday to Sunday) does not break the
+streak. It is not counted as a practice day, it only bridges the gap. A second
+miss in the same week ends the streak. You can switch this off.
+
+**Achievements page.** Tap the card. It shows today and this week in minutes.
+The gear icon opens its settings:
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Daily goal | Minutes of active practice per day | 5 / **10** / 15 / 20 / 30 / 60 min |
+| One free day per week | Bridges one missed day per week | **On** / Off |
+| Show daily goal and achievements | Hides the card and stops recording. The data is kept; switch it on again here or under **Settings → General** | **On** / Off |
+
 # Character statistics
 
 The **📊 icon** in Listen and Send opens that training's statistics. Listen
@@ -1715,6 +1750,7 @@ that training's ⚙ sheet.
 | Pitch (Hz) | Frequency of the sidetone and of the played characters | 300–900 Hz in 50 Hz steps (**600 Hz**) |
 | Tone softness | Rise and fall time of the tone. Larger values sound softer and click less, especially on short dits | 1–9 ms (**5 ms**) |
 | Letter case | Show characters in lower or UPPER case. Display only | **lower** / UPPER |
+| Show daily goal and achievements | Shows or hides the card on the home screen, and switches the recording of practice time on or off. Stored data is kept | **On** / Off |
 
 ## Interference {#interference}
 

@@ -1251,3 +1251,21 @@ achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
 - **Known limit:** Bluetooth/paddle key presses count as activity only on the
   screens that listen to the symbol stream (echo, keyer, adventure, character
   practice, games); QSO bot and memory chain rely on touches and playback.
+
+## 2026-10-03: Daily goal and streak (issue #31, part of #3)
+- **Logic** in `content/daily_goal.dart` (pure Dart, tested): goal 5/10/15/20/30/60
+  min (default 10, `goal.minutes`), grace day on/off (`goal.grace`, default on).
+- **Streak:** consecutive practice days (04:00 rollover) with seconds ≥ goal.
+  Today never breaks it while open; once met it adds one. A missed day is
+  bridged by the grace day, once per Mon–Sun week, only if an older goal day
+  follows (a leading miss is not counted); never before the first logged day.
+  Frozen days add nothing. A second miss in a week ends the streak.
+- **Home card** on top, tap opens `GoalsScreen` (minimal until #34: today, week,
+  gear → `GoalSettingsScreen`). Layout: tiles share the height as before; the
+  card is full (100·scale, scale floored at 1 because the ring doesn't shrink),
+  compact (56·scale) when the full one would not fit, and only then the page
+  scrolls. Hidden entirely when `practice.enabled` is off.
+- **Switch** "Show daily goal and achievements" in both the goal settings
+  (hiding returns to home) and the general settings (the way back); it is
+  `practice.enabled`, so it also stops recording.
+- Week dots: filled = met, dashed-in-ring = grace day, ring = open/missed.

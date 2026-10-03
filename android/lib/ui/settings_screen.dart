@@ -9,6 +9,7 @@ import '../l10n/strings.dart';
 import '../licenses.dart';
 import 'widgets/setting_rows.dart';
 import 'interference_settings_card.dart';
+import '../util/practice_clock.dart';
 
 enum _LearnState { idle, waitDit, waitDah, done }
 
@@ -367,6 +368,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               options: [Strings.t('opt_lower'), Strings.t('opt_upper')],
               selected: _outputCase,
               onChanged: (v) { setState(() => _outputCase = v); _saveLive(); },
+            ),
+            const SettingsDivider(),
+            // Also in the goal settings; this is the way back once hidden.
+            ToggleRow(
+              label: Strings.t('goal_show'),
+              value: PracticeClock.instance.log.enabled,
+              onChanged: (v) async {
+                final p = await SharedPreferences.getInstance();
+                await PracticeClock.instance.log.setEnabled(p, v);
+                if (mounted) setState(() {});
+              },
             ),
           ]),
 
