@@ -121,7 +121,8 @@ Set the volume with the phone's volume keys. You set the **pitch** and the
 **tone softness** in the settings. When headphones, a USB audio device or a
 Bluetooth device is connected or disconnected, the app switches to it
 automatically. If you don't want that, you can fix the output (see
-[Audio output](#audio-output)).
+[Audio output](#audio-output)). How to practice with noise, fading and a
+neighbouring station is described under [Interference](#interference).
 
 Bluetooth headphones usually add noticeable latency. That doesn't matter for
 listening, but it does for sending: you hear your sidetone noticeably later
@@ -1714,6 +1715,51 @@ that training's ⚙ sheet.
 | Pitch (Hz) | Frequency of the sidetone and of the played characters | 300–900 Hz in 50 Hz steps (**600 Hz**) |
 | Tone softness | Rise and fall time of the tone. Larger values sound softer and click less, especially on short dits | 1–9 ms (**5 ms**) |
 | Letter case | Show characters in lower or UPPER case. Display only | **lower** / UPPER |
+
+## Interference {#interference}
+
+With **Settings → Interference** the other station sounds as if it came over
+a real band: with noise, static crackle, fading, a neighbouring station,
+drifting pitch and a "bad fist". That trains you to read a signal under poor
+conditions.
+
+The interference only affects what the **other station** plays: the text when
+listening, the word when sending, Own texts, QSO Bot, WiFi Trx, Text
+Adventure, Morsel and Memory Chain. Practicing a single character, the Morse
+chart and the Morse tree also play with interference while the switch is on.
+Your own sidetone while keying always stays clean. The statistics do not
+record whether you practiced with or without interference.
+
+**Quick switch:** screens with another station show a wave icon in the app
+bar (next to statistics and the gear). Grey means off, coloured means on. A
+**short tap** switches the interference on or off, a **long press** opens
+these settings.
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Simulate interference | Main switch | **Off** / On |
+| Preset | Ready-made mixes. As soon as you move a slider it reads "Custom" | Custom / Light / HF evening / Pile-up |
+| Noise (SNR) | Signal-to-noise ratio, measured in a fixed 2.4 kHz bandwidth. The noise swells and ebbs slowly and contains occasional crackle | 0 % (no noise) to 100 % (SNR −10 dB), shown in dB |
+| Noise colour | How bright the noise sounds | 0 % dull (treble cut from about 800 Hz) to 100 % bright (about 3.2 kHz) |
+| Receiver filter | Narrow CW filter around your pitch. The narrower it is, the more noise and neighbouring station it removes. At a very narrow setting the remaining noise sounds like a wavering tone | 0 % wide to 100 % very narrow (Q 1.5 to 20) |
+| QRM (other station) | A second station sends random Morse in runs of 3 to 12 characters (12 to 28 WPM), 100 to 350 Hz above or below your tone, then pauses. 100 % is as loud as your signal | 0–100 % |
+| QSB (fading) | The level varies slowly (periods of about 30 to 125 s) by up to about 8 dB | 0–100 % |
+| Pitch (drift) | The pitch wanders slowly, up to about ±30 Hz at 100 %. With a narrow filter the tone can drift out of the passband | 0–100 % |
+| Timing (bad fist) | Dits, dahs and gaps are uneven, the station sometimes hesitates | 0–100 % |
+
+The presets set (noise / QRM / QSB / pitch / timing / receiver filter, noise
+colour always 50 %):
+
+| Preset | Values |
+|---|---|
+| Light | 15 / 0 / 10 / 0 / 0 / 30 % |
+| HF evening | 35 / 20 / 45 / 10 / 15 / 50 % |
+| Pile-up | 55 / 60 / 35 / 15 / 30 / 60 % |
+
+**Try it** plays four random groups of five with the speed and spacing of
+your Listen training, so you get an impression of how it sounds in the
+training. A known text like "CQ CQ DE …" would be much easier to read through
+noise than random groups.
 
 ## Keyer
 

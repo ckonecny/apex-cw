@@ -207,6 +207,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
         if (running) return
         val myGen = ++generation
         running = true
+        CwAudioNative.setRx(true)
         thread = Thread({
             try {
                 // trailingGap=false: skip the inter-character gap after the LAST
@@ -224,7 +225,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
             } finally {
                 running = false
                 CwAudioNative.setPlaying(false)
-                if (myGen == generation) onDone?.invoke(false)
+                if (myGen == generation) { CwAudioNative.setRx(false); onDone?.invoke(false) }
             }
         }, "cw-gen-one").also { it.isDaemon = true; it.start() }
     }
@@ -243,19 +244,20 @@ class CwGenerator(private val tone: CwTonePlugin) {
         if (running) return
         val myGen = ++generation
         running = true
+        CwAudioNative.setRx(true)
         thread = Thread({
             try {
                 for ((i, p) in patterns.withIndex()) {
                     if (!running) break
                     playPattern(p)
-                    if (i < patterns.size - 1) sleepMs(ditMs() * (interCharSpace - 1))
+                    if (i < patterns.size - 1) sleepMs(jitterGap(ditMs() * (interCharSpace - 1), hesitate = true))
                 }
             } catch (_: InterruptedException) {
                 Thread.currentThread().interrupt()
             } finally {
                 running = false
                 CwAudioNative.setPlaying(false)
-                if (myGen == generation) onDone?.invoke(false)
+                if (myGen == generation) { CwAudioNative.setRx(false); onDone?.invoke(false) }
             }
         }, "cw-gen-patterns").also { it.isDaemon = true; it.start() }
     }
@@ -264,9 +266,9 @@ class CwGenerator(private val tone: CwTonePlugin) {
         for ((idx, sym) in morse.withIndex()) {
             if (!running) break
             CwAudioNative.setPlaying(true)
-            sleepMs(if (sym == '.') ditMs() else dahMs())
+            sleepMs(jitterTone(sym == '.'))
             CwAudioNative.setPlaying(false)
-            if (idx < morse.length - 1) sleepMs(ditMs())
+            if (idx < morse.length - 1) sleepMs(jitterGap(ditMs()))
         }
     }
 
@@ -274,6 +276,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
         if (running) return
         val myGen = ++generation
         running = true
+        CwAudioNative.setRx(true)
         thread = Thread({ generatorLoop(myGen) }, "cw-generator").also {
             it.isDaemon = true; it.start()
         }
@@ -284,6 +287,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
         running = false
         thread?.interrupt()
         CwAudioNative.setPlaying(false)
+        CwAudioNative.setRx(false)
     }
 
     /** Called from a dit/dah key press while awaitingChoice: dit(repeat=true)=same word, dah(repeat=false)=next word. */
@@ -308,7 +312,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
 
                 playWord(text, myGen)
                 if (eachWordTwice && running) {
-                    sleepMs(ditMs() * wordGapExtra())
+                    sleepMs(jitterGap(ditMs() * wordGapExtra()))
                     playWord(text, myGen)
                 }
 
@@ -329,7 +333,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
                     stoppedByMaxWords = true
                     break
                 } else {
-                    sleepMs(ditMs() * wordGapExtra())
+                    sleepMs(jitterGap(ditMs() * wordGapExtra()))
                 }
             }
         } catch (_: InterruptedException) {
@@ -337,7 +341,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
         } finally {
             awaitingChoice = false
             CwAudioNative.setPlaying(false)
-            if (myGen == generation) onDone?.invoke(stoppedByMaxWords)
+            if (myGen == generation) { CwAudioNative.setRx(false); onDone?.invoke(stoppedByMaxWords) }
         }
     }
 
@@ -506,7 +510,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
             } else {
                 val c = upper[i].toString()
                 if (c == " ") {
-                    sleepMs(ditMs() * wordGapExtra())
+                    sleepMs(jitterGap(ditMs() * wordGapExtra(), hesitate = true))
                 } else {
                     playChar(c, myGen, trailingGap || !isLastToken)
                 }
@@ -519,21 +523,21 @@ class CwGenerator(private val tone: CwTonePlugin) {
         val morse = morseTable[ch] ?: return
         for ((idx, sym) in morse.withIndex()) {
             if (!running) break
-            val toneDur = if (sym == '.') ditMs() else dahMs()
+            val toneDur = jitterTone(sym == '.')
             CwAudioNative.setPlaying(true)
             if (myGen == generation) onElement?.invoke(idx, true)
             sleepMs(toneDur)
             CwAudioNative.setPlaying(false)
             if (myGen == generation) onElement?.invoke(idx, false)
             // inter-element gap (skip after last symbol — inter-char gap follows)
-            if (idx < morse.length - 1) sleepMs(ditMs())
+            if (idx < morse.length - 1) sleepMs(jitterGap(ditMs()))
         }
         // Fire only once the character has actually finished playing — matches the
         // real device's dispGeneratedChar(), called at KEY_DOWN→KEY_UP once keying
         // for that char is done, not when it starts.
         if (myGen == generation) onChar?.invoke(ch)
         // inter-character gap: interCharSpace total dits; -1 because last inter-element already consumed 1 dit
-        if (withTrailingGap) sleepMs(ditMs() * (interCharSpace - 1))
+        if (withTrailingGap) sleepMs(jitterGap(ditMs() * (interCharSpace - 1), hesitate = true))
     }
 
     // Extra dits needed after inter-char to reach the full (absolute) inter-word gap
@@ -542,6 +546,31 @@ class CwGenerator(private val tone: CwTonePlugin) {
     // ── Timing helpers ────────────────────────────────────────────────────────
     private fun ditMs()  = (1200.0 / wpm).roundToInt()
     private fun dahMs()  = ditMs() * 3
+
+    // ── Interference: timing jitter ("bad fist") of the other station ────────
+    // Level 0..1 from the interference settings (CwTonePlugin.jitter). Every
+    // element and gap gets its own random factor, dahs also vary in their
+    // dit:dah ratio, and at high levels a character gap occasionally
+    // hesitates. At 0 the timing is exact. Only the other station's signal
+    // goes through the generator; the user's own keying is never touched.
+    private fun rnd() = Random.nextFloat() * 2f - 1f   // -1..1
+
+    private fun jitterTone(dit: Boolean): Int {
+        val j = tone.jitter
+        val base = if (dit) ditMs() else dahMs()
+        if (j <= 0f) return base
+        // dahs additionally stray from the 3:1 ratio
+        val ratio = if (dit) 1f else 1f + j * 0.25f * rnd()
+        return (base * ratio * (1f + j * 0.35f * rnd())).roundToInt().coerceAtLeast(ditMs() / 3)
+    }
+
+    private fun jitterGap(ms: Int, hesitate: Boolean = false): Int {
+        val j = tone.jitter
+        if (j <= 0f || ms <= 0) return ms
+        var v = ms * (1f + j * 0.5f * rnd())
+        if (hesitate && Random.nextFloat() < j * 0.08f) v += ditMs() * (1 + Random.nextInt(2))
+        return v.roundToInt().coerceAtLeast(1)
+    }
 
     private fun sleepMs(ms: Int) {
         if (ms <= 0) return

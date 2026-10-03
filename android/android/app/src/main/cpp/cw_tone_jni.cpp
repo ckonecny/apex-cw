@@ -8,6 +8,8 @@
 #include <cmath>
 #include <jni.h>
 
+#include "interference.h"
+
 #define TAG "CwAudio"
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 
@@ -24,6 +26,9 @@ static std::atomic<float>  gEnvelopeMs {5.0f};
 // device. Set by AudioRouteManager.kt before calling restartStream().
 static std::atomic<int32_t> gPreferredDeviceId {0};
 
+// Interference on the other station's signal (noise, QSB, ...); see interference.h.
+static Interference gInterference;
+
 // These are only touched by the callback thread — no atomics needed.
 static double gPhase = 0.0;
 static double gGain  = 0.0;
@@ -36,12 +41,14 @@ static aaudio_data_callback_result_t audioCallback(
 {
     float* out = static_cast<float*>(audioData);
     const double sampleRate = AAudioStream_getSampleRate(stream);
-    const double step     = 2.0 * M_PI * gFreqHz.load(std::memory_order_relaxed) / sampleRate;
     const double envSec   = gEnvelopeMs.load(std::memory_order_relaxed) / 1000.0;
     const double rampUp   = 1.0 / (sampleRate * envSec);   // attack
     const double rampDown = rampUp;                        // release — same edge time, matches the real device
     const bool   playing  = gPlaying.load(std::memory_order_acquire);
     const float  vol      = gVolume.load(std::memory_order_relaxed);
+    const double freq = gFreqHz.load(std::memory_order_relaxed);
+    gInterference.beginBlock(sampleRate, freq, vol, numFrames);
+    const double step = 2.0 * M_PI * (freq + gInterference.freqOffsetHz()) / sampleRate;
 
     for (int i = 0; i < numFrames; ++i) {
         if (playing) {
@@ -50,11 +57,11 @@ static aaudio_data_callback_result_t audioCallback(
             gGain = (gGain - rampDown > 0.0) ? gGain - rampDown : 0.0;
         }
         if (gGain > 0.0) {
-            out[i] = static_cast<float>(std::sin(gPhase) * vol * gGain);
+            out[i] = gInterference.process(static_cast<float>(std::sin(gPhase) * vol * gGain));
             gPhase += step;
             if (gPhase >= 2.0 * M_PI) gPhase -= 2.0 * M_PI;
         } else {
-            out[i]  = 0.0f;
+            out[i]  = gInterference.process(0.0f);   // noise continues in the pauses
             gPhase  = 0.0;   // reset at zero crossing so next onset is clean
         }
     }
@@ -164,6 +171,21 @@ JNIEXPORT void JNICALL
 Java_at_oe1cko_nextcwtrainer_CwAudioNative_setEnvelopeMs(JNIEnv*, jclass, jfloat ms)
 {
     gEnvelopeMs.store(ms, std::memory_order_relaxed);
+}
+
+JNIEXPORT void JNICALL
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_setInterference(JNIEnv*, jclass,
+                                                           jfloat noise, jfloat qrm,
+                                                           jfloat qsb, jfloat drift,
+                                                           jfloat filter, jfloat color)
+{
+    gInterference.setParams(noise, qrm, qsb, drift, filter, color);
+}
+
+JNIEXPORT void JNICALL
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_setRx(JNIEnv*, jclass, jboolean on)
+{
+    gInterference.setRx(on);
 }
 
 JNIEXPORT void JNICALL

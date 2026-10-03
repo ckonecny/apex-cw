@@ -14,6 +14,9 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
     // Tracks the sidetone pitch so playConfirmTone() can restore it afterward.
     @Volatile private var lastFreqHz = 600.0
 
+    // Timing jitter ("bad fist") of the other station, 0..1; read by CwGenerator.
+    @Volatile var jitter = 0f
+
     init {
         channel.setMethodCallHandler(this)
         val res = CwAudioNative.startStream()
@@ -101,6 +104,17 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
             }
             "setEnvelopeMs" -> {
                 CwAudioNative.setEnvelopeMs((call.arguments as? Number)?.toFloat() ?: 5.0f)
+                result.success(null)
+            }
+            // [noise, qrm, qsb, drift, jitter, filter], each 0..1. Global user setting
+            // pushed at app start and on change; the generator's rx flag
+            // decides when it is audible.
+            "setInterference" -> {
+                val a = (call.arguments as? List<*>).orEmpty()
+                    .map { (it as? Number)?.toFloat() ?: 0f }
+                fun v(i: Int) = a.getOrElse(i) { 0f }.coerceIn(0f, 1f)
+                CwAudioNative.setInterference(v(0), v(1), v(2), v(3), v(5), v(6))
+                jitter = v(4)
                 result.success(null)
             }
             "playConfirmTone" -> {

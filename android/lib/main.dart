@@ -4,6 +4,7 @@ import 'theme/app_colors.dart';
 import 'theme/theme_controller.dart';
 import 'l10n/strings.dart';
 import 'licenses.dart';
+import 'util/interference_profile.dart';
 import 'ui/home_screen.dart';
 import 'ui/widgets/app_ui.dart';
 
@@ -15,6 +16,7 @@ void main() async {
   await ThemeController.load();
   await Strings.load();
   registerAppLicenses();
+  InterferenceProfile.pushSaved();
   runApp(const NextCwTrainerApp());
 }
 

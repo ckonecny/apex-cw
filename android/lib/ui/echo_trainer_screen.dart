@@ -1,3 +1,4 @@
+import 'widgets/interference_button.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -962,6 +963,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
+            const InterferenceButton(),
           if (_state == _State.idle)
             IconButton(
               icon: Icon(Icons.bar_chart_outlined, color: c.textMuted),

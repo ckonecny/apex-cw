@@ -5,6 +5,7 @@
 // audio. Settings live in their own profile (adv.*), pushed to the shared
 // generator on entry and on every change (rule 2). Every command is
 // autosaved; ↶ undoes up to 20 moves (the original has no UNDO).
+import 'widgets/interference_button.dart';
 import 'dart:async';
 import 'dart:math' show max;
 
@@ -762,6 +763,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
             onPressed: () => Navigator.pop(context),
           ),
           actions: [
+            const InterferenceButton(),
             IconButton(
                 tooltip: Strings.t('adv_commands'),
                 icon: Icon(Icons.help_outline, color: c.textMuted),

@@ -6,6 +6,7 @@
 // prosign deletes the last letter. A wrong guess replays the word 5 WPM
 // slower (48 down to 18). Ten words per game; the score is the total time
 // plus 5 s per guess and 60 s per skipped word.
+import 'widgets/interference_button.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -495,6 +496,7 @@ class _MorselScreenState extends State<MorselScreen> {
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => Navigator.maybePop(context),
             ),
+            actions: const [InterferenceButton()],
           ),
           body: !_ready
               ? Center(child: CircularProgressIndicator(color: c.accent))

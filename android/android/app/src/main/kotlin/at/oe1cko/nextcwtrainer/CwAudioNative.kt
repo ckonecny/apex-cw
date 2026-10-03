@@ -16,5 +16,11 @@ object CwAudioNative {
     external fun setFreqHz(hz: Double)
     external fun setVolume(vol: Float)
     external fun setEnvelopeMs(ms: Float)
+    // Interference on the other station's signal, levels 0..1 (QRM is accepted
+    // but not generated yet; filter = receiver filter narrowness, color = noise treble cut-off).
+    external fun setInterference(noise: Float, qrm: Float, qsb: Float, drift: Float, filter: Float, color: Float)
+    // True while CwGenerator plays the other station; the user's own keying
+    // never gets interference.
+    external fun setRx(on: Boolean)
     external fun getLatencyMs(): Int
 }

@@ -9,6 +9,7 @@
 // the second error in a round ends the game) and Call Signs (one random call
 // is the chain, revealed letter by letter, call after call, no tolerated
 // error). Separate high-score tables per mode.
+import 'widgets/interference_button.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -470,6 +471,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => Navigator.maybePop(context),
             ),
+            actions: const [InterferenceButton()],
           ),
           body: !_ready
               ? Center(child: CircularProgressIndicator(color: c.accent))

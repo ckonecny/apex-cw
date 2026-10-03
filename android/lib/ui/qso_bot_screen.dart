@@ -1,3 +1,4 @@
+import 'widgets/interference_button.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -523,6 +524,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
+            const InterferenceButton(),
           IconButton(
             icon: Icon(Icons.settings, color: c.textMuted),
             tooltip: Strings.t('settings_title'),
