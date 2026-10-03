@@ -10,6 +10,7 @@ import 'maze_game_screen.dart';
 import 'memory_chain_screen.dart';
 import 'morsel_screen.dart';
 import 'pileup_screen.dart';
+import 'radio_cave_screen.dart';
 import 'widgets/app_ui.dart';
 
 class GamesScreen extends StatelessWidget {
@@ -101,6 +102,16 @@ class GamesScreen extends StatelessWidget {
               color: c.danger,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const PileupScreen())),
+            ),
+            const SizedBox(height: 12),
+            HubCard(
+              icon: Icons.settings_input_antenna,
+              title: 'Radio Cave',
+              subtitle: Strings.t('rc_subtitle'),
+              hint: Strings.t('rc_hint'),
+              color: c.danger,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const RadioCaveScreen())),
             ),
           ],
         ),

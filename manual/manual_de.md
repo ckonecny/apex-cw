@@ -66,7 +66,7 @@ Die Startseite hat vier Gruppen:
 | **Üben** | **Hören** | Mitschreiben üben: CW Generator und Koch Trainer im Blockablauf |
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
 | **Frei** | **Freie Modi** | Öffnet fünf Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) |
-| **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup |
+| **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
 
 Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
@@ -1439,11 +1439,13 @@ an, solange du in einem Text bist.
 
 # Spiele
 
-Unter **Spielen → Spiele** findest du sieben Spiele. Morsel, Morse Invaders,
-Memory Chain, Trailblazer, Fox Hunt und Fight the Pileup spielst du mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden
-die Keyer-Einstellungen. Die Koch-Lektion übernehmen sie aus **Geben**;
-Morsel, Memory Chain, Trailblazer und Fox Hunt lassen sie dich zusätzlich nur
-für das Spiel ändern. Jedes dieser sechs Spiele zeigt vor dem Start eine kurze Spielanleitung. Das
+Unter **Spielen → Spiele** findest du acht Spiele. Morsel, Morse Invaders,
+Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup und Radio Cave spielst du
+mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden die Keyer-Einstellungen.
+Morsel, Morse Invaders, Memory Chain, Trailblazer und Fox Hunt übernehmen die
+Koch-Lektion aus **Geben**; Morsel, Memory Chain, Trailblazer und Fox Hunt
+lassen sie dich zusätzlich nur für das Spiel ändern. Jedes dieser sieben Spiele
+zeigt vor dem Start eine kurze Spielanleitung. Das
 [Text-Adventure](#text-adventure) hat eigene Einstellungen für Tempo und
 Eingabe; den Keyer-Modus nimmt es ebenfalls aus den Keyer-Einstellungen.
 
@@ -1595,6 +1597,39 @@ Die Rufzeichen stammen aus demselben Generator wie in den anderen Übungen und
 folgen deinen Rufzeichen-Einstellungen (Region, nur häufige Präfixe). Eine
 Bestenliste gibt es wie in der Firmware nicht. Am Ende siehst du Punkte,
 verteidigte und verlorene Anrufer, Trefferquote und beste Serie.
+
+## Radio Cave
+
+Ein Text-Adventure in einer verlassenen Funkstation aus dem Kalten Krieg:
+Erkunde zwölf Räume, finde sechs Gegenstände, repariere die Anlage und beende
+das Spiel mit einem QSO mit der Gegenstelle IR7. **Jeder Befehl wird
+getastet**; der Spieltext ist englisch.
+
+- Der Bildschirm zeigt eine kleine Karte der Höhle (der aktuelle Raum ist
+  gelb), den Raumnamen, den Text, die Befehlszeile und darunter die Ausgänge
+  (N E S W), die getragenen Gegenstände (höchstens zwei) und die Zahl der
+  Schritte.
+- **S, E, W, I** und **H** wirken sofort. Alles andere wird nach einer kurzen
+  Pause (zweieinhalb Wortabstände) abgeschickt. **N** wartet deshalb, damit
+  daraus noch **NEW** werden kann.
+- Befehle: **N/S/E/W** gehen, **L** (+ Objekt) ansehen, **I** Inventar, **T**
+  (TAKE) und **D** (DROP) + Gegenstand, **U** (USE) + Gegenstand oder Ding,
+  **U TX** / **U RX**, **F** (FIX) + Gegenstand, **R** (READ) **MANUAL** oder
+  **LOG**, **K** (KEY) + Wort, **QRS**, **NEW**. **H** listet sie auf.
+  Gegenstände und Dinge lassen sich abkürzen (**T F** nimmt den Kraftstoffkanister).
+- **Hinweise kommen als CW:** die Kritzeleien an der Wand, das Logbuch, das
+  Handbuch und die Anrufe von IR7. **QRS** spielt den letzten Hinweis mit
+  halbem Tempo noch einmal. Solange ein Hinweis läuft, ist das Tasten stumm.
+- Vier **E** hintereinander oder das Fehlerzeichen löschen die Eingabe. Nach
+  einem Prosign AS, KA, KN, VE oder BK sieht das Spiel den Buchstaben S, A, N,
+  E bzw. B, wie am Morserino; SK zählt als K.
+- Vorsicht bei **Hochspannung**: Manche Aktionen sind tödlich. Dann bietet die
+  Game-Over-Seite einen Neustart an.
+- Das Spiel wird **nach jedem Befehl gesichert**. Beim nächsten Mal kannst du
+  weiterspielen oder neu beginnen. Gewinnen oder Sterben löscht den Spielstand.
+- Tonhöhe, Keyer-Modus und Tempo deines Tastens kommen aus den Einstellungen;
+  mit − und + änderst du das Tempo im Spiel. Die Hinweise laufen mit eigenem
+  Tempo und fester Tonhöhe von 696 Hz.
 
 ## Text-Adventure {#text-adventure}
 

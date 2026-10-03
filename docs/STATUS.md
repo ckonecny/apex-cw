@@ -28,6 +28,7 @@ shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
 ## Manual: pending for next release
+- New: Radio Cave (#14): `rc_lobby.png` DE+EN, `games.png` (now eight cards incl. #13, #15), and the games overview text.
 - `home.png` (DE+EN): daily goal card at the top (#31).
 - New (#13): `tb_lobby.png` (DE+EN), the Trailblazer lobby; the games hub list (`games.png`) shows two more cards.
 - New: Fight the Pileup (#15): `pu_lobby.png` DE+EN (manual section has no image yet), `games.png` (fifth game card).
@@ -41,8 +42,8 @@ native, see DECISIONS) is committed. #33 spaced sessions (3b915e1) is
 committed. #34 achievements (05ed4c4) is committed (follow-up #36). #35 weekly
 review implemented, not committed; it closes the series #3.
 
-## Next game port
-Radio Cave (#14). Branches `feature/maze-games` and `feature/pileup` are merged into `main` (not pushed).
+## Game ports
+All firmware games with a single-player part are ported (#13–#15). The three feature branches are merged into `main`, which is not pushed yet.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

@@ -128,6 +128,9 @@ characters, boosts and Koch unlocks.
   key the direction to it (Fox Hunt); scored in characters per minute.
 - **Fight the Pileup** — call signs queue up and play in CW; key each one
   back before its time runs out (single player, four difficulty levels).
+- **Radio Cave** — a text adventure in an abandoned radio station: every
+  command is keyed, clues arrive as CW, the game is saved after each command.
+  Game text is English.
 
 ### Settings and Android integration
 
@@ -189,10 +192,10 @@ Module-by-module details: `docs/PORTING-MAP.md`.
 | CW Decoder (microphone → text) | ✅ Supported | Goertzel + firmware decoder port |
 | WiFi Trx (MOPP over UDP, e.g. cq.morserino.info) | ✅ Supported | Foreground only; no background service yet |
 | QSO Bot (SOTA/POTA, Standard, Contest) | ✅ Supported | |
-| Games: Morse Invaders, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup | ✅ Supported | Single player |
+| Games: Morse Invaders, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave | ✅ Supported | Single player |
 | Text adventure: Zork I–III in CW | ✅ Supported | App-only (not in the firmware); own Z-machine v3 interpreter, maps, saves |
 | Settings, audio output routing, theme, text zoom, DE/EN UI | ✅ Supported | Android-native equivalents of device-only prefs |
-| Games: Trailblazer, Fox Hunt, Radio Cave, Fight the Pileup | 🚧 Not yet | GitHub issues #13–#15 (single player) |
+| Games: Trailblazer, Fox Hunt, Fight the Pileup | 🚧 Not yet | GitHub issues #13, #15 (single player) |
 | File Player (own text as practice content) | 🚧 Not yet | GitHub issue #8 |
 | Physical controls, display hardware, LoRa, ESP‑NOW/multiplayer, iCW/Ext Trx, OTA/WiFi AP | ❌ Not applicable | No such hardware on a phone / handled by Android |
 | Practice Stats (`MorsePracticeStats.cpp`) | ❌ Not ported | Replaced by the app's own statistics |

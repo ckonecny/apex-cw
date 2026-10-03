@@ -854,3 +854,6 @@ example and an in-game hint after a user misread "key the direction".
 
 ## 2026-10-03: Fight the Pileup (#15)
 Single-player port on branch `feature/pileup`: `pileup_engine.dart` (unit-tested rules), `pileup_screen.dart`, hub card, manual DE+EN. Deviations in DECISIONS.md. User-tested OK.
+
+## Radio Cave (2026-10-03, #14)
+Port of `MorseRadioCave.cpp` on branch `feature/radio-cave`: tested engine (17 tests incl. a full walkthrough), screen with mini-map, keyed commands, CW clues, auto-save, manual DE+EN, deviations in DECISIONS.
