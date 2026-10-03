@@ -50,6 +50,9 @@ class MainActivity : FlutterActivity() {
     // Learn mode: 0=off, 1=waiting for dit, 2=waiting for dah
     private var learnStep = 0
     private var settingsEventSink: EventChannel.EventSink? = null
+    // Separate from settingsEventSink (which only the Settings screen listens on):
+    // every Send-mode screen watches this one for the Bluetooth latency hint.
+    private var routeEventSink: EventChannel.EventSink? = null
     // Hören-Block, nach dem Aufdecken: Paddle wählt Wiederholen (Dit) / Weiter (Dah).
     // Dart schaltet das ein; der Tastendruck geht dann als Event nach Dart, nicht in den Keyer.
     @Volatile private var paddleChoiceActive = false
@@ -64,6 +67,7 @@ class MainActivity : FlutterActivity() {
         private const val GEN_EV_CHANNEL   = "at.oe1cko.nextcwtrainer/cw_gen_events"
         private const val SETTINGS_CHANNEL = "at.oe1cko.nextcwtrainer/settings"
         private const val SETTINGS_EV      = "at.oe1cko.nextcwtrainer/settings_events"
+        private const val ROUTE_EV         = "at.oe1cko.nextcwtrainer/audio_route_events"
         private const val PREFS_NAME       = "next_cw_trainer_prefs"
         private const val PREF_DIT         = "paddle_dit"
         private const val PREF_DAH         = "paddle_dah"
@@ -114,7 +118,10 @@ class MainActivity : FlutterActivity() {
         // Reopens the sidetone stream on whichever output device matches the
         // user's preference whenever USB/Bluetooth audio hardware is (un)plugged.
         audioRouteManager = AudioRouteManager(this) { activeLabel ->
-            runOnUiThread { settingsEventSink?.success(mapOf("type" to "audioRoute", "value" to activeLabel)) }
+            runOnUiThread {
+                settingsEventSink?.success(mapOf("type" to "audioRoute", "value" to activeLabel))
+                routeEventSink?.success(audioRouteManager.isBluetoothActive())
+            }
         }
         audioRouteManager.start()
 
@@ -161,6 +168,14 @@ class MainActivity : FlutterActivity() {
                     settingsEventSink = events
                 }
                 override fun onCancel(args: Any?) { settingsEventSink = null }
+            })
+
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, ROUTE_EV)
+            .setStreamHandler(object : EventChannel.StreamHandler {
+                override fun onListen(args: Any?, events: EventChannel.EventSink) {
+                    routeEventSink = events
+                }
+                override fun onCancel(args: Any?) { routeEventSink = null }
             })
 
         // ── Keyer config + touch paddles ──────────────────────────────────────
@@ -366,6 +381,7 @@ class MainActivity : FlutterActivity() {
                         "preferred" to audioRouteManager.getPreferredKind(),
                         "available" to audioRouteManager.listAvailableKinds()
                     ))
+                    "isBluetoothOutput" -> result.success(audioRouteManager.isBluetoothActive())
                     "setOutputDeviceKind" -> {
                         audioRouteManager.setPreferredKind(
                             (call.arguments as? Number)?.toInt() ?: AudioRouteManager.KIND_AUTO)

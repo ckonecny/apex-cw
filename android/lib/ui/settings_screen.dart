@@ -9,13 +9,17 @@ import '../l10n/strings.dart';
 import '../licenses.dart';
 import 'widgets/setting_rows.dart';
 import 'interference_settings_card.dart';
+import '../util/bluetooth_hint.dart';
 import '../util/practice_clock.dart';
 import '../util/reminder.dart';
 
 enum _LearnState { idle, waitDit, waitDah, done }
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  /// Opens scrolled to the "Audio output" section (used by the Bluetooth hint
+  /// above the paddles, so the output can be switched right there).
+  final bool scrollToAudio;
+  const SettingsScreen({super.key, this.scrollToAudio = false});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -25,6 +29,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   static const _settingsChannel = MethodChannel('at.oe1cko.nextcwtrainer/settings');
   static const _settingsEvents  = EventChannel('at.oe1cko.nextcwtrainer/settings_events');
   static const _toneChannel     = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  final _scroll = ScrollController();
+  final _audioKey = GlobalKey();
 
   // ── General ────────────────────────────────────────────────────────────────
   // Which training's profile the profile-backed fields below edit (P2 D5;
@@ -117,11 +123,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _loadOutputDeviceKinds();
     _loadAppVersion();
     _eventSub = _settingsEvents.receiveBroadcastStream().listen(_onSettingsEvent);
+    if (widget.scrollToAudio) WidgetsBinding.instance.addPostFrameCallback((_) => _revealAudio());
+  }
+
+  // The list builds its children lazily, so the section may not exist yet:
+  // step down the page until its context appears, then bring it into view.
+  Future<void> _revealAudio() async {
+    for (var i = 0; i < 20 && mounted; i++) {
+      final ctx = _audioKey.currentContext;
+      if (ctx != null && ctx.mounted) {
+        await Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 250));
+        return;
+      }
+      if (!_scroll.hasClients) return;
+      _scroll.jumpTo((_scroll.offset + 500).clamp(0, _scroll.position.maxScrollExtent));
+      await WidgetsBinding.instance.endOfFrame;
+    }
   }
 
   @override
   void dispose() {
     _eventSub?.cancel();
+    _scroll.dispose();
     _settingsChannel.invokeMethod('cancelLearnPaddle');
     super.dispose();
   }
@@ -317,6 +340,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
       body: ListView(
+        controller: _scroll,
         padding: const EdgeInsets.all(20),
         children: [
 
@@ -436,7 +460,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 24),
 
           // ── Audioausgabe ─────────────────────────────────────────────────────
-          SettingsSectionHeader(Strings.t('settings_audio_output')),
+          SettingsSectionHeader(Strings.t('settings_audio_output'), key: _audioKey),
           const SizedBox(height: 4),
           Text(Strings.t('settings_audio_output_desc'),
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
@@ -447,6 +471,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               options: _outputKindsAvailable.map(_outputKindLabel).toList(),
               selected: _outputKindsAvailable.indexOf(_outputKindPref).clamp(0, _outputKindsAvailable.length - 1),
               onChanged: (i) => _applyOutputKind(_outputKindsAvailable[i]),
+            ),
+            const SettingsDivider(),
+            ValueListenableBuilder<bool>(
+              valueListenable: BluetoothHint.enabled,
+              builder: (context, on, _) => ToggleRow(
+                label: Strings.t('settings_bt_latency_hint'),
+                value: on,
+                onChanged: BluetoothHint.setEnabled,
+              ),
             ),
           ]),
 

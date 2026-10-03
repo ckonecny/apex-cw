@@ -33,6 +33,12 @@ class AudioRouteManager(
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private var preferredKind = loadPref()
 
+    // Kind of the output the sidetone actually plays on right now (null until
+    // the first resolveAndApply). Used by the Send-mode Bluetooth latency hint.
+    @Volatile private var activeKind: Int? = null
+
+    fun isBluetoothActive() = activeKind == KIND_BLUETOOTH
+
     private val callback = object : AudioDeviceCallback() {
         override fun onAudioDevicesAdded(addedDevices: Array<AudioDeviceInfo>) = resolveAndApply()
         override fun onAudioDevicesRemoved(removedDevices: Array<AudioDeviceInfo>) = resolveAndApply()
@@ -104,8 +110,9 @@ class AudioRouteManager(
         val res = CwAudioNative.restartStream()
         if (res != 0) Log.e(TAG, "restartStream failed: $res")
 
-        val activeKind = if (explicitMatch != null) kindOf(explicitMatch)
+        val resolved = if (explicitMatch != null) kindOf(explicitMatch)
             else outputs.maxByOrNull { routePriority(kindOf(it)) }?.let { kindOf(it) }
-        onRouteChanged(labelFor(activeKind))
+        activeKind = resolved
+        onRouteChanged(labelFor(resolved))
     }
 }

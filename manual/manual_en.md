@@ -131,6 +131,11 @@ neighbouring station is described under [Interference](#interference).
 Bluetooth headphones usually add noticeable latency. That doesn't matter for
 listening, but it does for sending: you hear your sidetone noticeably later
 than you key. For sending, use wired headphones or the speaker.
+Wherever the keys (dit/dah or straight key) are shown, a small line above them
+warns you while the sound plays over Bluetooth. Tap the line to open the settings
+right at the audio output, so you can switch there. Close it with the X until
+the next app start; turn it off for good in the settings under
+[Audio output](#audio-output).
 
 # Basics
 
@@ -2013,6 +2018,7 @@ word gaps. If you key more slowly, longer pauses are allowed automatically.
 |---|---|---|
 | Active | Shows where the sound is going right now | – |
 | Output | **Automatic** follows whatever is currently plugged in or connected. The other options fix the output. Only outputs that are currently available are offered | **Automatic** / Speaker / Wired/USB / Bluetooth |
+| Bluetooth hint when keying | Shows a hint above the keys when the sound plays over Bluetooth (delay about 100–250 ms) | on (default) / off |
 
 ## Call signs
 
