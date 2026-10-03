@@ -23,6 +23,7 @@ import '../content/training_profile.dart';
 import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
+import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/paddle_widgets.dart';
@@ -123,6 +124,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
 
   @override
   void dispose() {
+    InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
     WidgetsBinding.instance.removeObserver(this);
     _gen++;
@@ -269,6 +271,8 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
       _pool = _buildPool();
     }
     if (!mounted) return;
+    // The noise stands for the whole game, until it is over.
+    InterferenceProfile.requestAmbient(this);
     setState(() => _phase = _Phase.playing);
     _startRound();
   }
@@ -418,6 +422,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
   }
 
   void _endPlay() {
+    InterferenceProfile.releaseAmbient(this);
     _gen++;
     _busy = false;
     if (_promptPlaying) {

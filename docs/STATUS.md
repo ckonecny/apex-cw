@@ -34,13 +34,14 @@ across `settings1-3.png`) and every screenshot whose app bar now has the new
 wave icon: `hear_start.png`, `hear_type*.png`, `hear_result.png`,
 `hear_revealed.png`, `hear_sending.png`, `echo_start.png`, `echo_answer.png`,
 `echo_result*.png`, `qso.png`, `wifi.png`, `own_player.png`,
-`morsel_lobby.png`, `mc_lobby.png`, `adv_game.png`, `adv_map*.png`. Optional
-new shot: the Störungen card itself.
+`morsel_lobby.png`, `mc_lobby.png`, `adv_game.png`, `adv_map*.png`, plus the
+character practice, Morse chart and Morse tree shots (icon added there).
+Optional new shot: the Störungen card itself (now with "Constant noise").
 
 ## Hints for the next session
-- Interference simulation (issue #6) is finished but **not committed**: branch
-  `feature/interference-simulation`. Open question for the user: should the
-  reference screens (character practice, chart, tree) stay clean?
+- Interference "ambient" (constant noise, setting in the Störungen card,
+  default off) is on branch `feature/interference-ambient`, checked on the
+  test phone; merge into `main` is still open.
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual
   sources changed after the tag.

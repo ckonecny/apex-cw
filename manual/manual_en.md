@@ -1726,7 +1726,8 @@ conditions.
 The interference only affects what the **other station** plays: the text when
 listening, the word when sending, Own texts, QSO Bot, WiFi Trx, Text
 Adventure, Morsel and Memory Chain. Practicing a single character, the Morse
-chart and the Morse tree also play with interference while the switch is on.
+chart and the Morse tree also play with interference while the switch is on,
+and show the wave icon as well.
 Your own sidetone while keying always stays clean. The statistics do not
 record whether you practiced with or without interference.
 
@@ -1738,6 +1739,7 @@ these settings.
 | Setting | Meaning | Values |
 |---|---|---|
 | Simulate interference | Main switch | **Off** / On |
+| Constant noise | Noise and QRM stay on for as long as an exercise, block or game is running, also between characters and under your own keying (your sidetone stays clean). When listening and sending this means a whole block, until the result appears; in Morsel and Memory Chain a game; in QSO Bot and WiFi Trx the session or connection; in Own texts only during playback. More realistic, but more tiring. Off: the interference is only heard while the other station is sending | **Off** / On |
 | Preset | Ready-made mixes. As soon as you move a slider it reads "Custom" | Custom / Light / HF evening / Pile-up |
 | Noise (SNR) | Signal-to-noise ratio, measured in a fixed 2.4 kHz bandwidth. The noise swells and ebbs slowly and contains occasional crackle | 0 % (no noise) to 100 % (SNR −10 dB), shown in dB |
 | Noise colour | How bright the noise sounds | 0 % dull (treble cut from about 800 Hz) to 100 % bright (about 3.2 kHz) |

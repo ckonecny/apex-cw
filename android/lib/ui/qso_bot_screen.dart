@@ -13,6 +13,7 @@ import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/setting_rows.dart';
 import 'widgets/training_settings_sheet.dart';
+import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
 
 /// QSO Bot: a simulated CW QSO partner (firmware MorseQsoBot, V9.0). Same
@@ -144,6 +145,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
     WidgetsBinding.instance.removeObserver(this);
     KeepScreenOn.disable();
     _tickTimer?.cancel();
+    InterferenceProfile.releaseAmbient(this);
     _playGuard?.cancel();
     _symSub?.cancel();
     _wpmSub?.cancel();
@@ -207,6 +209,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
     _bot = bot;
     _appendInfo('${_typeNames[_type]} · ${_levelNames()[_level]}');
     bot.start();
+    InterferenceProfile.requestAmbient(this);
     _tickTimer = Timer.periodic(const Duration(milliseconds: 20), (_) => _tick());
     _updateStatus();
   }
@@ -226,6 +229,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
 
   void _finishIfDone() {
     if (_bot?.phase == QsoPhase.done) {
+      InterferenceProfile.releaseAmbient(this);
       _tickTimer?.cancel();
       _tickTimer = null;
       _updateStatus();

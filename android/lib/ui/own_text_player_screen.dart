@@ -19,6 +19,7 @@ import '../l10n/strings.dart';
 import '../owntexts/own_text_store.dart';
 import '../owntexts/text_passage.dart';
 import '../theme/app_colors.dart';
+import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart' show cwGenEvents;
@@ -114,6 +115,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
 
   @override
   void dispose() {
+    InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
     _genSub?.cancel();
     if (_playing) _genChannel.invokeMethod('stopOne');
@@ -228,9 +230,12 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
     await _genChannel.invokeMethod('stopOne');
     final (text, order) = p.audioFrom(start, to);
     if (order.isEmpty) {
+      InterferenceProfile.releaseAmbient(this);
       setState(() => _playing = false);
       return;
     }
+    // The noise stands while the text is playing, not during a pause.
+    InterferenceProfile.requestAmbient(this);
     setState(() {
       _order = order;
       _orderPos = 0;
@@ -263,6 +268,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
         }
         setState(() {});
       case 'done':
+        InterferenceProfile.releaseAmbient(this);
         setState(() {
           _heard.addAll(_order);
           _playing = false;
@@ -279,6 +285,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
 
   /// Stops and goes on from the beginning of the word being played.
   void _pause() {
+    InterferenceProfile.releaseAmbient(this);
     final w = _currentWord;
     setState(() {
       _genChannel.invokeMethod('stopOne');

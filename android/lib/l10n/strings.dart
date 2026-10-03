@@ -81,6 +81,8 @@ class Strings {
     'interf_jitter': ['Timing (schlechte Hand)', 'Timing (bad fist)'],
     'interf_off': ['aus', 'off'],
     'interf_button_tip': ['Antippen: Störungen an/aus – gedrückt halten: Einstellungen', 'Tap: interference on/off – long press: settings'],
+    'interf_ambient': ['Dauerrauschen', 'Constant noise'],
+    'interf_ambient_desc': ['Rauschen und QRM stehen durchgehend an, solange eine Übung, ein Block oder ein Spiel läuft – auch zwischen den Zeichen und unter deinem Tasten (dein Seitenton bleibt sauber). Realistischer, aber anstrengender. Aus: nur während die Gegenstation sendet.', 'Noise and QRM stay on for as long as an exercise, block or game is running, also between characters and under your own keying (your sidetone stays clean). More realistic, but more tiring. Off: only while the other station is sending.'],
     'interf_try': ['Probehören', 'Try it'],
     'interf_try_stop': ['Stopp', 'Stop'],
     'settings_tone_shift': ['Tonversatz', 'Tone shift'],

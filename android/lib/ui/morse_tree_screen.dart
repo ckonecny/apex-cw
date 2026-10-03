@@ -10,8 +10,10 @@ import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/char_color.dart';
+import '../util/interference_profile.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart';
+import 'widgets/interference_button.dart';
 
 /// Interactive Morse tree (dichotomic table): a dit goes left, a dah right,
 /// the character sits where its code ends. Drawn from MorseDecoder.table, so
@@ -47,6 +49,7 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
   @override
   void initState() {
     super.initState();
+    InterferenceProfile.requestAmbient(this);
     // The app is locked to portrait (main.dart); the tree is much easier to
     // read in landscape, so it is freed here and locked again in dispose().
     SystemChrome.setPreferredOrientations([
@@ -81,6 +84,7 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
 
   @override
   void dispose() {
+    InterferenceProfile.releaseAmbient(this);
     _sub?.cancel();
     _scroll.dispose();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -207,6 +211,7 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
             icon: Icon(Icons.arrow_back, color: c.textMuted),
             onPressed: () => Navigator.pop(context),
           ),
+          actions: const [InterferenceButton()],
         ),
         body: landscape
             // Landscape: controls in one slim row, the tree gets the rest.

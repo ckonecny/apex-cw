@@ -1788,7 +1788,8 @@ auch unter schlechten Bedingungen zu lesen.
 Die Störungen wirken nur auf das, was die **Gegenstation** spielt, also auf
 den Text beim Hören, das Wort beim Geben, Eigene Texte, QSO Bot, WiFi Trx,
 Text-Adventure, Morsel und Memory Chain. Auch Zeichen üben, Morse-Tabelle und
-Morse-Baum spielen mit Störungen, solange der Schalter an ist. Dein eigener
+Morse-Baum spielen mit Störungen, solange der Schalter an ist, und zeigen das
+Wellen-Symbol ebenfalls. Dein eigener
 Mithörton beim Tasten bleibt immer sauber. Die Statistik merkt sich nicht, ob
 mit oder ohne Störungen geübt wurde.
 
@@ -1800,6 +1801,7 @@ farbig heißt an. **Kurz antippen** schaltet die Störungen an oder aus,
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Störungen simulieren | Hauptschalter | **Aus** / Ein |
+| Dauerrauschen | Rauschen und QRM stehen durchgehend an, solange eine Übung, ein Block oder ein Spiel läuft, auch zwischen den Zeichen und unter deinem Tasten (dein Mithörton bleibt sauber). Beim Hören und Geben gilt das für einen ganzen Block, bis das Ergebnis erscheint; in Morsel und Memory Chain für ein Spiel; in QSO Bot und WiFi Trx für die Sitzung bzw. Verbindung; in Eigene Texte nur während der Wiedergabe. Realistischer, aber anstrengender. Aus: Die Störung ist nur zu hören, während die Gegenstation sendet | **Aus** / Ein |
 | Voreinstellung | Fertige Mischungen. Sobald du einen Regler bewegst, steht dort „Eigene“ | Eigene / Leicht / KW abends / Pile-up |
 | Rauschen (SNR) | Abstand zwischen Signal und Rauschen, gemessen in einer festen Bandbreite von 2,4 kHz. Das Rauschen schwillt langsam an und ab und enthält gelegentliches Knacken | 0 % (kein Rauschen) bis 100 % (SNR −10 dB), Anzeige in dB |
 | Rauschfarbe | Wie hell das Rauschen klingt | 0 % dumpf (Höhen ab etwa 800 Hz abgesenkt) bis 100 % hell (etwa 3,2 kHz) |

@@ -9,9 +9,11 @@ import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/char_color.dart';
+import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart';
+import 'widgets/interference_button.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/setting_rows.dart';
 
@@ -86,6 +88,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
   @override
   void initState() {
     super.initState();
+    InterferenceProfile.requestAmbient(this);
     KeepScreenOn.enable();
     _decoder = MorseDecoder(onChar: _onDecodedChar);
     _init();
@@ -128,6 +131,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
 
   @override
   void dispose() {
+    InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
     _active = false;
     _timer?.cancel();
@@ -283,6 +287,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
+          const InterferenceButton(),
           IconButton(
             icon: Icon(Icons.settings, color: c.textMuted),
             onPressed: _openSettings,

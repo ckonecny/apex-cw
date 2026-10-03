@@ -22,5 +22,8 @@ object CwAudioNative {
     // True while CwGenerator plays the other station; the user's own keying
     // never gets interference.
     external fun setRx(on: Boolean)
+    // Screen-level switch: band noise and QRM keep running, also under the
+    // user's own keying (the sidetone itself stays clean).
+    external fun setAmbient(on: Boolean)
     external fun getLatencyMs(): Int
 }

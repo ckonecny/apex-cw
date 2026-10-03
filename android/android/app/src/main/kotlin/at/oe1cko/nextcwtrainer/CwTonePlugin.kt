@@ -117,6 +117,10 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
                 jitter = v(4)
                 result.success(null)
             }
+            "setAmbient" -> {
+                CwAudioNative.setAmbient(call.arguments as? Boolean ?: false)
+                result.success(null)
+            }
             "playConfirmTone" -> {
                 playConfirmTone(call.arguments as? Boolean ?: true)
                 result.success(null)

@@ -46,6 +46,11 @@ public:
     // own keying (sidetone) never gets interference.
     void setRx(bool on) { mRx.store(on, std::memory_order_release); }
 
+    // "Ambient": the screen keeps the band noise and QRM running between and
+    // under the signals (also while the user keys). Only the other station's
+    // tone gets QSB, filter and drift; the own sidetone stays clean.
+    void setAmbient(bool on) { mAmbient.store(on, std::memory_order_release); }
+
     // Once per audio block. `fc` = centre of the receiver filter (the sidetone
     // pitch), `vol` = tone volume (noise level is relative to it).
     void beginBlock(double sampleRate, double fc, float vol, int numFrames) {
@@ -54,9 +59,11 @@ public:
         const float drift = mDrift.load(std::memory_order_relaxed);
         const float qrm   = mQrm.load(std::memory_order_relaxed);
         const bool  any   = noise > 0.0f || qsb > 0.0f || drift > 0.0f || qrm > 0.0f;
-        mTarget = (any && mRx.load(std::memory_order_acquire)) ? 1.0f : 0.0f;
+        const bool rx = mRx.load(std::memory_order_acquire);
+        mTarget    = (any && rx) ? 1.0f : 0.0f;
+        mBedTarget = ((noise > 0.0f || qrm > 0.0f) && (rx || mAmbient.load(std::memory_order_acquire))) ? 1.0f : 0.0f;
         mStep   = static_cast<float>(1.0 / (sampleRate * 0.05));   // 50 ms fade in/out
-        if (mLevel <= 0.0f && mTarget <= 0.0f) { mActive = false; mDriftHz = 0.0; return; }
+        if (mLevel <= 0.0f && mTarget <= 0.0f && mBedLevel <= 0.0f && mBedTarget <= 0.0f) { mActive = false; mDriftHz = 0.0; return; }
         mActive = true;
 
         // Receiver filter: 0 = wide (Q 1.0), 1 = very narrow CW filter (Q 28,
@@ -147,14 +154,16 @@ public:
         if (!mActive) return tone;
         if (mLevel < mTarget)      mLevel = (mLevel + mStep < mTarget) ? mLevel + mStep : mTarget;
         else if (mLevel > mTarget) mLevel = (mLevel - mStep > mTarget) ? mLevel - mStep : mTarget;
+        if (mBedLevel < mBedTarget)      mBedLevel = (mBedLevel + mStep < mBedTarget) ? mBedLevel + mStep : mBedTarget;
+        else if (mBedLevel > mBedTarget) mBedLevel = (mBedLevel - mStep > mBedTarget) ? mBedLevel - mStep : mBedTarget;
 
         // Noise and crackle enter before the filter, like at a real receiver.
         const float white = nextUniform();
-        double noiseIn = mLevel * mNoiseGain * mEnv * white;
+        double noiseIn = mBedLevel * mNoiseGain * mEnv * white;
         if (nextUniform() * 0.5f + 0.5f < mCrackleProb)
             mCrackle = 0.6f + 0.8f * (nextUniform() * 0.5f + 0.5f);   // extra amplitude vs. the noise
         mCrackle *= mCrackleDecay;
-        noiseIn += mLevel * mNoiseGain * mEnv * mCrackle * nextUniform();
+        noiseIn += mBedLevel * mNoiseGain * mEnv * mCrackle * nextUniform();
 
         // Fixed treble roll-off (two one-pole low-passes, 1.3 kHz): a receiver's
         // audio never has the full white hiss, even with a wide filter.
@@ -164,11 +173,13 @@ public:
 
         // Noise (and crackle) through both stages for steep skirts, the tone
         // through its own gentler stage.
-        const float y = mOutGain * static_cast<float>(
-            mNoise2.run(mNoise1.run(noiseIn)) + mTone.run(tone * mQsbGain) + qrmSample());
-
-        // Fade between the clean tone and the received signal.
-        float out = tone * (1.0f - mLevel) + mLevel * y;
+        // The bed (noise, QRM) follows the ambient/rx level, the tone's own
+        // processing (QSB, filter) only the rx level. With both equal this is
+        // the plain "fade between the clean tone and the received signal".
+        const float bed = mOutGain * mBedLevel * static_cast<float>(
+            mNoise2.run(mNoise1.run(noiseIn)) + qrmSample());
+        const float toneRx = static_cast<float>(mTone.run(tone * mQsbGain));
+        float out = tone * (1.0f - mLevel) + mLevel * mOutGain * toneRx + bed;
         return 0.95f * std::tanh(out * (1.0f / 0.95f));   // soft limiter, no hard clipping
     }
 
@@ -237,11 +248,12 @@ private:
     }
 
     std::atomic<float> mNoise{0}, mQrm{0}, mQsb{0}, mDrift{0}, mFilter{0}, mColor{0.5f};
-    std::atomic<bool>  mRx{false};
+    std::atomic<bool>  mRx{false}, mAmbient{false};
 
     // callback-thread state
     uint32_t mSeed = 0x9E3779B9u;
     bool   mActive = false;
+    float  mBedLevel = 0.0f, mBedTarget = 0.0f;
     float  mLevel = 0.0f, mTarget = 0.0f, mStep = 0.0f;
     BandPass mNoise1, mNoise2, mTone, mQrmF;
     double mFc = 600.0, mSr = 48000.0, mQrmAmp = 0.0, mQrmEnv = 0.0, mQrmPh = 0.0, mQrmFreq = 800.0, mQrmWpm = 18.0;
