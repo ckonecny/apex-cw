@@ -64,7 +64,7 @@ The home screen has four groups:
 | **Practice** | **Listen** | Practice copying: CW Generator and Koch Trainer in the block flow |
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
 | **Free** | **Free modes** | Opens five tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) and **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) |
-| **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt |
+| **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
 
 At the very top sits the **daily goal card**: a ring with your active
@@ -1395,10 +1395,10 @@ a text.
 
 # Games
 
-Under **Play → Games** there are six games. You play Morsel, Morse Invaders,
-Memory Chain, Trailblazer and Fox Hunt with the touch keyer or the adapter. They use the keyer
+Under **Play → Games** there are seven games. You play Morsel, Morse Invaders,
+Memory Chain, Trailblazer, Fox Hunt and Fight the Pileup with the touch keyer or the adapter. They use the keyer
 settings. They take the Koch lesson from **Send**, and Morsel, Memory Chain,
-Trailblazer and Fox Hunt also let you change it for the game only. Each of these five shows
+Trailblazer and Fox Hunt also let you change it for the game only. Each of these six shows
 short rules before you start. The [text adventure](#text-adventure) has its
 own speed and input settings; it also takes the keyer mode from the keyer
 settings.
@@ -1515,6 +1515,34 @@ right edge.
 ::: {.shots .one}
 ![Trailblazer before the start](img/en/tb_lobby.png)
 :::
+
+## Fight the Pileup
+
+A pileup of stations calls you, and you have to copy them quickly. Call signs
+line up in a queue and the first one plays in CW, a little **lower** than your
+sidetone and at your keying speed. The call sign repeats until you answer.
+Key it back, and it is sent after a word pause, or at once with **Send**.
+
+- **Reveal:** the text of the call sign appears only after a few repeats (3 on
+  Easy and Normal, 2 on Hard, 1 on Expert). Until then you copy by ear.
+- **Score:** a correct call gives 100 points plus 10 per streak step (x2, x3,
+  and so on). A wrong answer ends the streak, and you try again.
+- **Attack:** after each correct call the pileup **pauses**, and a call sign
+  is shown on screen. Key it for 50 extra points; then the pileup goes on. In
+  the firmware this attack goes to other players; the app has no multiplayer,
+  so it only scores.
+- **Lost callers:** if the time for the active caller runs out, you lose 25
+  points and the streak. A caller who waits too long in the queue leaves too.
+  Several lost callers cost one life, and you have three lives.
+- **Difficulty:** Easy, Normal, Hard and Expert change the time per caller
+  (45 to 12 s), how fast new callers arrive, how many wait at the start and
+  how many lost callers cost a life (5 to 2). Faster keying speeds up your
+  own answers: you can change the speed with − and + during the game.
+
+The call signs come from the same generator as in the other modes and follow
+your call sign settings (region, common prefixes only). There is no high score
+list, as in the firmware. When the game ends, you see score, defended and
+dropped callers, accuracy and best streak.
 
 ## Text adventure {#text-adventure}
 
@@ -1856,7 +1884,7 @@ these settings.
 | Setting | Meaning | Values |
 |---|---|---|
 | Simulate interference | Main switch | **Off** / On |
-| Constant noise | Noise and QRM stay on for as long as an exercise, block or game is running, also between characters and under your own keying (your sidetone stays clean). When listening and sending this means a whole block, until the result appears; in Morsel, Memory Chain, Trailblazer and Fox Hunt a game; in QSO Bot and WiFi Trx the session or connection; in Own texts only during playback. More realistic, but more tiring. Off: the interference is only heard while the other station is sending | **Off** / On |
+| Constant noise | Noise and QRM stay on for as long as an exercise, block or game is running, also between characters and under your own keying (your sidetone stays clean). When listening and sending this means a whole block, until the result appears; in Morsel, Memory Chain, Trailblazer, Fox Hunt and Fight the Pileup a game; in QSO Bot and WiFi Trx the session or connection; in Own texts only during playback. More realistic, but more tiring. Off: the interference is only heard while the other station is sending | **Off** / On |
 | Preset | Ready-made mixes. As soon as you move a slider it reads "Custom" | Custom / Light / HF evening / Pile-up |
 | Noise (SNR) | Signal-to-noise ratio, measured in a fixed 2.4 kHz bandwidth. The noise swells and ebbs slowly and contains occasional crackle | 0 % (no noise) to 100 % (SNR −10 dB), shown in dB |
 | Noise colour | How bright the noise sounds | 0 % dull (treble cut from about 800 Hz) to 100 % bright (about 3.2 kHz) |

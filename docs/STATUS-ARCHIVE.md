@@ -851,3 +851,6 @@ Shared grid engine (`grid_engine.dart`, `grid_score.dart`), one screen for both
 games (`maze_game_screen.dart`), two hub cards, high scores per game, manual
 DE+EN, unit tests. Deviations in DECISIONS.md. Fox Hunt rules text got a worked
 example and an in-game hint after a user misread "key the direction".
+
+## 2026-10-03: Fight the Pileup (#15)
+Single-player port on branch `feature/pileup`: `pileup_engine.dart` (unit-tested rules), `pileup_screen.dart`, hub card, manual DE+EN. Deviations in DECISIONS.md. User-tested OK.

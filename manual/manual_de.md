@@ -66,7 +66,7 @@ Die Startseite hat vier Gruppen:
 | **Üben** | **Hören** | Mitschreiben üben: CW Generator und Koch Trainer im Blockablauf |
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
 | **Frei** | **Freie Modi** | Öffnet fünf Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) |
-| **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt |
+| **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
 
 Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
@@ -567,7 +567,7 @@ Darunter stellst du mit zwei Reglern die Tempi ein:
 
 - **Hören** – das Tempo, in dem dir das Wort vorgespielt wird (10 bis 60 WPM).
 - **Geben** – das höchste Tempo, in dem deine Antwort erwartet wird (siehe
-  [Gebetempo](#gebetempo)). „wie Hören“ heißt: dasselbe Tempo.
+  [Gebe-Tempo](#gebetempo)). „wie Hören“ heißt: dasselbe Tempo.
 
 Unten liegen die Dit-/Dah-Tasten bzw. die Handtaste und **Start**.
 
@@ -1439,11 +1439,11 @@ an, solange du in einem Text bist.
 
 # Spiele
 
-Unter **Spielen → Spiele** findest du sechs Spiele. Morsel, Morse Invaders,
-Memory Chain, Trailblazer und Fox Hunt spielst du mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden
+Unter **Spielen → Spiele** findest du sieben Spiele. Morsel, Morse Invaders,
+Memory Chain, Trailblazer, Fox Hunt und Fight the Pileup spielst du mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden
 die Keyer-Einstellungen. Die Koch-Lektion übernehmen sie aus **Geben**;
 Morsel, Memory Chain, Trailblazer und Fox Hunt lassen sie dich zusätzlich nur
-für das Spiel ändern. Jedes dieser fünf Spiele zeigt vor dem Start eine kurze Spielanleitung. Das
+für das Spiel ändern. Jedes dieser sechs Spiele zeigt vor dem Start eine kurze Spielanleitung. Das
 [Text-Adventure](#text-adventure) hat eigene Einstellungen für Tempo und
 Eingabe; den Keyer-Modus nimmt es ebenfalls aus den Keyer-Einstellungen.
 
@@ -1563,6 +1563,38 @@ Eingabe ein Feld weiter; am rechten Rand ist das Spiel gelöst.
 ::: {.shots .one}
 ![Trailblazer vor dem Start](img/de/tb_lobby.png)
 :::
+
+## Fight the Pileup
+
+Ein Pileup ruft dich an, und du musst die Stationen schnell aufnehmen.
+Rufzeichen stellen sich in einer Warteschlange an, und das vorderste spielt
+als Morsezeichen, etwas **tiefer** als dein Mithörton und in deinem
+Gebetempo. Das Rufzeichen wiederholt sich, bis du antwortest. Gib es zurück;
+abgeschickt wird nach einer Wortpause oder sofort mit **Senden**.
+
+- **Aufdecken:** Der Text des Rufzeichens erscheint erst nach ein paar
+  Wiederholungen (3 bei Leicht und Normal, 2 bei Schwer, 1 bei Experte). Bis
+  dahin nimmst du nach Gehör auf.
+- **Punkte:** Ein richtiger Ruf gibt 100 Punkte plus 10 pro Serienstufe (x2,
+  x3 usw.). Eine falsche Antwort beendet die Serie, und du versuchst es
+  nochmal.
+- **Angriff:** Nach jedem richtigen Ruf **pausiert** der Andrang, und auf dem
+  Bildschirm steht ein Rufzeichen. Gib es für 50 Extrapunkte; danach geht der
+  Andrang weiter. In der Firmware geht dieser Angriff an andere Spieler; die
+  App hat keinen Mehrspieler-Modus, daher zählt er nur Punkte.
+- **Verlorene Anrufer:** Läuft die Zeit für den aktuellen Anrufer ab,
+  verlierst du 25 Punkte und die Serie. Auch ein Anrufer, der zu lange in der
+  Schlange wartet, geht. Mehrere verlorene Anrufer kosten ein Leben; du hast
+  drei Leben.
+- **Schwierigkeit:** Leicht, Normal, Schwer und Experte ändern die Zeit pro
+  Anrufer (45 bis 12 s), wie schnell neue Anrufer kommen, wie viele zu Beginn
+  warten und wie viele verlorene Anrufer ein Leben kosten (5 bis 2). Das Tempo
+  änderst du während des Spiels mit − und +.
+
+Die Rufzeichen stammen aus demselben Generator wie in den anderen Übungen und
+folgen deinen Rufzeichen-Einstellungen (Region, nur häufige Präfixe). Eine
+Bestenliste gibt es wie in der Firmware nicht. Am Ende siehst du Punkte,
+verteidigte und verlorene Anrufer, Trefferquote und beste Serie.
 
 ## Text-Adventure {#text-adventure}
 
@@ -1921,7 +1953,7 @@ farbig heißt an. **Kurz antippen** schaltet die Störungen an oder aus,
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Störungen simulieren | Hauptschalter | **Aus** / Ein |
-| Dauerrauschen | Rauschen und QRM stehen durchgehend an, solange eine Übung, ein Block oder ein Spiel läuft, auch zwischen den Zeichen und unter deinem Tasten (dein Mithörton bleibt sauber). Beim Hören und Geben gilt das für einen ganzen Block, bis das Ergebnis erscheint; in Morsel, Memory Chain, Trailblazer und Fox Hunt für ein Spiel; in QSO Bot und WiFi Trx für die Sitzung bzw. Verbindung; in Eigene Texte nur während der Wiedergabe. Realistischer, aber anstrengender. Aus: Die Störung ist nur zu hören, während die Gegenstation sendet | **Aus** / Ein |
+| Dauerrauschen | Rauschen und QRM stehen durchgehend an, solange eine Übung, ein Block oder ein Spiel läuft, auch zwischen den Zeichen und unter deinem Tasten (dein Mithörton bleibt sauber). Beim Hören und Geben gilt das für einen ganzen Block, bis das Ergebnis erscheint; in Morsel, Memory Chain, Trailblazer, Fox Hunt und Fight the Pileup für ein Spiel; in QSO Bot und WiFi Trx für die Sitzung bzw. Verbindung; in Eigene Texte nur während der Wiedergabe. Realistischer, aber anstrengender. Aus: Die Störung ist nur zu hören, während die Gegenstation sendet | **Aus** / Ein |
 | Voreinstellung | Fertige Mischungen. Sobald du einen Regler bewegst, steht dort „Eigene“ | Eigene / Leicht / KW abends / Pile-up |
 | Rauschen (SNR) | Abstand zwischen Signal und Rauschen, gemessen in einer festen Bandbreite von 2,4 kHz. Das Rauschen schwillt langsam an und ab und enthält gelegentliches Knacken | 0 % (kein Rauschen) bis 100 % (SNR −10 dB), Anzeige in dB |
 | Rauschfarbe | Wie hell das Rauschen klingt | 0 % dumpf (Höhen ab etwa 800 Hz abgesenkt) bis 100 % hell (etwa 3,2 kHz) |
