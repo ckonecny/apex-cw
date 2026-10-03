@@ -845,3 +845,9 @@ installed on the connected phone.
 
 ## v1.4.0 release (2026-10-03)
 Version 1.4.0+4, tag `v1.4.0` (3f687f4). Manual HTML/PDF built; screenshots retaken (DE+EN) for the interference icon, "Morse key" wording, #26/#28/#29 (home, free modes, games, Listen/Send flows, statistics, QSO, WiFi, own player, tree, settings, adventure game/settings). Adventure map shots unchanged (app bar not affected); Adventure game shot shows a short new game (keying long commands over adb is unreliable).
+
+## Trailblazer + Fox Hunt (issue #13, 2026-10-03), user-tested OK
+Shared grid engine (`grid_engine.dart`, `grid_score.dart`), one screen for both
+games (`maze_game_screen.dart`), two hub cards, high scores per game, manual
+DE+EN, unit tests. Deviations in DECISIONS.md. Fox Hunt rules text got a worked
+example and an in-game hint after a user misread "key the direction".

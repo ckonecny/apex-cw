@@ -29,6 +29,7 @@ phone's own data was restored afterwards.
 
 ## Manual: pending for next release
 - `home.png` (DE+EN): daily goal card at the top (#31).
+- New (#13): `tb_lobby.png` (DE+EN), the Trailblazer lobby; the games hub list (`games.png`) shows two more cards.
 - New: achievements page and its settings incl. sessions, reminder and awards (#31–#34); `settings1.png`: new switch in General.
 
 ## In progress: daily goal series (#3)
@@ -38,6 +39,11 @@ a real streak across days is unit-tested only. #32 reminder (d6818bd,
 native, see DECISIONS) is committed. #33 spaced sessions (3b915e1) is
 committed. #34 achievements (05ed4c4) is committed (follow-up #36). #35 weekly
 review implemented, not committed; it closes the series #3.
+
+## Next game ports
+Branch `feature/maze-games` (#13, committed, not merged). Next: Fight the
+Pileup (#15) — first check how much of `MorsePileup.cpp` is single player —
+then Radio Cave (#14).
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

@@ -64,7 +64,7 @@ The home screen has four groups:
 | **Practice** | **Listen** | Practice copying: CW Generator and Koch Trainer in the block flow |
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
 | **Free** | **Free modes** | Opens five tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) and **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) |
-| **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain |
+| **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
 
 At the very top sits the **daily goal card**: a ring with your active
@@ -1395,10 +1395,10 @@ a text.
 
 # Games
 
-Under **Play → Games** there are four games. You play Morsel, Morse Invaders
-and Memory Chain with the touch keyer or the adapter. They use the keyer
-settings. They take the Koch lesson from **Send**, and Morsel and Memory
-Chain also let you change it for the game only. Each of these three shows
+Under **Play → Games** there are six games. You play Morsel, Morse Invaders,
+Memory Chain, Trailblazer and Fox Hunt with the touch keyer or the adapter. They use the keyer
+settings. They take the Koch lesson from **Send**, and Morsel, Memory Chain,
+Trailblazer and Fox Hunt also let you change it for the game only. Each of these five shows
 short rules before you start. The [text adventure](#text-adventure) has its
 own speed and input settings; it also takes the keyer mode from the keyer
 settings.
@@ -1483,6 +1483,37 @@ The high score list is kept per mode.
 
 ::: {.shots .one}
 ![Memory Chain before the start](img/en/mc_lobby.png)
+:::
+
+## Trailblazer and Fox Hunt
+
+Two maze games on the same grid: **12 × 4 cells** filled with characters of
+your Koch lesson. A **path from left to right** is hidden in it. Only the
+part you have already walked is drawn, never the path ahead. The token (grey
+circle) moves one cell with every right answer; the game is solved at the
+right edge.
+
+- **Trailblazer (sending):** The next path cell is **highlighted yellow**.
+  Key its character.
+- **Fox Hunt (listening):** You **hear** the character of the next path cell
+  and key the **direction** to it, not the character itself. Example: you hear
+  S, and the S cell is to the right of your token: you key **E**. The legend below the grid assigns a letter
+  to each direction (↑ ↓ ← →): **N, S, W, E**, as far as your lesson has
+  learned them. Otherwise the legend takes the first free letter of your
+  lesson (**yellow frame**). The tone has the half-tone shift of the Send
+  trainer. After 5.5 s without input it repeats; **Replay letter** plays it
+  again at once.
+- A wrong character (in Fox Hunt: the wrong direction, or a letter that is not
+  in the legend) gives an error tone and costs **5 s**; a right one gives a
+  confirmation tone.
+- **Score:** characters per minute (**CPM**) = steps over the time including
+  the penalty. Each game has its own high score list with seven places.
+- You set the **Koch lesson** for this game only before you start. It begins
+  at your Send lesson. You can also change the speed with − and + during the
+  game. Fox Hunt plays the character at your keyer speed.
+
+::: {.shots .one}
+![Trailblazer before the start](img/en/tb_lobby.png)
 :::
 
 ## Text adventure {#text-adventure}
@@ -1811,8 +1842,7 @@ drifting pitch and a "bad fist". That trains you to read a signal under poor
 conditions.
 
 The interference only affects what the **other station** plays: the text when
-listening, the word when sending, Own texts, QSO Bot, WiFi Trx, Text
-Adventure, Morsel and Memory Chain. Practicing a single character, the Morse
+listening, the word when sending, Own texts, QSO Bot, WiFi Trx, Text Adventure, Morsel, Memory Chain, Trailblazer and Fox Hunt. Practicing a single character, the Morse
 chart and the Morse tree also play with interference while the switch is on,
 and show the wave icon as well.
 Your own sidetone while keying always stays clean. The statistics do not
@@ -1826,7 +1856,7 @@ these settings.
 | Setting | Meaning | Values |
 |---|---|---|
 | Simulate interference | Main switch | **Off** / On |
-| Constant noise | Noise and QRM stay on for as long as an exercise, block or game is running, also between characters and under your own keying (your sidetone stays clean). When listening and sending this means a whole block, until the result appears; in Morsel and Memory Chain a game; in QSO Bot and WiFi Trx the session or connection; in Own texts only during playback. More realistic, but more tiring. Off: the interference is only heard while the other station is sending | **Off** / On |
+| Constant noise | Noise and QRM stay on for as long as an exercise, block or game is running, also between characters and under your own keying (your sidetone stays clean). When listening and sending this means a whole block, until the result appears; in Morsel, Memory Chain, Trailblazer and Fox Hunt a game; in QSO Bot and WiFi Trx the session or connection; in Own texts only during playback. More realistic, but more tiring. Off: the interference is only heard while the other station is sending | **Off** / On |
 | Preset | Ready-made mixes. As soon as you move a slider it reads "Custom" | Custom / Light / HF evening / Pile-up |
 | Noise (SNR) | Signal-to-noise ratio, measured in a fixed 2.4 kHz bandwidth. The noise swells and ebbs slowly and contains occasional crackle | 0 % (no noise) to 100 % (SNR −10 dB), shown in dB |
 | Noise colour | How bright the noise sounds | 0 % dull (treble cut from about 800 Hz) to 100 % bright (about 3.2 kHz) |

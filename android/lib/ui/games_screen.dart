@@ -6,6 +6,7 @@ import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import 'adventure_select_screen.dart';
 import 'invaders_screen.dart';
+import 'maze_game_screen.dart';
 import 'memory_chain_screen.dart';
 import 'morsel_screen.dart';
 import 'widgets/app_ui.dart';
@@ -69,6 +70,26 @@ class GamesScreen extends StatelessWidget {
               color: c.warning,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const MemoryChainScreen())),
+            ),
+            const SizedBox(height: 12),
+            HubCard(
+              icon: Icons.route_outlined,
+              title: 'Trailblazer',
+              subtitle: Strings.t('tb_subtitle'),
+              hint: Strings.t('tb_hint'),
+              color: c.accentPurple,
+              onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => const MazeGameScreen(game: MazeGame.trailblazer))),
+            ),
+            const SizedBox(height: 12),
+            HubCard(
+              icon: Icons.travel_explore,
+              title: 'Fox Hunt',
+              subtitle: Strings.t('fh_subtitle'),
+              hint: Strings.t('fh_hint'),
+              color: c.info,
+              onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => const MazeGameScreen(game: MazeGame.foxHunt))),
             ),
           ],
         ),

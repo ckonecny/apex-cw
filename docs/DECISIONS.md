@@ -1347,3 +1347,32 @@ achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
   week before. No arrows or judgement, "no ranking, no pressure".
 - Computed from the practice log on opening, nothing stored. Same switch as the
   rest of the feature.
+
+## 2026-10-03: Trailblazer and Fox Hunt (issue #13) — deviations from MorseGridEngine/Trailblazer/FoxHunt/GridScore.cpp
+
+- **Shared pure-Dart engine** (`lib/content/grid_engine.dart`, scoring in
+  `grid_score.dart`), one screen for both games (`maze_game_screen.dart`,
+  `MazeGame` enum). 12×4 grid, path, legend, 5 s penalty and CPM formula as in
+  the firmware; unit-tested with seeded `Random`.
+- **No prosigns in the grid.** The firmware's pool can contain the prosign
+  codes S/A/N/K/E/B/+; this app's Koch sets have no prosign characters (see
+  `licwCarouselChars`), so cells are single characters and the "keep the
+  prosign, reroll the plainer twin" rule is dropped.
+- **Neighbour de-duplication runs until stable** (up to 12 passes) instead of
+  exactly 3. With 3 passes a clash could be left behind (about 1 in 400 mazes
+  with a 6-letter pool); with a very small pool (≤ 4 characters) it stays
+  unavoidable, as in the firmware.
+- **Fox Hunt clue and keyer.** The keyer is stopped while the one-letter clue
+  plays (it shares the sidetone) and restarted on the generator's `done`;
+  keying during that fraction of a second is discarded. The firmware cancels
+  the clue when the keyer becomes active instead. Auto-replay after 5.5 s
+  idle additionally waits 1.5 s after the last keyed element, so it never
+  cuts into a letter being keyed. OK pause before the next clue is 600 ms
+  (OK tone ≈ 290 ms + the firmware's 300 ms breath).
+- **OK/ERR tones** are the firmware's `soundSignalOK`/`soundSignalERR` note
+  pairs through the shared `playEffect`; dropped while a touch paddle is held.
+- **UI:** Start button instead of the "key to start" gesture, replay button
+  instead of the black-button click, +/- speed in the play screen (as Memory
+  Chain); Koch lesson for the visit only. High scores as JSON in
+  `trailblazerHi` / `foxHuntHi` (7 rows, ranked by CPM; an all-zero CPM never
+  ranks). Multiplayer (`MorseGridNet`) is out of scope (ESP-NOW).
