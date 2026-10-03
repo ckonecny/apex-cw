@@ -8,6 +8,7 @@ import '../theme/theme_controller.dart';
 import '../l10n/strings.dart';
 import '../licenses.dart';
 import 'widgets/setting_rows.dart';
+import 'interference_settings_card.dart';
 
 enum _LearnState { idle, waitDit, waitDah, done }
 
@@ -368,6 +369,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: (v) { setState(() => _outputCase = v); _saveLive(); },
             ),
           ]),
+
+          const SizedBox(height: 24),
+
+          // ── Störungen ──────────────────────────────────────────────────────
+          SettingsSectionHeader(Strings.t('interf_header')),
+          const SizedBox(height: 12),
+          const InterferenceSettingsCard(),
 
           const SizedBox(height: 24),
 

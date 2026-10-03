@@ -1,3 +1,4 @@
+import 'widgets/interference_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -204,6 +205,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
+            const InterferenceButton(),
           if (!_practiceActive)
             IconButton(
               icon: Icon(Icons.bar_chart_outlined, color: c.textMuted),

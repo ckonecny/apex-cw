@@ -6,6 +6,12 @@ item in `STATUS.md` is done, move it here (CLAUDE.md rule 13). Open feature
 ideas and deferred bugs are GitHub issues (rule 12), not listed here.
 
 ## Done
+- **Interference simulation (issue #6, 2026-10-02/03).** Noise (SNR), noise
+  colour, receiver filter, QRM, QSB, pitch drift and timing jitter on the other
+  station's signal; settings card, presets, app bar icon (tap = on/off, long
+  press = settings), manual DE+EN. Design and open question (reference screens
+  also get it) in `docs/DECISIONS.md`. Built on branch
+  `feature/interference-simulation`, not committed yet.
 - **v1.3.0 release (2026-10-01).** Version 1.3.0+3, tag `v1.3.0` (fab962b),
   `tools/build_release.sh` → APK + AAB, installed over the debug build on the
   test phone (same upload key, data kept). Contents since v1.2.2: learning

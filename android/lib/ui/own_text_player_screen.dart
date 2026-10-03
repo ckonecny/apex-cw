@@ -6,6 +6,7 @@
 // on entry and on every change (rule 2). The tempo can be changed while the
 // text plays: the generator reads wpm and spacing per element. Progress is
 // saved per text; opening one that was started asks Continue / Restart.
+import 'widgets/interference_button.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -424,6 +425,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
             onPressed: () => Navigator.pop(context),
           ),
           actions: [
+            const InterferenceButton(),
             if (_p != null && _s.show != 0)
               IconButton(
                 tooltip: Strings.t('ot_toggle_text'),

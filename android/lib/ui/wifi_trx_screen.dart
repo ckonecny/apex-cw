@@ -1,3 +1,4 @@
+import 'widgets/interference_button.dart';
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
@@ -384,6 +385,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
+            const InterferenceButton(),
           IconButton(
             icon: Icon(Icons.settings, color: c.textMuted),
             tooltip: Strings.t('settings_title'),

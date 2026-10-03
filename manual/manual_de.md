@@ -126,7 +126,8 @@ Die Lautstärke regelst du mit den Lauter/Leiser-Tasten des Handys. Die
 ein Kopfhörer, ein USB-Audiogerät oder ein Bluetooth-Gerät verbunden oder
 getrennt, wechselt die App automatisch dorthin. Wenn du das nicht willst,
 kannst du die Ausgabe auch fest wählen (siehe
-[Audioausgabe](#audioausgabe)).
+[Audioausgabe](#audioausgabe)). Wie du die Gegenstation mit Rauschen, Schwund und
+Nachbarstation üben kannst, steht unter [Störungen](#stoerungen).
 
 Bluetooth-Kopfhörer haben meist eine deutliche Verzögerung. Zum Hören ist das
 egal, beim Geben stört es: Du hörst deinen Mithörton spürbar später, als du
@@ -1776,6 +1777,51 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 | Tonhöhe (Hz) | Frequenz des Mithörtons und der gespielten Zeichen | 300–900 Hz in 50-Hz-Schritten (**600 Hz**) |
 | Tonweichheit | Anstiegs- und Abfallzeit des Tons. Größere Werte klingen weicher und klicken weniger, besonders bei kurzen Dits | 1–9 ms (**5 ms**) |
 | Schreibweise | Zeichen in Klein- oder Großbuchstaben anzeigen. Betrifft nur die Anzeige | **klein** / GROSS |
+
+## Störungen {#stoerungen}
+
+Mit **Einstellungen → Störungen** lässt du die Gegenstation so klingen, als
+käme sie über ein echtes Band: mit Rauschen, Knacken, Schwund, Nachbarstation,
+schwankender Tonhöhe und einer „schlechten Hand“. Das trainiert, ein Signal
+auch unter schlechten Bedingungen zu lesen.
+
+Die Störungen wirken nur auf das, was die **Gegenstation** spielt, also auf
+den Text beim Hören, das Wort beim Geben, Eigene Texte, QSO Bot, WiFi Trx,
+Text-Adventure, Morsel und Memory Chain. Auch Zeichen üben, Morse-Tabelle und
+Morse-Baum spielen mit Störungen, solange der Schalter an ist. Dein eigener
+Mithörton beim Tasten bleibt immer sauber. Die Statistik merkt sich nicht, ob
+mit oder ohne Störungen geübt wurde.
+
+**Schnell umschalten:** In den Bildschirmen mit Gegenstation zeigt die
+Kopfzeile ein Wellen-Symbol (neben Statistik und Zahnrad). Grau heißt aus,
+farbig heißt an. **Kurz antippen** schaltet die Störungen an oder aus,
+**gedrückt halten** öffnet diese Einstellungen.
+
+| Einstellung | Bedeutung | Werte |
+|---|---|---|
+| Störungen simulieren | Hauptschalter | **Aus** / Ein |
+| Voreinstellung | Fertige Mischungen. Sobald du einen Regler bewegst, steht dort „Eigene“ | Eigene / Leicht / KW abends / Pile-up |
+| Rauschen (SNR) | Abstand zwischen Signal und Rauschen, gemessen in einer festen Bandbreite von 2,4 kHz. Das Rauschen schwillt langsam an und ab und enthält gelegentliches Knacken | 0 % (kein Rauschen) bis 100 % (SNR −10 dB), Anzeige in dB |
+| Rauschfarbe | Wie hell das Rauschen klingt | 0 % dumpf (Höhen ab etwa 800 Hz abgesenkt) bis 100 % hell (etwa 3,2 kHz) |
+| Empfängerfilter | Schmales CW-Filter um deine Tonhöhe. Je enger, desto mehr Rauschen und Nachbarstation fallen weg. Bei sehr enger Einstellung klingt das übrige Rauschen wie ein schwankender Ton | 0 % breit bis 100 % sehr eng (Q 1,5 bis 20) |
+| QRM (andere Station) | Eine zweite Station sendet zufällige Morsezeichen in Durchgängen von 3 bis 12 Zeichen (12 bis 28 WPM), 100 bis 350 Hz über oder unter deinem Ton, dann Pause. 100 % ist so laut wie dein Signal | 0–100 % |
+| QSB (Schwund) | Der Pegel schwankt langsam (Perioden von etwa 30 bis 125 s) um bis zu etwa 8 dB | 0–100 % |
+| Tonhöhe (Drift) | Die Tonhöhe wandert langsam, bei 100 % bis etwa ±30 Hz. Mit engem Filter kann der Ton dabei aus dem Durchlass laufen | 0–100 % |
+| Timing (schlechte Hand) | Punkte, Striche und Pausen sind ungleichmäßig, gelegentlich zögert die Station | 0–100 % |
+
+Die Voreinstellungen setzen (Rauschen / QRM / QSB / Tonhöhe / Timing /
+Empfängerfilter, Rauschfarbe immer 50 %):
+
+| Voreinstellung | Werte |
+|---|---|
+| Leicht | 15 / 0 / 10 / 0 / 0 / 30 % |
+| KW abends | 35 / 20 / 45 / 10 / 15 / 50 % |
+| Pile-up | 55 / 60 / 35 / 15 / 30 / 60 % |
+
+**Probehören** spielt vier zufällige Fünfergruppen mit dem Tempo und den
+Abständen deines Hören-Trainings. So bekommst du einen Eindruck, wie es im
+Training klingt. Ein bekannter Text wie „CQ CQ DE …“ wäre durch Rauschen viel
+leichter zu lesen als Zufallsgruppen.
 
 ## Keyer
 

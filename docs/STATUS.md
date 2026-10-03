@@ -27,7 +27,20 @@ Straight-mode shots only if wanted. Adventure map shots show the default zoom
 shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
+## Manual: pending for next release
+Interference simulation (issue #6): retake in DE+EN `settings1.png` (new
+"Störungen" card between Allgemein and Keyer; check where the page splits
+across `settings1-3.png`) and every screenshot whose app bar now has the new
+wave icon: `hear_start.png`, `hear_type*.png`, `hear_result.png`,
+`hear_revealed.png`, `hear_sending.png`, `echo_start.png`, `echo_answer.png`,
+`echo_result*.png`, `qso.png`, `wifi.png`, `own_player.png`,
+`morsel_lobby.png`, `mc_lobby.png`, `adv_game.png`, `adv_map*.png`. Optional
+new shot: the Störungen card itself.
+
 ## Hints for the next session
+- Interference simulation (issue #6) is finished but **not committed**: branch
+  `feature/interference-simulation`. Open question for the user: should the
+  reference screens (character practice, chart, tree) stay clean?
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual
   sources changed after the tag.
