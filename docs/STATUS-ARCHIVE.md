@@ -842,3 +842,6 @@ and build time. Build number = git commit count, stamped in by
 `android/app/build.gradle.kts` via BuildConfig, so every handed-out APK maps
 to an exact commit. Tagged `v1.0.0`; release APK built from the tag and
 installed on the connected phone.
+
+## v1.4.0 release (2026-10-03)
+Version 1.4.0+4, tag `v1.4.0` (3f687f4). Manual HTML/PDF built; screenshots retaken (DE+EN) for the interference icon, "Morse key" wording, #26/#28/#29 (home, free modes, games, Listen/Send flows, statistics, QSO, WiFi, own player, tree, settings, adventure game/settings). Adventure map shots unchanged (app bar not affected); Adventure game shot shows a short new game (keying long commands over adb is unreliable).

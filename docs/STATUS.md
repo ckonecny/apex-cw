@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (public since 2026-09-28, GPL-3.0).
-Latest tagged build: v1.3.0 (2026-10-01, tag `v1.3.0` = commit fab962b, learning resources, statistics with progress tab, adaptive straight key, own texts, grouped start screen). Previous: v1.2.2 (2026-09-28, nav bar fix, first build signed with the upload key); older versions in `docs/STATUS-ARCHIVE.md`.
+Latest tagged build: v1.4.0 (2026-10-03, tag `v1.4.0` = commit 3f687f4, interference simulation, "Morse key" wording, GUI fixes #26/#28/#29). Previous: v1.3.0 (2026-10-01); older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/next_cw_trainer (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -11,7 +11,7 @@ only the current state, organisational steps and hints for the next session.
 Done: upload key and signing, privacy policy, store texts and graphics
 (`docs/PLAY-LISTING.md`, `docs/DECISIONS.md` "Play Store preparation"); store
 raw shots home / Hören and Geben statistics retaken for v1.3.0 (2026-10-01,
-dark, DE+EN), graphics rebuilt; AAB `releases/next-cw-trainer-v1.3.0.aab`.
+dark, DE+EN), graphics rebuilt; AAB `releases/next-cw-trainer-v1.4.0.aab` (store raw shots still from v1.3.0).
 1. User: developer account (identity check passed).
 2. Upload the AAB; closed test: 12 testers × 14 days.
 3. Production.
@@ -28,26 +28,7 @@ shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
 ## Manual: pending for next release
-Interference simulation (issue #6): retake in DE+EN `settings1.png` (new
-"Störungen" card between Allgemein and Keyer; check where the page splits
-across `settings1-3.png`) and every screenshot whose app bar now has the new
-wave icon: `hear_start.png`, `hear_type*.png`, `hear_result.png`,
-`hear_revealed.png`, `hear_sending.png`, `echo_start.png`, `echo_answer.png`,
-`echo_result*.png`, `qso.png`, `wifi.png`, `own_player.png`,
-`morsel_lobby.png`, `mc_lobby.png`, `adv_game.png`, `adv_map*.png`, plus the
-character practice, Morse chart and Morse tree shots (icon added there).
-Optional new shot: the Störungen card itself (now with "Constant noise").
-- Issue #25 (Paddle → Morse key, text change on branch
-  `fix/rename-paddle-to-morse-key`, not yet installed on a device): retake the
-  screens that show the old wording, DE + EN: `home.png` (keyer tile
-  subtitle), `settings3.png` (section "vband Morse Key", "Dit-/Dah-Tasten
-  anlernen"), `echo*.png` (idle hint), Adaptive Copy hint/settings, adventure
-  input choice (`adv_settings*.png`), `adv_game.png`.
-
-- Issues #26/#28/#29 (branch `fix/gui-issues-26-28-29`, not yet installed on
-  a device): retake `hear_char_detail.png`, `echo_char_detail.png` (now a page
-  with app bar), `hear_progress.png`/`echo_progress.png` (heatmap fits/starts
-  at newest week) and the Characters tab shots (new tap hint), DE + EN.
+(none — all screenshots retaken for v1.4.0, manual built)
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
