@@ -25,5 +25,6 @@ object CwAudioNative {
     // Screen-level switch: band noise and QRM keep running, also under the
     // user's own keying (the sidetone itself stays clean).
     external fun setAmbient(on: Boolean)
+    external fun setClean(on: Boolean)
     external fun getLatencyMs(): Int
 }

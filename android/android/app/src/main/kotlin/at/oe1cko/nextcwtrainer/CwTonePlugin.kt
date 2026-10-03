@@ -79,6 +79,7 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
         val f1 = if (ok) 440.0 else 366.0
         val f2 = if (ok) 587.0 else 330.0
         Thread({
+            CwAudioNative.setClean(true)
             CwAudioNative.setFreqHz(f1)
             CwAudioNative.setPlaying(true)
             Thread.sleep(97)
@@ -87,6 +88,8 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
             CwAudioNative.setPlaying(true)
             Thread.sleep(193)
             CwAudioNative.setPlaying(false)
+            Thread.sleep(60)   // let the release tail finish before the limiter is back
+            CwAudioNative.setClean(false)
             CwAudioNative.setFreqHz(restoreFreq)
         }, "confirm-tone").apply { isDaemon = true; start() }
     }
