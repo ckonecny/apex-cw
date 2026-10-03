@@ -384,8 +384,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     );
     await p.setDouble('echoBlockEma', s.blockEma);
     final n = _blockResults.length;
-    _trend = await const BlockHistory('echo').record(
-        p, n == 0 ? 0 : _blockResults.where((r) => r.outcome == WordOutcome.first).length / n);
+    final echoRate = n == 0 ? 0.0 : _blockResults.where((r) => r.outcome == WordOutcome.first).length / n;
+    _trend = await const BlockHistory('echo').record(p, echoRate);
+    if (n > 0) {
+      PracticeClock.instance.block('echo', echoRate,
+          interference: (await InterferenceProfile.load()).enabled);
+    }
     _suggestions = s;
     _pendWpm = s.newWpm;
     _pendAnswer = s.newAnswerWpmMax;

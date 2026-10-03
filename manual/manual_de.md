@@ -1006,7 +1006,7 @@ zweiter verpasster Tag in derselben Woche beendet die Serie. Das lässt sich
 abschalten.
 
 **Erfolge-Seite.** Tippe auf die Karte. Sie zeigt heute und diese Woche in
-Minuten. Das Zahnrad öffnet die Einstellungen dazu:
+Minuten und darunter die **Auszeichnungen** (siehe unten). Das Zahnrad öffnet die Einstellungen dazu:
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
@@ -1015,6 +1015,26 @@ Minuten. Das Zahnrad öffnet die Einstellungen dazu:
 | Auf Sessions verteilen | Das Tagesziel zählt erst, wenn die Zeit auf 3 oder 5 getrennte Sessions verteilt ist (siehe unten) | **Aus** / 3× / 5× |
 | Erinnerung | Eine Benachrichtigung zur gewählten Uhrzeit, nur wenn dein Ziel dann noch offen ist. Beim Einschalten fragt die App nach der Erlaubnis für Benachrichtigungen | **Aus** / An, Uhrzeit (**19:00**) |
 | Tagesziel und Erfolge anzeigen | Blendet die Karte aus und stoppt die Aufzeichnung. Die Daten bleiben erhalten; hier oder unter **Einstellungen → Allgemein** wieder einschalten | **An** / Aus |
+
+**Auszeichnungen.** Zehn Stück, ohne Pop-ups beim Üben, nur auf der Seite. Eine
+erreichte Auszeichnung zeigt den Tag, an dem du sie zum ersten Mal erreicht
+hast, die offenen sind grau mit Schloss. Alles bleibt auf dem Gerät.
+
+| Auszeichnung | Bedingung |
+|---|---|
+| Neues Zeichen | Ein neues Zeichen im Koch-Lehrgang freigeschaltet |
+| Dreier-Woche | 3 neue Zeichen in einer Woche (Montag bis Sonntag) |
+| Wochen-Serie | 4 Wochen in Folge mindestens ein neues Zeichen |
+| Verteilt geübt | An einem Tag 3 Sessions geübt (je mindestens 5 Min., 15 Min. Abstand), auch ohne die Einstellung „Auf Sessions verteilen“ |
+| Verteilen als Gewohnheit | An 5 verschiedenen Tagen so geübt |
+| Besser als letzte Woche | Weniger Fehler als in der Vorwoche, jeweils mit mindestens 3 Blöcken |
+| Sauber getastet | 3 Blöcke in Folge mit unter 5 % Fehlern |
+| Trotz Störung | Ein Block mit eingeschalteter Störung und unter 10 % Fehlern |
+| Neues Tempo | Neuer Tempo-Rekord in Hören oder Geben |
+| Wieder da | Nach mindestens 7 Tagen Pause wieder geübt |
+
+Die Fehlerquote zählt Hören und Geben zusammen. Auszeichnungen für Blöcke
+gibt es erst ab Blöcken, die nach diesem Update gespielt wurden.
 
 **Auf Sessions verteilen.** In kleinen Häppchen lernt man besser als in einem
 langen Block. Mit 3× oder 5× zählt das Tagesziel erst, wenn die Übungszeit

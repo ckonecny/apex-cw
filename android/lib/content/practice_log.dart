@@ -87,11 +87,36 @@ class MilestoneKind {
   static const wpmEcho = 'wpm.echo';
 }
 
+/// One finished training block (for the achievements, #34).
+class BlockRecord {
+  final String day; // practiceDayKey
+  final String track; // 'hear' | 'echo'
+  final int correct; // share of correct characters/words, permille
+  final bool interference; // the interference simulation was on
+
+  const BlockRecord(this.day, this.track, this.correct, this.interference);
+
+  BlockRecord.fromJson(Map<String, dynamic> j)
+      : day = j['d'] as String? ?? '',
+        track = j['k'] as String? ?? '',
+        correct = j['r'] as int? ?? 0,
+        interference = (j['i'] as int? ?? 0) == 1;
+
+  Map<String, dynamic> toJson() => {'d': day, 'k': track, 'r': correct, 'i': interference ? 1 : 0};
+
+  /// Error rate 0..1.
+  double get errors => 1 - correct / 1000;
+}
+
+/// Oldest blocks are dropped beyond this many.
+const kKeepBlocks = 200;
+
 class PracticeLog {
   static const enabledKey = 'practice.enabled';
   static const _daysKey = 'practice.days';
   static const _sessionsKey = 'practice.sessions';
   static const _milestonesKey = 'practice.milestones';
+  static const _blocksKey = 'practice.blocks';
 
   /// Key = practiceDayKey.
   final Map<String, PracticeDay> days = {};
@@ -101,6 +126,9 @@ class PracticeLog {
 
   /// Oldest first.
   final List<Milestone> milestones = [];
+
+  /// Oldest first.
+  final List<BlockRecord> blocks = [];
 
   /// Whether the daily goal / achievements feature is on (general setting,
   /// default on). While off, nothing is recorded; stored data is kept.
@@ -127,6 +155,7 @@ class PracticeLog {
     days.clear();
     sessions.clear();
     milestones.clear();
+    blocks.clear();
     List<dynamic> list(String key) {
       final raw = p.getString(key);
       if (raw == null || raw.isEmpty) return const [];
@@ -149,6 +178,7 @@ class PracticeLog {
     }
     sessions.addAll(list(_sessionsKey).map((e) => PracticeSession.fromJson(e as Map<String, dynamic>)));
     milestones.addAll(list(_milestonesKey).map((e) => Milestone.fromJson(e as Map<String, dynamic>)));
+    blocks.addAll(list(_blocksKey).map((e) => BlockRecord.fromJson(e as Map<String, dynamic>)));
   }
 
   Future<void> save(SharedPreferences p) async {
@@ -157,7 +187,9 @@ class PracticeLog {
     }
     await p.setString(_daysKey, jsonEncode(days.map((k, v) => MapEntry(k, v.toJson()))));
     await p.setString(_sessionsKey, jsonEncode(sessions.map((s) => s.toJson()).toList()));
+    if (blocks.length > kKeepBlocks) blocks.removeRange(0, blocks.length - kKeepBlocks);
     await p.setString(_milestonesKey, jsonEncode(milestones.map((m) => m.toJson()).toList()));
+    await p.setString(_blocksKey, jsonEncode(blocks.map((b) => b.toJson()).toList()));
   }
 
   Future<void> setEnabled(SharedPreferences p, bool v) async {
@@ -170,8 +202,10 @@ class PracticeLog {
     days.clear();
     sessions.clear();
     milestones.clear();
+    blocks.clear();
     await p.remove(_daysKey);
     await p.remove(_sessionsKey);
     await p.remove(_milestonesKey);
+    await p.remove(_blocksKey);
   }
 }

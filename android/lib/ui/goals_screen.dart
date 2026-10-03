@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../content/achievements.dart';
 import '../content/daily_goal.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
@@ -60,8 +61,48 @@ class _GoalsScreenState extends State<GoalsScreen> {
           const SettingsDivider(),
           _row(c, Strings.t('goal_week'), _min(g.weekSeconds)),
         ]),
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+          child: Text(Strings.t('ach_title').toUpperCase(), style: TextStyle(
+              fontFamily: 'CwMono', fontSize: 11, letterSpacing: 1, color: c.textMuted)),
+        ),
+        SettingsCard(children: [
+          for (final (i, a) in achievements(PracticeClock.instance.log).indexed) ...[
+            if (i > 0) const SettingsDivider(),
+            _achievement(c, a),
+          ],
+        ]),
       ]),
     );
+  }
+
+  Widget _achievement(AppColors c, Achievement a) {
+    final color = a.unlocked ? c.accent : c.textFaint;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Icon(a.unlocked ? Icons.emoji_events : Icons.lock_outline, color: color, size: 26),
+        const SizedBox(width: 14),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(Strings.t('ach_${a.id}'), style: TextStyle(
+              fontFamily: 'CwMono', fontSize: 14,
+              color: a.unlocked ? c.textPrimary : c.textMuted)),
+          const SizedBox(height: 2),
+          Text(Strings.t('ach_${a.id}_d'), style: TextStyle(
+              fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+          const SizedBox(height: 2),
+          Text(a.unlocked ? _date(a.earned!) : Strings.t('ach_locked'), style: TextStyle(
+              fontFamily: 'CwMono', fontSize: 11, color: color)),
+        ])),
+      ]),
+    );
+  }
+
+  /// Day key `2026-10-07` as `07.10.2026` (German) or unchanged (English).
+  String _date(String key) {
+    final p = key.split('-');
+    return Strings.lang.value == 0 ? '${p[2]}.${p[1]}.${p[0]}' : key;
   }
 
   String _min(int seconds) =>

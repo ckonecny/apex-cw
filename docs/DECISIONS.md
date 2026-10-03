@@ -1310,3 +1310,24 @@ achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
   time and session progress; subtitle names when the next session counts. The
   "next in N min" text updates when the card is rebuilt, not by a timer.
 
+## 2026-10-03: Achievements (issue #34, part of #3)
+
+- **Computed, not stored.** `achievements(log)` derives all ten from the
+  practice log each time the page opens (no per-award state), so a changed rule
+  applies to the whole history. The earned date is the first day the rule was
+  met. Shown on the Achievements page below today/week; no pop-ups.
+- **New data:** `PracticeLog.blocks` (`practice.blocks`, max 200): day, track,
+  correct share in permille, whether the interference simulation was on
+  (`interfOn`). Written next to `BlockHistory.record` in Listen and Send via
+  `PracticeClock.block`; off while the feature is off. Block awards therefore
+  start with blocks played after this change.
+- **Rules:** new character = Koch milestones (#30); "three in a week" counts per
+  training and week, the better one counts; weekly series needs 4 consecutive
+  Mon–Sun weeks; spread day = 3 counted sessions (`countedSessions`, #33)
+  independent of the setting; better week = lower mean error than the week before,
+  both with at least 3 blocks (Listen and Send mixed); under 5 % three blocks in a
+  row; interference = flag on and under 10 % errors; speed = any WPM record;
+  comeback = practice after more than 7 days between two practice days.
+- **Left out** (needs data the log lacks): weakest character improved, graded
+  interference steps — issue #36.
+

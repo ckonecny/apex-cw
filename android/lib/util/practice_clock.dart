@@ -145,6 +145,15 @@ class PracticeClock with WidgetsBindingObserver {
     }
   }
 
+  /// Logs a finished block ([correct] 0..1) for the achievements (no-op while
+  /// the feature is off).
+  void block(String track, double correct, {required bool interference}) {
+    if (!log.enabled) return;
+    log.blocks.add(BlockRecord(practiceDayKey(_now()), track,
+        (correct.clamp(0.0, 1.0) * 1000).round(), interference));
+    _flush();
+  }
+
   void _flush() {
     _unsavedMs = 0;
     final p = _prefs;

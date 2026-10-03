@@ -979,7 +979,8 @@ shrinks to one line, so all tiles stay visible.
 streak. It is not counted as a practice day, it only bridges the gap. A second
 miss in the same week ends the streak. You can switch this off.
 
-**Achievements page.** Tap the card. It shows today and this week in minutes.
+**Achievements page.** Tap the card. It shows today and this week in minutes
+and below them the **awards** (see below).
 The gear icon opens its settings:
 
 | Setting | Meaning | Values |
@@ -989,6 +990,26 @@ The gear icon opens its settings:
 | Spread over sessions | The daily goal only counts once the time is spread over 3 or 5 separate sessions (see below) | **Off** / 3× / 5× |
 | Reminder | A notification at the chosen time, only if your goal is still open then. The app asks for the notification permission when you switch it on | **Off** / On, time (**19:00**) |
 | Show daily goal and achievements | Hides the card and stops recording. The data is kept; switch it on again here or under **Settings → General** | **On** / Off |
+
+**Awards.** Ten of them, no pop-ups while you practise, only on this page. An
+earned award shows the day you first reached it; open ones are grey with a
+lock. Everything stays on the device.
+
+| Award | Condition |
+|---|---|
+| New character | Unlocked a new character in the Koch course |
+| Three in a week | 3 new characters in one week (Monday to Sunday) |
+| Weekly streak | At least one new character in 4 weeks in a row |
+| Spread out | 3 sessions in one day (at least 5 min each, 15 min apart), also without the "Spread over sessions" setting |
+| Spreading as a habit | Practised that way on 5 different days |
+| Better than last week | Fewer errors than the week before, at least 3 blocks each |
+| Clean run | 3 blocks in a row with under 5 % errors |
+| Despite interference | A block with interference switched on and under 10 % errors |
+| New speed | A new speed record in Listen or Send |
+| Welcome back | Practised again after a break of at least 7 days |
+
+Error rates count Listen and Send together. Block awards only work with
+blocks played after this update.
 
 **Spread over sessions.** Learning in small chunks works better than one long
 block. With 3× or 5× the daily goal only counts once the practice time is

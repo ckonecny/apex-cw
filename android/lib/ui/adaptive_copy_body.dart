@@ -865,6 +865,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     await p.setDouble('adaptiveBlockEma', newEma);
     final trend = await const BlockHistory('hear')
         .record(p, total == 0 ? 0 : correct / total);
+    if (total > 0) {
+      PracticeClock.instance.block('hear', correct / total,
+          interference: (await InterferenceProfile.load()).enabled);
+    }
 
     final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
         .map((ch) => _charStats.stats[ch] ?? CharStat())

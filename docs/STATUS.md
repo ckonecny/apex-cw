@@ -29,14 +29,15 @@ phone's own data was restored afterwards.
 
 ## Manual: pending for next release
 - `home.png` (DE+EN): daily goal card at the top (#31).
-- New: achievements page and its settings incl. sessions and reminder (#31–#33); `settings1.png`: new switch in General.
+- New: achievements page and its settings incl. sessions, reminder and awards (#31–#34); `settings1.png`: new switch in General.
 
 ## In progress: daily goal series (#3)
 Branch `feature/practice-log` (neither pushed nor merged). #30 practice log
 (c88039e) and #31 goal card, achievements page and settings are committed;
 a real streak across days is unit-tested only. #32 reminder (d6818bd,
-native, see DECISIONS) is committed. #33 spaced sessions implemented, not
-committed. Next: #34 achievements, #35 weekly review.
+native, see DECISIONS) is committed. #33 spaced sessions (3b915e1) is
+committed. #34 achievements implemented, not committed (follow-up #36).
+Next: #35 weekly review.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
