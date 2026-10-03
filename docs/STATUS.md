@@ -39,9 +39,6 @@ character practice, Morse chart and Morse tree shots (icon added there).
 Optional new shot: the Störungen card itself (now with "Constant noise").
 
 ## Hints for the next session
-- Interference "ambient" (constant noise, setting in the Störungen card,
-  default off) is on branch `feature/interference-ambient`, checked on the
-  test phone; merge into `main` is still open.
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual
   sources changed after the tag.
