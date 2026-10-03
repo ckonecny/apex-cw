@@ -39,6 +39,7 @@ class MainActivity : FlutterActivity() {
     private lateinit var audioRouteManager: AudioRouteManager
     private lateinit var micInput:    MicInput
     private var micPermissionResult: MethodChannel.Result? = null
+    private var notifPermissionResult: MethodChannel.Result? = null
 
     // Paddle configuration — loaded from SharedPreferences
     private var ditChar = 0xFC  // 'ü' (self-built vband default)
@@ -67,6 +68,8 @@ class MainActivity : FlutterActivity() {
         private const val MIC_CHANNEL      = "at.oe1cko.nextcwtrainer/cw_mic"
         private const val MIC_PCM_CHANNEL  = "at.oe1cko.nextcwtrainer/cw_mic_pcm"
         private const val REQ_MIC          = 4711
+        private const val REQ_NOTIF        = 4712
+        private const val REMINDER_CHANNEL = "at.oe1cko.nextcwtrainer/reminder"
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -354,6 +357,28 @@ class MainActivity : FlutterActivity() {
                 }
                 override fun onCancel(args: Any?) { micInput.onPcm = null }
             })
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, REMINDER_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "hasPermission" -> result.success(hasNotifPermission())
+                    "requestPermission" -> {
+                        if (hasNotifPermission()) { result.success(true); return@setMethodCallHandler }
+                        notifPermissionResult?.success(false)
+                        notifPermissionResult = result
+                        requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQ_NOTIF)
+                    }
+                    "schedule" -> {
+                        val times = (call.argument<List<Number>>("times") ?: emptyList()).map { it.toLong() }
+                        val p = getSharedPreferences("reminder", Context.MODE_PRIVATE)
+                        p.edit().putString("channel", call.argument<String>("channel") ?: "Reminder").apply()
+                        Reminder.schedule(this, times, call.argument<String>("title") ?: "",
+                            call.argument<String>("body") ?: "")
+                        result.success(null)
+                    }
+                    "cancel" -> { Reminder.cancel(this); result.success(null) }
+                    else -> result.notImplemented()
+                }
+            }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, MIC_CHANNEL)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
@@ -380,6 +405,10 @@ class MainActivity : FlutterActivity() {
         keyer.start()
     }
 
+    // Below Android 13 notifications need no runtime permission.
+    private fun hasNotifPermission() = android.os.Build.VERSION.SDK_INT < 33 ||
+        checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+
     private fun hasMicPermission() =
         checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
 
@@ -390,6 +419,11 @@ class MainActivity : FlutterActivity() {
             micPermissionResult?.success(
                 grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             micPermissionResult = null
+        }
+        if (requestCode == REQ_NOTIF) {
+            notifPermissionResult?.success(
+                grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            notifPermissionResult = null
         }
     }
 

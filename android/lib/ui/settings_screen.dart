@@ -10,6 +10,7 @@ import '../licenses.dart';
 import 'widgets/setting_rows.dart';
 import 'interference_settings_card.dart';
 import '../util/practice_clock.dart';
+import '../util/reminder.dart';
 
 enum _LearnState { idle, waitDit, waitDah, done }
 
@@ -377,6 +378,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: (v) async {
                 final p = await SharedPreferences.getInstance();
                 await PracticeClock.instance.log.setEnabled(p, v);
+                Reminder.refresh();
                 if (mounted) setState(() {});
               },
             ),

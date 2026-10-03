@@ -38,6 +38,10 @@ class PracticeClock with WidgetsBindingObserver {
   int _unsavedMs = 0;
   bool audioPlaying = false;
 
+  /// Called when practice pauses (last training screen left, app in the
+  /// background); the reminder re-plans from the then-current goal state.
+  VoidCallback? onIdle;
+
   /// Loads the log and starts listening for touches. Call once from main().
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -78,6 +82,7 @@ class PracticeClock with WidgetsBindingObserver {
       _timer = null;
       _lastTick = null;
       _flush();
+      onIdle?.call();
     }
   }
 
@@ -88,7 +93,10 @@ class PracticeClock with WidgetsBindingObserver {
     if (!fg) tick();
     _foreground = fg;
     _lastTick = _now();
-    if (!fg) _flush();
+    if (!fg) {
+      _flush();
+      onIdle?.call();
+    }
   }
 
   /// One step of the clock (called every second by the timer; public for tests).

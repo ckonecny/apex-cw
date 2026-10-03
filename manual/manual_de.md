@@ -1012,7 +1012,16 @@ Minuten. Das Zahnrad öffnet die Einstellungen dazu:
 |---|---|---|
 | Tagesziel | Minuten aktive Übungszeit pro Tag | 5 / **10** / 15 / 20 / 30 / 60 min |
 | Freier Tag pro Woche | Überbrückt einen verpassten Tag pro Woche | **An** / Aus |
+| Erinnerung | Eine Benachrichtigung zur gewählten Uhrzeit, nur wenn dein Ziel dann noch offen ist. Beim Einschalten fragt die App nach der Erlaubnis für Benachrichtigungen | **Aus** / An, Uhrzeit (**19:00**) |
 | Tagesziel und Erfolge anzeigen | Blendet die Karte aus und stoppt die Aufzeichnung. Die Daten bleiben erhalten; hier oder unter **Einstellungen → Allgemein** wieder einschalten | **An** / Aus |
+
+**Erinnerung.** Optional und standardmäßig aus. Zur gewählten Uhrzeit bekommst
+du eine freundliche Benachrichtigung, aber nur, wenn dein Ziel für diesen Tag
+dann noch offen ist. Die App plant die nächsten Tage im Voraus und plant neu,
+sobald du ein Training beendest oder die App verlässt. Android kann sie um ein
+paar Minuten verspätet zustellen. Sie wird auf dem Handy selbst geplant, nichts
+wird irgendwohin gesendet. Lehnst du die Erlaubnis für Benachrichtigungen ab,
+bleibt die Erinnerung aus.
 
 # Zeichenstatistik
 

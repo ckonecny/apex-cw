@@ -1269,3 +1269,24 @@ achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
   (hiding returns to home) and the general settings (the way back); it is
   `practice.enabled`, so it also stops recording.
 - Week dots: filled = met, dashed-in-ring = grace day, ring = open/missed.
+
+## 2026-10-03: Reminder (issue #32, part of #3)
+- **Own native implementation instead of `flutter_local_notifications`.** The
+  package needs core library desugaring (`desugar_jdk_libs`, GPL-2.0 with
+  Classpath Exception) in Gradle; per rule 11 that was put to the user, who
+  chose "no new library". `Reminder.kt`: AlarmManager + broadcast receiver +
+  notification, ~80 lines, no new licence.
+- **Scheduling:** Dart (`util/reminder.dart`) computes the next 7 fire times at
+  the chosen time of day, skipping today's if the goal of the current practice
+  day is already met, and hands them with the text to native. Native stores
+  them, arms one inexact alarm (`setAndAllowWhileIdle`, no exact-alarm
+  permission, may be a few minutes late) for the earliest, shows the
+  notification, arms the next. Boot receiver re-arms after reboot.
+- **Re-planning** (`Reminder.refresh`): at app start, when the last training
+  screen is left or the app goes to the background (`PracticeClock.onIdle`),
+  and after changing reminder/goal/show settings. If the goal is met after the
+  app is killed without a pause, that day's reminder may still fire (accepted).
+  Text is stored in the language of the last refresh.
+- Off by default; `POST_NOTIFICATIONS` is requested only when switching on
+  (refusal keeps it off). Off with the goal feature (`practice.enabled`).
+- Notification: dit-dah status icon, friendly text, no streak threats.

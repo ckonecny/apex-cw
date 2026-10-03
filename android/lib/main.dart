@@ -6,6 +6,7 @@ import 'l10n/strings.dart';
 import 'licenses.dart';
 import 'util/interference_profile.dart';
 import 'util/practice_clock.dart';
+import 'util/reminder.dart';
 import 'ui/home_screen.dart';
 import 'ui/widgets/app_ui.dart';
 
@@ -19,6 +20,8 @@ void main() async {
   registerAppLicenses();
   InterferenceProfile.pushSaved();
   await PracticeClock.instance.init();
+  PracticeClock.instance.onIdle = Reminder.refresh;
+  Reminder.refresh();
   runApp(const NextCwTrainerApp());
 }
 

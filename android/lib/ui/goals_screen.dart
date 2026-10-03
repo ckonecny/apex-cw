@@ -4,6 +4,7 @@ import '../content/daily_goal.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/practice_clock.dart';
+import '../util/reminder.dart';
 import 'daily_goal_card.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/setting_rows.dart';
@@ -86,20 +87,43 @@ class GoalSettingsScreen extends StatefulWidget {
 class _GoalSettingsScreenState extends State<GoalSettingsScreen> {
   DailyGoalSettings _s = DailyGoalSettings();
   SharedPreferences? _p;
+  bool _remOn = false;
+  int _remMin = Reminder.defaultMinutes;
 
   @override
   void initState() {
     super.initState();
     SharedPreferences.getInstance().then((p) async {
       final s = await DailyGoalSettings.load(p);
-      if (mounted) setState(() { _p = p; _s = s; });
+      final on = await Reminder.isOn();
+      final m = await Reminder.minutes();
+      if (mounted) setState(() { _p = p; _s = s; _remOn = on; _remMin = m; });
     });
+  }
+
+  Future<void> _setReminder(bool v) async {
+    final on = await Reminder.setOn(v);
+    if (!mounted) return;
+    setState(() => _remOn = on);
+    if (v && !on) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(Strings.t('reminder_denied'))));
+    }
+  }
+
+  Future<void> _pickTime() async {
+    final t = await showTimePicker(context: context,
+        initialTime: TimeOfDay(hour: _remMin ~/ 60, minute: _remMin % 60));
+    if (t == null || !mounted) return;
+    setState(() => _remMin = t.hour * 60 + t.minute);
+    await Reminder.setMinutes(_remMin);
   }
 
   Future<void> _setShow(bool v) async {
     final p = _p;
     if (p == null) return;
     await PracticeClock.instance.log.setEnabled(p, v);
+    Reminder.refresh();
     if (!mounted) return;
     // Hidden: nothing left to look at here, back to the start page.
     if (!v) {
@@ -132,7 +156,7 @@ class _GoalSettingsScreenState extends State<GoalSettingsScreen> {
             selected: kGoalChoices.indexOf(_s.minutes),
             onChanged: (i) {
               setState(() => _s.minutes = kGoalChoices[i]);
-              if (_p != null) _s.save(_p!);
+              if (_p != null) _s.save(_p!).then((_) => Reminder.refresh());
             },
           ),
           const SettingsDivider(),
@@ -142,6 +166,28 @@ class _GoalSettingsScreenState extends State<GoalSettingsScreen> {
                 if (_p != null) _s.save(_p!);
               }),
           desc('goal_grace_desc'),
+        ]),
+        const SizedBox(height: 24),
+        SettingsCard(children: [
+          ToggleRow(label: Strings.t('reminder_label'), value: _remOn, onChanged: _setReminder),
+          if (_remOn) ...[
+            const SettingsDivider(),
+            InkWell(
+              onTap: _pickTime,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Row(children: [
+                  Text(Strings.t('reminder_time'), style: TextStyle(
+                      fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary)),
+                  const Spacer(),
+                  Text('${(_remMin ~/ 60).toString().padLeft(2, '0')}:'
+                      '${(_remMin % 60).toString().padLeft(2, '0')}',
+                      style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent)),
+                ]),
+              ),
+            ),
+          ],
+          desc('reminder_desc'),
         ]),
         const SizedBox(height: 24),
         SettingsCard(children: [

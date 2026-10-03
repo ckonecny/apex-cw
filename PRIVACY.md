@@ -30,6 +30,12 @@ nur, während du ihn benutzt. Das Audiosignal wird direkt auf dem Gerät
 ausgewertet, um Morsezeichen zu erkennen. Es wird weder gespeichert noch
 übertragen.
 
+### Benachrichtigungen
+Die Berechtigung „Benachrichtigungen“ wird nur angefragt, wenn du die
+optionale **Erinnerung** einschaltest. Sie wird lokal auf dem Gerät geplant;
+dafür wird nichts übertragen. Zusätzlich darf die App nach einem Neustart die
+Erinnerung wieder einplanen.
+
 ### Internet
 Die Berechtigung „Internet“ wird nur für **WiFi Trx** verwendet: Die App
 sendet und empfängt Morsezeichen per UDP an bzw. von dem Server, den du
@@ -75,6 +81,11 @@ no access to it.
 The microphone permission is used only by the **CW Decoder**, and only while
 you use it. The audio is analysed on the device to recognise Morse code. It
 is neither stored nor transmitted.
+
+### Notifications
+The notification permission is requested only when you switch on the optional
+**reminder**. It is scheduled locally on the device; nothing is transmitted.
+The app may also re-schedule the reminder after a restart of the phone.
 
 ### Internet
 The internet permission is used only by **WiFi Trx**: the app sends and

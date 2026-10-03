@@ -986,7 +986,15 @@ The gear icon opens its settings:
 |---|---|---|
 | Daily goal | Minutes of active practice per day | 5 / **10** / 15 / 20 / 30 / 60 min |
 | One free day per week | Bridges one missed day per week | **On** / Off |
+| Reminder | A notification at the chosen time, only if your goal is still open then. The app asks for the notification permission when you switch it on | **Off** / On, time (**19:00**) |
 | Show daily goal and achievements | Hides the card and stops recording. The data is kept; switch it on again here or under **Settings → General** | **On** / Off |
+
+**Reminder.** Optional and off by default. At the chosen time you get a
+friendly notification, but only if your goal for that day is still open. The
+app plans the next days in advance and re-plans whenever you finish a training
+or leave the app. Android may deliver it a few minutes late. It is scheduled on
+the phone itself, nothing is sent anywhere. If you refuse the notification
+permission, the reminder stays off.
 
 # Character statistics
 
