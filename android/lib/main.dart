@@ -4,6 +4,7 @@ import 'theme/app_colors.dart';
 import 'theme/theme_controller.dart';
 import 'l10n/strings.dart';
 import 'licenses.dart';
+import 'util/bluetooth_hint.dart';
 import 'util/interference_profile.dart';
 import 'util/practice_clock.dart';
 import 'util/reminder.dart';
@@ -25,6 +26,7 @@ void main() async {
   Reminder.refresh();
   runApp(const NextCwTrainerApp());
   ShareIntake.init();
+  BluetoothHint.init();
 }
 
 class NextCwTrainerApp extends StatelessWidget {

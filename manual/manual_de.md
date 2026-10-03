@@ -136,6 +136,12 @@ Nachbarstation üben kannst, steht unter [Störungen](#stoerungen).
 Bluetooth-Kopfhörer haben meist eine deutliche Verzögerung. Zum Hören ist das
 egal, beim Geben stört es: Du hörst deinen Mithörton spürbar später, als du
 tastest. Zum Geben sind ein Kabelkopfhörer oder der Lautsprecher besser.
+Überall, wo die Tasten (Dit/Dah oder Handtaste) eingeblendet sind, weist dich
+eine kleine Zeile über den Tasten darauf hin, solange der Ton über Bluetooth
+läuft. Tippst du auf die Zeile, öffnen sich die Einstellungen direkt bei der
+Audioausgabe, sodass du gleich umschalten kannst. Mit dem X schließt du sie bis
+zum nächsten App-Start; dauerhaft
+schaltest du sie in den Einstellungen unter [Audioausgabe](#audioausgabe) aus.
 
 # Grundlagen
 
@@ -2086,6 +2092,7 @@ Pausen zugelassen.
 |---|---|---|
 | Aktiv | Zeigt, wohin der Ton gerade geht | – |
 | Ausgabe | **Automatisch** folgt dem, was gerade angesteckt oder verbunden ist. Die anderen Optionen legen die Ausgabe fest. Es werden nur Ausgaben angeboten, die gerade verfügbar sind | **Automatisch** / Lautsprecher / Kabel/USB / Bluetooth |
+| Bluetooth-Hinweis beim Geben | Zeigt über den Tasten einen Hinweis, wenn der Ton über Bluetooth läuft (Verzögerung ca. 100–250 ms) | an (Standard) / aus |
 
 ## Rufzeichen
 

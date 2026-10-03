@@ -4,6 +4,8 @@
 import 'package:flutter/material.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
+import '../../util/bluetooth_hint.dart';
+import '../settings_screen.dart';
 
 class IambicPaddles extends StatelessWidget {
   final VoidCallback onDitDown, onDitUp, onDahDown, onDahUp;
@@ -13,16 +15,19 @@ class IambicPaddles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: Row(children: [
-      Expanded(child: PaddleButton(label: 'DIT  ·',
-          color: c.accent, onDown: onDitDown, onUp: onDitUp)),
-      const SizedBox(width: 12),
-      Expanded(child: PaddleButton(label: 'DAH  —',
-          color: c.warning, onDown: onDahDown, onUp: onDahUp)),
-    ]),
-  );
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      const BluetoothLatencyHint(),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(children: [
+          Expanded(child: PaddleButton(label: 'DIT  ·',
+              color: c.accent, onDown: onDitDown, onUp: onDitUp)),
+          const SizedBox(width: 12),
+          Expanded(child: PaddleButton(label: 'DAH  —',
+              color: c.warning, onDown: onDahDown, onUp: onDahUp)),
+        ]),
+      ),
+    ]);
   }
 }
 
@@ -44,7 +49,9 @@ class _StraightKeyPaddleState extends State<StraightKeyPaddle> {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final color = c.info;
-    return Padding(
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      const BluetoothLatencyHint(),
+      Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Listener(
         onPointerDown: (_) { setState(() => _pressed = true);  widget.onDown(); },
@@ -63,6 +70,52 @@ class _StraightKeyPaddleState extends State<StraightKeyPaddle> {
                   color: color.withValues(alpha: _pressed ? 1.0 : 0.75)))),
         ),
       ),
+    ),
+    ]);
+  }
+}
+
+// One-line warning above the paddles while the sidetone plays over Bluetooth:
+// its 100–250 ms delay can't be calibrated away and disturbs your rhythm when
+// keying. Hidden when switched off in Settings or closed for this app run.
+class BluetoothLatencyHint extends StatelessWidget {
+  const BluetoothLatencyHint({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return ListenableBuilder(
+      listenable: Listenable.merge([BluetoothHint.bluetoothActive,
+          BluetoothHint.enabled, BluetoothHint.dismissed]),
+      builder: (context, _) {
+        if (!BluetoothHint.bluetoothActive.value || !BluetoothHint.enabled.value
+            || BluetoothHint.dismissed.value) {
+          return const SizedBox.shrink();
+        }
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
+          child: Row(children: [
+            Expanded(child: InkWell(
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const SettingsScreen(scrollToAudio: true))),
+              child: Row(children: [
+                Icon(Icons.bluetooth_audio, size: 14, color: c.warning),
+                const SizedBox(width: 6),
+                Expanded(child: Text(Strings.t('bt_latency_hint'),
+                    style: TextStyle(fontSize: 11, color: c.warning))),
+                Icon(Icons.settings, size: 14, color: c.textFaint),
+              ]),
+            )),
+            InkWell(
+              onTap: () => BluetoothHint.dismissed.value = true,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Icon(Icons.close, size: 14, color: c.textFaint),
+              ),
+            ),
+          ]),
+        );
+      },
     );
   }
 }

@@ -99,6 +99,8 @@ class Strings {
     'opt_audio_speaker': ['Lautsprecher', 'Speaker'],
     'opt_audio_wired': ['Kabel/USB', 'Wired/USB'],
     'opt_audio_bluetooth': ['Bluetooth', 'Bluetooth'],
+    'bt_latency_hint': ['Bluetooth verzögert deinen Seitenton (ca. 100–250 ms). Zum Geben besser Kabel oder USB – tippen für die Audioausgabe.', 'Bluetooth delays your sidetone (about 100–250 ms). For keying, use a cable or USB – tap for audio output.'],
+    'settings_bt_latency_hint': ['Bluetooth-Hinweis beim Geben', 'Bluetooth hint when keying'],
     'settings_group_length': ['Gruppenlänge', 'Group length'],
     'settings_max_word_length': ['Max. Wortlänge', 'Max word length'],
     'settings_max_abbrev_length': ['Max. Abkürzungslänge', 'Max abbreviation length'],
