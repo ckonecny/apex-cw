@@ -15,10 +15,12 @@ dark, DE+EN), graphics rebuilt; AAB `releases/next-cw-trainer-v1.4.0.aab` (store
 1. User: developer account (identity check passed).
 2. Upload the AAB; closed test: 12 testers × 14 days.
 3. Production.
-Check the remaining raw shots (`qso`, `games`, `adventure`, `hear`) for the old
-home layout/labels before the upload.
+The v1.4.0 AAB predates daily goal, achievements and the four new games
+(15 commits since the tag): upload a new release, and retake the store raw
+shots `home` and `games` first. Check the remaining ones (`qso`, `adventure`,
+`hear`) for the old home layout/labels too.
 
-## Manual: screenshots not retaken at v1.3.0
+## Manual: screenshots not retaken (since v1.3.0, still so at v1.4.0)
 Screens that show Straight-key-only states (issue #17: `keyer.png` WPM slider
 disabled, `echo_result*.png` Geben row disabled, `qso.png`, `adv_settings*.png`/
 tempo sheet measured row) still show the other keyer modes and stay valid; add
@@ -29,10 +31,11 @@ phone's own data was restored afterwards.
 
 ## Manual: pending for next release
 - Own texts (#24): text only (Share menu), no new screenshot needed.
-- New: Radio Cave (#14): `rc_lobby.png` DE+EN, `games.png` (now eight cards incl. #13, #15), and the games overview text.
+- New: Radio Cave (#14): `rc_lobby.png` DE+EN.
+- `games.png` (DE+EN): now eight cards (#13, #14, #15), plus the games overview text.
 - `home.png` (DE+EN): daily goal card at the top (#31).
-- New (#13): `tb_lobby.png` (DE+EN), the Trailblazer lobby; the games hub list (`games.png`) shows two more cards.
-- New: Fight the Pileup (#15): `pu_lobby.png` DE+EN (manual section has no image yet), `games.png` (fifth game card).
+- New (#13): `tb_lobby.png` (DE+EN), the Trailblazer lobby.
+- New: Fight the Pileup (#15): `pu_lobby.png` DE+EN (manual section has no image yet).
 - New: achievements page and its settings incl. sessions, reminder and awards (#31–#34); `settings1.png`: new switch in General.
 
 ## Hints for the next session
