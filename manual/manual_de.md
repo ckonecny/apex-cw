@@ -1016,6 +1016,12 @@ Minuten und darunter die **Auszeichnungen** (siehe unten). Das Zahnrad öffnet d
 | Erinnerung | Eine Benachrichtigung zur gewählten Uhrzeit, nur wenn dein Ziel dann noch offen ist. Beim Einschalten fragt die App nach der Erlaubnis für Benachrichtigungen | **Aus** / An, Uhrzeit (**19:00**) |
 | Tagesziel und Erfolge anzeigen | Blendet die Karte aus und stoppt die Aufzeichnung. Die Daten bleiben erhalten; hier oder unter **Einstellungen → Allgemein** wieder einschalten | **An** / Aus |
 
+::: {.shots}
+![Erfolge-Seite: Tagesziel, Woche und Auszeichnungen](img/de/achievements.png)
+
+![Einstellungen der Erfolge](img/de/achievements_settings.png)
+:::
+
 **Wochenrückblick.** Unter Heute und Woche fasst eine kurze Karte eine Woche
 zusammen: Übungszeit, Übungstage, neue Zeichen und Fehlerquote, jeweils mit dem
 Wert der Woche davor in Klammern. Am Sonntag zeigt sie die laufende Woche, an
@@ -1603,6 +1609,10 @@ folgen deinen Rufzeichen-Einstellungen (Region, nur häufige Präfixe). Eine
 Bestenliste gibt es wie in der Firmware nicht. Am Ende siehst du Punkte,
 verteidigte und verlorene Anrufer, Trefferquote und beste Serie.
 
+::: {.shots .one}
+![Fight the Pileup vor dem Start](img/de/pu_lobby.png)
+:::
+
 ## Radio Cave
 
 Ein Text-Adventure in einer verlassenen Funkstation aus dem Kalten Krieg:
@@ -1635,6 +1645,10 @@ getastet**; der Spieltext ist englisch.
 - Tonhöhe, Keyer-Modus und Tempo deines Tastens kommen aus den Einstellungen;
   mit − und + änderst du das Tempo im Spiel. Die Hinweise laufen mit eigenem
   Tempo und fester Tonhöhe von 696 Hz.
+
+::: {.shots .one}
+![Radio Cave vor dem Start](img/de/rc_lobby.png)
+:::
 
 ## Text-Adventure {#text-adventure}
 

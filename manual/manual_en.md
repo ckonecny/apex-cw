@@ -991,6 +991,12 @@ The gear icon opens its settings:
 | Reminder | A notification at the chosen time, only if your goal is still open then. The app asks for the notification permission when you switch it on | **Off** / On, time (**19:00**) |
 | Show daily goal and achievements | Hides the card and stops recording. The data is kept; switch it on again here or under **Settings → General** | **On** / Off |
 
+::: {.shots}
+![Achievements page: daily goal, week and awards](img/en/achievements.png)
+
+![Achievements settings](img/en/achievements_settings.png)
+:::
+
 **Weekly review.** Below Today and This week a short card sums up one week:
 practice time, practice days, new characters and error rate, each with the
 week before in brackets. On Sunday it shows the running week, on every other
@@ -1551,6 +1557,10 @@ your call sign settings (region, common prefixes only). There is no high score
 list, as in the firmware. When the game ends, you see score, defended and
 dropped callers, accuracy and best streak.
 
+::: {.shots .one}
+![Fight the Pileup before the start](img/en/pu_lobby.png)
+:::
+
 ## Radio Cave
 
 A text adventure in an abandoned Cold War radio station: explore twelve
@@ -1581,6 +1591,10 @@ remote station IR7. **Every command is keyed**; the game text is English.
 - Pitch, keyer mode and speed of your keying come from the settings; with − and
   + you change the speed during the game. The clues play at their own speed and
   at a fixed pitch of 696 Hz.
+
+::: {.shots .one}
+![Radio Cave before the start](img/en/rc_lobby.png)
+:::
 
 ## Text adventure {#text-adventure}
 

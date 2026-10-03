@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (public since 2026-09-28, GPL-3.0).
-Latest tagged build: v1.4.0 (2026-10-03, tag `v1.4.0` = commit 3f687f4, interference simulation, "Morse key" wording, GUI fixes #26/#28/#29). Previous: v1.3.0 (2026-10-01); older versions in `docs/STATUS-ARCHIVE.md`.
+Latest tagged build: v1.5.0 (2026-10-03, tag `v1.5.0` = commit 299f683, daily goal and achievements, four new games, share into Own texts #24). Previous: v1.4.0 (2026-10-03); older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/next_cw_trainer (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -11,16 +11,15 @@ only the current state, organisational steps and hints for the next session.
 Done: upload key and signing, privacy policy, store texts and graphics
 (`docs/PLAY-LISTING.md`, `docs/DECISIONS.md` "Play Store preparation"); store
 raw shots home / Hören and Geben statistics retaken for v1.3.0 (2026-10-01,
-dark, DE+EN), graphics rebuilt; AAB `releases/next-cw-trainer-v1.4.0.aab` (store raw shots still from v1.3.0).
+dark, DE+EN), graphics rebuilt; AAB `releases/next-cw-trainer-v1.5.0.aab` (store raw shots still from v1.3.0).
 1. User: developer account (identity check passed).
 2. Upload the AAB; closed test: 12 testers × 14 days.
 3. Production.
-The v1.4.0 AAB predates daily goal, achievements and the four new games
-(15 commits since the tag): upload a new release, and retake the store raw
-shots `home` and `games` first. Check the remaining ones (`qso`, `adventure`,
-`hear`) for the old home layout/labels too.
+The store raw shots `home` and `games` still show the v1.3.0 screens: retake them
+(dark, DE+EN) before uploading the v1.5.0 AAB. Check `qso`, `adventure`, `hear`
+for the old home layout/labels too.
 
-## Manual: screenshots not retaken (since v1.3.0, still so at v1.4.0)
+## Manual: screenshots not retaken (since v1.3.0, still so at v1.5.0)
 Screens that show Straight-key-only states (issue #17: `keyer.png` WPM slider
 disabled, `echo_result*.png` Geben row disabled, `qso.png`, `adv_settings*.png`/
 tempo sheet measured row) still show the other keyer modes and stay valid; add
@@ -30,13 +29,7 @@ shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
 ## Manual: pending for next release
-- Own texts (#24): text only (Share menu), no new screenshot needed.
-- New: Radio Cave (#14): `rc_lobby.png` DE+EN.
-- `games.png` (DE+EN): now eight cards (#13, #14, #15), plus the games overview text.
-- `home.png` (DE+EN): daily goal card at the top (#31).
-- New (#13): `tb_lobby.png` (DE+EN), the Trailblazer lobby.
-- New: Fight the Pileup (#15): `pu_lobby.png` DE+EN (manual section has no image yet).
-- New: achievements page and its settings incl. sessions, reminder and awards (#31–#34); `settings1.png`: new switch in General.
+(empty; the v1.5.0 screenshots were retaken)
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
