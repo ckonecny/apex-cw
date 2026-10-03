@@ -1328,6 +1328,11 @@ newspaper article, a book chapter or a list of call signs. You find it under
 2. In **Own texts**, tap **Paste from clipboard**.
 3. Give the text a title (the first words are suggested) and tap **Add**.
 
+Even quicker: select the text in any app (browser, mail, notes, e-reader), tap
+**Share** and choose **Next CW Trainer**. The app opens **Own texts** with the
+same dialog for the title. The same size limit and character handling apply as
+for pasting.
+
 You can add as many texts as you like. A text can be at most 20,000 characters
 long. The ⋮ menu next to a text renames or deletes it (after asking). You can't
 edit a text in the app: to change one, paste the corrected version. The texts

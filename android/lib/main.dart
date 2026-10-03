@@ -7,6 +7,7 @@ import 'licenses.dart';
 import 'util/interference_profile.dart';
 import 'util/practice_clock.dart';
 import 'util/reminder.dart';
+import 'util/share_intake.dart';
 import 'ui/home_screen.dart';
 import 'ui/widgets/app_ui.dart';
 
@@ -23,6 +24,7 @@ void main() async {
   PracticeClock.instance.onIdle = Reminder.refresh;
   Reminder.refresh();
   runApp(const NextCwTrainerApp());
+  ShareIntake.init();
 }
 
 class NextCwTrainerApp extends StatelessWidget {
@@ -52,6 +54,7 @@ class NextCwTrainerApp extends StatelessWidget {
       builder: (context, _, _) => ValueListenableBuilder<ThemeMode>(
         valueListenable: ThemeController.mode,
         builder: (context, mode, _) => MaterialApp(
+          navigatorKey: ShareIntake.navigatorKey,
           title: 'Next CW Trainer',
           debugShowCheckedModeBanner: false,
           themeMode: mode,

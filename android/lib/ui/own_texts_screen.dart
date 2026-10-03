@@ -1,5 +1,5 @@
-// Own texts (issue #8): the library. Paste a text from the clipboard, open,
-// rename or delete one. The player is own_text_player_screen.dart.
+// Own texts (issue #8): the library. Paste a text from the clipboard (or share
+// one in from another app, #24), open, rename or delete one. The player is own_text_player_screen.dart.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,7 +11,10 @@ import 'own_text_player_screen.dart';
 import 'widgets/app_ui.dart';
 
 class OwnTextsScreen extends StatefulWidget {
-  const OwnTextsScreen({super.key});
+  const OwnTextsScreen({super.key, this.sharedText});
+
+  /// Text shared in from another app: offered for import on open.
+  final String? sharedText;
 
   @override
   State<OwnTextsScreen> createState() => _OwnTextsScreenState();
@@ -25,6 +28,10 @@ class _OwnTextsScreenState extends State<OwnTextsScreen> {
   void initState() {
     super.initState();
     _reload();
+    final shared = widget.sharedText;
+    if (shared != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _import(shared, Strings.t('ot_clip_empty_share')));
+    }
   }
 
   Future<void> _reload() async {
@@ -40,10 +47,15 @@ class _OwnTextsScreenState extends State<OwnTextsScreen> {
 
   Future<void> _paste() async {
     final data = await Clipboard.getData(Clipboard.kTextPlain);
-    final text = data?.text?.trim() ?? '';
+    await _import(data?.text, Strings.t('ot_clip_empty'));
+  }
+
+  /// Checks [raw] (pasted or shared), asks for a title and adds it.
+  Future<void> _import(String? raw, String emptyMsg) async {
+    final text = raw?.trim() ?? '';
     if (!mounted) return;
     if (text.isEmpty) {
-      _snack(Strings.t('ot_clip_empty'));
+      _snack(emptyMsg);
       return;
     }
     if (text.length > maxTextChars) {

@@ -28,6 +28,7 @@ shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
 ## Manual: pending for next release
+- Own texts (#24): text only (Share menu), no new screenshot needed.
 - New: Radio Cave (#14): `rc_lobby.png` DE+EN, `games.png` (now eight cards incl. #13, #15), and the games overview text.
 - `home.png` (DE+EN): daily goal card at the top (#31).
 - New (#13): `tb_lobby.png` (DE+EN), the Trailblazer lobby; the games hub list (`games.png`) shows two more cards.

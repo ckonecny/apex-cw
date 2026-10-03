@@ -1370,6 +1370,11 @@ den Modus unter **Freie Modi**.
 3. Gib dem Text einen Titel (vorgeschlagen werden die ersten Wörter) und
    tippe auf **Hinzufügen**.
 
+Noch schneller: Markiere den Text in einer beliebigen App (Browser, Mail,
+Notizen, E-Book-Reader), tippe auf **Teilen** und wähle **Next CW Trainer**.
+Die App öffnet **Eigene Texte** mit demselben Dialog für den Titel. Es gelten
+dieselbe Längengrenze und dieselbe Zeichenbehandlung wie beim Einfügen.
+
 Du kannst beliebig viele Texte hinzufügen. Ein Text darf höchstens 20 000
 Zeichen lang sein. Über das Menü ⋮ neben einem Text benennst du ihn um oder
 löschst ihn (nach einer Rückfrage). Bearbeiten kannst du einen Text in der App

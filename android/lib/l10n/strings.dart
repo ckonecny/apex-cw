@@ -200,6 +200,7 @@ class Strings {
       'No texts yet. Copy a text to the clipboard (from any app) and tap "Paste from clipboard".'
     ],
     'ot_clip_empty': ['Die Zwischenablage enthält keinen Text.', 'The clipboard has no text.'],
+    'ot_clip_empty_share': ['Der geteilte Text ist leer.', 'The shared text is empty.'],
     'ot_no_morse': ['Im Text steht nichts, was sich morsen lässt.', 'Nothing in the text can be sent in Morse.'],
     'ot_too_long': [
       'Der Text ist zu lang ({n} Zeichen, höchstens {max}).',
