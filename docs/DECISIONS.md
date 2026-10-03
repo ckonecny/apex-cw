@@ -1347,3 +1347,35 @@ achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
   week before. No arrows or judgement, "no ranking, no pressure".
 - Computed from the practice log on opening, nothing stored. Same switch as the
   rest of the feature.
+
+## 2026-10-03: Fight the Pileup (issue #15) — deviations from `MorsePileup.cpp`
+
+- **Scope:** single player only (ESP-NOW lobby, beacons, roster, `/ftp/`
+  packets, winner announcement are not ported). The firmware's "attack" step
+  stays: after a correct defend the pileup pauses and one shown call sign must
+  be keyed for +50; with no other players it only scores (literal 50 in
+  `handleAttackSubmit`).
+- **Rules** are in `lib/content/pileup_engine.dart` with an explicit clock, so
+  they are unit-tested (`test/content/pileup_engine_test.dart`): difficulty
+  table, 3 lives, `dropsPerLife`, timeout counted from activation, queue
+  patience (`queuedSince`, shifted by the attack pause), spawn interval
+  shortening with the streak (cap 20), scores 100 + 10 x streak / -25 / +50.
+- **No call sign / name entry** (firmware `stateNameEntry`, `FTP_CODE_CHALLENGE`
+  entry code): the identity only matters for multiplayer, and the code
+  challenge is the firmware's paddle warm-up. Both are left out.
+- **No high scores:** the firmware keeps none for the pileup (the game-over
+  screen shows the run only), so none are added.
+- **Call signs:** `getRandomCall(0)` via the existing `randomCallInfo`, with
+  the call-sign preferences (region, common only), prefetched 4 deep.
+- **Playback:** the active caller loops through the generator (`playOne`) at
+  the player's keyer speed, pitch x 15/18 (the firmware's attack pitch), gap =
+  word space + 3 dits (`MorseCwEngine` inter-loop gap). The keyer stays on;
+  the first keyed element stops the playback (`stopOne`) and the pitch is put
+  back. Playback resumes when the input is clear and 2 s after a submit.
+- **Auto-submit:** after max(1200 ms, interWord x dit + dit) of silence, as the
+  firmware; additionally a Send button for touch (no encoder click).
+- **Sounds:** the firmware effect durations (15–40 ms) are tripled, they are
+  clicks otherwise on a phone speaker.
+- **Flash text** stays 0.7 s (400 ms in the firmware) and is localised.
+- A wrong answer shows only "WRONG" (the firmware shows `typed!=expected` as a
+  debug aid, which would give the answer away).

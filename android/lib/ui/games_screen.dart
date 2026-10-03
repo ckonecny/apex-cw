@@ -8,6 +8,7 @@ import 'adventure_select_screen.dart';
 import 'invaders_screen.dart';
 import 'memory_chain_screen.dart';
 import 'morsel_screen.dart';
+import 'pileup_screen.dart';
 import 'widgets/app_ui.dart';
 
 class GamesScreen extends StatelessWidget {
@@ -69,6 +70,16 @@ class GamesScreen extends StatelessWidget {
               color: c.warning,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const MemoryChainScreen())),
+            ),
+            const SizedBox(height: 12),
+            HubCard(
+              icon: Icons.cell_tower,
+              title: 'Fight the Pileup',
+              subtitle: Strings.t('pu_subtitle'),
+              hint: Strings.t('pu_hint'),
+              color: c.danger,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const PileupScreen())),
             ),
           ],
         ),

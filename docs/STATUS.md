@@ -29,6 +29,7 @@ phone's own data was restored afterwards.
 
 ## Manual: pending for next release
 - `home.png` (DE+EN): daily goal card at the top (#31).
+- New: Fight the Pileup (#15): `pu_lobby.png` DE+EN (manual section has no image yet), `games.png` (fifth game card).
 - New: achievements page and its settings incl. sessions, reminder and awards (#31–#34); `settings1.png`: new switch in General.
 
 ## In progress: daily goal series (#3)
@@ -38,6 +39,9 @@ a real streak across days is unit-tested only. #32 reminder (d6818bd,
 native, see DECISIONS) is committed. #33 spaced sessions (3b915e1) is
 committed. #34 achievements (05ed4c4) is committed (follow-up #36). #35 weekly
 review implemented, not committed; it closes the series #3.
+
+## Next game port
+Radio Cave (#14). Branches `feature/maze-games` and `feature/pileup` are neither pushed nor merged (expect small conflicts in `games_screen.dart` and `home_games_subtitle`).
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

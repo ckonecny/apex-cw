@@ -845,3 +845,6 @@ installed on the connected phone.
 
 ## v1.4.0 release (2026-10-03)
 Version 1.4.0+4, tag `v1.4.0` (3f687f4). Manual HTML/PDF built; screenshots retaken (DE+EN) for the interference icon, "Morse key" wording, #26/#28/#29 (home, free modes, games, Listen/Send flows, statistics, QSO, WiFi, own player, tree, settings, adventure game/settings). Adventure map shots unchanged (app bar not affected); Adventure game shot shows a short new game (keying long commands over adb is unreliable).
+
+## 2026-10-03: Fight the Pileup (#15)
+Single-player port on branch `feature/pileup`: `pileup_engine.dart` (unit-tested rules), `pileup_screen.dart`, hub card, manual DE+EN. Deviations in DECISIONS.md. User-tested OK.
