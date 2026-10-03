@@ -195,6 +195,12 @@ Java_at_oe1cko_nextcwtrainer_CwAudioNative_setAmbient(JNIEnv*, jclass, jboolean 
 }
 
 JNIEXPORT void JNICALL
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_setClean(JNIEnv*, jclass, jboolean on)
+{
+    gInterference.setClean(on);
+}
+
+JNIEXPORT void JNICALL
 Java_at_oe1cko_nextcwtrainer_CwAudioNative_stopStream(JNIEnv*, jclass)
 {
     if (gStream) {

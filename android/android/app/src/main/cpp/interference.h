@@ -51,6 +51,10 @@ public:
     // tone gets QSB, filter and drift; the own sidetone stays clean.
     void setAmbient(bool on) { mAmbient.store(on, std::memory_order_release); }
 
+    // Trainer signals (echo confirmation tone): the tone passes the limiter
+    // untouched, only the noise bed is limited, so the tone is not distorted.
+    void setClean(bool on) { mClean.store(on, std::memory_order_release); }
+
     // Once per audio block. `fc` = centre of the receiver filter (the sidetone
     // pitch), `vol` = tone volume (noise level is relative to it).
     void beginBlock(double sampleRate, double fc, float vol, int numFrames) {
@@ -179,6 +183,10 @@ public:
         const float bed = mOutGain * mBedLevel * static_cast<float>(
             mNoise2.run(mNoise1.run(noiseIn)) + qrmSample());
         const float toneRx = static_cast<float>(mTone.run(tone * mQsbGain));
+        if (mClean.load(std::memory_order_relaxed)) {
+            const float y = tone + 0.3f * std::tanh(bed * (1.0f / 0.3f));
+            return y > 1.0f ? 1.0f : (y < -1.0f ? -1.0f : y);
+        }
         float out = tone * (1.0f - mLevel) + mLevel * mOutGain * toneRx + bed;
         return 0.95f * std::tanh(out * (1.0f / 0.95f));   // soft limiter, no hard clipping
     }
@@ -248,7 +256,7 @@ private:
     }
 
     std::atomic<float> mNoise{0}, mQrm{0}, mQsb{0}, mDrift{0}, mFilter{0}, mColor{0.5f};
-    std::atomic<bool>  mRx{false}, mAmbient{false};
+    std::atomic<bool>  mRx{false}, mAmbient{false}, mClean{false};
 
     // callback-thread state
     uint32_t mSeed = 0x9E3779B9u;
