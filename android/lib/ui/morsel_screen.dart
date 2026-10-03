@@ -6,6 +6,7 @@
 // prosign deletes the last letter. A wrong guess replays the word 5 WPM
 // slower (48 down to 18). Ten words per game; the score is the total time
 // plus 5 s per guess and 60 s per skipped word.
+import '../util/interference_profile.dart';
 import 'widgets/interference_button.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -139,6 +140,7 @@ class _MorselScreenState extends State<MorselScreen> {
 
   @override
   void dispose() {
+    InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
     _gen++;
     _submitTimer?.cancel();
@@ -247,6 +249,8 @@ class _MorselScreenState extends State<MorselScreen> {
     _poolWarning = false;
     _idleTimer?.cancel();
     _idleTimer = Timer.periodic(const Duration(milliseconds: 250), (_) => _idleTick());
+    // The noise stands for the whole game, until the results.
+    InterferenceProfile.requestAmbient(this);
     setState(() => _phase = _Phase.playing);
     _startRound();
   }
@@ -441,6 +445,7 @@ class _MorselScreenState extends State<MorselScreen> {
   }
 
   void _endPlay() {
+    InterferenceProfile.releaseAmbient(this);
     _gen++;
     _submitTimer?.cancel();
     _idleTimer?.cancel();

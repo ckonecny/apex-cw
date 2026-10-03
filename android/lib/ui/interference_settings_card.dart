@@ -249,6 +249,19 @@ class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
                 ),
               ),
               const SettingsDivider(),
+              ToggleRow(
+                label: Strings.t('interf_ambient'),
+                value: _p.ambient,
+                onChanged: (v) => _apply(_p.copyWith(ambient: v)),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                child: Text(
+                  Strings.t('interf_ambient_desc'),
+                  style: TextStyle(fontSize: 12, color: c.textMuted),
+                ),
+              ),
+              const SettingsDivider(),
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: OutlinedButton.icon(

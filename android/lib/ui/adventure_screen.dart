@@ -22,6 +22,7 @@ import '../content/training_profile.dart';
 import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
+import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
 import '../zmachine/zmachine.dart';
 import 'adventure_map_screen.dart';
@@ -168,12 +169,14 @@ class _AdventureScreenState extends State<AdventureScreen> {
   @override
   void initState() {
     super.initState();
+    InterferenceProfile.requestAmbient(this);
     KeepScreenOn.enable();
     _init();
   }
 
   @override
   void dispose() {
+    InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
     _genSub?.cancel();
     _symSub?.cancel();

@@ -1,3 +1,4 @@
+import '../util/interference_profile.dart';
 import 'widgets/interference_button.dart';
 import 'dart:async';
 import 'dart:math';
@@ -604,6 +605,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   @override
   void dispose() {
+    InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
     _silenceTimer?.cancel();
     _genSub?.cancel();
@@ -653,6 +655,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   Future<void> _startSession() async {
     if (_state != _State.idle) return;   // guard against a double-tap racing two sessions
+    // The noise stands for the whole block, also while keying, until the result page.
+    InterferenceProfile.requestAmbient(this);
     _correct = 0; _total = 0; _wordCounter = 0;
     _blockResults.clear();
     _blockPairs.clear();
@@ -695,6 +699,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   }
 
   void _stopSession() {
+    InterferenceProfile.releaseAmbient(this);
     _sessionActive = false;
     _preparing = false;
     _silenceTimer?.cancel();
@@ -886,6 +891,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<void> _advance() async {
     _wordCounter++;
     if (_wordCounter >= _blockSize) {
+      InterferenceProfile.releaseAmbient(this);
       await _computeSuggestions();
       if (mounted) {
         setState(() {

@@ -25,6 +25,7 @@ import 'widgets/char_playback_overlay.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import '../util/char_color.dart';
+import '../util/interference_profile.dart';
 import '../l10n/strings.dart';
 
 part 'adaptive_copy_body_views.dart';
@@ -280,6 +281,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
 
   @override
   void dispose() {
+    InterferenceProfile.releaseAmbient(this);
     _sessionActive = false;
     _checkTimer?.cancel();
     _completeSubmit(null);
@@ -316,6 +318,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _pauseGate!.complete();
       _pauseGate = null;
     }
+    InterferenceProfile.releaseAmbient(this);
     if (mounted) setState(() { _phase = _Phase.idle; _paused = false; });
     widget.onActiveChanged?.call(false);
   }
@@ -468,6 +471,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final activeInterWord = interWordSpace ?? widget.interWordSpace;
     final wasIdle = _phase == _Phase.idle;
     _sessionActive = true;
+    // The noise stands for the whole block, until the result is revealed.
+    InterferenceProfile.requestAmbient(this);
     setState(() {
       _phase = _Phase.sending;
       _preparing = true;
@@ -602,6 +607,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   }
 
   void _revealBlock() {
+    InterferenceProfile.releaseAmbient(this);
     if (_typing) widget.onKeyboardChanged?.call(false);
     if (mounted) setState(() => _phase = _Phase.revealed);
   }

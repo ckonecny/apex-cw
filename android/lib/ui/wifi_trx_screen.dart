@@ -13,6 +13,7 @@ import 'widgets/training_settings_sheet.dart';
 import '../net/mopp_client.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
+import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
 
 /// WiFi Trx: send/receive Morse over UDP (MOPP) to a server such as
@@ -134,6 +135,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     _wpmSub?.cancel();
     _genSub?.cancel();
     _rxSub?.cancel();
+    InterferenceProfile.releaseAmbient(this);
     _client.close();
     _genChannel.invokeMethod('stop');   // also restarts the keyer …
     _keyerChannel.invokeMethod('stop'); // … which we then stop, like KeyerScreen
@@ -153,6 +155,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
       setState(() {
         _connected = true;
         _connecting = false;
+        InterferenceProfile.requestAmbient(this);
         _status = Strings.t('trx_connected_to')
             .replaceFirst('{peer}', '${_client.peerLabel}:${MoppClient.port}');
       });
@@ -166,6 +169,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     _encoder.reset();
     _playQueue.clear();
     await _client.close();
+    InterferenceProfile.releaseAmbient(this);
     if (mounted) setState(() { _connected = false; _status = Strings.t('trx_disconnected'); });
   }
 
@@ -207,6 +211,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     final t = p.text;
     _append(true, t);
     if (t.toLowerCase().startsWith(':bye')) {
+      InterferenceProfile.releaseAmbient(this);
       setState(() { _connected = false; _status = Strings.t('trx_server_closed'); });
       _client.close();
       return;

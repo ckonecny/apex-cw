@@ -41,11 +41,12 @@ void main() {
     expect(d.enabled, isFalse);
     expect(d.filter, 50);
     expect(d.color, 50);
+    expect(d.ambient, isFalse);
     const p = InterferenceProfile(
-        enabled: true, preset: 3, noise: 55, qrm: 60, qsb: 35, drift: 15, jitter: 30, filter: 60, color: 40);
+        enabled: true, preset: 3, noise: 55, qrm: 60, qsb: 35, drift: 15, jitter: 30, filter: 60, color: 40, ambient: true);
     await p.save();
     final r = await InterferenceProfile.load();
-    expect([r.enabled, r.preset, r.noise, r.qrm, r.qsb, r.drift, r.jitter, r.filter, r.color],
-        [true, 3, 55, 60, 35, 15, 30, 60, 40]);
+    expect([r.enabled, r.preset, r.noise, r.qrm, r.qsb, r.drift, r.jitter, r.filter, r.color, r.ambient],
+        [true, 3, 55, 60, 35, 15, 30, 60, 40, true]);
   });
 }
