@@ -11,6 +11,7 @@ import '../theme/app_colors.dart';
 import '../util/char_color.dart';
 import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
+import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'widgets/interference_button.dart';
@@ -90,6 +91,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
     super.initState();
     InterferenceProfile.requestAmbient(this);
     KeepScreenOn.enable();
+    PracticeClock.instance.enter('hear');
     _decoder = MorseDecoder(onChar: _onDecodedChar);
     _init();
   }
@@ -121,7 +123,10 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
     await _toneChannel.invokeMethod('setEnvelopeMs', (_toneSoftness + 1).toDouble()).catchError((_) {});
 
     _genSub = cwGenEvents.listen(_onGenEvent);
-    _symbolSub = _symbolStream.receiveBroadcastStream().listen(_onSymbol);
+    _symbolSub = _symbolStream.receiveBroadcastStream().listen((s) {
+      PracticeClock.instance.touch();
+      _onSymbol(s);
+    });
     _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
       if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
     });
@@ -133,6 +138,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
   void dispose() {
     InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
+    PracticeClock.instance.leave();
     _active = false;
     _timer?.cancel();
     _genSub?.cancel();

@@ -1211,3 +1211,139 @@ Wish: the noise should not only sound while the other station is played but stan
 
 ## 2026-10-02: "Paddle" becomes "Morse key" in all user-visible text (issue #25)
 EN generic term "Morse key", DE "Morsetaste" (matches the home screen subtitle). Where the two sides of the keyer must be told apart: "dit key" / "dah key" (DE "Dit-Taste" / "Dah-Taste", "linke/rechte Taste"), not "lever/Hebel" and not "paddle". The single-lever key stays "straight key" / "Handtaste". On-screen: "touch keyer" / "Touch-Keyer". Manual heading "Paddle und Morsetaste" is now "Morsetaste" (anchor `#morsetaste` / `#morse-key`), "Learning the paddle keys" is "Learning the dit and dah keys". Settings section header: "vband Morse Key". Internal identifiers (`paddle_widgets.dart`, string keys like `ac_paddle_hint`, native method names `setPaddleChoice`, `startLearnPaddle`, ...) are deliberately **not** renamed: not user-visible, and the Dart/Kotlin channel names must change together (rule 2); a rename would be its own change.
+
+## 2026-10-03: Practice log (issue #30, part of #3)
+Foundation for the daily goal / streak (#31), spaced sessions (#33) and the
+achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
+(models, JSON, storage), `util/practice_clock.dart` (the clock), tests in
+`test/practice_clock_test.dart`.
+- **Active time, not screen time.** The clock runs only while a training
+  screen is open (`PracticeClock.enter(mode)` / `leave()`, placed next to the
+  `KeepScreenOn` calls), the app is in the foreground, and the user is active:
+  a touch (global pointer route) or a key symbol within 20 s, or audio playing
+  (`audioPlaying`, set by Hören and Eigene Texte; each start also touches, so
+  the short gaps between words don't break it). One tick per second, a step is
+  at most 2 s (a sleeping device must not credit the gap).
+- **Counted modes:** Hören (`hear`: generator, adaptive copy, character
+  practice), Geben (`echo`), games (`game`), adventure, QSO bot, own texts,
+  Morse key (`keyer`). **Not counted:** CW decoder and WiFi Trx (tools, not
+  training), reference screens (chart, tree).
+- **Sessions:** a session ends after 5 min without credited time. Stored as
+  `{start ms, seconds, first mode}`, the last 300 kept. Per day: seconds,
+  sessions started, sessions that reached 5 min ("long", for #33).
+- **Day = 04:00 to 04:00 local time** (`practiceDayKey`), so practice after
+  midnight counts for the evening before. The per-character statistics keep
+  plain calendar days; the two are not mixed in one figure.
+- **Milestones** `{day, kind, value}`: `koch.hear|echo` (character count, only
+  when an adaptive unlock suggestion is accepted — not when the level is set by
+  hand, so exploring doesn't count) and `wpm.hear|echo` (records only, accepted
+  speed suggestions). Identical kind+value is logged once; two Koch charsets
+  with the same count therefore share one entry (accepted). Counting starts
+  with this version, no back-fill.
+- **Off switch:** `practice.enabled` (default on; the settings UI comes with
+  #31/#34, in the general settings). While off nothing is recorded or
+  logged; stored data is kept (`reset` keeps the flag too). When switched on
+  again the streak has a gap for the time off.
+- **Storage:** SharedPreferences `practice.days|sessions|milestones` (JSON),
+  saved every 30 s of credited time, on leaving the screen and when the app
+  goes to the background. Local only; PRIVACY.md already covers it
+  ("Trainingsfortschritt, Statistiken").
+- **Known limit:** Bluetooth/paddle key presses count as activity only on the
+  screens that listen to the symbol stream (echo, keyer, adventure, character
+  practice, games); QSO bot and memory chain rely on touches and playback.
+
+## 2026-10-03: Daily goal and streak (issue #31, part of #3)
+- **Logic** in `content/daily_goal.dart` (pure Dart, tested): goal 5/10/15/20/30/60
+  min (default 10, `goal.minutes`), grace day on/off (`goal.grace`, default on).
+- **Streak:** consecutive practice days (04:00 rollover) with seconds ≥ goal.
+  Today never breaks it while open; once met it adds one. A missed day is
+  bridged by the grace day, once per Mon–Sun week, only if an older goal day
+  follows (a leading miss is not counted); never before the first logged day.
+  Frozen days add nothing. A second miss in a week ends the streak.
+- **Home card** on top, tap opens `GoalsScreen` (minimal until #34: today, week,
+  gear → `GoalSettingsScreen`). Layout: tiles share the height as before; the
+  card is full (100·scale, scale floored at 1 because the ring doesn't shrink),
+  compact (56·scale) when the full one would not fit, and only then the page
+  scrolls. Hidden entirely when `practice.enabled` is off.
+- **Switch** "Show daily goal and achievements" in both the goal settings
+  (hiding returns to home) and the general settings (the way back); it is
+  `practice.enabled`, so it also stops recording.
+- Week dots: filled = met, dashed-in-ring = grace day, ring = open/missed.
+
+## 2026-10-03: Reminder (issue #32, part of #3)
+- **Own native implementation instead of `flutter_local_notifications`.** The
+  package needs core library desugaring (`desugar_jdk_libs`, GPL-2.0 with
+  Classpath Exception) in Gradle; per rule 11 that was put to the user, who
+  chose "no new library". `Reminder.kt`: AlarmManager + broadcast receiver +
+  notification, ~80 lines, no new licence.
+- **Scheduling:** Dart (`util/reminder.dart`) computes the next 7 fire times at
+  the chosen time of day, skipping today's if the goal of the current practice
+  day is already met, and hands them with the text to native. Native stores
+  them, arms one inexact alarm (`setAndAllowWhileIdle`, no exact-alarm
+  permission, may be a few minutes late) for the earliest, shows the
+  notification, arms the next. Boot receiver re-arms after reboot.
+- **Re-planning** (`Reminder.refresh`): at app start, when the last training
+  screen is left or the app goes to the background (`PracticeClock.onIdle`),
+  and after changing reminder/goal/show settings. If the goal is met after the
+  app is killed without a pause, that day's reminder may still fire (accepted).
+  Text is stored in the language of the last refresh.
+- Off by default; `POST_NOTIFICATIONS` is requested only when switching on
+  (refusal keeps it off). Off with the goal feature (`practice.enabled`).
+- Notification: dit-dah status icon, friendly text, no streak threats.
+
+## 2026-10-03: Spaced sessions (issue #33, part of #3)
+
+- **Setting** `goal.sessions` = 0 (off, default) / 3 / 5. Not a separate goal:
+  the day is met when the minutes goal is reached **and** that many sessions
+  counted. This keeps one number per day for streak, week dots and reminder
+  (`GoalStatus.met`).
+- **A session counts** (`countedSessions`) if it has at least
+  `kLongSessionSeconds` (5 min) and starts at least `kSessionPause` (15 min)
+  after the end of the previous *counted* one. Sessions that are too close are
+  skipped, not merged: their time still adds to the total.
+- **Session end** is now stored (`PracticeSession.end`, JSON key `e`, set at
+  every credited step) because pauses of up to 5 min inside a session make
+  start + seconds too early. Old entries without it fall back to start + seconds.
+- **Past days** need their session entries. The log keeps 300 sessions; a past
+  day without entries counts by time alone, so old days stay valid.
+- **Card:** ring shows counted sessions ("1 of 3") and the arc is the lesser of
+  time and session progress; subtitle names when the next session counts. The
+  "next in N min" text updates when the card is rebuilt, not by a timer.
+
+## 2026-10-03: Achievements (issue #34, part of #3)
+
+- **Computed, not stored.** `achievements(log)` derives all ten from the
+  practice log each time the page opens (no per-award state), so a changed rule
+  applies to the whole history. Each award keeps every day the rule was met
+  (`Achievement.days`); the list shows the first, a tap opens a sheet with the
+  meaning, first, last and count. What is counted: characters, weeks with 3,
+  4-week runs, days, 5-day sets, weeks, 3-block runs, blocks, records,
+  comebacks (a run or set is counted once when reached). Shown on the Achievements page below today/week; no pop-ups.
+- **New data:** `PracticeLog.blocks` (`practice.blocks`, max 200): day, track,
+  correct share in permille, whether the interference simulation was on
+  (`interfOn`). Written next to `BlockHistory.record` in Listen and Send via
+  `PracticeClock.block`; off while the feature is off. Block awards therefore
+  start with blocks played after this change.
+- **Rules:** new character = Koch milestones (#30); "three in a week" counts per
+  training and week, the better one counts; weekly series needs 4 consecutive
+  Mon–Sun weeks; spread day = 3 counted sessions (`countedSessions`, #33)
+  independent of the setting; better week = lower mean error than the week before,
+  both with at least 3 blocks (Listen and Send mixed); under 5 % three blocks in a
+  row; interference = flag on and under 10 % errors; speed = any WPM record;
+  comeback = practice after more than 7 days between two practice days.
+- **Left out** (needs data the log lacks): weakest character improved, graded
+  interference steps — issue #36.
+
+## 2026-10-03: Weekly review (issue #35, part of #3)
+
+- **Where:** a card on the Achievements page (not the home screen, which stays
+  quiet), between today/week and the awards. Hidden for a week without practice.
+- **Which week:** Sunday shows the running Mon–Sun week, every other day the last
+  finished one (`weeklyReview`). "Once a week" is therefore a matter of when the
+  user looks, no extra notification.
+- **Figures:** practice time, practice days, new characters (the training that
+  went furthest counts, like the awards) and mean error rate of the week's
+  blocks (needs `kReviewBlocks` = 3, Listen and Send mixed), each next to the
+  week before. No arrows or judgement, "no ranking, no pressure".
+- Computed from the practice log on opening, nothing stored. Same switch as the
+  rest of the feature.

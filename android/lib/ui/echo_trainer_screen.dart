@@ -26,8 +26,10 @@ import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
+import '../util/practice_clock.dart';
 import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
+import '../content/practice_log.dart' show MilestoneKind;
 
 part 'echo_trainer_screen_views.dart';
 part 'echo_trainer_screen_widgets.dart';
@@ -232,6 +234,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   void initState() {
     super.initState();
     KeepScreenOn.enable();
+    PracticeClock.instance.enter('echo');
     _decoder = MorseDecoder(onChar: _onDecodedChar);
     _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
       if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
@@ -381,8 +384,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     );
     await p.setDouble('echoBlockEma', s.blockEma);
     final n = _blockResults.length;
-    _trend = await const BlockHistory('echo').record(
-        p, n == 0 ? 0 : _blockResults.where((r) => r.outcome == WordOutcome.first).length / n);
+    final echoRate = n == 0 ? 0.0 : _blockResults.where((r) => r.outcome == WordOutcome.first).length / n;
+    _trend = await const BlockHistory('echo').record(p, echoRate);
+    if (n > 0) {
+      PracticeClock.instance.block('echo', echoRate,
+          interference: (await InterferenceProfile.load()).enabled);
+    }
     _suggestions = s;
     _pendWpm = s.newWpm;
     _pendAnswer = s.newAnswerWpmMax;
@@ -403,8 +410,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (s == null) return;
     final p = await SharedPreferences.getInstance();
     final pf = await TrainingProfile.open(TrainingProfile.echo);
-    if (s.unlockNext && _accUnlock && _kochLevel < _activeKochChars.length) _kochLevel++;
-    if (_pendWpm != null && _accWpm) _wpm = _pendWpm!;
+    if (s.unlockNext && _accUnlock && _kochLevel < _activeKochChars.length) {
+      _kochLevel++;
+      PracticeClock.instance.milestone(MilestoneKind.kochEcho, _kochLevel);
+    }
+    if (_pendWpm != null && _accWpm) {
+      _wpm = _pendWpm!;
+      PracticeClock.instance.milestone(MilestoneKind.wpmEcho, _wpm, onlyIfHigher: true);
+    }
     if (_pendIC != null && _pendIW != null && _accSpacing) {
       _interCharSpace = _pendIC!;
       _interWordSpace = _pendIW!;
@@ -607,6 +620,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   void dispose() {
     InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
+    PracticeClock.instance.leave();
     _silenceTimer?.cancel();
     _genSub?.cancel();
     _symbolSub?.cancel();
@@ -798,6 +812,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _silenceTimer?.cancel();
     _silenceTimer = Timer(Duration(milliseconds: _startDeadlineMs), _evaluate);
     _symbolSub = _symbolStream.receiveBroadcastStream().listen((sym) {
+      PracticeClock.instance.touch();
       _decoder.add(sym as String);
       // The answer has begun: think time no longer applies. Evaluate at the
       // word gap; the timer is just a fallback.

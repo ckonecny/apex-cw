@@ -27,6 +27,8 @@ import 'widgets/app_ui.dart';
 import '../util/char_color.dart';
 import '../util/interference_profile.dart';
 import '../l10n/strings.dart';
+import '../util/practice_clock.dart';
+import '../content/practice_log.dart' show MilestoneKind;
 
 part 'adaptive_copy_body_views.dart';
 part 'adaptive_copy_body_widgets.dart';
@@ -215,9 +217,27 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   int _resultCorrect = 0;
   int _resultTotal = 0;
 
-  bool _paused = false;
+  bool _pausedNow = false;
+  bool get _paused => _pausedNow;
+  set _paused(bool v) {
+    _pausedNow = v;
+    _syncPracticeClock();
+  }
   Completer<void>? _pauseGate;
-  bool _sessionActive = false;
+  bool _sessionActiveNow = false;
+  bool get _sessionActive => _sessionActiveNow;
+  set _sessionActive(bool v) {
+    _sessionActiveNow = v;
+    _syncPracticeClock();
+  }
+
+  // A running, unpaused block (not its result pages) counts as practice for the practice clock even
+  // without touches (listening on paper).
+  void _syncPracticeClock() {
+    final run = _sessionActiveNow && !_pausedNow && _phase == _Phase.sending;
+    PracticeClock.instance.audioPlaying = run;
+    if (run) PracticeClock.instance.touch();
+  }
   Completer<void>? _doneCompleter;
   StreamSubscription? _genSub;
   // True for the brief pause right after "Start Block" — gives the user a
@@ -377,6 +397,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   void _applyPendingDecision() {
     if (_acceptCharSpeed && _pendingWpm != null && _pendingWpm != widget.wpm) {
       widget.onWpmChanged?.call(_pendingWpm!);
+      PracticeClock.instance.milestone(MilestoneKind.wpmHear, _pendingWpm!, onlyIfHigher: true);
     }
     if (_acceptSpacing && _pendingInterChar != null && _pendingInterWord != null &&
         (_pendingInterChar != widget.interCharSpace || _pendingInterWord != widget.interWordSpace)) {
@@ -384,6 +405,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     }
     if (_acceptUnlock && _unlockedThisBlock) {
       widget.onKochLevelChanged?.call(widget.kochLevel + 1);
+      PracticeClock.instance.milestone(MilestoneKind.kochHear, widget.kochLevel + 1);
     }
   }
 
@@ -610,6 +632,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     InterferenceProfile.releaseAmbient(this);
     if (_typing) widget.onKeyboardChanged?.call(false);
     if (mounted) setState(() => _phase = _Phase.revealed);
+    _syncPracticeClock();
   }
 
   // ── Typing mode flow ──
@@ -842,6 +865,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     await p.setDouble('adaptiveBlockEma', newEma);
     final trend = await const BlockHistory('hear')
         .record(p, total == 0 ? 0 : correct / total);
+    if (total > 0) {
+      PracticeClock.instance.block('hear', correct / total,
+          interference: (await InterferenceProfile.load()).enabled);
+    }
 
     final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
         .map((ch) => _charStats.stats[ch] ?? CharStat())

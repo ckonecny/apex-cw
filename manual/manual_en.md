@@ -67,6 +67,10 @@ The home screen has four groups:
 | **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
 
+At the very top sits the **daily goal card**: a ring with your active
+practice minutes today, your streak, and the week Monday to Sunday as dots.
+Tap it to open the [Achievements page](#daily-goal).
+
 The **Listen** and **Send** tiles show your current Koch lesson and speed.
 **Send** also shows the trend of your last blocks (see [Trend](#trend)).
 
@@ -953,6 +957,88 @@ Some notes:
 - If unlocking goes too fast for you, raise **Occurrences for unlock** or the
   high threshold. If it's too slow, lower them.
 
+# Daily goal and streak {#daily-goal}
+
+Short, regular practice beats long, rare sessions. The app therefore counts
+your **active practice time** and shows it on the home screen.
+
+**What counts.** Time in the trainings (Listen, Send, games, adventure, QSO
+Bot, Own texts, Morse key) while you are active: you touched the screen or
+keyed within the last 20 seconds, or a block is playing (copying on paper).
+The CW Decoder, WiFi Trx and the reference screens (chart, tree) do not count.
+A day runs from 04:00 to 04:00, so practice after midnight still counts for
+the evening before.
+
+**The card.** The ring fills up towards your daily goal and shows a check mark
+once it is reached. Next to it: the streak (days in a row on which you met the
+goal) and the week as dots: filled = goal met, ring = open or missed, a ring
+with a dash = free day. On a small screen or with a large system font the card
+shrinks to one line, so all tiles stay visible.
+
+**Free day.** One missed day per week (Monday to Sunday) does not break the
+streak. It is not counted as a practice day, it only bridges the gap. A second
+miss in the same week ends the streak. You can switch this off.
+
+**Achievements page.** Tap the card. It shows today and this week in minutes
+and below them the **awards** (see below).
+The gear icon opens its settings:
+
+| Setting | Meaning | Values |
+|---|---|---|
+| Daily goal | Minutes of active practice per day | 5 / **10** / 15 / 20 / 30 / 60 min |
+| One free day per week | Bridges one missed day per week | **On** / Off |
+| Spread over sessions | The daily goal only counts once the time is spread over 3 or 5 separate sessions (see below) | **Off** / 3× / 5× |
+| Reminder | A notification at the chosen time, only if your goal is still open then. The app asks for the notification permission when you switch it on | **Off** / On, time (**19:00**) |
+| Show daily goal and achievements | Hides the card and stops recording. The data is kept; switch it on again here or under **Settings → General** | **On** / Off |
+
+**Weekly review.** Below Today and This week a short card sums up one week:
+practice time, practice days, new characters and error rate, each with the
+week before in brackets. On Sunday it shows the running week, on every other
+day the last finished one (Monday to Sunday). The error rate appears from 3
+blocks in the week. With no practice that week the card is not shown. No
+ranking, nothing leaves the device.
+
+**Awards.** Ten of them, no pop-ups while you practise, only on this page. An
+earned award shows the day you first reached it; open ones are grey with a
+lock. Everything stays on the device.
+
+| Award | Condition |
+|---|---|
+| New character | Unlocked a new character in the Koch course |
+| Three in a week | 3 new characters in one week (Monday to Sunday) |
+| Weekly streak | At least one new character in 4 weeks in a row |
+| Spread out | 3 sessions in one day (at least 5 min each, 15 min apart), also without the "Spread over sessions" setting |
+| Spreading as a habit | Practised that way on 5 different days |
+| Better than last week | Fewer errors than the week before, at least 3 blocks each |
+| Clean run | 3 blocks in a row with under 5 % errors |
+| Despite interference | A block with interference switched on and under 10 % errors |
+| New speed | A new speed record in Listen or Send |
+| Welcome back | Practised again after a break of at least 7 days |
+
+Tap an award: you see what it means, when you first and last reached it, and
+how often (open ones show only the explanation). What "how often" counts
+differs per award and is stated in the text there, e.g. new characters, weeks,
+days or blocks.
+
+Error rates count Listen and Send together. Block awards only work with
+blocks played after this update.
+
+**Spread over sessions.** Learning in small chunks works better than one long
+block. With 3× or 5× the daily goal only counts once the practice time is
+reached **and** you have practised at least that many sessions. A session
+counts if it lasts at least 5 minutes and starts at least 15 minutes after the
+previous counted session ended. A session that starts too early still adds
+practice time but does not count as a session. The ring then shows the
+sessions (e.g. "1 of 3"), and below it says when the next session counts. Off
+by default, not everybody has time for several sessions a day.
+
+**Reminder.** Optional and off by default. At the chosen time you get a
+friendly notification, but only if your goal for that day is still open. The
+app plans the next days in advance and re-plans whenever you finish a training
+or leave the app. Android may deliver it a few minutes late. It is scheduled on
+the phone itself, nothing is sent anywhere. If you refuse the notification
+permission, the reminder stays off.
+
 # Character statistics
 
 The **📊 icon** in Listen and Send opens that training's statistics. Listen
@@ -1715,6 +1801,7 @@ that training's ⚙ sheet.
 | Pitch (Hz) | Frequency of the sidetone and of the played characters | 300–900 Hz in 50 Hz steps (**600 Hz**) |
 | Tone softness | Rise and fall time of the tone. Larger values sound softer and click less, especially on short dits | 1–9 ms (**5 ms**) |
 | Letter case | Show characters in lower or UPPER case. Display only | **lower** / UPPER |
+| Show daily goal and achievements | Shows or hides the card on the home screen, and switches the recording of practice time on or off. Stored data is kept | **On** / Off |
 
 ## Interference {#interference}
 

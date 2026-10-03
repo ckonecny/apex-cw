@@ -11,6 +11,7 @@ import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
+import '../util/practice_clock.dart';
 import '../l10n/strings.dart';
 import '../content/training_profile.dart';
 import '../content/charset_content.dart';
@@ -67,6 +68,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   void initState() {
     super.initState();
     KeepScreenOn.enable();
+    PracticeClock.instance.enter('hear');
     _loadPrefs();
   }
 
@@ -138,6 +140,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   @override
   void dispose() {
     KeepScreenOn.disable();
+    PracticeClock.instance.leave();
     // The adaptive block pushes practiceChars/boostLevel to the shared
     // generator (CLAUDE.md rule 2). Restore the profile's own values on the
     // way out.

@@ -24,6 +24,7 @@ import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
+import '../util/practice_clock.dart';
 import '../zmachine/zmachine.dart';
 import 'adventure_map_screen.dart';
 import 'adventure_sheets.dart';
@@ -171,6 +172,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
     super.initState();
     InterferenceProfile.requestAmbient(this);
     KeepScreenOn.enable();
+    PracticeClock.instance.enter('adventure');
     _init();
   }
 
@@ -178,6 +180,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
   void dispose() {
     InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
+    PracticeClock.instance.leave();
     _genSub?.cancel();
     _symSub?.cancel();
     _wpmSub?.cancel();
@@ -216,7 +219,10 @@ class _AdventureScreenState extends State<AdventureScreen> {
       await _genChannel.invokeMethod('setPaddleChoice', false);
       await _pushKeyer();
       await _keyerChannel.invokeMethod('start');
-      _symSub = _symbolStream.receiveBroadcastStream().listen(_onSymbol);
+      _symSub = _symbolStream.receiveBroadcastStream().listen((s) {
+      PracticeClock.instance.touch();
+      _onSymbol(s);
+    });
 
       final bytes = await rootBundle.load(widget.game.asset);
       final z = ZMachine(bytes.buffer.asUint8List());

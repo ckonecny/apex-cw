@@ -3,6 +3,10 @@ import 'widgets/app_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
 import '../content/charset_content.dart';
+import '../content/daily_goal.dart';
+import '../util/practice_clock.dart';
+import 'daily_goal_card.dart';
+import 'goals_screen.dart';
 import '../content/training_profile.dart';
 import 'generator_screen.dart';
 import 'echo_trainer_screen.dart';
@@ -26,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   TrainingProfile? _hear;
   TrainingProfile? _echo;
   BlockTrend? _trend;
+  DailyGoalSettings _goal = DailyGoalSettings();
 
   @override
   void initState() {
@@ -48,11 +53,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final hear = await TrainingProfile.open(TrainingProfile.hear);
     final echo = await TrainingProfile.open(TrainingProfile.echo);
     final trend = trendOf(await const BlockHistory('echo').load(p));
+    final goal = await DailyGoalSettings.load(p);
     if (!mounted) return;
     setState(() {
       _hear = hear;
       _echo = echo;
       _trend = trend;
+      _goal = goal;
     });
   }
 
@@ -83,8 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             IconButton(
               icon: Icon(Icons.settings, color: c.textMuted),
-              onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const SettingsScreen())),
+              onPressed: () => _open(const SettingsScreen()),
             ),
           ],
         ),
@@ -94,12 +100,30 @@ class _HomeScreenState extends State<HomeScreen> {
           // switch to a fixed minimum height and the page scrolls instead.
           final f = textScaleOf(context);
           final minCard = 76 * f;
-          final needed = 5 * minCard + 1 * 8 + 3 * 16 + 4 * 23 * f + 8 + 24;
+          final base = 5 * minCard + 1 * 8 + 3 * 16 + 4 * 23 * f + 8 + 24;
+          // The goal card comes first: full while everything still fits,
+          // then the one-line variant, then the page scrolls.
+          final showGoal = PracticeClock.instance.log.enabled;
+          final fs = f < 1 ? 1.0 : f; // the ring itself does not shrink
+          final fullH = 100 * fs, compactH = 56 * fs;
+          final compactGoal = showGoal && box.maxHeight < base + fullH + 12;
+          final needed = base + (showGoal ? (compactGoal ? compactH : fullH) + 12 : 0);
           final scroll = box.maxHeight < needed;
           Widget card(Widget w) => scroll ? SizedBox(height: minCard, child: w) : Expanded(child: w);
           final column = Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (showGoal) ...[
+              SizedBox(
+                height: compactGoal ? compactH : fullH,
+                child: DailyGoalCard(
+                  status: goalStatus(PracticeClock.instance.log, _goal, DateTime.now()),
+                  compact: compactGoal,
+                  onTap: () => _open(const GoalsScreen()),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
             _SectionLabel(Strings.t('home_section_practice')),
             card(_ModeCard(
               icon: Icons.headphones,

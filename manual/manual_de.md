@@ -69,6 +69,10 @@ Die Startseite hat vier Gruppen:
 | **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
 
+Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
+Übungsminuten von heute, deine Serie und die Woche von Montag bis Sonntag als
+Punkte. Tippe darauf, um die [Erfolge-Seite](#tagesziel) zu öffnen.
+
 Unter **Hören** und **Geben** zeigt die Kachel deine aktuelle Koch-Lektion und
 dein Tempo, bei **Geben** zusätzlich den Trend der letzten Blöcke (siehe
 [Trend](#trend)).
@@ -978,6 +982,89 @@ Einige Hinweise:
   Freischaltung** oder die hohe Schwelle. Geht sie dir zu langsam, senke die
   Werte.
 
+# Tagesziel und Serie {#tagesziel}
+
+Kurz und regelmäßig üben schlägt lang und selten. Die App zählt deshalb deine
+**aktive Übungszeit** und zeigt sie auf der Startseite.
+
+**Was zählt.** Zeit in den Trainings (Hören, Geben, Spiele, Adventure, QSO Bot,
+Eigene Texte, Morsetaste), solange du aktiv bist: Du hast in den letzten
+20 Sekunden den Bildschirm berührt oder getastet, oder ein Block läuft
+(Mitschreiben auf Papier). CW-Decoder, WiFi Trx und die Nachschlageseiten
+(Tabelle, Baum) zählen nicht. Ein Tag läuft von 04:00 bis 04:00 Uhr, Üben nach
+Mitternacht zählt also noch für den Abend davor.
+
+**Die Karte.** Der Ring füllt sich zum Tagesziel und zeigt einen Haken, sobald
+es erreicht ist. Daneben: die Serie (Tage in Folge mit erreichtem Ziel) und die
+Woche als Punkte: gefüllt = Ziel erreicht, Ring = offen oder verpasst, Ring mit
+Strich = freier Tag. Auf kleinen Bildschirmen oder bei großer Systemschrift
+schrumpft die Karte auf eine Zeile, damit alle Kacheln sichtbar bleiben.
+
+**Freier Tag.** Ein verpasster Tag pro Woche (Montag bis Sonntag) unterbricht
+die Serie nicht. Er zählt nicht als Übungstag, er überbrückt nur die Lücke. Ein
+zweiter verpasster Tag in derselben Woche beendet die Serie. Das lässt sich
+abschalten.
+
+**Erfolge-Seite.** Tippe auf die Karte. Sie zeigt heute und diese Woche in
+Minuten und darunter die **Auszeichnungen** (siehe unten). Das Zahnrad öffnet die Einstellungen dazu:
+
+| Einstellung | Bedeutung | Werte |
+|---|---|---|
+| Tagesziel | Minuten aktive Übungszeit pro Tag | 5 / **10** / 15 / 20 / 30 / 60 min |
+| Freier Tag pro Woche | Überbrückt einen verpassten Tag pro Woche | **An** / Aus |
+| Auf Sessions verteilen | Das Tagesziel zählt erst, wenn die Zeit auf 3 oder 5 getrennte Sessions verteilt ist (siehe unten) | **Aus** / 3× / 5× |
+| Erinnerung | Eine Benachrichtigung zur gewählten Uhrzeit, nur wenn dein Ziel dann noch offen ist. Beim Einschalten fragt die App nach der Erlaubnis für Benachrichtigungen | **Aus** / An, Uhrzeit (**19:00**) |
+| Tagesziel und Erfolge anzeigen | Blendet die Karte aus und stoppt die Aufzeichnung. Die Daten bleiben erhalten; hier oder unter **Einstellungen → Allgemein** wieder einschalten | **An** / Aus |
+
+**Wochenrückblick.** Unter Heute und Woche fasst eine kurze Karte eine Woche
+zusammen: Übungszeit, Übungstage, neue Zeichen und Fehlerquote, jeweils mit dem
+Wert der Woche davor in Klammern. Am Sonntag zeigt sie die laufende Woche, an
+allen anderen Tagen die letzte abgeschlossene (Montag bis Sonntag). Die
+Fehlerquote erscheint ab 3 Blöcken in der Woche. Ohne Übung in dieser Woche
+fehlt die Karte. Kein Ranking, nichts verlässt das Gerät.
+
+**Auszeichnungen.** Zehn Stück, ohne Pop-ups beim Üben, nur auf der Seite. Eine
+erreichte Auszeichnung zeigt den Tag, an dem du sie zum ersten Mal erreicht
+hast, die offenen sind grau mit Schloss. Alles bleibt auf dem Gerät.
+
+| Auszeichnung | Bedingung |
+|---|---|
+| Neues Zeichen | Ein neues Zeichen im Koch-Lehrgang freigeschaltet |
+| Dreier-Woche | 3 neue Zeichen in einer Woche (Montag bis Sonntag) |
+| Wochen-Serie | 4 Wochen in Folge mindestens ein neues Zeichen |
+| Verteilt geübt | An einem Tag 3 Sessions geübt (je mindestens 5 Min., 15 Min. Abstand), auch ohne die Einstellung „Auf Sessions verteilen“ |
+| Verteilen als Gewohnheit | An 5 verschiedenen Tagen so geübt |
+| Besser als letzte Woche | Weniger Fehler als in der Vorwoche, jeweils mit mindestens 3 Blöcken |
+| Sauber getastet | 3 Blöcke in Folge mit unter 5 % Fehlern |
+| Trotz Störung | Ein Block mit eingeschalteter Störung und unter 10 % Fehlern |
+| Neues Tempo | Neuer Tempo-Rekord in Hören oder Geben |
+| Wieder da | Nach mindestens 7 Tagen Pause wieder geübt |
+
+Tippe auf eine Auszeichnung: Du siehst, was sie aussagt, wann du sie zum
+ersten Mal und zuletzt erreicht hast und wie oft (offene zeigen nur die
+Erklärung). „Wie oft“ zählt je Auszeichnung etwas anderes, das steht im Text
+dort, z. B. neue Zeichen, Wochen, Tage oder Blöcke.
+
+Die Fehlerquote zählt Hören und Geben zusammen. Auszeichnungen für Blöcke
+gibt es erst ab Blöcken, die nach diesem Update gespielt wurden.
+
+**Auf Sessions verteilen.** In kleinen Häppchen lernt man besser als in einem
+langen Block. Mit 3× oder 5× zählt das Tagesziel erst, wenn die Übungszeit
+erreicht ist **und** du mindestens so viele Sessions geübt hast. Eine Session
+zählt, wenn sie mindestens 5 Minuten dauert und frühestens 15 Minuten nach dem
+Ende der vorigen gezählten Session beginnt. Eine Session, die zu früh beginnt,
+bringt weiter Übungszeit, zählt aber nicht als Session. Der Ring zeigt dann die
+Sessions (z. B. „1 von 3“), darunter steht, wann die nächste Session zählt.
+Standardmäßig aus, nicht jeder hat Zeit für mehrere Sessions am Tag.
+
+**Erinnerung.** Optional und standardmäßig aus. Zur gewählten Uhrzeit bekommst
+du eine freundliche Benachrichtigung, aber nur, wenn dein Ziel für diesen Tag
+dann noch offen ist. Die App plant die nächsten Tage im Voraus und plant neu,
+sobald du ein Training beendest oder die App verlässt. Android kann sie um ein
+paar Minuten verspätet zustellen. Sie wird auf dem Handy selbst geplant, nichts
+wird irgendwohin gesendet. Lehnst du die Erlaubnis für Benachrichtigungen ab,
+bleibt die Erinnerung aus.
+
 # Zeichenstatistik
 
 Das **📊-Symbol** in Hören und Geben öffnet die Statistik dieses Trainings.
@@ -1778,6 +1865,7 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 | Tonhöhe (Hz) | Frequenz des Mithörtons und der gespielten Zeichen | 300–900 Hz in 50-Hz-Schritten (**600 Hz**) |
 | Tonweichheit | Anstiegs- und Abfallzeit des Tons. Größere Werte klingen weicher und klicken weniger, besonders bei kurzen Dits | 1–9 ms (**5 ms**) |
 | Schreibweise | Zeichen in Klein- oder Großbuchstaben anzeigen. Betrifft nur die Anzeige | **klein** / GROSS |
+| Tagesziel und Erfolge anzeigen | Blendet die Karte auf der Startseite ein oder aus und schaltet die Aufzeichnung der Übungszeit an oder aus. Gespeicherte Daten bleiben erhalten | **An** / Aus |
 
 ## Störungen {#stoerungen}
 

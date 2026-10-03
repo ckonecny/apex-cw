@@ -15,6 +15,7 @@ import 'widgets/setting_rows.dart';
 import 'widgets/training_settings_sheet.dart';
 import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
+import '../util/practice_clock.dart';
 
 /// QSO Bot: a simulated CW QSO partner (firmware MorseQsoBot, V9.0). Same
 /// frontend as WiFi Trx: the bot's overs are RX, your keying is TX. Uses the
@@ -84,6 +85,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     KeepScreenOn.enable();
+    PracticeClock.instance.enter('qso');
     _decoder = MorseDecoder(onChar: _onDecodedChar, unknown: '*');
     _symSub = _symbolStream.receiveBroadcastStream().listen((s) => _decoder.add(s as String));
     // Straight key: the bot follows the measured speed, like it follows the set one.
@@ -144,6 +146,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     KeepScreenOn.disable();
+    PracticeClock.instance.leave();
     _tickTimer?.cancel();
     InterferenceProfile.releaseAmbient(this);
     _playGuard?.cancel();

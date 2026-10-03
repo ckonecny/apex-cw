@@ -28,7 +28,16 @@ shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
 ## Manual: pending for next release
-(none — all screenshots retaken for v1.4.0, manual built)
+- `home.png` (DE+EN): daily goal card at the top (#31).
+- New: achievements page and its settings incl. sessions, reminder and awards (#31–#34); `settings1.png`: new switch in General.
+
+## In progress: daily goal series (#3)
+Branch `feature/practice-log` (neither pushed nor merged). #30 practice log
+(c88039e) and #31 goal card, achievements page and settings are committed;
+a real streak across days is unit-tested only. #32 reminder (d6818bd,
+native, see DECISIONS) is committed. #33 spaced sessions (3b915e1) is
+committed. #34 achievements (05ed4c4) is committed (follow-up #36). #35 weekly
+review implemented, not committed; it closes the series #3.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

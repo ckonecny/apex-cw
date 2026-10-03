@@ -21,6 +21,7 @@ import '../owntexts/text_passage.dart';
 import '../theme/app_colors.dart';
 import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
+import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart' show cwGenEvents;
 import 'widgets/pinch_zoom_text.dart';
@@ -94,7 +95,15 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
 
   /// The word playing now, or — when stopped — the one to go on from.
   int _pos = 0;
-  bool _playing = false;
+  bool _playingNow = false;
+  bool get _playing => _playingNow;
+  // Playing counts as practice for the practice clock even without touches;
+  // each start also keeps it alive across the short gaps between words.
+  set _playing(bool v) {
+    _playingNow = v;
+    PracticeClock.instance.audioPlaying = v;
+    if (v) PracticeClock.instance.touch();
+  }
   bool _revealed = false;
   final Set<int> _heard = {};
   List<int> _order = [];
@@ -110,6 +119,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
   void initState() {
     super.initState();
     KeepScreenOn.enable();
+    PracticeClock.instance.enter('owntext');
     _init();
   }
 
@@ -117,6 +127,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
   void dispose() {
     InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
+    PracticeClock.instance.leave();
     _genSub?.cancel();
     if (_playing) _genChannel.invokeMethod('stopOne');
     _save();
