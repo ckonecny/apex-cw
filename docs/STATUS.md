@@ -35,17 +35,6 @@ phone's own data was restored afterwards.
 - New: Fight the Pileup (#15): `pu_lobby.png` DE+EN (manual section has no image yet), `games.png` (fifth game card).
 - New: achievements page and its settings incl. sessions, reminder and awards (#31–#34); `settings1.png`: new switch in General.
 
-## In progress: daily goal series (#3)
-Branch `feature/practice-log` (neither pushed nor merged). #30 practice log
-(c88039e) and #31 goal card, achievements page and settings are committed;
-a real streak across days is unit-tested only. #32 reminder (d6818bd,
-native, see DECISIONS) is committed. #33 spaced sessions (3b915e1) is
-committed. #34 achievements (05ed4c4) is committed (follow-up #36). #35 weekly
-review implemented, not committed; it closes the series #3.
-
-## Game ports
-All firmware games with a single-player part are ported (#13–#15). The three feature branches are merged into `main`, which is not pushed yet.
-
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual

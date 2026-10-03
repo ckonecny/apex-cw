@@ -6,6 +6,10 @@ item in `STATUS.md` is done, move it here (CLAUDE.md rule 13). Open feature
 ideas and deferred bugs are GitHub issues (rule 12), not listed here.
 
 ## Done
+
+- Daily goal series (#3, closed): #30 practice log, #31 goal card and achievements page, #32 reminder, #33 spaced sessions, #34 achievements, #35 weekly review; merged into `main` (follow-up #36 open).
+- Game ports (#13–#15): Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave; merged and pushed 2026-10-03.
+- Own texts: share from other apps (#24), 2026-10-03.
 - **Interference simulation (issue #6, 2026-10-02/03).** Noise (SNR), noise
   colour, receiver filter, QRM, QSB, pitch drift and timing jitter on the other
   station's signal; settings card, presets, app bar icon (tap = on/off, long
