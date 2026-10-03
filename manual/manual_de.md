@@ -340,9 +340,9 @@ Zufall von **Gruppen**, bei allen anderen Inhalten von **Wörtern**.
 Mit **Ablauf → Nach jeder Gruppe anhalten** (im ⚙-Blatt; bei Wörtern heißt es
 **Nach jedem Wort anhalten**) wartet die App nach jeder Gruppe bzw. jedem Wort:
 
-- **Dit** (linkes Paddle) oder die Schaltfläche **WIEDERHOLEN** spielt
+- **Dit** (linke Taste) oder die Schaltfläche **WIEDERHOLEN** spielt
   dieselbe Gruppe noch einmal.
-- **Dah** (rechtes Paddle) oder **WEITER** spielt die nächste Gruppe.
+- **Dah** (rechte Taste) oder **WEITER** spielt die nächste Gruppe.
 
 Das entspricht „Stop&lt;Next&gt;Rep“ am Morserino und eignet sich gut für den
 Anfang, wenn du eine Gruppe mehrmals hören willst. Die Einstellung gilt nur
@@ -543,8 +543,8 @@ beschrieben.
 # Geben – Echo Trainer
 
 **Geben** ist der Echo Trainer: Die App spielt ein Wort oder eine Gruppe, du
-gibst es mit dem Paddle (Touch oder echtes Paddle, siehe
-[Paddle und Morsetaste](#paddle-und-morsetaste)) zurück. Stimmt es, kommt das
+gibst es mit der Morsetaste (Touch oder echte Morsetaste, siehe
+[Morsetaste](#morsetaste)) zurück. Stimmt es, kommt das
 nächste Wort. Stimmt es nicht, wird es wiederholt.
 
 Geben hat ein **eigenes Profil**, unabhängig von Hören: eigene Koch-Lektion,
@@ -565,7 +565,7 @@ Darunter stellst du mit zwei Reglern die Tempi ein:
 - **Geben** – das höchste Tempo, in dem deine Antwort erwartet wird (siehe
   [Gebetempo](#gebetempo)). „wie Hören“ heißt: dasselbe Tempo.
 
-Unten liegen die Paddles bzw. die Taste und **Start**.
+Unten liegen die Dit-/Dah-Tasten bzw. die Handtaste und **Start**.
 
 ::: {.shots}
 ![Startansicht von Geben](img/de/echo_start.png)
@@ -706,7 +706,7 @@ Kachel wie beim Antippen: das Zeichen und sein Morsecode, dessen Punkte und
 Striche beim Abspielen aufleuchten. Das Zeichen wird immer wieder gespielt.
 
 Nach jedem Abspielen **kannst** du das Zeichen mit der Taste nachgeben – mit
-dem Touch-Paddle unten oder einer angeschlossenen Taste –, musst aber nicht.
+dem Touch-Keyer unten oder einer angeschlossenen Taste –, musst aber nicht.
 Unter dem Strich in der Kachel erscheinen deine Punkte und Striche, sobald du
 sie gibst. Ist das Zeichen fertig, färben sie sich grün (**✓ Richtig**) oder
 rot (**✗ Gegeben:** mit dem Zeichen, das du gegeben hast), und kurz danach
@@ -1082,8 +1082,8 @@ sich nicht rückgängig machen.
 Zum freien Tasten: Was du gibst, wird hörbar und als Text dekodiert
 angezeigt.
 
-- Die **Paddles** unten (DIT links, DAH rechts) oder ein echtes Paddle über
-  einen Adapter (siehe [Paddle und Morsetaste](#paddle-und-morsetaste)). Im
+- Die **Tasten** unten (DIT links, DAH rechts) oder eine echte Morsetaste über
+  einen Adapter (siehe [Morsetaste](#morsetaste)). Im
   Modus **Straight** erscheint stattdessen eine einzelne Taste **TASTE**.
 - **WPM** – Tempo des Keyers, 5 bis 60 WPM.
 - Der Text läuft von unten nach oben. Ältere Zeilen kannst du zurückscrollen,
@@ -1178,7 +1178,7 @@ Zustand. Beendet der Server die Verbindung (`:bye`), trennt die App ebenfalls.
 
 ## Senden und Empfangen
 
-- **Senden** mit den Paddles bzw. dem Adapter: Jedes Wort wird nach der
+- **Senden** mit dem Touch-Keyer bzw. dem Adapter: Jedes Wort wird nach der
   Wortpause als Paket verschickt. Alternativ tippst du Text in das Feld
   **Send text…** und schickst ihn ab. Er wird im eingestellten Tempo gesendet.
 - **WPM** – dein Sendetempo.
@@ -1352,7 +1352,7 @@ an, solange du in einem Text bist.
 # Spiele
 
 Unter **Spielen → Spiele** findest du vier Spiele. Morsel, Morse Invaders
-und Memory Chain spielst du mit den Paddles bzw. dem Adapter. Sie verwenden
+und Memory Chain spielst du mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden
 die Keyer-Einstellungen. Die Koch-Lektion übernehmen sie aus **Geben**;
 Morsel und Memory Chain lassen sie dich zusätzlich nur für das Spiel ändern.
 Jedes dieser drei Spiele zeigt vor dem Start eine kurze Spielanleitung. Das
@@ -1479,12 +1479,12 @@ das Wort, das gerade klingt, ist markiert. Darunter:
 | **↶ Zug** | Nimmt den letzten Befehl zurück (bis zu 20) |
 
 ::: {.shots .one}
-![Spielbildschirm mit Touch-Paddles](img/de/adv_game.png)
+![Spielbildschirm mit Touch-Keyer](img/de/adv_game.png)
 :::
 
-**Befehle geben.** Mit den Touch-Paddles unten (bei Keyer-Modus Straight:
-die Taste) oder einem angeschlossenen Paddle (siehe
-[Paddle und Morsetaste](#paddle-und-morsetaste)). Der Decoder schreibt in der
+**Befehle geben.** Mit dem Touch-Keyer unten (bei Keyer-Modus Straight:
+die Taste) oder einer angeschlossenen Morsetaste (siehe
+[Morsetaste](#morsetaste)). Der Decoder schreibt in der
 Eingabezeile mit; das Zeichen, das gerade entsteht, steht orange als · und —
 dahinter. Sobald du zu geben beginnst, stoppt die CW-Ausgabe.
 
@@ -1503,9 +1503,9 @@ dahinter. Sobald du zu geben beginnst, stoppt die CW-Ausgabe.
 - Andere Prosigns werden ignoriert; ein nicht erkanntes Zeichen erscheint als
   `*`.
 
-Mit der Einstellung **Eingabe → Tastatur** erscheint statt der Paddles die
+Mit der Einstellung **Eingabe → Tastatur** erscheint statt der Dit-/Dah-Tasten die
 Bildschirmtastatur (für reines Hörtraining): **␣** trennt die Wörter, **⌫**
-löscht ein Zeichen, **⏎** schickt ab. Ein angeschlossenes Paddle funktioniert
+löscht ein Zeichen, **⏎** schickt ab. Eine angeschlossene Morsetaste funktioniert
 auch dann.
 
 **Karte (🗺).** Das Kartensymbol in der Kopfzeile öffnet eine Karte des
@@ -1573,7 +1573,7 @@ reicht). Mehrere Befehle in einer Zeile trennst du mit einem Punkt:
 | Geben | Tempo des Keyers bei deiner Eingabe | **wie Hören**, 10–60 WPM |
 | Zeichenabstand | Pause zwischen Zeichen beim Abspielen; beim Geben Teil des Wortendes | 3–45 Dits |
 | Wortabstand | Pause zwischen Wörtern; nie kleiner als der Zeichenabstand; beim Geben Teil des Wortendes | 6–105 Dits |
-| Eingabe | Touch-Paddles oder Bildschirmtastatur | **Paddle**, Tastatur |
+| Eingabe | Touch-Keyer oder Bildschirmtastatur | **Morsetaste**, Tastatur |
 | Abschicken mit | Womit ein gegebener Befehl abgeschickt wird (der Knopf Senden geht immer) | **`<AR>`**, `<AR>` oder K, Nur Knopf |
 | CW-Umfang | Was gemorst wird, der Rest steht nur als Text da (kursiv) | **Alles**, Erster Satz, Raum / Meldung |
 | Text zeigen | Wann die neue Antwort lesbar wird | Immer, **Nach Abspielen**, Nur auf Tippen |
@@ -1704,18 +1704,18 @@ verbunden sind; die App verlinkt sie nur und zeigt nichts von deren Inhalt.
 ![Links zu Kursen und Übungsseiten](img/de/links.png)
 :::
 
-# Paddle und Morsetaste
+# Morsetaste
 
-## Touch-Paddles
+## Touch-Keyer
 
 In allen Modi, in denen du tastest, erscheinen unten zwei Flächen: **DIT**
 (links) und **DAH** (rechts). Im Keyer-Modus **Straight** ist es eine einzige
 Fläche **KEY**, die so lange Ton gibt, wie du sie drückst.
 
-## Echtes Paddle oder Handtaste
+## Echte Morsetaste oder Handtaste
 
-Ein Handy hat keinen Paddle-Eingang. Du brauchst einen kleinen USB-Adapter,
-der die Paddle-Kontakte in **Tastendrücke** übersetzt:
+Ein Handy hat keinen Morsetasten-Eingang. Du brauchst einen kleinen USB-Adapter,
+der die Tastenkontakte in **Tastendrücke** übersetzt:
 
 - **vband** ([hamradio.solutions/vband](https://hamradio.solutions/vband/)) –
   ein fertiger, weit verbreiteter USB-Adapter genau dafür.
@@ -1727,15 +1727,15 @@ der die Paddle-Kontakte in **Tastendrücke** übersetzt:
 
 Ältere Handys mit Micro-USB brauchen einen USB-OTG-Adapter.
 
-### Paddle-Tasten anlernen
+### Dit-/Dah-Tasten anlernen
 
 Damit die App weiß, welche Taste dein Adapter für Dit und welche für Dah
 sendet:
 
 1. Adapter einstecken.
-2. **Einstellungen → vband Paddle → Paddle-Tasten anlernen**.
-3. Wenn „Dit-Taste drücken …“ erscheint, das **Dit-Paddle** drücken; bei
-   „Dah-Taste drücken …“ das **Dah-Paddle**.
+2. **Einstellungen → vband Morse Key → Dit-/Dah-Tasten anlernen**.
+3. Wenn „Dit-Taste drücken …“ erscheint, die **Dit-Taste** drücken; bei
+   „Dah-Taste drücken …“ die **Dah-Taste**.
 4. „Gespeichert“ bestätigt das. Die erkannten Tasten stehen unter **Dit** und
    **Dah**.
 
@@ -1745,7 +1745,7 @@ dein Adapter sendet.
 ### Key-Events analysieren
 
 Reagiert ein Adapter nicht wie erwartet, hilft **Einstellungen → Key-Events
-analysieren**: **Analyse starten**, dann die Paddles drücken. Die App listet
+analysieren**: **Analyse starten**, dann die Tasten drücken. Die App listet
 jedes Tastenereignis auf, das sie empfängt. So siehst du, ob und was der
 Adapter überhaupt sendet. **Analyse stoppen** beendet die Anzeige.
 
@@ -1760,7 +1760,7 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 
 ![Audioausgabe und Rufzeichen](img/de/settings2.png)
 
-![vband Paddle, Key-Events, Info](img/de/settings3.png)
+![vband Morse Key, Key-Events, Info](img/de/settings3.png)
 :::
 
 ## Darstellung
@@ -1831,25 +1831,25 @@ Diese Einstellungen gelten überall, wo du tastest.
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Modus | Wie der Keyer die Paddles auswertet (siehe unten) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
-| CurtisB Dit-Timing | Nur Iambic B und Ultimatic: ab wie viel Prozent eines Dits ein Druck auf das andere Paddle schon gespeichert wird | 0–100 % in 5er-Schritten (**75 %**) |
+| Modus | Wie der Keyer die Tasten auswertet (siehe unten) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
+| CurtisB Dit-Timing | Nur Iambic B und Ultimatic: ab wie viel Prozent eines Dits ein Druck auf die andere Taste schon gespeichert wird | 0–100 % in 5er-Schritten (**75 %**) |
 | CurtisB Dah-Timing | Dasselbe für Dahs | 0–100 % in 5er-Schritten (**45 %**) |
 | Auto-Zeichenabstand | Erzwingt eine Mindestpause zwischen Zeichen, damit sie nicht zusammenlaufen. Bei Straight nicht verfügbar | **Aus** / 2 / 3 / 4 Dits |
 | Starttempo Handtaste | Nur bei Straight (ersetzt Auto-Zeichenabstand): erste Schätzung für die Tempo-Messung, siehe [Handtaste](#handtaste-automatisches-tempo) | 5–40 WPM (**15**) |
 
 **Die Keyer-Modi**
 
-- **Iambic A** – Hältst du beide Paddles gedrückt („squeeze“), wechseln sich
+- **Iambic A** – Hältst du beide Tasten gedrückt („squeeze“), wechseln sich
   Dits und Dahs ab. Lässt du los, hört der Keyer nach dem aktuellen Element
   auf.
-- **Iambic B** – wie A, aber der Keyer merkt sich einen Druck auf das andere
-  Paddle, der während eines Elements kommt, und hängt dieses Element noch an
+- **Iambic B** – wie A, aber der Keyer merkt sich einen Druck auf die andere
+  Taste, der während eines Elements kommt, und hängt dieses Element noch an
   (Curtis-B-Verhalten). Ab wann das gilt, steuern die CurtisB-Einstellungen:
   0 % heißt während des ganzen Elements, 100 % heißt praktisch wie Iambic A.
-- **Ultimatic** – Beim Drücken beider Paddles gewinnt das **zuletzt**
+- **Ultimatic** – Beim Drücken beider Tasten gewinnt das **zuletzt**
   gedrückte und wiederholt sich, solange es gehalten wird.
-- **Non-Squeeze** – Für Einhebel-Paddles bzw. Umsteiger: Das Zusammendrücken
-  beider Paddles erzeugt keine Wechselfolge.
+- **Non-Squeeze** – Für Einhebel-Tasten bzw. Umsteiger: Das Zusammendrücken
+  beider Tasten erzeugt keine Wechselfolge.
 - **Straight** – Handtaste: Der Ton ist an, solange die Taste gedrückt ist.
   Mit Touch erscheint dann eine einzelne Taste **TASTE**, mit einem Adapter
   wirkt der Dit-Kontakt als Taste. Das Tempo wird dabei gemessen, siehe unten.
@@ -1870,7 +1870,7 @@ Pausen zugelassen.
 - Die Messung beginnt bei jedem Betreten eines Bildschirms neu.
 - Der **WPM-Regler** ist deaktiviert und bewegt sich selbst auf dein
   gemessenes Tempo (Keyer, WiFi Trx, Echo Trainer, QSO Bot u. a.). Er wird nicht
-  gespeichert und ändert das Paddle-Tempo nicht.
+  gespeichert und ändert das Keyer-Tempo nicht.
 - WiFi Trx sendet das gemessene Tempo mit. Die Statistik beim Echo Trainer
   speichert es als dein Gebetempo.
 
@@ -1895,9 +1895,9 @@ Zeichen).
 Die Rufzeichen folgen einer gewichteten Präfix-Tabelle wie beim Morserino.
 Häufig gehörte Länder kommen öfter vor.
 
-## vband Paddle und Key-Events analysieren
+## vband Morsetaste und Key-Events analysieren
 
-Siehe [Paddle-Tasten anlernen](#paddle-tasten-anlernen) und
+Siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen) und
 [Key-Events analysieren](#key-events-analysieren).
 
 ## Info: Version und Build
@@ -1996,9 +1996,9 @@ Cave und Fight the Pileup.
 
 # Hilfe bei Problemen
 
-**Die App tastet nicht, wenn ich mein Paddle drücke.**
-Lerne die Paddle-Tasten an (siehe
-[Paddle-Tasten anlernen](#paddle-tasten-anlernen)). Kommt dabei nichts an,
+**Die App tastet nicht, wenn ich meine Morsetaste drücke.**
+Lerne die Dit-/Dah-Tasten an (siehe
+[Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen)). Kommt dabei nichts an,
 prüfe mit **Key-Events analysieren**, ob der Adapter überhaupt etwas sendet.
 
 **Der Ton kommt aus dem falschen Gerät.**

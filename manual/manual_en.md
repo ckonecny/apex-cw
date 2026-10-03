@@ -332,8 +332,8 @@ and **words** for all other contents.
 With **Flow → Stop after each group** (in the ⚙ sheet; with words it is
 called **Stop after each word**), the app waits after every group or word:
 
-- **Dit** (left paddle) or the **REPEAT** button plays the same group again.
-- **Dah** (right paddle) or **NEXT** plays the next group.
+- **Dit** (left key) or the **REPEAT** button plays the same group again.
+- **Dah** (right key) or **NEXT** plays the next group.
 
 This matches "Stop&lt;Next&gt;Rep" on the Morserino. It's handy at the start,
 when you want to hear a group several times. The setting only applies to
@@ -531,8 +531,8 @@ These are the thresholds the app bases its suggestions on. They apply to
 # Send: Echo Trainer
 
 **Send** is the Echo Trainer. The app plays a word or group, and you key it
-back with the paddle. That can be the touch paddle or a real paddle (see
-[Paddle and Morse key](#paddle-and-morse-key)). If you get it right, the next
+back with the Morse key. That can be the touch keyer or a real Morse key (see
+[Morse key](#morse-key)). If you get it right, the next
 word comes. If not, it is repeated.
 
 Send has its **own profile**, independent of Listen. It keeps its own Koch
@@ -552,7 +552,7 @@ Below that, two sliders set the speeds:
 - **Send** is the highest speed at which your answer is expected (see
   [Sending speed](#sending-speed)). "same as prompt" means the same speed.
 
-At the bottom are the paddles or the key, and **Start**.
+At the bottom are the dit/dah keys or the straight key, and **Start**.
 
 ::: {.shots}
 ![Send start view](img/en/echo_start.png)
@@ -688,7 +688,7 @@ In Listen or Send, long press a Koch character (locked ones too) to open
 and its Morse code, whose dits and dahs light up while it plays. The
 character plays over and over.
 
-After each play you **can** key the character back, with the touch paddle at
+After each play you **can** key the character back, with the touch keyer at
 the bottom or a connected key, but you don't have to. Your dits and dahs
 appear below the line in the tile as you key them. Once the character is
 complete they turn green (**✓ Correct**) or red (**✗ You keyed:** with the
@@ -1047,9 +1047,9 @@ statistics are kept. This cannot be undone.
 
 For free keying. What you key is heard and shown as decoded text.
 
-- Use the **paddles** at the bottom (DIT on the left, DAH on the right), or a
-  real paddle through an adapter (see
-  [Paddle and Morse key](#paddle-and-morse-key)). In **Straight** mode a
+- Use the **keys** at the bottom (DIT on the left, DAH on the right), or a
+  real Morse key through an adapter (see
+  [Morse key](#morse-key)). In **Straight** mode a
   single **KEY** area appears instead.
 - **WPM** sets the keyer speed, 5 to 60 WPM.
 - The text runs from the bottom upwards. You can scroll back to older lines,
@@ -1142,7 +1142,7 @@ status. If the server ends the connection (`:bye`), the app disconnects too.
 
 ## Sending and receiving
 
-- **Send** with the paddles or the adapter. Each word is sent as a packet after
+- **Send** with the touch keyer or the adapter. Each word is sent as a packet after
   the word pause. You can also type text into **Send text…** and send it. It
   goes out at the set speed.
 - **WPM** sets your sending speed.
@@ -1310,7 +1310,7 @@ a text.
 # Games
 
 Under **Play → Games** there are four games. You play Morsel, Morse Invaders
-and Memory Chain with the paddles or the adapter. They use the keyer
+and Memory Chain with the touch keyer or the adapter. They use the keyer
 settings. They take the Koch lesson from **Send**, and Morsel and Memory
 Chain also let you change it for the game only. Each of these three shows
 short rules before you start. The [text adventure](#text-adventure) has its
@@ -1432,12 +1432,12 @@ is sounding is highlighted. Below that:
 | **↶ Move** | Takes back the last command (up to 20) |
 
 ::: {.shots .one}
-![Game screen with touch paddles](img/en/adv_game.png)
+![Game screen with touch keyer](img/en/adv_game.png)
 :::
 
-**Keying commands.** With the touch paddles at the bottom (keyer mode
-Straight: the key) or a connected paddle (see
-[Paddle and Morse key](#paddle-and-morse-key)). The decoder writes into the
+**Keying commands.** With the touch keyer at the bottom (keyer mode
+Straight: the key) or a connected Morse key (see
+[Morse key](#morse-key)). The decoder writes into the
 input line; the character being keyed is shown in orange as · and — after
 it. As soon as you start keying, the CW output stops.
 
@@ -1454,8 +1454,8 @@ it. As soon as you start keying, the CW output stops.
 - Other prosigns are ignored; a character that isn't recognised shows as `*`.
 
 With the setting **Input → Keyboard**, the on-screen keyboard replaces the
-paddles (for listening practice only): **␣** separates words, **⌫** deletes a
-character, **⏎** sends. A connected paddle works then too.
+dit/dah keys (for listening practice only): **␣** separates words, **⌫** deletes a
+character, **⏎** sends. A connected Morse key works then too.
 
 **Map (🗺).** The map icon in the title bar opens a map of the current
 part. It starts at the current room (orange outline); pinch to
@@ -1519,7 +1519,7 @@ Separate several commands in one line with a full stop: `TAKE LAMP. N`.
 | Keying | Keyer speed for your input | **as listening**, 10–60 WPM |
 | Character spacing | Pause between characters when playing; part of the word end when keying | 3–45 dits |
 | Word spacing | Pause between words; never below the character spacing; part of the word end when keying | 6–105 dits |
-| Input | Touch paddles or on-screen keyboard | **Paddle**, Keyboard |
+| Input | Touch keyer or on-screen keyboard | **Morse key**, Keyboard |
 | Send with | What sends a keyed command (the Send button always works) | **`<AR>`**, `<AR>` or K, Button only |
 | Played in CW | What is played; the rest is only shown as text (italics) | **Everything**, First sentence, Room / message |
 | Show text | When the new answer becomes readable | Always, **After playing**, Only on tap |
@@ -1643,18 +1643,18 @@ app; the app only links to them and shows nothing of their content.
 ![Links to courses and practice sites](img/en/links.png)
 :::
 
-# Paddle and Morse key
+# Morse key
 
-## Touch paddles
+## Touch keyer
 
 Every mode where you key shows two areas at the bottom: **DIT** (left) and
 **DAH** (right). In the **Straight** keyer mode there is a single **KEY** area
 that sounds for as long as you press it.
 
-## A real paddle or straight key
+## A real Morse key or straight key
 
-A phone has no paddle input. You need a small USB adapter that turns the
-paddle contacts into **key presses**:
+A phone has no Morse key input. You need a small USB adapter that turns the
+key contacts into **key presses**:
 
 - **vband** ([hamradio.solutions/vband](https://hamradio.solutions/vband/)) is
   a widely used, ready-made USB adapter built exactly for this.
@@ -1666,14 +1666,14 @@ paddle contacts into **key presses**:
 
 Older phones with micro-USB need a USB OTG adapter.
 
-### Learning the paddle keys
+### Learning the dit and dah keys
 
 This tells the app which key your adapter sends for dit and which for dah:
 
 1. Plug in the adapter.
-2. Go to **Settings → vband Paddle → Learn paddle keys**.
-3. When "Press Dit key …" appears, press the **dit paddle**. When "Press Dah
-   key …" appears, press the **dah paddle**.
+2. Go to **Settings → vband Morse Key → Learn dit/dah keys**.
+3. When "Press Dit key …" appears, press the **dit key**. When "Press Dah
+   key …" appears, press the **dah key**.
 4. "Saved" confirms it. The detected keys are listed under **Dit** and
    **Dah**.
 
@@ -1683,7 +1683,7 @@ adapter sends.
 ### Analyze key events
 
 If an adapter doesn't behave as expected, use **Settings → Analyze Key
-Events**. Press **Start analyzer**, then press the paddles. The app lists
+Events**. Press **Start analyzer**, then press the keys. The app lists
 every key event it receives, so you can see whether the adapter sends anything
 and what it sends. **Stop analyzer** ends the display.
 
@@ -1698,7 +1698,7 @@ that training's ⚙ sheet.
 
 ![Audio output and call signs](img/en/settings2.png)
 
-![vband Paddle, key events, Info](img/en/settings3.png)
+![vband Morse Key, key events, Info](img/en/settings3.png)
 :::
 
 ## Appearance
@@ -1769,24 +1769,24 @@ These settings apply wherever you key.
 
 | Setting | Meaning | Values |
 |---|---|---|
-| Mode | How the keyer reads the paddles (see below) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
-| CurtisB dit timing | Iambic B and Ultimatic only: from what percentage of a dit a press on the other paddle is already stored | 0–100 % in steps of 5 (**75 %**) |
+| Mode | How the keyer reads the keys (see below) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
+| CurtisB dit timing | Iambic B and Ultimatic only: from what percentage of a dit a press on the other key is already stored | 0–100 % in steps of 5 (**75 %**) |
 | CurtisB dah timing | The same for dahs | 0–100 % in steps of 5 (**45 %**) |
 | Auto character spacing | Enforces a minimum pause between characters so they don't run together. Not available for Straight | **Off** / 2 / 3 / 4 dits |
 | Straight key start speed | Straight only (replaces Auto character spacing): first estimate for the speed measurement, see [Straight key](#straight-key-automatic-speed) | 5–40 WPM (**15**) |
 
 **The keyer modes**
 
-- **Iambic A**: if you hold both paddles ("squeeze"), dits and dahs
+- **Iambic A**: if you hold both keys ("squeeze"), dits and dahs
   alternate. When you let go, the keyer stops after the current element.
-- **Iambic B**: like A, but the keyer remembers a press on the other paddle
+- **Iambic B**: like A, but the keyer remembers a press on the other key
   that comes during an element, and adds that element (Curtis B behaviour).
   The CurtisB settings control from when this applies. 0 % means during the
   whole element, and 100 % means practically like Iambic A.
-- **Ultimatic**: when both paddles are pressed, the **last** one pressed wins
+- **Ultimatic**: when both keys are pressed, the **last** one pressed wins
   and repeats for as long as it is held.
-- **Non-Squeeze**: for single-lever paddles or those switching over. Squeezing
-  both paddles produces no alternating sequence.
+- **Non-Squeeze**: for single-lever keys or those switching over. Squeezing
+  both keys produces no alternating sequence.
 - **Straight**: a straight key. The tone is on for as long as the key is
   pressed. With touch, a single **KEY** area appears. With an adapter, the
   dit contact acts as the key. The speed is measured, see below.
@@ -1806,7 +1806,7 @@ word gaps. If you key more slowly, longer pauses are allowed automatically.
 - The measurement restarts every time you enter a screen.
 - The **WPM slider** is disabled and moves by itself to your measured speed
   (Keyer, WiFi Trx, Echo Trainer, QSO Bot and others). It is not saved and
-  does not change the paddle speed.
+  does not change the keyer speed.
 - WiFi Trx sends the measured speed along. The Echo Trainer statistics store
   it as your sending speed.
 
@@ -1831,9 +1831,9 @@ These are the settings for random call signs in the **Call signs** content
 Call signs follow a weighted prefix table, as on the Morserino. Frequently
 heard countries come up more often.
 
-## vband Paddle and Analyze key events
+## vband Morse Key and Analyze key events
 
-See [Learning the paddle keys](#learning-the-paddle-keys) and
+See [Learning the dit and dah keys](#learning-the-dit-and-dah-keys) and
 [Analyze key events](#analyze-key-events).
 
 ## Info: version and build
@@ -1932,9 +1932,9 @@ Fight the Pileup.
 
 # Troubleshooting
 
-**The app doesn't key when I press my paddle.**
-Learn the paddle keys (see
-[Learning the paddle keys](#learning-the-paddle-keys)). If nothing arrives,
+**The app doesn't key when I press my Morse key.**
+Learn the dit and dah keys (see
+[Learning the dit and dah keys](#learning-the-dit-and-dah-keys)). If nothing arrives,
 check with **Analyze key events** whether the adapter sends anything at all.
 
 **Sound comes out of the wrong device.**

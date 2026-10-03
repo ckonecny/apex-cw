@@ -462,8 +462,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           const SizedBox(height: 24),
 
-          // ── vband Paddle ───────────────────────────────────────────────────
-          SettingsSectionHeader('vband Paddle'),
+          // ── vband Morse Key ───────────────────────────────────────────────────
+          SettingsSectionHeader('vband Morse Key'),
           const SizedBox(height: 12),
           SettingsCard(children: [
             _InfoRow(label: 'Dit', value: _ditDesc),

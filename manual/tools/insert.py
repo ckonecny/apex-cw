@@ -24,7 +24,7 @@ P = [
   ("hear_sheet2", "⚙-Blatt: Abstände, Wortauswahl, Ablauf", "⚙ sheet: Spacing, Word selection, Flow")]),
 ("[Einstellungen des adaptiven Modus](#einstellungen-des-adaptiven-modus)\nbeschrieben.", "[Adaptive mode settings](#adaptive-mode-settings).",
  [("hear_sheet4", "⚙-Blatt: Adaptiver Modus", "⚙ sheet: Adaptive mode")]),
-("Unten liegen die Paddles bzw. die Taste und **Start**.", "At the bottom are the paddles or the key, and **Start**.",
+("Unten liegen die Dit-/Dah-Tasten bzw. die Handtaste und **Start**.", "At the bottom are the dit/dah keys or the straight key, and **Start**.",
  [("echo_start", "Startansicht von Geben", "Send start view"),
   ("echo_answer", "Während der Antwort: Vorgabe (Vorgabe = Beides), Versuch und Tempo", "While answering: prompt (Prompt = Both), attempt and speed")]),
 ("übernimmt die angehakten Vorschläge ohne Verstärkung und kehrt zur\nStartansicht zurück.", "suggestions without a boost and returns to the start view.",
@@ -58,7 +58,7 @@ P = [
 ("eigenen Spielstände bleiben erhalten).", "own saved games are kept).",
  [("adv_select", "Auswahl der drei Teile", "Choosing one of the three parts")]),
 ("Nimmt den letzten Befehl zurück (bis zu 20) |", "Takes back the last command (up to 20) |",
- [("adv_game", "Spielbildschirm mit Touch-Paddles", "Game screen with touch paddles")]),
+ [("adv_game", "Spielbildschirm mit Touch-Keyer", "Game screen with touch keyer")]),
 ("verschiedenen Zeiten.", "different times.",
  [("adv_map", "Karte: Besucht", "Map: Visited"),
   ("adv_map_warn", "Nachfrage vor der ganzen Karte", "Confirmation before the whole map"),
@@ -75,7 +75,7 @@ P = [
 ("steht im ⚙-Blatt des jeweiligen Trainings.", "that training's ⚙ sheet.",
  [("settings1", "Einstellungen: Darstellung, Allgemein, Keyer", "Settings: Appearance, General, Keyer"),
   ("settings2", "Audioausgabe und Rufzeichen", "Audio output and call signs"),
-  ("settings3", "vband Paddle, Key-Events, Info", "vband Paddle, key events, Info")]),
+  ("settings3", "vband Morse Key, Key-Events, Info", "vband Morse Key, key events, Info")]),
 ]
 
 # --- v1.3.0 additions ---------------------------------------------------

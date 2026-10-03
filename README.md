@@ -67,7 +67,7 @@ as immediate as it does on the device.
   tighten/widen Farnsworth spacing, raise character speed), each one
   accept/reject/adjust — nothing changes behind your back. Weak characters
   can be boosted into the next block (Practice Set/Boost).
-- Per-group paddle choice (repeat / next), session start/end markers,
+- Per-group choice via dit/dah key (repeat / next), session start/end markers,
   Output Case lower/UPPER.
 
 ### Practice: Send (Echo Trainer)
@@ -93,14 +93,14 @@ characters, boosts and Koch unlocks.
 
 - **CW Keyer** — Iambic A/B, Ultimatic, Non-Squeeze and Straight Key,
   CurtisB timing, AutoChar Spacing, live decode to text. Input from on-screen
-  touch paddles or a real paddle/straight key (see below).
+  touch keyer or a real Morse key/straight key (see below).
 - **CW Decoder** — decode CW through the phone's microphone: a port of the
   firmware's Goertzel detector and adaptive decoder, with level meter,
   automatic threshold, wide/narrow bandwidth, adjustable pitch, speed
   display and an optional monitor tone.
 - **WiFi Trx** — CW over the internet using the Morserino's UDP protocol
   (MOPP), e.g. with `cq.morserino.info`: multiple saved services, receive
-  with playback at the sender's speed, send via paddles or typed text,
+  with playback at the sender's speed, send via Morse key or typed text,
   persisted RX/TX log per service.
 - **QSO Bot** — a simulated QSO partner (SOTA/POTA, Standard, Contest with
   CQ WW / WPX) that answers what you key, with three difficulty levels,
@@ -112,7 +112,7 @@ characters, boosts and Koch unlocks.
   them, from your current Koch lesson.
 - **Text adventure** — Infocom's **Zork I, II and III** (1980–82), played
   in CW: the game answers in Morse, you key your commands (touch or real
-  paddle, `<AR>` sends) or type them. The original story files, released by
+  Morse key, `<AR>` sends) or type them. The original story files, released by
   Microsoft under the MIT License in 2025, run on the app's own Z-machine
   interpreter. Replay by sentence, word or whole answer, pause, optional
   text display, a hand-drawn map per part (visited rooms, or the whole map
@@ -134,7 +134,7 @@ characters, boosts and Koch unlocks.
 - Where Android has a better native equivalent, the app uses it instead of
   imitating the device: the OS theme instead of a "Theme" preference,
   pinch-to-zoom text size instead of "Font Size", an in-app German/English
-  switch (the device UI is English-only), on-device paddle-key learning
+  switch (the device UI is English-only), on-device dit/dah key learning
   instead of fixed adapter presets, and audio output handling that follows
   USB/Bluetooth connect/disconnect (plus a manual Auto/Speaker/Wired/
   Bluetooth picker).
@@ -148,26 +148,26 @@ keying a real transceiver, firmware/OTA updates and the WiFi AP setup page.
 The firmware's Practice Stats aren't ported either — the app has its own,
 more detailed statistics.
 
-## Using a real paddle or straight key
+## Using a real Morse key or straight key
 
 Everything you key (CW Keyer, Send, WiFi Trx, QSO Bot, the games) can take
-input from on-screen touch paddles or from a real Morse paddle or straight
+input from on-screen touch keyer or from a real Morse key or straight
 key, the same way the Morserino-32 itself can act as a keying dongle for a
-computer. A phone has no analog paddle input, so you need a
-small USB (or USB‑OTG) adapter that turns paddle contacts into keystrokes:
+computer. A phone has no analog Morse key input, so you need a
+small USB (or USB‑OTG) adapter that turns key contacts into keystrokes:
 
 - **[vband](https://hamradio.solutions/vband/)** — a widely used, ready-made
   USB adapter built exactly for this (dit and dah as two distinct keys).
 - **Something homemade** works just as well: any small USB‑HID device (for
   example, an Arduino/Pro Micro running a simple keyboard-emulation sketch)
-  that reports the dit and dah paddle contacts as two separate keystrokes.
+  that reports the dit and dah key contacts as two separate keystrokes.
   A ready-to-build example is
   **[xiao-vband-adapter](https://github.com/ckonecny/xiao-vband-adapter)**:
   a Seeed XIAO SAMD21 plus a 3.5 mm jack, sending the same keys as the vband
   adapter; it connects to the phone with a USB‑C ↔ USB‑C cable.
 
-Whichever adapter you use, open **Settings → Learn Paddle Keys** and press
-each paddle once — the app learns whatever two keys your adapter happens to
+Whichever adapter you use, open **Settings → Learn dit/dah keys** and press
+each key once — the app learns whatever two keys your adapter happens to
 send, so there's no fixed list of supported adapters to match against.
 
 ## Feature status
@@ -177,7 +177,7 @@ Module-by-module details: `docs/PORTING-MAP.md`.
 
 | Area | Status | Notes |
 |---|---|---|
-| CW Keyer (Iambic A/B, Ultimatic, Non‑Squeeze, Straight Key) | ✅ Supported | Live decode, CurtisB, AutoChar Spacing, touch or USB paddles |
+| CW Keyer (Iambic A/B, Ultimatic, Non‑Squeeze, Straight Key) | ✅ Supported | Live decode, CurtisB, AutoChar Spacing, touch or USB Morse key |
 | Listen: CW Generator / Koch Trainer | ✅ Supported | All content modes, Koch sequences incl. LICW Carousel, block flow with adaptive suggestions |
 | Send: Echo Trainer | ✅ Supported | Separate profile, block flow, adaptive suggestions, confusion pairs, error sign |
 | Per-character statistics (listen / send separately) | ✅ Supported | App-specific, replaces the firmware's Practice Stats |

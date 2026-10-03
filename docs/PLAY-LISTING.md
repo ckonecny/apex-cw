@@ -49,7 +49,7 @@ SPIELE
 • Die Textadventures Zork I–III, komplett in CW gespielt
 
 AUSSERDEM
-• Touch-Paddles am Bildschirm oder echte Taste/Paddle über einen Adapter
+• Touch-Keyer am Bildschirm oder echte Morsetaste über einen Adapter
 • Latenzarmer Mithörton, Ausgabe über Lautsprecher, Kopfhörer oder Bluetooth
 • Deutsch und Englisch, Statistik pro Zeichen, ausführliches Handbuch
 
@@ -84,7 +84,7 @@ GAMES
 • The text adventures Zork I–III, played entirely in CW
 
 ALSO
-• On-screen touch paddles, or a real key/paddle via an adapter
+• On-screen touch keyer, or a real Morse key via an adapter
 • Low-latency sidetone through speaker, headphones or Bluetooth
 • German and English, per-character statistics, detailed manual
 

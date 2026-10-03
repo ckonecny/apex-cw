@@ -37,6 +37,12 @@ wave icon: `hear_start.png`, `hear_type*.png`, `hear_result.png`,
 `morsel_lobby.png`, `mc_lobby.png`, `adv_game.png`, `adv_map*.png`, plus the
 character practice, Morse chart and Morse tree shots (icon added there).
 Optional new shot: the Störungen card itself (now with "Constant noise").
+- Issue #25 (Paddle → Morse key, text change on branch
+  `fix/rename-paddle-to-morse-key`, not yet installed on a device): retake the
+  screens that show the old wording, DE + EN: `home.png` (keyer tile
+  subtitle), `settings3.png` (section "vband Morse Key", "Dit-/Dah-Tasten
+  anlernen"), `echo*.png` (idle hint), Adaptive Copy hint/settings, adventure
+  input choice (`adv_settings*.png`), `adv_game.png`.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

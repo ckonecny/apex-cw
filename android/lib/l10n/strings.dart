@@ -28,7 +28,7 @@ class Strings {
   // key: [Deutsch, English]
   static const Map<String, List<String>> _map = {
     // ── Home ─────────────────────────────────────────────────────────────
-    'home_keyer_subtitle':     ['Morsetaste · Iambic · Touch-Paddle', 'Morse Key · Iambic · Touch Paddle'],
+    'home_keyer_subtitle':     ['Morsetaste · Iambic · Touch-Keyer', 'Morse Key · Iambic · Touch Keyer'],
     'home_wifitrx_subtitle':   ['CW über UDP · cq.morserino.info', 'CW over UDP · cq.morserino.info'],
 
     // ── Common ───────────────────────────────────────────────────────────
@@ -189,7 +189,7 @@ class Strings {
     'links_note': ['Externe Angebote, unabhängig von dieser App und nicht mit ihr verbunden. Die Links öffnen im Browser.', 'External sites, independent of this app and not affiliated with it. Links open in your browser.'],
     'link_open_failed': ['Link konnte nicht geöffnet werden', 'Could not open the link'],
     'link_lcwo_desc': ['Kostenloser Online-Kurs nach Koch mit Hör- und Gebeübungen', 'Free online Koch-method course with listening and keying drills'],
-    'link_vband_desc': ['Morsen über das Internet mit der Tastatur oder dem Paddle', 'Send CW over the internet with a keyboard or paddle'],
+    'link_vband_desc': ['Morsen über das Internet mit der Tastatur oder der Morsetaste', 'Send CW over the internet with a keyboard or a Morse key'],
     'link_morserino_desc': ['Der Morserino-32, das Gerät, dessen Trainingsmodi diese App nachbildet', 'The Morserino-32, the device whose training modes this app follows'],
     'link_heinz_desc': ['Video-Lehrreihe von Heinz („just me“) auf YouTube, Deutsch', 'Video course by Heinz ("just me") on YouTube, German'],
     'morsel_subtitle': ['Wort erraten · Hören und Geben', 'Guess the word · Listen and key'],
@@ -312,7 +312,7 @@ class Strings {
     'settings_answer_wpm_same': ['wie Hören', 'same as prompt'],
     'settings_answer_wpm_help': ['Deine Antwort wird mit höchstens diesem Tempo erwartet. Vorgespielt wird weiter mit dem normalen Tempo.', 'Your answer is expected at this speed at most. The prompt still plays at the normal speed.'],
     'echo_answer_wpm': ['Geben', 'Send'],
-    'settings_learn_paddle_keys': ['Paddle-Tasten anlernen', 'Learn paddle keys'],
+    'settings_learn_paddle_keys': ['Dit-/Dah-Tasten anlernen', 'Learn dit/dah keys'],
     'settings_analyze_key_events': ['Key-Events analysieren', 'Analyze key events'],
     'settings_build_time': ['Gebaut', 'Built'],
     'settings_developer': ['Entwickelt von', 'Developed by'],
@@ -350,7 +350,7 @@ class Strings {
     // ── CW Generator / Koch Trainer screen ───────────────────────────────
     'repeat_upper': ['WIEDERHOLEN', 'REPEAT'],
     'next_upper': ['WEITER', 'NEXT'],
-    'echo_idle_hint': ['Das Wort anhören und mit dem Paddle zurückgeben.', 'Listen to the word and key it back with the paddle.'],
+    'echo_idle_hint': ['Das Wort anhören und mit der Morsetaste zurückgeben.', 'Listen to the word and key it back with the Morse key.'],
     'get_ready': ['Bereit machen …', 'Get ready …'],
     'gen_status_line': [
       'WPM {wpm} (eff. {ewpm}) · Abstand {ic}/{iw}',
@@ -398,11 +398,11 @@ class Strings {
     'settings_hear_flow': ['Ablauf', 'Flow'],
     'settings_stop_each': ['Nach jeder Gruppe anhalten', 'Stop after each group'],
     'settings_stop_each_desc': [
-      'Nach jeder Gruppe bzw. jedem Wort wartet die App. Dit (linkes Paddle) wiederholt es, Dah (rechtes Paddle) spielt das nächste. Wie "Stop<Next>Rep" am Morserino.',
-      'After each group or word the app waits. Dit (left paddle) repeats it, dah (right paddle) plays the next. Like "Stop<Next>Rep" on the Morserino.'],
+      'Nach jeder Gruppe bzw. jedem Wort wartet die App. Dit (linke Taste) wiederholt es, Dah (rechte Taste) spielt das nächste. Wie "Stop<Next>Rep" am Morserino.',
+      'After each group or word the app waits. Dit (left key) repeats it, dah (right key) plays the next. Like "Stop<Next>Rep" on the Morserino.'],
     'settings_stop_each_word': ['Nach jedem Wort anhalten', 'Stop after each word'],
     'trend_line': ['Trend {pct} % {arrow}', 'Trend {pct} % {arrow}'],
-    'ac_paddle_hint': ['Paddle: Dit = wiederholen, Dah = weiter', 'Paddle: dit = repeat, dah = next'],
+    'ac_paddle_hint': ['Morsetaste: Dit = wiederholen, Dah = weiter', 'Morse key: dit = repeat, dah = next'],
     'ac_done_errors': ['Fertig · {n} Fehler', 'Done · {n} errors'],
     'ac_correct_of': ['{c} von {t} richtig', '{c} of {t} correct'],
     'ac_weak_chars': ['SCHWACHE ZEICHEN', 'WEAK CHARACTERS'],
@@ -614,9 +614,9 @@ class Strings {
     'adv_give_measured': ['gemessen (Handtaste)', 'measured (straight key)'],
     'adv_give_like': ['wie Hören', 'as listening'],
     'adv_input': ['Eingabe', 'Input'],
-    'adv_input_paddle': ['Paddle', 'Paddle'],
+    'adv_input_paddle': ['Morsetaste', 'Morse key'],
     'adv_input_keyboard': ['Tastatur', 'Keyboard'],
-    'adv_input_desc': ['Paddle: Touch-Keyer auf dem Bildschirm, Modus aus den Keyer-Einstellungen. Tastatur: für reines Hörtraining. Ein angeschlossenes Paddle (USB/Bluetooth) funktioniert in beiden Fällen.', 'Paddle: touch keyer on screen, mode from the keyer settings. Keyboard: for listening practice only. A connected paddle (USB/Bluetooth) works either way.'],
+    'adv_input_desc': ['Morsetaste: Touch-Keyer auf dem Bildschirm, Modus aus den Keyer-Einstellungen. Tastatur: für reines Hörtraining. Eine angeschlossene Morsetaste (USB/Bluetooth) funktioniert in beiden Fällen.', 'Morse key: touch keyer on screen, mode from the keyer settings. Keyboard: for listening practice only. A connected Morse key (USB/Bluetooth) works either way.'],
     'adv_send_with': ['Abschicken mit', 'Send with'],
     'adv_send_k': ['<AR> oder K', '<AR> or K'],
     'adv_send_btn': ['Nur Knopf', 'Button only'],
