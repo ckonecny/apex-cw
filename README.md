@@ -123,6 +123,9 @@ characters, boosts and Koch unlocks.
   key your guess back.
 - **Memory Chain** — one new character per round, key the whole chain from
   memory (Koch characters or call signs), high scores per mode.
+- **Trailblazer** and **Fox Hunt** — two maze games on a 12×4 grid with a
+  hidden path: key the highlighted letter (Trailblazer) or hear a letter and
+  key the direction to it (Fox Hunt); scored in characters per minute.
 
 ### Settings and Android integration
 
@@ -184,7 +187,7 @@ Module-by-module details: `docs/PORTING-MAP.md`.
 | CW Decoder (microphone → text) | ✅ Supported | Goertzel + firmware decoder port |
 | WiFi Trx (MOPP over UDP, e.g. cq.morserino.info) | ✅ Supported | Foreground only; no background service yet |
 | QSO Bot (SOTA/POTA, Standard, Contest) | ✅ Supported | |
-| Games: Morse Invaders, Morsel, Memory Chain | ✅ Supported | Single player |
+| Games: Morse Invaders, Morsel, Memory Chain, Trailblazer, Fox Hunt | ✅ Supported | Single player |
 | Text adventure: Zork I–III in CW | ✅ Supported | App-only (not in the firmware); own Z-machine v3 interpreter, maps, saves |
 | Settings, audio output routing, theme, text zoom, DE/EN UI | ✅ Supported | Android-native equivalents of device-only prefs |
 | Games: Trailblazer, Fox Hunt, Radio Cave, Fight the Pileup | 🚧 Not yet | GitHub issues #13–#15 (single player) |

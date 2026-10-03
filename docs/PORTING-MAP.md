@@ -22,7 +22,7 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | `MorseWiFi.cpp` / cwForTx() (WiFi Trx UDP protocol) | `lib/net/mopp.dart`, `lib/net/mopp_client.dart`, `lib/ui/wifi_trx_screen.dart` | Single server/peer, send + receive, in foreground only (2026-09-25), user-tested OK. ESP-NOW/LoRa: N/A |
 | `MorseMorsel.cpp` (Morsel, word guessing) | `lib/ui/morsel_screen.dart` (via `games_screen.dart`) | Ported, single player (2026-09-25), user-tested OK |
 | `MorseMemoryChain.cpp` (Memory Chain) | `lib/ui/memory_chain_screen.dart` (via `games_screen.dart`) | Ported (2026-09-25), user-tested OK |
-| `MorseGridEngine.cpp`, `MorseGridScore.cpp`, `MorseTrailblazer.cpp`, `MorseFoxHunt.cpp` (grid games) | — | GitHub issue #13 |
+| `MorseGridEngine.cpp`, `MorseGridScore.cpp`, `MorseTrailblazer.cpp`, `MorseFoxHunt.cpp` (grid games) | `lib/content/grid_engine.dart`, `lib/content/grid_score.dart`, `lib/ui/maze_game_screen.dart` (via `games_screen.dart`) | Ported (2026-10-03, issue #13), single player; see DECISIONS.md |
 | `MorseGame.cpp`, `MorseGameMode.cpp`, `GameSprite.cpp` (Morse Invaders) | `lib/ui/invaders_screen.dart` (via `games_screen.dart`), effects in `CwTonePlugin.kt` | Ported (2026-09-25), user-tested OK |
 | `MorseRadioCave.cpp` (Radio Cave, text adventure) | — | GitHub issue #14 |
 | `MorsePileup.cpp` (Fight the Pileup) | — | GitHub issue #15, single player only |

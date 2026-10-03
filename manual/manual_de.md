@@ -66,7 +66,7 @@ Die Startseite hat vier Gruppen:
 | **Üben** | **Hören** | Mitschreiben üben: CW Generator und Koch Trainer im Blockablauf |
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
 | **Frei** | **Freie Modi** | Öffnet fünf Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) |
-| **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain |
+| **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
 
 Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
@@ -1439,11 +1439,11 @@ an, solange du in einem Text bist.
 
 # Spiele
 
-Unter **Spielen → Spiele** findest du vier Spiele. Morsel, Morse Invaders
-und Memory Chain spielst du mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden
+Unter **Spielen → Spiele** findest du sechs Spiele. Morsel, Morse Invaders,
+Memory Chain, Trailblazer und Fox Hunt spielst du mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden
 die Keyer-Einstellungen. Die Koch-Lektion übernehmen sie aus **Geben**;
-Morsel und Memory Chain lassen sie dich zusätzlich nur für das Spiel ändern.
-Jedes dieser drei Spiele zeigt vor dem Start eine kurze Spielanleitung. Das
+Morsel, Memory Chain, Trailblazer und Fox Hunt lassen sie dich zusätzlich nur
+für das Spiel ändern. Jedes dieser fünf Spiele zeigt vor dem Start eine kurze Spielanleitung. Das
 [Text-Adventure](#text-adventure) hat eigene Einstellungen für Tempo und
 Eingabe; den Keyer-Modus nimmt es ebenfalls aus den Keyer-Einstellungen.
 
@@ -1531,6 +1531,37 @@ Die Bestenliste wird je Modus geführt.
 
 ::: {.shots .one}
 ![Memory Chain vor dem Start](img/de/mc_lobby.png)
+:::
+
+## Trailblazer und Fox Hunt
+
+Zwei Labyrinth-Spiele auf demselben Gitter: **12 × 4 Felder** mit Zeichen
+deiner Koch-Lektion. Darin versteckt sich ein **Pfad von links nach rechts**.
+Gezeichnet wird nur der Weg, den du schon gegangen bist, nie der Weg, der
+noch vor dir liegt. Die Spielfigur (grauer Kreis) rückt bei jeder richtigen
+Eingabe ein Feld weiter; am rechten Rand ist das Spiel gelöst.
+
+- **Trailblazer (Geben):** Das nächste Pfadfeld ist **gelb markiert**. Gib
+  sein Zeichen.
+- **Fox Hunt (Hören):** Du **hörst** das Zeichen des nächsten Pfadfelds und
+  gibst die **Richtung** dorthin, nicht das Zeichen selbst. Beispiel: Du hörst
+  S, und das S-Feld liegt rechts von deiner Figur: Dann gibst du **E**. Die Legende unter dem Gitter ordnet jeder
+  Richtung (↑ ↓ ← →) einen Buchstaben zu: **N, S, W, E**, soweit in deiner
+  Lektion gelernt. Sonst nimmt die Legende den ersten noch freien Buchstaben
+  deiner Lektion (**gelber Rahmen**). Der Ton hat die Halbton-Verschiebung
+  wie beim Geben-Trainer. Nach 5,5 s ohne Eingabe wiederholt er sich; mit
+  **Buchstabe wiederholen** hörst du ihn sofort noch einmal.
+- Ein falsches Zeichen (bei Fox Hunt: falsche Richtung oder kein Legenden-
+  Buchstabe) gibt einen Fehlerton und kostet **5 s**; ein richtiges Zeichen
+  einen Bestätigungston.
+- **Wertung:** Zeichen pro Minute (**CPM**) = Schritte über die Zeit samt
+  Strafzeit. Je Spiel gibt es eine eigene Bestenliste mit sieben Plätzen.
+- Die **Koch-Lektion** stellst du vor dem Start nur für dieses Spiel ein; sie
+  beginnt bei deiner Geben-Lektion. Das Tempo änderst du auch während des
+  Spiels mit − und +. Fox Hunt spielt das Zeichen in deinem Keyer-Tempo.
+
+::: {.shots .one}
+![Trailblazer vor dem Start](img/de/tb_lobby.png)
 :::
 
 ## Text-Adventure {#text-adventure}
@@ -1876,7 +1907,7 @@ auch unter schlechten Bedingungen zu lesen.
 
 Die Störungen wirken nur auf das, was die **Gegenstation** spielt, also auf
 den Text beim Hören, das Wort beim Geben, Eigene Texte, QSO Bot, WiFi Trx,
-Text-Adventure, Morsel und Memory Chain. Auch Zeichen üben, Morse-Tabelle und
+Text-Adventure, Morsel, Memory Chain, Trailblazer und Fox Hunt. Auch Zeichen üben, Morse-Tabelle und
 Morse-Baum spielen mit Störungen, solange der Schalter an ist, und zeigen das
 Wellen-Symbol ebenfalls. Dein eigener
 Mithörton beim Tasten bleibt immer sauber. Die Statistik merkt sich nicht, ob
@@ -1890,7 +1921,7 @@ farbig heißt an. **Kurz antippen** schaltet die Störungen an oder aus,
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Störungen simulieren | Hauptschalter | **Aus** / Ein |
-| Dauerrauschen | Rauschen und QRM stehen durchgehend an, solange eine Übung, ein Block oder ein Spiel läuft, auch zwischen den Zeichen und unter deinem Tasten (dein Mithörton bleibt sauber). Beim Hören und Geben gilt das für einen ganzen Block, bis das Ergebnis erscheint; in Morsel und Memory Chain für ein Spiel; in QSO Bot und WiFi Trx für die Sitzung bzw. Verbindung; in Eigene Texte nur während der Wiedergabe. Realistischer, aber anstrengender. Aus: Die Störung ist nur zu hören, während die Gegenstation sendet | **Aus** / Ein |
+| Dauerrauschen | Rauschen und QRM stehen durchgehend an, solange eine Übung, ein Block oder ein Spiel läuft, auch zwischen den Zeichen und unter deinem Tasten (dein Mithörton bleibt sauber). Beim Hören und Geben gilt das für einen ganzen Block, bis das Ergebnis erscheint; in Morsel, Memory Chain, Trailblazer und Fox Hunt für ein Spiel; in QSO Bot und WiFi Trx für die Sitzung bzw. Verbindung; in Eigene Texte nur während der Wiedergabe. Realistischer, aber anstrengender. Aus: Die Störung ist nur zu hören, während die Gegenstation sendet | **Aus** / Ein |
 | Voreinstellung | Fertige Mischungen. Sobald du einen Regler bewegst, steht dort „Eigene“ | Eigene / Leicht / KW abends / Pile-up |
 | Rauschen (SNR) | Abstand zwischen Signal und Rauschen, gemessen in einer festen Bandbreite von 2,4 kHz. Das Rauschen schwillt langsam an und ab und enthält gelegentliches Knacken | 0 % (kein Rauschen) bis 100 % (SNR −10 dB), Anzeige in dB |
 | Rauschfarbe | Wie hell das Rauschen klingt | 0 % dumpf (Höhen ab etwa 800 Hz abgesenkt) bis 100 % hell (etwa 3,2 kHz) |
