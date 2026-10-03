@@ -10,6 +10,26 @@ Flutter UI, with all CW timing and audio in native Kotlin/C++.
 
 By Christian Konecny, OE1CKO.
 
+## What sets it apart
+
+- **Realistic interference:** noise, QRM, QSB, pitch drift and timing jitter
+  on the other station, with presets and optional constant background noise,
+  so you practise for the band and not only for a clean signal.
+- **Copy by typing:** besides paper, Listen takes your answer on an on-screen
+  keyboard that offers only the characters of the current lesson, with a
+  second attempt for wrong words.
+- **Progress you can see:** statistics per character, weekly curves and a
+  heatmap, weak characters that come back in the next block, and adaptive
+  suggestions that you accept or reject.
+- **Habit support:** a daily goal for active practice time, a streak with a
+  free day per week, optional spreading over several sessions, a reminder
+  that only fires if the goal is still open, and awards for single steps
+  (a new character, a week with three new ones, spread-out practice, ...).
+  All of it stays on the device.
+- **Your own material and more games:** share any text from another app
+  into Own texts and let the app play it, plus games from arcade to a CW
+  text adventure.
+
 ## Origin and credits
 
 Many ideas and much of the training logic come from the open-source firmware
