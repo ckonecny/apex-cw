@@ -1,4 +1,4 @@
-// Detail sheet for one character of the statistics screen (tap on a row):
+// Detail screen for one character of the statistics screen (tap on a row):
 // overall vs. moving rate, the last results as a strip, when it was last
 // practised, its draw weight, what is still missing for the unlock (Listen)
 // and the mix-ups (Send). The moving rate is what the unlock rule uses, so
@@ -9,6 +9,7 @@ import '../../content/progress_series.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import '../../util/char_color.dart';
+import 'app_ui.dart';
 import 'progress_charts.dart';
 
 // Difference in percentage points below which "current" counts as equal to
@@ -28,18 +29,15 @@ Future<void> showCharStatSheet(
   required Map<String, DayStat> days,
   required Future<void> Function() onListen,
 }) {
-  final c = AppColors.of(context);
-  return showModalBottomSheet<void>(
-    context: context,
-    backgroundColor: c.surface,
-    isScrollControlled: true,
-    showDragHandle: true,
+  // A full screen with the usual app bar and back arrow instead of a bottom
+  // sheet that could only be closed by gesture (issue #28).
+  return Navigator.of(context).push(MaterialPageRoute<void>(
     builder: (_) => _CharStatSheet(
       ch: ch, stat: stat, isHear: isHear, ready: ready,
       unlockOccurrences: unlockOccurrences, highThreshold: highThreshold,
       outputCase: outputCase, pairs: pairs, days: days, onListen: onListen,
     ),
-  );
+  ));
 }
 
 class _CharStatSheet extends StatelessWidget {
@@ -128,9 +126,19 @@ class _CharStatSheet extends StatelessWidget {
       ..sort((a, b) => b.value.compareTo(a.value));
     final last = _lastPractised();
 
-    return SafeArea(
+    return Scaffold(
+      backgroundColor: c.background,
+      appBar: AppBar(
+        backgroundColor: c.background,
+        title: appBarTitle(c, display),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: c.textMuted),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             Container(
@@ -213,6 +221,7 @@ class _CharStatSheet extends StatelessWidget {
                                 style: mono.copyWith(color: c.warning)),
                         ])),
         ]),
+      ),
       ),
     );
   }

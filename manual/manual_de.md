@@ -1005,7 +1005,7 @@ davor fehlerfrei war. Das Häkchen braucht beides: genug Versuche (Standard 20)
 **und** eine aktuelle Quote über der Schwelle (Standard 90 %). Der Balken
 zeigt nur die Versuche, nicht die Quote.
 
-**Tippe auf ein Zeichen**, dann öffnet sich seine Detailansicht:
+**Tippe auf ein Zeichen** (in der Liste steht ein Hinweis dazu), dann öffnet sich seine Detailansicht als eigene Seite mit Pfeil zurück oben links. Sie zeigt:
 
 - **Gesamt** – Trefferquote über alle Versuche, mit Fehlern und Versuchen.
 - **Aktuell (gleitend)** – der Wert aus der Liste, mit Pfeil: ▲ besser,
@@ -1053,8 +1053,9 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
   oder Monat.
 - **Alle Zeichen, Woche für Woche**: eine Heatmap, Zeichen untereinander,
   Wochen nebeneinander, von rot (unter 60 %) bis grün (ab 90 %). Eine Zelle
-  mit weniger als 5 Versuchen bleibt leer. Die Zeichen und die Wochen-
-  überschriften bleiben stehen, nur die Zellen scrollen. **Schwächste zuerst**
+  mit weniger als 5 Versuchen bleibt leer. Passen die Wochen
+  nicht in die Breite (Alles), scrollen die Zellen und starten bei der
+  neuesten Woche; die Zeichen und Wochenüberschriften bleiben stehen. **Schwächste zuerst**
   sortiert nach der letzten Trefferquote. Tippe auf ein Zeichen, um seine
   Detailansicht zu öffnen.
 

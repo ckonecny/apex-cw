@@ -53,12 +53,17 @@ class LabeledSlider extends StatelessWidget {
     return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(children: [
-        Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-            color: c.textPrimary)),
-        const Spacer(),
-        Text(display, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-            color: c.accent)),
+      // Both texts may wrap instead of overflowing (issue #29).
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Flexible(
+          child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+              color: c.textPrimary)),
+        ),
+        const SizedBox(width: 12),
+        Flexible(
+          child: Text(display, textAlign: TextAlign.end,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent)),
+        ),
       ]),
       SliderTheme(
         data: SliderTheme.of(context).copyWith(
@@ -94,12 +99,17 @@ class LabeledRangeSlider extends StatelessWidget {
     return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(children: [
-        Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-            color: c.textPrimary)),
-        const Spacer(),
-        Text(display, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-            color: c.accent)),
+      // Both texts may wrap instead of overflowing (issue #29).
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Flexible(
+          child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+              color: c.textPrimary)),
+        ),
+        const SizedBox(width: 12),
+        Flexible(
+          child: Text(display, textAlign: TextAlign.end,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent)),
+        ),
       ]),
       SliderTheme(
         data: SliderTheme.of(context).copyWith(

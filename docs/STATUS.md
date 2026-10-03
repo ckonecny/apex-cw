@@ -44,6 +44,11 @@ Optional new shot: the Störungen card itself (now with "Constant noise").
   anlernen"), `echo*.png` (idle hint), Adaptive Copy hint/settings, adventure
   input choice (`adv_settings*.png`), `adv_game.png`.
 
+- Issues #26/#28/#29 (branch `fix/gui-issues-26-28-29`, not yet installed on
+  a device): retake `hear_char_detail.png`, `echo_char_detail.png` (now a page
+  with app bar), `hear_progress.png`/`echo_progress.png` (heatmap fits/starts
+  at newest week) and the Characters tab shots (new tap hint), DE + EN.
+
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual

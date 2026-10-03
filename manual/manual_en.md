@@ -978,7 +978,7 @@ single miss even if it was flawless before. The tick needs both: enough
 attempts (default 20) **and** a current accuracy above the threshold (default
 90 %). The bar shows only the attempts, not the accuracy.
 
-**Tap a character** to open its detail view:
+**Tap a character** (a hint on the list says so) to open its detail view as a page of its own, with a back arrow at the top left. It shows:
 
 - **Overall** – accuracy over all attempts, with errors and attempts.
 - **Current (moving)** – the value from the list, with an arrow: ▲ better,
@@ -1021,8 +1021,8 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
   month.
 - **All characters, week by week**: a heatmap, characters down, weeks across,
   from red (below 60 %) to green (from 90 %). A cell with fewer than 5
-  attempts stays empty. The characters and the week headings stay in place
-  while the cells scroll. **Weakest first** sorts by the latest hit rate. Tap
+  attempts stays empty. If the weeks don't fit the width (All), the cells scroll
+  and start at the newest week; the characters and week headings stay in place. **Weakest first** sorts by the latest hit rate. Tap
   a character to open its detail view.
 
 ::: {.shots .three}
