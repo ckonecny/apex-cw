@@ -1211,3 +1211,43 @@ Wish: the noise should not only sound while the other station is played but stan
 
 ## 2026-10-02: "Paddle" becomes "Morse key" in all user-visible text (issue #25)
 EN generic term "Morse key", DE "Morsetaste" (matches the home screen subtitle). Where the two sides of the keyer must be told apart: "dit key" / "dah key" (DE "Dit-Taste" / "Dah-Taste", "linke/rechte Taste"), not "lever/Hebel" and not "paddle". The single-lever key stays "straight key" / "Handtaste". On-screen: "touch keyer" / "Touch-Keyer". Manual heading "Paddle und Morsetaste" is now "Morsetaste" (anchor `#morsetaste` / `#morse-key`), "Learning the paddle keys" is "Learning the dit and dah keys". Settings section header: "vband Morse Key". Internal identifiers (`paddle_widgets.dart`, string keys like `ac_paddle_hint`, native method names `setPaddleChoice`, `startLearnPaddle`, ...) are deliberately **not** renamed: not user-visible, and the Dart/Kotlin channel names must change together (rule 2); a rename would be its own change.
+
+## 2026-10-03: Practice log (issue #30, part of #3)
+Foundation for the daily goal / streak (#31), spaced sessions (#33) and the
+achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
+(models, JSON, storage), `util/practice_clock.dart` (the clock), tests in
+`test/practice_clock_test.dart`.
+- **Active time, not screen time.** The clock runs only while a training
+  screen is open (`PracticeClock.enter(mode)` / `leave()`, placed next to the
+  `KeepScreenOn` calls), the app is in the foreground, and the user is active:
+  a touch (global pointer route) or a key symbol within 20 s, or audio playing
+  (`audioPlaying`, set by Hören and Eigene Texte; each start also touches, so
+  the short gaps between words don't break it). One tick per second, a step is
+  at most 2 s (a sleeping device must not credit the gap).
+- **Counted modes:** Hören (`hear`: generator, adaptive copy, character
+  practice), Geben (`echo`), games (`game`), adventure, QSO bot, own texts,
+  Morse key (`keyer`). **Not counted:** CW decoder and WiFi Trx (tools, not
+  training), reference screens (chart, tree).
+- **Sessions:** a session ends after 5 min without credited time. Stored as
+  `{start ms, seconds, first mode}`, the last 300 kept. Per day: seconds,
+  sessions started, sessions that reached 5 min ("long", for #33).
+- **Day = 04:00 to 04:00 local time** (`practiceDayKey`), so practice after
+  midnight counts for the evening before. The per-character statistics keep
+  plain calendar days; the two are not mixed in one figure.
+- **Milestones** `{day, kind, value}`: `koch.hear|echo` (character count, only
+  when an adaptive unlock suggestion is accepted — not when the level is set by
+  hand, so exploring doesn't count) and `wpm.hear|echo` (records only, accepted
+  speed suggestions). Identical kind+value is logged once; two Koch charsets
+  with the same count therefore share one entry (accepted). Counting starts
+  with this version, no back-fill.
+- **Off switch:** `practice.enabled` (default on; the settings UI comes with
+  #31/#34, in the general settings). While off nothing is recorded or
+  logged; stored data is kept (`reset` keeps the flag too). When switched on
+  again the streak has a gap for the time off.
+- **Storage:** SharedPreferences `practice.days|sessions|milestones` (JSON),
+  saved every 30 s of credited time, on leaving the screen and when the app
+  goes to the background. Local only; PRIVACY.md already covers it
+  ("Trainingsfortschritt, Statistiken").
+- **Known limit:** Bluetooth/paddle key presses count as activity only on the
+  screens that listen to the symbol stream (echo, keyer, adventure, character
+  practice, games); QSO bot and memory chain rely on touches and playback.

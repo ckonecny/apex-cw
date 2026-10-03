@@ -30,6 +30,13 @@ phone's own data was restored afterwards.
 ## Manual: pending for next release
 (none — all screenshots retaken for v1.4.0, manual built)
 
+## In progress: daily goal series (#3)
+Branch `feature/practice-log`: #30 practice log implemented (clock, sessions,
+milestones, tests; see `docs/DECISIONS.md` 2026-10-03), **not yet installed on
+the test phone, not committed**. Next: #31 (goal card, mockup approved: card at
+the top of home, all tiles without scrolling, tap opens the achievements
+screen, switch in general settings), then #32–#35.
+
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual

@@ -26,6 +26,7 @@ import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
+import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/paddle_widgets.dart';
 
@@ -134,6 +135,7 @@ class _InvadersScreenState extends State<InvadersScreen>
   void initState() {
     super.initState();
     KeepScreenOn.enable();
+    PracticeClock.instance.enter('game');
     WidgetsBinding.instance.addObserver(this);
     _decoder = MorseDecoder(onChar: _onDecodedChar);
     _ticker = createTicker(_onTick);
@@ -143,6 +145,7 @@ class _InvadersScreenState extends State<InvadersScreen>
   @override
   void dispose() {
     KeepScreenOn.disable();
+    PracticeClock.instance.leave();
     WidgetsBinding.instance.removeObserver(this);
     _gen++;
     _ticker.dispose();
@@ -193,7 +196,10 @@ class _InvadersScreenState extends State<InvadersScreen>
             TrainingProfile.defaultInterWord(TrainingProfile.keyer)).clamp(6, 105));
     await _keyerChannel.invokeMethod('stop');
 
-    _symbolSub = _symbolStream.receiveBroadcastStream().listen(_onSymbol);
+    _symbolSub = _symbolStream.receiveBroadcastStream().listen((s) {
+      PracticeClock.instance.touch();
+      _onSymbol(s);
+    });
     _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
       if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
     });

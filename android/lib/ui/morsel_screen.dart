@@ -22,6 +22,7 @@ import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
+import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/paddle_widgets.dart';
 
@@ -134,6 +135,7 @@ class _MorselScreenState extends State<MorselScreen> {
   void initState() {
     super.initState();
     KeepScreenOn.enable();
+    PracticeClock.instance.enter('game');
     _decoder = MorseDecoder(onChar: _onDecodedChar);
     _load();
   }
@@ -142,6 +144,7 @@ class _MorselScreenState extends State<MorselScreen> {
   void dispose() {
     InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
+    PracticeClock.instance.leave();
     _gen++;
     _submitTimer?.cancel();
     _idleTimer?.cancel();
@@ -189,7 +192,10 @@ class _MorselScreenState extends State<MorselScreen> {
     await _keyerChannel.invokeMethod('setInterWordSpace', _wordGapDits);
 
     _genSub = _genEvents.receiveBroadcastStream().listen(_onGenEvent);
-    _symbolSub = _symbolStream.receiveBroadcastStream().listen(_onSymbol);
+    _symbolSub = _symbolStream.receiveBroadcastStream().listen((s) {
+      PracticeClock.instance.touch();
+      _onSymbol(s);
+    });
     _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
       if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
     });

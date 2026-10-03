@@ -25,6 +25,7 @@ import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
+import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/paddle_widgets.dart';
 
@@ -117,6 +118,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
   void initState() {
     super.initState();
     KeepScreenOn.enable();
+    PracticeClock.instance.enter('game');
     WidgetsBinding.instance.addObserver(this);
     _decoder = MorseDecoder(onChar: _onDecodedChar, unknown: '*');
     _load();
@@ -126,6 +128,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
   void dispose() {
     InterferenceProfile.releaseAmbient(this);
     KeepScreenOn.disable();
+    PracticeClock.instance.leave();
     WidgetsBinding.instance.removeObserver(this);
     _gen++;
     _genSub?.cancel();

@@ -12,6 +12,7 @@ import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
+import '../util/practice_clock.dart';
 
 class KeyerScreen extends StatefulWidget {
   const KeyerScreen({super.key});
@@ -46,6 +47,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
   void initState() {
     super.initState();
     KeepScreenOn.enable();
+    PracticeClock.instance.enter('keyer');
     _decoder = MorseDecoder(onChar: (ch) {
       if (mounted) {
         setState(() {
@@ -57,7 +59,10 @@ class _KeyerScreenState extends State<KeyerScreen> {
       });
       }
     });
-    _symbolStream.receiveBroadcastStream().listen((sym) => _decoder.add(sym as String));
+    _symbolStream.receiveBroadcastStream().listen((sym) {
+      PracticeClock.instance.touch();
+      _decoder.add(sym as String);
+    });
     _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
       if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
     });
@@ -98,6 +103,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
   @override
   void dispose() {
     KeepScreenOn.disable();
+    PracticeClock.instance.leave();
     _wpmSub?.cancel();
     _keyerChannel.invokeMethod('stop');
     super.dispose();
