@@ -1012,8 +1012,18 @@ Minuten. Das Zahnrad öffnet die Einstellungen dazu:
 |---|---|---|
 | Tagesziel | Minuten aktive Übungszeit pro Tag | 5 / **10** / 15 / 20 / 30 / 60 min |
 | Freier Tag pro Woche | Überbrückt einen verpassten Tag pro Woche | **An** / Aus |
+| Auf Sessions verteilen | Das Tagesziel zählt erst, wenn die Zeit auf 3 oder 5 getrennte Sessions verteilt ist (siehe unten) | **Aus** / 3× / 5× |
 | Erinnerung | Eine Benachrichtigung zur gewählten Uhrzeit, nur wenn dein Ziel dann noch offen ist. Beim Einschalten fragt die App nach der Erlaubnis für Benachrichtigungen | **Aus** / An, Uhrzeit (**19:00**) |
 | Tagesziel und Erfolge anzeigen | Blendet die Karte aus und stoppt die Aufzeichnung. Die Daten bleiben erhalten; hier oder unter **Einstellungen → Allgemein** wieder einschalten | **An** / Aus |
+
+**Auf Sessions verteilen.** In kleinen Häppchen lernt man besser als in einem
+langen Block. Mit 3× oder 5× zählt das Tagesziel erst, wenn die Übungszeit
+erreicht ist **und** du mindestens so viele Sessions geübt hast. Eine Session
+zählt, wenn sie mindestens 5 Minuten dauert und frühestens 15 Minuten nach dem
+Ende der vorigen gezählten Session beginnt. Eine Session, die zu früh beginnt,
+bringt weiter Übungszeit, zählt aber nicht als Session. Der Ring zeigt dann die
+Sessions (z. B. „1 von 3“), darunter steht, wann die nächste Session zählt.
+Standardmäßig aus, nicht jeder hat Zeit für mehrere Sessions am Tag.
 
 **Erinnerung.** Optional und standardmäßig aus. Zur gewählten Uhrzeit bekommst
 du eine freundliche Benachrichtigung, aber nur, wenn dein Ziel für diesen Tag

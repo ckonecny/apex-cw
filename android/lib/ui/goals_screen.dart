@@ -160,6 +160,18 @@ class _GoalSettingsScreenState extends State<GoalSettingsScreen> {
             },
           ),
           const SettingsDivider(),
+          SegmentRow(
+            label: Strings.t('goal_sessions'),
+            options: [Strings.t('goal_sessions_off'),
+              for (final n in kSessionChoices) '$n×'],
+            selected: _s.sessions == 0 ? 0 : kSessionChoices.indexOf(_s.sessions) + 1,
+            onChanged: (i) {
+              setState(() => _s.sessions = i == 0 ? 0 : kSessionChoices[i - 1]);
+              if (_p != null) _s.save(_p!).then((_) => Reminder.refresh());
+            },
+          ),
+          desc('goal_sessions_desc'),
+          const SettingsDivider(),
           ToggleRow(label: Strings.t('goal_grace'), value: _s.grace,
               onChanged: (v) {
                 setState(() => _s.grace = v);

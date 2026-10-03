@@ -10,11 +10,19 @@ String goalStreakText(int n) => n <= 0
         ? Strings.t('goal_streak_one')
         : Strings.t('goal_streak_n').replaceFirst('{n}', '$n');
 
-String goalSubtitle(GoalStatus g) => g.met
-    ? Strings.t('goal_done')
-    : g.todaySeconds == 0 && g.streak == 0
-        ? Strings.t('goal_hint').replaceFirst('{n}', '${g.goalSeconds ~/ 60}')
-        : Strings.t('goal_left').replaceFirst('{n}', '${g.minutesLeft}');
+String goalSubtitle(GoalStatus g) {
+  if (g.met) return Strings.t('goal_done');
+  final wait = g.nextIn;
+  // Spaced goal: while sessions are still missing, say when the next one counts.
+  if (wait != null) {
+    final m = (wait.inSeconds / 60).ceil();
+    return Strings.t(m == 0 ? 'goal_sess_now' : 'goal_sess_wait')
+        .replaceFirst('{m}', '$m');
+  }
+  return g.todaySeconds == 0 && g.streak == 0
+      ? Strings.t('goal_hint').replaceFirst('{n}', '${g.goalSeconds ~/ 60}')
+      : Strings.t('goal_left').replaceFirst('{n}', '${g.minutesLeft}');
+}
 
 /// Progress ring (partial progress shown as an arc, a check when met).
 class GoalRing extends StatelessWidget {
@@ -38,9 +46,10 @@ class GoalRing extends StatelessWidget {
             children: [
               status.met
                   ? Icon(Icons.check, color: c.accent, size: size * 0.3)
-                  : Text('${status.minutesToday}', style: TextStyle(
+                  : Text('${status.sessionsGoal > 0 ? status.sessionsDone : status.minutesToday}', style: TextStyle(
                       fontFamily: 'CwMono', fontSize: size * 0.27, color: c.textPrimary)),
-              Text(Strings.t('goal_of_min').replaceFirst('{n}', '${status.goalSeconds ~/ 60}'),
+              Text(Strings.t('goal_of_min').replaceFirst('{n}',
+                  '${status.sessionsGoal > 0 ? status.sessionsGoal : status.goalSeconds ~/ 60}'),
                   style: TextStyle(fontFamily: 'CwMono', fontSize: size * 0.14, color: c.textMuted)),
             ],
           )),
@@ -151,7 +160,8 @@ class DailyGoalCard extends StatelessWidget {
                 ? Column(mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start, children: [
                     streak,
-                    Text('${status.minutesToday} / ${status.goalSeconds ~/ 60} min',
+                    Text('${status.sessionsGoal > 0 ? '${status.sessionsDone}/${status.sessionsGoal} · ' : ''}'
+                        '${status.minutesToday} / ${status.goalSeconds ~/ 60} min',
                         style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
                   ])
                 : Column(mainAxisAlignment: MainAxisAlignment.center,

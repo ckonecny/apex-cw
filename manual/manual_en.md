@@ -986,8 +986,18 @@ The gear icon opens its settings:
 |---|---|---|
 | Daily goal | Minutes of active practice per day | 5 / **10** / 15 / 20 / 30 / 60 min |
 | One free day per week | Bridges one missed day per week | **On** / Off |
+| Spread over sessions | The daily goal only counts once the time is spread over 3 or 5 separate sessions (see below) | **Off** / 3× / 5× |
 | Reminder | A notification at the chosen time, only if your goal is still open then. The app asks for the notification permission when you switch it on | **Off** / On, time (**19:00**) |
 | Show daily goal and achievements | Hides the card and stops recording. The data is kept; switch it on again here or under **Settings → General** | **On** / Off |
+
+**Spread over sessions.** Learning in small chunks works better than one long
+block. With 3× or 5× the daily goal only counts once the practice time is
+reached **and** you have practised at least that many sessions. A session
+counts if it lasts at least 5 minutes and starts at least 15 minutes after the
+previous counted session ended. A session that starts too early still adds
+practice time but does not count as a session. The ring then shows the
+sessions (e.g. "1 of 3"), and below it says when the next session counts. Off
+by default, not everybody has time for several sessions a day.
 
 **Reminder.** Optional and off by default. At the chosen time you get a
 friendly notification, but only if your goal for that day is still open. The

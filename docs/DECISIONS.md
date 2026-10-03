@@ -1290,3 +1290,23 @@ achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
 - Off by default; `POST_NOTIFICATIONS` is requested only when switching on
   (refusal keeps it off). Off with the goal feature (`practice.enabled`).
 - Notification: dit-dah status icon, friendly text, no streak threats.
+
+## 2026-10-03: Spaced sessions (issue #33, part of #3)
+
+- **Setting** `goal.sessions` = 0 (off, default) / 3 / 5. Not a separate goal:
+  the day is met when the minutes goal is reached **and** that many sessions
+  counted. This keeps one number per day for streak, week dots and reminder
+  (`GoalStatus.met`).
+- **A session counts** (`countedSessions`) if it has at least
+  `kLongSessionSeconds` (5 min) and starts at least `kSessionPause` (15 min)
+  after the end of the previous *counted* one. Sessions that are too close are
+  skipped, not merged: their time still adds to the total.
+- **Session end** is now stored (`PracticeSession.end`, JSON key `e`, set at
+  every credited step) because pauses of up to 5 min inside a session make
+  start + seconds too early. Old entries without it fall back to start + seconds.
+- **Past days** need their session entries. The log keeps 300 sessions; a past
+  day without entries counts by time alone, so old days stay valid.
+- **Card:** ring shows counted sessions ("1 of 3") and the arc is the lesser of
+  time and session progress; subtitle names when the next session counts. The
+  "next in N min" text updates when the card is rebuilt, not by a timer.
+

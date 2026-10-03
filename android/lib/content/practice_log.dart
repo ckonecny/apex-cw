@@ -15,6 +15,7 @@ String practiceDayKey(DateTime d) =>
     dayKey(d.subtract(const Duration(hours: kPracticeDayRolloverHour)));
 
 /// A session counts as "long" from this many seconds on (spaced goal, #33).
+/// The same figure is the minimum length of a session in the spaced goal.
 const kLongSessionSeconds = 5 * 60;
 
 /// Oldest sessions are dropped beyond this many.
@@ -40,17 +41,24 @@ class PracticeSession {
   int seconds;
   final String mode;
 
-  PracticeSession(this.start, this.mode, [this.seconds = 0]);
+  /// Epoch ms of the last credited step (0 = unknown: older entries, then
+  /// start + seconds is used). Pauses inside a session make it later than that.
+  int end;
+
+  PracticeSession(this.start, this.mode, [this.seconds = 0]) : end = 0;
 
   PracticeSession.fromJson(Map<String, dynamic> j)
       : start = j['t'] as int? ?? 0,
         seconds = j['d'] as int? ?? 0,
-        mode = j['m'] as String? ?? '';
+        mode = j['m'] as String? ?? '',
+        end = j['e'] as int? ?? 0;
 
-  Map<String, dynamic> toJson() => {'t': start, 'd': seconds, 'm': mode};
+  Map<String, dynamic> toJson() => {'t': start, 'd': seconds, 'm': mode, 'e': end};
 
   DateTime get startTime => DateTime.fromMillisecondsSinceEpoch(start);
-  DateTime get endTime => startTime.add(Duration(seconds: seconds));
+  DateTime get endTime => end > start
+      ? DateTime.fromMillisecondsSinceEpoch(end)
+      : startTime.add(Duration(seconds: seconds));
 }
 
 class Milestone {

@@ -73,4 +73,62 @@ void main() {
     expect(g.todaySeconds, 300);
     expect(g.weekSeconds, 900);
   });
+
+  group('spaced sessions (#33)', () {
+    PracticeSession sess(int h, int m, int minutes) {
+      final st = DateTime(2026, 10, 7, h, m);
+      return PracticeSession(st.millisecondsSinceEpoch, 'hear', minutes * 60);
+    }
+
+    final spaced = DailyGoalSettings(minutes: 10, grace: true, sessions: 3);
+
+    test('too short or too close sessions do not count', () {
+      final c = countedSessions([
+        sess(8, 0, 6), // counts, ends 08:06
+        sess(8, 10, 6), // only 4 min after the end: no
+        sess(8, 21, 4), // far enough but under 5 min: no
+        sess(8, 21, 5), // counts (15 min after 08:06)
+      ]);
+      expect(c.length, 2);
+    });
+
+    test('pauses inside a session move its end', () {
+      final a = sess(8, 0, 6)..end = DateTime(2026, 10, 7, 8, 12).millisecondsSinceEpoch;
+      // 08:20 is 20 min after the real start-based end, but only 8 after 08:12.
+      expect(countedSessions([a, sess(8, 20, 6)]).length, 1);
+    });
+
+    test('goal needs time and sessions; next one is announced', () {
+      final l = PracticeLog();
+      l.days['2026-10-07'] = PracticeDay()..seconds = 12 * 60;
+      l.sessions.addAll([sess(8, 0, 6), sess(8, 40, 6)]);
+      var g = goalStatus(l, spaced, DateTime(2026, 10, 7, 8, 50));
+      expect(g.sessionsDone, 2);
+      expect(g.met, isFalse);
+      expect(g.nextIn, const Duration(minutes: 11));
+      expect(g.progress, closeTo(2 / 3, 1e-9));
+      l.sessions.add(sess(9, 10, 5));
+      g = goalStatus(l, spaced, DateTime(2026, 10, 7, 9, 20));
+      expect(g.met, isTrue);
+      expect(g.nextIn, isNull);
+    });
+
+    test('off: sessions are ignored', () {
+      final l = PracticeLog();
+      l.days['2026-10-07'] = PracticeDay()..seconds = 600;
+      final g = goalStatus(l, s, DateTime(2026, 10, 7, 12));
+      expect(g.met, isTrue);
+      expect(g.nextIn, isNull);
+    });
+
+    test('a past day without enough sessions breaks the streak', () {
+      final l = PracticeLog();
+      l.days['2026-10-06'] = PracticeDay()..seconds = 900;
+      l.sessions.add(PracticeSession(
+          DateTime(2026, 10, 6, 9).millisecondsSinceEpoch, 'hear', 900));
+      final g = goalStatus(l, DailyGoalSettings(minutes: 10, grace: false, sessions: 3),
+          DateTime(2026, 10, 7, 12));
+      expect(g.streak, 0);
+    });
+  });
 }

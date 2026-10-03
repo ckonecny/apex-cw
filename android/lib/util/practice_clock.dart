@@ -121,6 +121,7 @@ class PracticeClock with WidgetsBindingObserver {
       log.days.putIfAbsent(practiceDayKey(now), () => PracticeDay()).sessions++;
     }
     _lastCredit = now;
+    s.end = now.millisecondsSinceEpoch;
 
     final day = log.days.putIfAbsent(practiceDayKey(now), () => PracticeDay());
     _carryMs += elapsed;
