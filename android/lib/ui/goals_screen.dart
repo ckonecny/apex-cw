@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/achievements.dart';
 import '../content/daily_goal.dart';
+import '../content/weekly_review.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/practice_clock.dart';
@@ -61,6 +62,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
           const SettingsDivider(),
           _row(c, Strings.t('goal_week'), _min(g.weekSeconds)),
         ]),
+        ..._review(c),
         const SizedBox(height: 24),
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
@@ -77,9 +79,76 @@ class _GoalsScreenState extends State<GoalsScreen> {
     );
   }
 
+  List<Widget> _review(AppColors c) {
+    final r = weeklyReview(PracticeClock.instance.log, DateTime.now());
+    if (r.empty) return const [];
+    String vs(String a, String? b) =>
+        b == null ? a : Strings.t('wr_vs').replaceFirst('{a}', a).replaceFirst('{b}', b);
+    String pct(double e) => '${(e * 100).round()} %';
+    return [
+      const SizedBox(height: 24),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+        child: Text('${Strings.t('wr_title')} · ${Strings.t(r.current ? 'wr_this' : 'wr_last')}'
+            .toUpperCase(), style: TextStyle(
+            fontFamily: 'CwMono', fontSize: 11, letterSpacing: 1, color: c.textMuted)),
+      ),
+      SettingsCard(children: [
+        _row(c, Strings.t('wr_time'),
+            vs(_min(r.seconds), r.prevSeconds > 0 ? _min(r.prevSeconds) : null)),
+        const SettingsDivider(),
+        _row(c, Strings.t('wr_days'), Strings.t('wr_days_val').replaceFirst('{n}', '${r.days}')),
+        const SettingsDivider(),
+        _row(c, Strings.t('wr_chars'), '${r.newCharacters}'),
+        const SettingsDivider(),
+        _row(c, Strings.t('wr_errors'),
+            r.errors == null ? '–' : vs(pct(r.errors!), r.prevErrors == null ? null : pct(r.prevErrors!))),
+      ]),
+    ];
+  }
+
+  void _details(AppColors c, Achievement a) {
+    Widget row(String label, String value) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(children: [
+            Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary)),
+            const Spacer(),
+            Text(value, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent)),
+          ]),
+        );
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: c.surface,
+      isScrollControlled: true,
+      builder: (_) => SafeArea(child: SingleChildScrollView(child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Icon(a.unlocked ? Icons.emoji_events : Icons.lock_outline,
+                color: a.unlocked ? c.accent : c.textFaint, size: 28),
+            const SizedBox(width: 12),
+            Expanded(child: Text(Strings.t('ach_${a.id}'), style: TextStyle(
+                fontFamily: 'CwMono', fontSize: 18, color: c.textPrimary))),
+          ]),
+          const SizedBox(height: 12),
+          Text(Strings.t('ach_${a.id}_i'), style: TextStyle(
+              fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+          const SizedBox(height: 12),
+          if (a.unlocked) ...[
+            row(Strings.t('ach_first'), _date(a.earned!)),
+            row(Strings.t('ach_last'), _date(a.last!)),
+            row(Strings.t('ach_count'), Strings.t('ach_count_n').replaceFirst('{n}', '${a.count}')),
+          ] else
+            Text(Strings.t('ach_not_yet'), style: TextStyle(
+                fontFamily: 'CwMono', fontSize: 13, color: c.textFaint)),
+        ]),
+      ))),
+    );
+  }
+
   Widget _achievement(AppColors c, Achievement a) {
     final color = a.unlocked ? c.accent : c.textFaint;
-    return Padding(
+    return InkWell(onTap: () => _details(c, a), child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Icon(a.unlocked ? Icons.emoji_events : Icons.lock_outline, color: color, size: 26),
@@ -96,7 +165,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
               fontFamily: 'CwMono', fontSize: 11, color: color)),
         ])),
       ]),
-    );
+    ));
   }
 
   /// Day key `2026-10-07` as `07.10.2026` (German) or unchanged (English).

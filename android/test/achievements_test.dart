@@ -83,4 +83,24 @@ void main() {
     expect(b.blocks.single.interference, isTrue);
     expect(b.blocks.single.errors, closeTo(0.047, 1e-9));
   });
+
+  test('every occurrence is kept: first, last, count', () {
+    final l = PracticeLog();
+    l.milestones.addAll(const [
+      Milestone('2026-10-01', MilestoneKind.kochHear, 6),
+      Milestone('2026-10-03', MilestoneKind.kochHear, 7),
+      Milestone('2026-10-02', MilestoneKind.kochEcho, 6), // same character, other training
+    ]);
+    final a = achievements(l).firstWhere((x) => x.id == AchievementId.charFirst);
+    expect(a.count, 2);
+    expect(a.earned, '2026-10-01');
+    expect(a.last, '2026-10-03');
+    l.milestones.addAll(const [
+      Milestone('2026-10-05', MilestoneKind.wpmHear, 14),
+      Milestone('2026-10-09', MilestoneKind.wpmEcho, 16),
+    ]);
+    final s = achievements(l).firstWhere((x) => x.id == AchievementId.speedRecord);
+    expect([s.count, s.earned, s.last], [2, '2026-10-05', '2026-10-09']);
+    expect(achievements(l).firstWhere((x) => x.id == AchievementId.comeback).count, 0);
+  });
 }

@@ -1016,6 +1016,13 @@ Minuten und darunter die **Auszeichnungen** (siehe unten). Das Zahnrad öffnet d
 | Erinnerung | Eine Benachrichtigung zur gewählten Uhrzeit, nur wenn dein Ziel dann noch offen ist. Beim Einschalten fragt die App nach der Erlaubnis für Benachrichtigungen | **Aus** / An, Uhrzeit (**19:00**) |
 | Tagesziel und Erfolge anzeigen | Blendet die Karte aus und stoppt die Aufzeichnung. Die Daten bleiben erhalten; hier oder unter **Einstellungen → Allgemein** wieder einschalten | **An** / Aus |
 
+**Wochenrückblick.** Unter Heute und Woche fasst eine kurze Karte eine Woche
+zusammen: Übungszeit, Übungstage, neue Zeichen und Fehlerquote, jeweils mit dem
+Wert der Woche davor in Klammern. Am Sonntag zeigt sie die laufende Woche, an
+allen anderen Tagen die letzte abgeschlossene (Montag bis Sonntag). Die
+Fehlerquote erscheint ab 3 Blöcken in der Woche. Ohne Übung in dieser Woche
+fehlt die Karte. Kein Ranking, nichts verlässt das Gerät.
+
 **Auszeichnungen.** Zehn Stück, ohne Pop-ups beim Üben, nur auf der Seite. Eine
 erreichte Auszeichnung zeigt den Tag, an dem du sie zum ersten Mal erreicht
 hast, die offenen sind grau mit Schloss. Alles bleibt auf dem Gerät.
@@ -1032,6 +1039,11 @@ hast, die offenen sind grau mit Schloss. Alles bleibt auf dem Gerät.
 | Trotz Störung | Ein Block mit eingeschalteter Störung und unter 10 % Fehlern |
 | Neues Tempo | Neuer Tempo-Rekord in Hören oder Geben |
 | Wieder da | Nach mindestens 7 Tagen Pause wieder geübt |
+
+Tippe auf eine Auszeichnung: Du siehst, was sie aussagt, wann du sie zum
+ersten Mal und zuletzt erreicht hast und wie oft (offene zeigen nur die
+Erklärung). „Wie oft“ zählt je Auszeichnung etwas anderes, das steht im Text
+dort, z. B. neue Zeichen, Wochen, Tage oder Blöcke.
 
 Die Fehlerquote zählt Hören und Geben zusammen. Auszeichnungen für Blöcke
 gibt es erst ab Blöcken, die nach diesem Update gespielt wurden.

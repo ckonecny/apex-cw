@@ -25,10 +25,15 @@ class AchievementId {
 class Achievement {
   final String id;
 
-  /// practiceDayKey of the day it was earned, null while locked.
-  final String? earned;
-  const Achievement(this.id, this.earned);
-  bool get unlocked => earned != null;
+  /// practiceDayKey of every time the rule was met, oldest first (empty while
+  /// locked). Two entries can share a day.
+  final List<String> days;
+  const Achievement(this.id, this.days);
+
+  bool get unlocked => days.isNotEmpty;
+  int get count => days.length;
+  String? get earned => days.isEmpty ? null : days.first;
+  String? get last => days.isEmpty ? null : days.last;
 }
 
 /// Weeks in a row with a new character that earn [AchievementId.charStreak].
@@ -48,38 +53,43 @@ DateTime _dateOf(String key) {
 String _keyOf(DateTime d) => '${d.year.toString().padLeft(4, '0')}-'
     '${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
-String _weekOf(String dayKey) {
+/// Monday (day key) of the Mon–Sun week a day key belongs to.
+String weekOfDayKey(String dayKey) {
   final d = _dateOf(dayKey);
   return _keyOf(d.subtract(Duration(days: d.weekday - 1)));
 }
 
-String _prevWeek(String week) => _keyOf(_dateOf(week).subtract(const Duration(days: 7)));
+String previousWeekKey(String week) => _keyOf(_dateOf(week).subtract(const Duration(days: 7)));
 
-/// All achievements in display order. Unlocked ones carry the day they were
-/// earned (the first time the rule was met).
+/// All achievements in display order. Unlocked ones carry every day on which
+/// the rule was met (first, last, how often).
 List<Achievement> achievements(PracticeLog log) {
-  final earned = <String, String>{};
+  final earned = <String, List<String>>{};
   void earn(String id, String? day) {
     if (day == null || day.isEmpty) return;
-    final old = earned[id];
-    if (old == null || day.compareTo(old) < 0) earned[id] = day;
+    earned.putIfAbsent(id, () => []).add(day);
   }
 
   // --- New characters (Koch levels reached, per training) ---------------
   final kochs = log.milestones
       .where((m) => m.kind == MilestoneKind.kochHear || m.kind == MilestoneKind.kochEcho)
       .toList();
-  if (kochs.isNotEmpty) {
-    earn(AchievementId.charFirst, (kochs.map((m) => m.day).toList()..sort()).first);
+  final levelDay = <int, String>{}; // character count -> first day reached
+  for (final m in kochs) {
+    final d = levelDay[m.value];
+    if (d == null || m.day.compareTo(d) < 0) levelDay[m.value] = m.day;
+  }
+  for (final d in levelDay.values) {
+    earn(AchievementId.charFirst, d);
   }
   // Characters per training and week; the better of the two trainings counts.
   final perWeek = <String, Map<String, Set<int>>>{}; // week -> kind -> levels
   for (final m in kochs) {
-    perWeek.putIfAbsent(_weekOf(m.day), () => {}).putIfAbsent(m.kind, () => {}).add(m.value);
+    perWeek.putIfAbsent(weekOfDayKey(m.day), () => {}).putIfAbsent(m.kind, () => {}).add(m.value);
   }
   final lastDayOfWeek = <String, String>{};
   for (final m in kochs) {
-    final w = _weekOf(m.day);
+    final w = weekOfDayKey(m.day);
     final cur = lastDayOfWeek[w];
     if (cur == null || m.day.compareTo(cur) > 0) lastDayOfWeek[w] = m.day;
   }
@@ -91,9 +101,9 @@ List<Achievement> achievements(PracticeLog log) {
   var run = 0;
   String? prev;
   for (final w in weeks) {
-    run = prev != null && _prevWeek(w) == prev ? run + 1 : 1;
+    run = prev != null && previousWeekKey(w) == prev ? run + 1 : 1;
     prev = w;
-    if (run >= kCharStreakWeeks) earn(AchievementId.charStreak, lastDayOfWeek[w]);
+    if (run == kCharStreakWeeks) earn(AchievementId.charStreak, lastDayOfWeek[w]);
   }
 
   // --- Practice spread over the day --------------------------------------
@@ -106,17 +116,21 @@ List<Achievement> achievements(PracticeLog log) {
     if (countedSessions(e.value).length >= kSessionChoices.first) spreadDays.add(e.key);
   }
   spreadDays.sort();
-  if (spreadDays.isNotEmpty) earn(AchievementId.spreadDay, spreadDays.first);
-  if (spreadDays.length >= kSpreadDays) earn(AchievementId.spreadDays, spreadDays[kSpreadDays - 1]);
+  for (final d in spreadDays) {
+    earn(AchievementId.spreadDay, d);
+  }
+  for (var i = kSpreadDays - 1; i < spreadDays.length; i += kSpreadDays) {
+    earn(AchievementId.spreadDays, spreadDays[i]);
+  }
 
   // --- Error rate and interference ---------------------------------------
   final byWeek = <String, List<BlockRecord>>{};
   for (final b in log.blocks) {
-    byWeek.putIfAbsent(_weekOf(b.day), () => []).add(b);
+    byWeek.putIfAbsent(weekOfDayKey(b.day), () => []).add(b);
   }
   double avg(List<BlockRecord> l) => l.fold(0.0, (a, b) => a + b.errors) / l.length;
   for (final e in byWeek.entries) {
-    final before = byWeek[_prevWeek(e.key)];
+    final before = byWeek[previousWeekKey(e.key)];
     if (e.value.length >= 3 && before != null && before.length >= 3 && avg(e.value) < avg(before)) {
       earn(AchievementId.errBetter, e.value.last.day);
     }
@@ -124,23 +138,26 @@ List<Achievement> achievements(PracticeLog log) {
   var streak = 0;
   for (final b in log.blocks) {
     streak = b.errors < 0.05 ? streak + 1 : 0;
-    if (streak >= 3) earn(AchievementId.errUnder5, b.day);
+    if (streak == 3) earn(AchievementId.errUnder5, b.day);
     if (b.interference && b.errors < 0.10) earn(AchievementId.interUnder10, b.day);
   }
 
   // --- Speed record -------------------------------------------------------
   final speeds = log.milestones
       .where((m) => m.kind == MilestoneKind.wpmHear || m.kind == MilestoneKind.wpmEcho);
-  if (speeds.isNotEmpty) earn(AchievementId.speedRecord, (speeds.map((m) => m.day).toList()..sort()).first);
+  for (final m in speeds) {
+    earn(AchievementId.speedRecord, m.day);
+  }
 
   // --- Comeback after a break --------------------------------------------
   final days = log.days.entries.where((e) => e.value.seconds > 0).map((e) => e.key).toList()..sort();
   for (var i = 1; i < days.length; i++) {
     if (_dateOf(days[i]).difference(_dateOf(days[i - 1])).inDays > kComebackDays) {
       earn(AchievementId.comeback, days[i]);
-      break;
     }
   }
 
-  return [for (final id in AchievementId.all) Achievement(id, earned[id])];
+  return [
+    for (final id in AchievementId.all) Achievement(id, (earned[id] ?? [])..sort())
+  ];
 }

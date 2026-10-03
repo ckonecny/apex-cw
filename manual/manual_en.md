@@ -991,6 +991,13 @@ The gear icon opens its settings:
 | Reminder | A notification at the chosen time, only if your goal is still open then. The app asks for the notification permission when you switch it on | **Off** / On, time (**19:00**) |
 | Show daily goal and achievements | Hides the card and stops recording. The data is kept; switch it on again here or under **Settings → General** | **On** / Off |
 
+**Weekly review.** Below Today and This week a short card sums up one week:
+practice time, practice days, new characters and error rate, each with the
+week before in brackets. On Sunday it shows the running week, on every other
+day the last finished one (Monday to Sunday). The error rate appears from 3
+blocks in the week. With no practice that week the card is not shown. No
+ranking, nothing leaves the device.
+
 **Awards.** Ten of them, no pop-ups while you practise, only on this page. An
 earned award shows the day you first reached it; open ones are grey with a
 lock. Everything stays on the device.
@@ -1007,6 +1014,11 @@ lock. Everything stays on the device.
 | Despite interference | A block with interference switched on and under 10 % errors |
 | New speed | A new speed record in Listen or Send |
 | Welcome back | Practised again after a break of at least 7 days |
+
+Tap an award: you see what it means, when you first and last reached it, and
+how often (open ones show only the explanation). What "how often" counts
+differs per award and is stated in the text there, e.g. new characters, weeks,
+days or blocks.
 
 Error rates count Listen and Send together. Block awards only work with
 blocks played after this update.

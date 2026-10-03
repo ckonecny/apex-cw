@@ -1314,8 +1314,11 @@ achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
 
 - **Computed, not stored.** `achievements(log)` derives all ten from the
   practice log each time the page opens (no per-award state), so a changed rule
-  applies to the whole history. The earned date is the first day the rule was
-  met. Shown on the Achievements page below today/week; no pop-ups.
+  applies to the whole history. Each award keeps every day the rule was met
+  (`Achievement.days`); the list shows the first, a tap opens a sheet with the
+  meaning, first, last and count. What is counted: characters, weeks with 3,
+  4-week runs, days, 5-day sets, weeks, 3-block runs, blocks, records,
+  comebacks (a run or set is counted once when reached). Shown on the Achievements page below today/week; no pop-ups.
 - **New data:** `PracticeLog.blocks` (`practice.blocks`, max 200): day, track,
   correct share in permille, whether the interference simulation was on
   (`interfOn`). Written next to `BlockHistory.record` in Listen and Send via
@@ -1331,3 +1334,16 @@ achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
 - **Left out** (needs data the log lacks): weakest character improved, graded
   interference steps — issue #36.
 
+## 2026-10-03: Weekly review (issue #35, part of #3)
+
+- **Where:** a card on the Achievements page (not the home screen, which stays
+  quiet), between today/week and the awards. Hidden for a week without practice.
+- **Which week:** Sunday shows the running Mon–Sun week, every other day the last
+  finished one (`weeklyReview`). "Once a week" is therefore a matter of when the
+  user looks, no extra notification.
+- **Figures:** practice time, practice days, new characters (the training that
+  went furthest counts, like the awards) and mean error rate of the week's
+  blocks (needs `kReviewBlocks` = 3, Listen and Send mixed), each next to the
+  week before. No arrows or judgement, "no ranking, no pressure".
+- Computed from the practice log on opening, nothing stored. Same switch as the
+  rest of the feature.
