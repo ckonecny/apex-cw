@@ -2,6 +2,8 @@ package at.oe1cko.nextcwtrainer
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.util.DisplayMetrics
@@ -70,6 +72,31 @@ class MainActivity : FlutterActivity() {
         private const val REQ_MIC          = 4711
         private const val REQ_NOTIF        = 4712
         private const val REMINDER_CHANNEL = "at.oe1cko.nextcwtrainer/reminder"
+        private const val SHARE_CHANNEL    = "at.oe1cko.nextcwtrainer/share"
+    }
+
+    // Text from another app's Share menu (issue #24), held until Dart takes it.
+    private var pendingShared: String? = null
+    private var shareChannel: MethodChannel? = null
+
+    private fun captureShared(i: Intent?) {
+        if (i?.action != Intent.ACTION_SEND || i.type?.startsWith("text/") != true) return
+        // Re-opening from the recents list replays the old intent: ignore it.
+        if (i.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0) return
+        val t = i.getStringExtra(Intent.EXTRA_TEXT)
+        if (!t.isNullOrBlank()) pendingShared = t
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        captureShared(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        captureShared(intent)
+        if (pendingShared != null) shareChannel?.invokeMethod("shared", null)
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -379,6 +406,14 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+        shareChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SHARE_CHANNEL).also {
+            it.setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "take" -> { result.success(pendingShared); pendingShared = null }
+                    else -> result.notImplemented()
+                }
+            }
+        }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, MIC_CHANNEL)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
