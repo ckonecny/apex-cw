@@ -195,8 +195,7 @@ Module-by-module details: `docs/PORTING-MAP.md`.
 | Games: Morse Invaders, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave | ✅ Supported | Single player |
 | Text adventure: Zork I–III in CW | ✅ Supported | App-only (not in the firmware); own Z-machine v3 interpreter, maps, saves |
 | Settings, audio output routing, theme, text zoom, DE/EN UI | ✅ Supported | Android-native equivalents of device-only prefs |
-| Games: Trailblazer, Fox Hunt, Fight the Pileup | 🚧 Not yet | GitHub issues #13, #15 (single player) |
-| File Player (own text as practice content) | 🚧 Not yet | GitHub issue #8 |
+| File Player (own text as practice content) | 🔄 Reimplemented | Not a port: the app's own "Own texts" feature (texts from the clipboard, played with your speed, spacing and display options) instead of files on an SD card |
 | Physical controls, display hardware, LoRa, ESP‑NOW/multiplayer, iCW/Ext Trx, OTA/WiFi AP | ❌ Not applicable | No such hardware on a phone / handled by Android |
 | Practice Stats (`MorsePracticeStats.cpp`) | ❌ Not ported | Replaced by the app's own statistics |
 
