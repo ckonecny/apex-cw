@@ -64,7 +64,7 @@ The home screen has four groups:
 | **Practice** | **Listen** | Practice copying: CW Generator and Koch Trainer in the block flow |
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
 | **Free** | **Free modes** | Opens five tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) and **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) |
-| **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain |
+| **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain, Radio Cave |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
 
 At the very top sits the **daily goal card**: a ring with your active
@@ -1395,11 +1395,11 @@ a text.
 
 # Games
 
-Under **Play → Games** there are four games. You play Morsel, Morse Invaders
-and Memory Chain with the touch keyer or the adapter. They use the keyer
-settings. They take the Koch lesson from **Send**, and Morsel and Memory
-Chain also let you change it for the game only. Each of these three shows
-short rules before you start. The [text adventure](#text-adventure) has its
+Under **Play → Games** there are five games. You play Morsel, Morse Invaders,
+Memory Chain and Radio Cave with the touch keyer or the adapter. They use the
+keyer settings. Morsel, Morse Invaders and Memory Chain take the Koch lesson
+from **Send**, and Morsel and Memory Chain also let you change it for the game
+only. Each of these four shows short rules before you start. The [text adventure](#text-adventure) has its
 own speed and input settings; it also takes the keyer mode from the keyer
 settings.
 
@@ -1484,6 +1484,37 @@ The high score list is kept per mode.
 ::: {.shots .one}
 ![Memory Chain before the start](img/en/mc_lobby.png)
 :::
+
+## Radio Cave
+
+A text adventure in an abandoned Cold War radio station: explore twelve
+rooms, find six items, repair the equipment and finish with a QSO with the
+remote station IR7. **Every command is keyed**; the game text is English.
+
+- The screen shows a small map of the cave (the current room is yellow), the
+  room name, the text, the command line and below it the exits (N E S W), the
+  items you carry (at most two) and the number of steps.
+- **S, E, W, I** and **H** act at once. Everything else is sent after a short
+  pause of silence (two and a half word spaces). **N** therefore waits, so
+  that it can still become **NEW**.
+- Commands: **N/S/E/W** go, **L** (+ object) look, **I** inventory, **T**
+  (TAKE) and **D** (DROP) + item, **U** (USE) + item or thing, **U TX** / **U
+  RX**, **F** (FIX) + item, **R** (READ) **MANUAL** or **LOG**, **K** (KEY) +
+  word, **QRS**, **NEW**. **H** lists them. Items and things can be
+  abbreviated (**T F** takes the fuel canister).
+- **Clues come as CW:** the scribbles on the wall, the logbook, the manual
+  and the calls from IR7. **QRS** replays the last clue at half speed. While a
+  clue plays, keying is muted.
+- Four **E** in a row or the error sign clear the input. After a prosign AS,
+  KA, KN, VE or BK the game sees the letter S, A, N, E or B, as on the
+  Morserino; SK counts as K.
+- Handle **high voltage** with care: some actions are fatal. Then the
+  game-over page offers a restart.
+- The game is **saved after every command**. Next time you can continue or
+  start a new game. Winning or dying deletes the save.
+- Pitch, keyer mode and speed of your keying come from the settings; with − and
+  + you change the speed during the game. The clues play at their own speed and
+  at a fixed pitch of 696 Hz.
 
 ## Text adventure {#text-adventure}
 

@@ -24,7 +24,7 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 | `MorseMemoryChain.cpp` (Memory Chain) | `lib/ui/memory_chain_screen.dart` (via `games_screen.dart`) | Ported (2026-09-25), user-tested OK |
 | `MorseGridEngine.cpp`, `MorseGridScore.cpp`, `MorseTrailblazer.cpp`, `MorseFoxHunt.cpp` (grid games) | — | GitHub issue #13 |
 | `MorseGame.cpp`, `MorseGameMode.cpp`, `GameSprite.cpp` (Morse Invaders) | `lib/ui/invaders_screen.dart` (via `games_screen.dart`), effects in `CwTonePlugin.kt` | Ported (2026-09-25), user-tested OK |
-| `MorseRadioCave.cpp` (Radio Cave, text adventure) | — | GitHub issue #14 |
+| `MorseRadioCave.cpp` (Radio Cave, text adventure) | `lib/content/radio_cave_engine.dart`, `lib/ui/radio_cave_screen.dart` (via `games_screen.dart`) | Ported, single player (2026-10-03) |
 | `MorsePileup.cpp` (Fight the Pileup) | — | GitHub issue #15, single player only |
 | Multiplayer of all games (`MorseGridNet.cpp`, ESP-NOW parts of Morsel/Pileup) | — | N/A: ESP-NOW does not exist on a phone |
 | `MorseQsoBot.cpp`, `MorseQsoBotMatch.h`, `qso_content.h` | `lib/content/qso_bot.dart`, `lib/ui/qso_bot_screen.dart`, call zones in `CallsignData.kt` | Ported (2026-09-25), user-tested OK |

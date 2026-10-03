@@ -28,6 +28,7 @@ shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
 ## Manual: pending for next release
+- New: Radio Cave (#14): `rc_lobby.png` DE+EN, `games.png` (fifth card), and the sentence in the games overview.
 - `home.png` (DE+EN): daily goal card at the top (#31).
 - New: achievements page and its settings incl. sessions, reminder and awards (#31–#34); `settings1.png`: new switch in General.
 

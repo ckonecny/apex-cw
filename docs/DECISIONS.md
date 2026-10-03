@@ -1347,3 +1347,31 @@ achievements (#34). Nothing user-visible yet. Code: `content/practice_log.dart`
   week before. No arrows or judgement, "no ranking, no pressure".
 - Computed from the practice log on opening, nothing stored. Same switch as the
   rest of the feature.
+
+## 2026-10-03: Radio Cave (issue #14) — port and deviations
+Ported from `MorseRadioCave.cpp` (V9.0): rooms, items, descriptions, all
+commands, puzzles, the two death traps, the grounded-antenna trap, QSO phrases
+and CW clues. Game logic in `lib/content/radio_cave_engine.dart` (pure Dart,
+tested), UI in `lib/ui/radio_cave_screen.dart`.
+- **Same as the firmware, including quirks:** inventory limit is 2 (the header,
+  not the comment in the .cpp); `NEW` always asks for confirmation (the firmware's
+  "Already a fresh game" check runs after the step counter went up and can never
+  apply); a pending `NEW` confirmation survives movement commands and cancels the
+  next command that reaches that check; `JN78DH` shows the refreshed room text
+  instead of the keyed message; instant dispatch only for lower-case `s e w i h`
+  (and `y` while confirming), so an AS prosign (`S`) waits for the timeout.
+- **Prosigns:** the decoder gives multi-letter names; they are mapped to the
+  firmware's single upper-case buffer letters (SK->K, AS->S, KA->A, KN->N,
+  VE->E, BK->B). The error sign (not `R` as in the firmware, whose decoder
+  cannot tell it from R) clears the input; so do four E in a row.
+- **Clues** are played with the generator at the clue's own WPM and 696 Hz
+  (restored afterwards); prosigns written `<SK>` (CLAUDE.md rule 3). Keying is
+  muted while a clue plays, as in the firmware; the touch paddles are disabled.
+- **Save:** one JSON string in SharedPreferences (`radioCaveSave`, version 1),
+  written after every command, removed on win/death. The firmware writes an NVS
+  blob; the content is the same state.
+- **Not ported:** encoder modes (speed/volume/scroll): speed is -/+, the text
+  scrolls by touch; the protocol "has save" report.
+- **Added:** lobby with Continue / New game (the firmware auto-resumes), a
+  mini-map drawn from the firmware's room rectangles, a back-to-overview button
+  on the end pages. No sound effects (the firmware has none either).
