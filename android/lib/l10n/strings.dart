@@ -502,13 +502,14 @@ class Strings {
     'pr_heat_week': ['Alle Zeichen, Woche für Woche', 'All characters, week by week'],
     'pr_heat_month': ['Alle Zeichen, Monat für Monat', 'All characters, month by month'],
     'pr_heat_sort': ['Schwächste zuerst', 'Weakest first'],
-    'pr_heat_note': ['Leer: weniger als {n} Versuche. Tippen öffnet das Zeichen.', 'Empty: fewer than {n} attempts. Tap opens the character.'],
+    'pr_heat_note': ['Leer: weniger als {n} Versuche. Tippe auf ein Zeichen für detaillierte Statistiken dazu.', 'Empty: fewer than {n} attempts. Tap a character for its detailed statistics.'],
     'pr_curve_title': ['Trefferquote pro Woche', 'Hit rate per week'],
     'pr_curve_hits': ['Treffer', 'Hits'],
     'pr_curve_attempts': ['Versuche', 'Attempts'],
     'pr_curve_note': ['Letzte 12 Wochen. Gestrichelt: Freischalt-Schwelle {t} %.', 'Last 12 weeks. Dashed: unlock threshold {t} %.'],
     'pr_curve_note_attempts': ['Letzte 12 Wochen. Höhe: Versuche pro Woche.', 'Last 12 weeks. Height: attempts per week.'],
     'pr_curve_empty': ['Noch keine Wochenwerte. Sie füllen sich beim Üben.', 'No weekly values yet. They fill up as you practise.'],
+    'char_stats_tap_hint': ['Tipp: Tippe auf ein Zeichen, um detaillierte Statistiken zu diesem Zeichen zu sehen (Trefferquote, Verlauf, Verwechslungen).', 'Tip: Tap a character to see detailed statistics for it (hit rate, history, mix-ups).'],
     'char_stats_empty': ['Noch keine aktiven Zeichen.', 'No active characters yet.'],
 
     // ── Shared / terminology pass (see DECISIONS.md glossary) ────────────

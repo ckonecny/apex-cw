@@ -229,6 +229,15 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
                 .replaceFirst('{n}', '$_unlockOccurrences')
                 .replaceFirst('{x}', '${(_highThreshold * 100).round()}'),
             style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint)),
+        const SizedBox(height: 8),
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(Icons.touch_app, size: 16, color: c.textMuted),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(Strings.t('char_stats_tap_hint'),
+                style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+          ),
+        ]),
         const SizedBox(height: 12),
         Container(
           width: double.infinity,
