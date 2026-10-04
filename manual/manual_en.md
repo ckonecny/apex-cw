@@ -64,7 +64,7 @@ The home screen has four groups:
 | **Practice** | **Listen** | Practice copying: CW Generator and Koch Trainer in the block flow |
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
 | **Free** | **Free modes** | Opens five tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) and **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) |
-| **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
+| **Play** | **Games** | Head copy, Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
 
 At the very top sits the **daily goal card**: a ring with your active
@@ -1436,7 +1436,8 @@ a text.
 
 # Games
 
-Under **Play → Games** there are eight games. You play Morsel, Morse Invaders,
+Under **Play → Games** there are nine games. The listening game
+[Head copy](#head-copy) needs no key. You play Morsel, Morse Invaders,
 Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup and Radio Cave with the
 touch keyer or the adapter. They use the keyer settings. Morsel, Morse
 Invaders, Memory Chain, Trailblazer and Fox Hunt take the Koch lesson from
@@ -1449,6 +1450,40 @@ settings.
 ::: {.shots .one}
 ![The games](img/en/games.png)
 :::
+
+## Head copy {#head-copy}
+
+Here you practise **understanding** Morse without writing it down. You hear one
+to three short sentences, then answer questions with four answers each. The
+text stays hidden until the result.
+
+**Start.** Choose the **language of the sentences** (German or English; it is
+independent of the app language), the **level** (1, 2 or 3 sentences) and the
+**speed**, plus **character spacing** and **word spacing** (in dits, with the
+time in seconds below). They apply to Head copy only; on first open the app
+takes them from **Listen**, after that they are separate. Below the spacing the **effective speed** in WPM
+is shown, the result of speed and both spacings (formula under
+[Effective speed](#effective-speed)). Below the start button you see the hit rate of the recent rounds.
+
+**Listening.** The sentences play one after the other with a short pause. **Listen
+again** replays the whole round as often as you like. **To the questions**
+goes on. The interference simulation (icon at the top) works as in the other
+trainings.
+
+**Questions.** For each sentence you are asked for its parts, in the order
+**Who? – What does the person do? – Where? – When?** (When only if the sentence
+has a time). A follow-up question names the correct answers of the earlier
+questions, even if you got one wrong, and never anything asked later. After you
+tap you see at once what was right. **Level 1** asks every part. **Levels 2 and
+3** ask "Who?" plus one more question per sentence, prefixed with "Sentence N:".
+The sentences are unrelated. You can listen to the sentences again during the
+questions too.
+
+**Result.** The round's hit rate (right answers out of all questions), the
+sentences in plain text, **Play with text** (the sentence playing is
+highlighted) and your answers. The sentences are built from blocks and always
+make sense: places fit the activity. German umlauts are sent as AE, OE, UE, so
+"Küche" goes out as KUECHE. The time counts towards the [daily goal](#daily-goal).
 
 ## Morsel
 

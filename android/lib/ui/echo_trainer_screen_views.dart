@@ -149,7 +149,7 @@ extension _EchoViews on _EchoTrainerScreenState {
   Widget _buildIdle(AppColors c) {
     final ewpm = (50 * _wpm / (31 + 4 * _interCharSpace + _interWordSpace)).round();
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Text(Strings.t('echo_idle_hint'), textAlign: TextAlign.center,

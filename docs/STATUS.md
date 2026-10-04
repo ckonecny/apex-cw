@@ -30,8 +30,19 @@ phone's own data was restored afterwards.
 
 ## Manual: pending for next release
 - `settings*.png` showing the General card: new row "Pausenhinweis" (#5; check which file shows it).
+- Head copy (#7): new `games.png` (nine cards) plus a screenshot per phase (setup, listening, question, result).
 - Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
+
+## Head copy (issue #7, branch `feature/head-copy`, committed b589492)
+Engine, screen and manual text done and user-tested on the phone. Not merged
+into main yet. Later stages: mini-QSO on the same slot engine, Q-groups as a
+separate mode.
+
+## Layout overflow (issues #38, #39)
+Fixed in the working tree (not committed): see DECISIONS "Layout overflow".
+Pending check on the phone: Settings (Allgemein), Hören/Echo/Generator start
+screens, Decoder status bar, Goals rows, Morse tree bottom row.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

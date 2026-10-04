@@ -862,3 +862,6 @@ Single-player port on branch `feature/pileup`: `pileup_engine.dart` (unit-tested
 
 ## Radio Cave (2026-10-03, #14)
 Port of `MorseRadioCave.cpp` on branch `feature/radio-cave`: tested engine (17 tests incl. a full walkthrough), screen with mini-map, keyed commands, CW clues, auto-save, manual DE+EN, deviations in DECISIONS.
+
+## Layout overflow #38/#39 (2026-10-04)
+ToggleRow/_ActionButton/goals/decoder rows, morse-tree row, CharsetHeader cap, Echo idle scroll; `test/screen_overflow_test.dart` covers all no-argument screens.

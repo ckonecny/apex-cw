@@ -66,7 +66,7 @@ Die Startseite hat vier Gruppen:
 | **Üben** | **Hören** | Mitschreiben üben: CW Generator und Koch Trainer im Blockablauf |
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
 | **Frei** | **Freie Modi** | Öffnet fünf Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) |
-| **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
+| **Spielen** | **Spiele** | Verstehen, Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
 
 Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
@@ -1482,7 +1482,8 @@ an, solange du in einem Text bist.
 
 # Spiele
 
-Unter **Spielen → Spiele** findest du acht Spiele. Morsel, Morse Invaders,
+Unter **Spielen → Spiele** findest du neun Spiele. Das Hörspiel
+[Verstehen](#verstehen) braucht keine Taste. Morsel, Morse Invaders,
 Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup und Radio Cave spielst du
 mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden die Keyer-Einstellungen.
 Morsel, Morse Invaders, Memory Chain, Trailblazer und Fox Hunt übernehmen die
@@ -1495,6 +1496,41 @@ Eingabe; den Keyer-Modus nimmt es ebenfalls aus den Keyer-Einstellungen.
 ::: {.shots .one}
 ![Die Spiele](img/de/games.png)
 :::
+
+## Verstehen {#verstehen}
+
+Hier übst du, Morse zu **verstehen**, ohne mitzuschreiben. Du hörst ein bis
+drei kurze Sätze und beantwortest danach Fragen mit je vier Antworten. Der Text
+bleibt bis zur Auswertung verdeckt.
+
+**Start.** Wähle die **Sprache der Sätze** (Deutsch oder Englisch; sie ist
+unabhängig von der App-Sprache), die **Stufe** (1, 2 oder 3 Sätze) und das
+**Tempo** sowie **Zeichenabstand** und **Wortabstand** (in Dits, mit der Zeit
+in Sekunden darunter). Die Werte gelten nur für Verstehen; beim ersten Öffnen
+übernimmt die App sie aus **Hören**, danach laufen sie getrennt. Unter den Abständen steht das **effektive Tempo** in
+WPM, das sich aus Tempo und beiden Abständen ergibt (Formel unter
+[Effektives Tempo](#effektives-tempo)). Unter dem Start steht die Trefferquote der letzten Runden.
+
+**Hören.** Die Sätze laufen nacheinander, mit kurzer Pause dazwischen. Mit
+**Nochmal hören** wiederholst du die ganze Runde, so oft du willst. **Zu den
+Fragen** geht weiter. Die Störungssimulation (Symbol oben) wirkt wie in den
+anderen Trainings.
+
+**Fragen.** Pro Satz wird nach den Teilen des Satzes gefragt, in der Reihenfolge
+**Wer? – Was tut die Person? – Wo? – Wann?** (Wann nur, wenn der Satz eine Zeit
+hat). Eine Folgefrage nennt die richtigen Antworten der früheren Fragen, auch
+wenn du dich geirrt hast, und nie etwas, das erst später gefragt wird. Nach
+dem Antippen siehst du sofort, was richtig war. Bei **Stufe 1** wird jeder Teil
+gefragt. Bei **Stufe 2 und 3** gibt es pro Satz „Wer?“ und eine weitere Frage;
+vorangestellt steht „Satz N:“. Die Sätze haben nichts miteinander zu tun. Auch
+während der Fragen kannst du die Sätze nochmal anhören.
+
+**Auswertung.** Die Trefferquote der Runde (richtige Antworten von allen
+Fragen), die Sätze im Klartext, **Abspielen mit Mitlesen** (der gerade
+gespielte Satz ist hervorgehoben) und deine Antworten. Die Sätze sind aus
+Bausteinen gebaut und ergeben immer sinnvolles Deutsch bzw. Englisch: Orte
+passen zur Tätigkeit. Umlaute werden als AE, OE, UE gesendet; „Küche“ also als
+KUECHE. Die Zeit zählt für das [Tagesziel](#tagesziel).
 
 ## Morsel
 

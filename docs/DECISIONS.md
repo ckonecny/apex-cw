@@ -1466,3 +1466,86 @@ gained the tree's `ä ö ü ch ; ! " '` (decode only). Own Text keeps flattening
 Ä→AE etc. deliberately: the firmware's player does the same (`utf8umlaut` in
 `m32_v6.ino`), and the engine's `morseTable` has no codes for them (the
 generator's `pool[]` has ä ö ü ch, but the player never feeds them).
+
+## 2026-10-04: Head copy / comprehension — concept (issue #7)
+
+Agreed with the user before any code; mockup comes next.
+
+- **Content kinds**, one shared engine: (1) short sentences DE + EN built from
+  typed building blocks, (2) mini QSO on the same slot engine with the fixed
+  QSO sequence, (3) Q-groups as a separate mode (extra layer of special
+  knowledge, so it comes last). Sentences first.
+- **Sentences from blocks, grammar correct by construction**: the engine does
+  no inflection. Every block holds its finished forms (e.g. "der Park" /
+  "im Park"); a verb and its object are one block; verb forms are stored per
+  person (singular/plural); each sentence pattern fixes the word order. A test
+  renders all patterns with random blocks (no gaps, no doubled articles); the
+  word lists are written by hand, own text, so licence-clean (rule 11).
+  Aim: 10-15 variants per block type, thousands of combinations per language.
+- **Questions**: one per slot, always in sentence order (who, what they do,
+  where, when), four-option multiple choice, distractors from the same pool.
+  Each follow-up question names the correct answer of the one before ("Um wen
+  geht es?" -> "Welche Tätigkeit übt Peter aus?" -> "Wo trinkt Peter
+  Kaffee?"), even after a wrong answer, so one mistake does not spoil the
+  rest. The fixed order is what keeps a question from giving away a later
+  slot. Level 1 asks every slot; levels 2 and 3 ask "who" plus one randomly
+  chosen further slot per sentence, labelled "Satz N:" (keeps rounds short).
+- **Replay allowed** (second listening); the text stays hidden while playing.
+- **Levels**: 1, 2 or 3 unrelated sentences in a row, then one question per
+  sentence. No stories.
+- **Scoring**: hit rate per round, into statistics and daily goal.
+- **Content language** is its own setting, independent of the app language.
+- **No Koch-level filter** (decided 2026-10-04): sentences use the full
+  character set, so the mode is meant for people who know all characters. A
+  per-lesson filter was considered and dropped: with few characters there are
+  hardly any real words, and German lacks H, D, G, O until late.
+- **No nonsense sentences** (user requirement, 2026-10-04): slots are not
+  drawn independently. Places carry tags (kitchen, garden, workshop, park,
+  shop, office, city, ...); each verb+object block lists the place tags it
+  fits, so "repariert das Fahrrad" never meets "in der Küche". The place pool
+  holds only real places (no "in der Katze"); animals and things are objects
+  inside verb blocks. City names fit almost every activity and give most of
+  the variety. Few verbs also carry time tags (no "schläft um 12 Uhr
+  mittags"). Test: each verb has at least 3 concrete places, each place is used by at
+  least one verb. The user proofreads the lists together with their tags.
+- **German word order** (user, 2026-10-04): time, then place, then an
+  indefinite object, bare noun or verb complement ("Nina isst heute zu Hause
+  eine Birne", "Am Mittwoch geht Tom in Salzburg schwimmen", "Max trinkt im
+  Park Kaffee"); a definite object (das/die/den/dem/der ...) comes before the
+  place ("Anna repariert heute das Fahrrad in der Werkstatt"). Derived from
+  the start of the object, not marked per block. The "when" question uses the
+  same order. English keeps verb, object, place, time.
+- **Engine built** (2026-10-04): `lib/content/head_copy_data.dart` (blocks DE
+  + EN, same place tags), `head_copy_engine.dart` (sentences, question chain,
+  `hcValidate`), test `test/content/head_copy_engine_test.dart`. Wrong "who"
+  options never share a name with the right one ("Tom" next to "Eva und Tom"),
+  also across the sentences of a round. Each activity has at least four
+  concrete places so the "where" question always has three valid wrong ones
+  (cook/bake got `stadt`, hike got "im Tal"/"in the valley").
+- **Screen built** (2026-10-04): `lib/ui/head_copy_screen.dart` (+ `head_copy_views.dart`),
+  entry in the Games hub (first card; easy to move). Phases: setup (content
+  language, level, wpm; spacing taken from the Hören profile on first visit, then own steppers) →
+  listening (text hidden, replay, sentences with a 1.8 s gap) → questions →
+  result (hit rate, sentences, play with the current sentence highlighted).
+  Settings in their own `hc.*` profile, pushed to the shared generator before
+  every playback (rule 2). Hit rate per round in `hc.results`
+  (`content/head_copy_log.dart`, last 200 rounds), shown on the setup screen as
+  the rate of recent rounds. The daily goal counts the time through
+  `PracticeClock.enter('headcopy')`; the hit rate does not feed the
+  adaptive mode or the achievements. The sample tool
+  (`test/content/head_copy_samples_tool.dart`) stays for proofreading the blocks.
+
+## Layout overflow: one test over all screens (2026-10-04, issues #29, #38)
+Two settings rows overflowed one after the other (#29 slider header, #38
+`ToggleRow` label in a `Row` with a `Spacer`). Fixing single rows did not stop
+new ones, so the guard is now general:
+- Rule for rows: a label next to a control sits in `Expanded`/`Flexible`
+  (wraps), never a bare `Text` + `Spacer`. Use `Wrap` when two items may not fit.
+- `test/screen_overflow_test.dart` pumps every no-argument screen in DE and
+  EN, at font scale 1.0 and 1.3, on 412x915, 360x640 and a very tall view (so
+  lazy lists lay out every row), and fails on any overflow. A new screen is
+  added to its `screens` map; known failures are listed there with their issue.
+- #39 follow-up: `CharsetHeader` caps itself at 30 % of the screen height and
+  scrolls inside (Hören/Echo start screens have fixed paddles, sliders and
+  Start below it); Echo idle hint scrolls; decoder status bar and goals rows
+  use `Expanded`/`Flexible`. All screens are now in the overflow test.

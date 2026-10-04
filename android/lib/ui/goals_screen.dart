@@ -180,9 +180,10 @@ class _GoalsScreenState extends State<GoalsScreen> {
   Widget _row(AppColors c, String label, String value) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(children: [
-          Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary)),
-          const Spacer(),
-          Text(value, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+          Flexible(child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary))),
+          const SizedBox(width: 12),
+          Flexible(child: Text(value, textAlign: TextAlign.end,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted))),
         ]),
       );
 }

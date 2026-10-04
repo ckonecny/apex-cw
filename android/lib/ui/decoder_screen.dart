@@ -282,9 +282,11 @@ class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserv
       ),
       const SizedBox(width: 12),
       Text(_running && _wpm > 0 ? '$_wpm WPM' : '– WPM', style: _mono(16, c.textPrimary)),
-      const Spacer(),
-      Text('$_freq Hz · ${Strings.t(_narrow ? 'dec_narrow_short' : 'dec_wide_short')}',
-          style: _mono(13, c.textMuted)),
+      const SizedBox(width: 12),
+      Expanded(
+        child: Text('$_freq Hz · ${Strings.t(_narrow ? 'dec_narrow_short' : 'dec_wide_short')}',
+            textAlign: TextAlign.end, style: _mono(13, c.textMuted)),
+      ),
     ]);
   }
 
