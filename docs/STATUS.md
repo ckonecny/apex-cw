@@ -34,11 +34,10 @@ phone's own data was restored afterwards.
 - Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
 
-## Head copy (issue #7, branch `feature/head-copy`, not committed)
-Engine, screen, manual text (DE+EN) done; debug build installed on the test
-phone but **not yet checked on the device** (phone was locked): open Spiele →
-Verstehen, play a round DE and EN, check "KUECHE" plays right, replay, results.
-Later stages: mini-QSO on the same slot engine, Q-groups as a separate mode.
+## Head copy (issue #7, branch `feature/head-copy`, committed b589492)
+Engine, screen and manual text done and user-tested on the phone. Not merged
+into main yet. Later stages: mini-QSO on the same slot engine, Q-groups as a
+separate mode.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
