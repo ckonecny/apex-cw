@@ -1459,8 +1459,11 @@ text stays hidden until the result.
 
 **Start.** Choose the **language of the sentences** (German or English; it is
 independent of the app language), the **level** (1, 2 or 3 sentences) and the
-**speed**. On first open the app takes character and word spacing from
-**Listen**. Below the start button you see the hit rate of the recent rounds.
+**speed**, plus **character spacing** and **word spacing** (in dits, with the
+time in seconds below). They apply to Head copy only; on first open the app
+takes them from **Listen**, after that they are separate. Below the spacing the **effective speed** in WPM
+is shown, the result of speed and both spacings (formula under
+[Effective speed](#effective-speed)). Below the start button you see the hit rate of the recent rounds.
 
 **Listening.** The sentences play one after the other with a short pause. **Listen
 again** replays the whole round as often as you like. **To the questions**

@@ -1505,8 +1505,11 @@ bleibt bis zur Auswertung verdeckt.
 
 **Start.** Wähle die **Sprache der Sätze** (Deutsch oder Englisch; sie ist
 unabhängig von der App-Sprache), die **Stufe** (1, 2 oder 3 Sätze) und das
-**Tempo**. Zeichen- und Wortabstand übernimmt die App beim ersten Öffnen aus
-**Hören**. Unter dem Start steht die Trefferquote der letzten Runden.
+**Tempo** sowie **Zeichenabstand** und **Wortabstand** (in Dits, mit der Zeit
+in Sekunden darunter). Die Werte gelten nur für Verstehen; beim ersten Öffnen
+übernimmt die App sie aus **Hören**, danach laufen sie getrennt. Unter den Abständen steht das **effektive Tempo** in
+WPM, das sich aus Tempo und beiden Abständen ergibt (Formel unter
+[Effektives Tempo](#effektives-tempo)). Unter dem Start steht die Trefferquote der letzten Runden.
 
 **Hören.** Die Sätze laufen nacheinander, mit kurzer Pause dazwischen. Mit
 **Nochmal hören** wiederholst du die ganze Runde, so oft du willst. **Zu den

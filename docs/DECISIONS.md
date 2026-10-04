@@ -1524,7 +1524,7 @@ Agreed with the user before any code; mockup comes next.
   (cook/bake got `stadt`, hike got "im Tal"/"in the valley").
 - **Screen built** (2026-10-04): `lib/ui/head_copy_screen.dart` (+ `head_copy_views.dart`),
   entry in the Games hub (first card; easy to move). Phases: setup (content
-  language, level, wpm; spacing taken from the Hören profile on first visit) →
+  language, level, wpm; spacing taken from the Hören profile on first visit, then own steppers) →
   listening (text hidden, replay, sentences with a 1.8 s gap) → questions →
   result (hit rate, sentences, play with the current sentence highlighted).
   Settings in their own `hc.*` profile, pushed to the shared generator before

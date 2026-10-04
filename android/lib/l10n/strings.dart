@@ -271,6 +271,7 @@ class Strings {
     'hc_level_2': ['2 Sätze', '2 sentences'],
     'hc_level_3': ['3 Sätze', '3 sentences'],
     'hc_speed': ['Tempo', 'Speed'],
+    'hc_effective': ['Effektiv: {e} WPM', 'Effective: {e} WPM'],
     'hc_start': ['Runde starten', 'Start round'],
     'hc_recent': ['Letzte Runden: {p} % richtig', 'Recent rounds: {p}% right'],
     'hc_no_rounds': ['Noch keine Runde gespielt', 'No round played yet'],

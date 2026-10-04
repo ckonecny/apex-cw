@@ -46,9 +46,40 @@ extension _HeadCopyViews on _HeadCopyScreenState {
             display: '${_s.wpm} WPM',
             value: _s.wpm.toDouble(),
             min: TrainingProfile.minWpm.toDouble(),
-            max: 40,
-            divisions: 40 - TrainingProfile.minWpm,
+            max: 60,
+            divisions: 60 - TrainingProfile.minWpm,
             onChanged: (v) => _update(() => _s.wpm = v.round()),
+          ),
+          const SettingsDivider(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
+            child: Column(children: [
+              _stepper(c, Strings.t('settings_char_spacing'), '${_s.interChar}',
+                  'Dits · ${ditsToSeconds(_s.interChar, _s.wpm)}',
+                  _s.interChar > 3 ? () => _update(() => _s.interChar--) : null,
+                  _s.interChar < 45
+                      ? () => _update(() {
+                            _s.interChar++;
+                            if (_s.interWord < _s.interChar) _s.interWord = _s.interChar;
+                          })
+                      : null),
+              _stepper(c, Strings.t('settings_word_spacing'), '${_s.interWord}',
+                  'Dits · ${ditsToSeconds(_s.interWord, _s.wpm)}',
+                  _s.interWord > 6 && _s.interWord > _s.interChar ? () => _update(() => _s.interWord--) : null,
+                  _s.interWord < 105 ? () => _update(() => _s.interWord++) : null),
+              const SizedBox(height: 6),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8, bottom: 6),
+                  child: Text(
+                      _fill('hc_effective', {
+                        'e': (50 * _s.wpm / (31 + 4 * _s.interChar + _s.interWord)).round(),
+                      }),
+                      style: _mono(c.accent, 13)),
+                ),
+              ),
+            ]),
           ),
         ]),
         const SizedBox(height: 12),
@@ -62,6 +93,19 @@ extension _HeadCopyViews on _HeadCopyScreenState {
       ],
     );
   }
+
+  Widget _stepper(AppColors c, String label, String value, String sub, VoidCallback? minus, VoidCallback? plus) =>
+      Row(children: [
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(label, style: _mono(c.textPrimary, 13)),
+            Text(sub, style: _mono(c.textFaint, 11)),
+          ]),
+        ),
+        IconButton(icon: const Icon(Icons.remove_circle_outline), color: c.accent, onPressed: minus),
+        SizedBox(width: 50, child: Text(value, textAlign: TextAlign.center, style: _mono(c.accent, 14, bold: true))),
+        IconButton(icon: const Icon(Icons.add_circle_outline), color: c.accent, onPressed: plus),
+      ]);
 
   // ---- listening ----
 
