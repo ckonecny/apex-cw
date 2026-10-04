@@ -1584,7 +1584,6 @@ the app is live. Claims on the page come from manual/README/PRIVACY.
 
 Credits on the landing page footer (2026-10-04): besides Willi Kraml/OE1WKL,
 Sia, OE1LMR is thanked for the app icon *and* for testing and brainstorming
-ideas; README "Credits" says the same. The in-app Info page and the manual's
-"Thanks" row still name only "icon (Sia, OE1LMR)" — they describe the app's
-Info screen, so change them together with `settings_thanks_value` in
-`l10n/strings.dart` when the app is rebuilt next.
+ideas; README "Credits" says the same. The in-app Info page (`settings_thanks_value`
+in `l10n/strings.dart`) and the manual's "Thanks" row were changed to match in
+the same change.

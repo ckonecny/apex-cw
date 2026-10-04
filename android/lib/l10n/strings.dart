@@ -501,7 +501,7 @@ class Strings {
     'settings_developer': ['Entwickelt von', 'Developed by'],
     'settings_thanks': ['Danke', 'Thanks'],
     'settings_licenses': ['Lizenzen', 'Licences'],
-    'settings_thanks_value': ['Morserino-32: OE1WKL\nIcon: Sia, OE1LMR\nZork: Infocom', 'Morserino-32: OE1WKL\nIcon: Sia, OE1LMR\nZork: Infocom'],
+    'settings_thanks_value': ['Morserino-32: OE1WKL\nIcon, Tests & Ideen: Sia, OE1LMR\nZork: Infocom', 'Morserino-32: OE1WKL\nIcon, testing & ideas: Sia, OE1LMR\nZork: Infocom'],
     'settings_analyze_key_events_desc': ['Adapter einstecken, Analyse starten, dann Tasten drücken.', 'Plug in adapter, start analyzer, then press keys.'],
     'settings_stop_analyzer': ['Analyse stoppen', 'Stop analyzer'],
     'settings_start_analyzer': ['Analyse starten', 'Start analyzer'],
