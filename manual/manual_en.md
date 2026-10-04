@@ -2106,7 +2106,7 @@ See [Learning the dit and dah keys](#learning-the-dit-and-dah-keys) and
 | Row | Meaning |
 |---|---|
 | Developed by | Christian Konecny, OE1CKO |
-| Thanks | Morserino-32 (OE1WKL), app icon (Sia, OE1LMR), Zork (Infocom) |
+| Thanks | Morserino-32 (OE1WKL), app icon, testing and ideas (Sia, OE1LMR), Zork (Infocom) |
 | Version | Version number and build number, for example "1.0.0 (Build 42)" |
 | Commit | The exact source code state the app was built from |
 | Built | Date and time of the build |

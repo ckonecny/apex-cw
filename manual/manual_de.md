@@ -2182,7 +2182,7 @@ Siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen) und
 | Zeile | Bedeutung |
 |---|---|
 | Entwickelt von | Christian Konecny, OE1CKO |
-| Danke | Morserino-32 (OE1WKL), App-Icon (Sia, OE1LMR), Zork (Infocom) |
+| Danke | Morserino-32 (OE1WKL), App-Icon, Tests und Ideen (Sia, OE1LMR), Zork (Infocom) |
 | Version | Versionsnummer und Build-Nummer, z. B. „1.0.0 (Build 42)“ |
 | Commit | Der genaue Quellcode-Stand, aus dem die App gebaut wurde |
 | Gebaut | Datum und Uhrzeit des Builds |
