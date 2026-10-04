@@ -1581,3 +1581,10 @@ manual HTML. Screenshots in `site/img/` are dark phone shots (WebP, 720 px
 wide, status/gesture bar cropped); retake them when the screens change
 noticeably, like the store raw shots. Play button stays "coming soon" until
 the app is live. Claims on the page come from manual/README/PRIVACY.
+
+Credits on the landing page footer (2026-10-04): besides Willi Kraml/OE1WKL,
+Sia, OE1LMR is thanked for the app icon *and* for testing and brainstorming
+ideas; README "Credits" says the same. The in-app Info page and the manual's
+"Thanks" row still name only "icon (Sia, OE1LMR)" — they describe the app's
+Info screen, so change them together with `settings_thanks_value` in
+`l10n/strings.dart` when the app is rebuilt next.
