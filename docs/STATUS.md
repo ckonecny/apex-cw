@@ -29,7 +29,9 @@ shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
 ## Manual: pending for next release
-(empty; the v1.5.0 screenshots were retaken)
+- `settings*.png` showing the General card: new row "Pausenhinweis" (#5; check which file shows it).
+- Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
+  text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

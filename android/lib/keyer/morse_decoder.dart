@@ -25,6 +25,13 @@ class MorseDecoder {
     // are commonly confused but are different codes.
     '...-.-': 'SK', '-.--.': 'KN', '-.-.-': 'KA', '.-...':  'AS',
     '...-.': 'VE', '-...-.-': 'BK',
+    // The rest of the firmware's decoder tree (CWtree in MorseDecoder.h):
+    // German ä ö ü and "ch" (the generator's pool[] has them too), and the
+    // punctuation the tree decodes but the generator cannot send. Decode
+    // only: Own Text still flattens ä→AE etc., as the firmware's player does
+    // (utf8umlaut in m32_v6.ino), and the engine has no codes for them.
+    '.-.-': 'Ä', '---.': 'Ö', '..--': 'Ü', '----': 'CH',
+    '-.-.-.': ';', '-.-.--': '!', '.-..-.': '"', '.----.': "'",
   };
 
   /// Decoded error sign (`<err>`, 7+ dits): "delete what I just sent".
@@ -32,13 +39,14 @@ class MorseDecoder {
 
   final void Function(String char) onChar;
 
-  /// What an undecodable pattern yields. '?' by default; the QSO Bot passes
-  /// '*' (the firmware's form) so it is not mistaken for a keyed "?".
+  /// What an undecodable pattern yields. '*' like the firmware (tree node 63,
+  /// "all unidentified characters"), so it is not mistaken for a keyed "?"
+  /// (issue #37).
   final String unknown;
 
   String _buf = '';
 
-  MorseDecoder({required this.onChar, this.unknown = '?'});
+  MorseDecoder({required this.onChar, this.unknown = '*'});
 
   void add(String symbol) {
     switch (symbol) {

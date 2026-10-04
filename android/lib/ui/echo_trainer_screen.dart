@@ -27,6 +27,8 @@ import 'widgets/app_ui.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
+import '../util/break_reminder.dart';
+import 'widgets/break_hint_card.dart';
 import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
 import '../content/practice_log.dart' show MilestoneKind;
@@ -386,9 +388,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     final n = _blockResults.length;
     final echoRate = n == 0 ? 0.0 : _blockResults.where((r) => r.outcome == WordOutcome.first).length / n;
     _trend = await const BlockHistory('echo').record(p, echoRate);
+    final interference = (await InterferenceProfile.load()).enabled;
     if (n > 0) {
-      PracticeClock.instance.block('echo', echoRate,
-          interference: (await InterferenceProfile.load()).enabled);
+      PracticeClock.instance.block('echo', echoRate, interference: interference);
+      // Everything that sets the difficulty of this block (issue #5).
+      BreakReminder.onBlock('echo', echoRate,
+          '$_wpm|$_answerWpmMax|$_interCharSpace|$_interWordSpace|${_koch ? _kochLevel : 0}'
+          '|${_choice.set.name}|${_choice.content.name}|$_keyerMode|$interference');
     }
     _suggestions = s;
     _pendWpm = s.newWpm;
@@ -673,6 +679,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     InterferenceProfile.requestAmbient(this);
     _correct = 0; _total = 0; _wordCounter = 0;
     _blockResults.clear();
+    BreakReminder.dismiss();
     _blockPairs.clear();
     _showResult = false;
     _target = ''; _attempt = ''; _firstAttempt = '';

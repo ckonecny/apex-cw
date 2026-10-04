@@ -1439,3 +1439,30 @@ tested), UI in `lib/ui/radio_cave_screen.dart`.
 
 ## 2026-10-03: Share text into Own texts, issue #24
 `MainActivity` has an `ACTION_SEND` / `text/plain` intent filter. `captureShared` keeps `EXTRA_TEXT` in `pendingShared` (from `onCreate` and `onNewIntent`; an intent replayed from the recents list, `FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY`, is ignored). Dart takes it over the channel `…/share` (`take`): once after the first frame (cold start) and whenever native sends `shared` (app already running). `ShareIntake` (`util/share_intake.dart`, global `navigatorKey`) then goes back to Home (`pushAndRemoveUntil`, so no training screen keeps the engine busy) and opens `OwnTextsScreen(sharedText:)`, which runs the same `_import` as the clipboard button: same limit, same "nothing to send" check, same title dialog. Nothing is stored before the user confirms. Only plain text is accepted; no file shares (same as #8: no storage permission).
+
+## 2026-10-03: Break reminder (issue #5)
+
+- **Trigger:** only the trend of the hit rate, no session-length criterion
+  (long concentration is normal for some). Average of the first 3 vs the last 3
+  blocks of a run; fires at >= 6 blocks and a drop >= 15 pp (`content/break_hint.dart`).
+- **Run = same difficulty:** a block's signature (speed, answer-speed cap,
+  character/word spacing, Koch level, charset/content, input mode, interference)
+  must be equal; any change starts the run over, so a harder task is never read
+  as fatigue. Deliberately strict: adaptive steps also restart it. Cost: the
+  hint rarely fires directly after an adaptive change; tolerable, as a false
+  alarm is worse than a missed one.
+- **Once per session** (gap of 10 min without a block = new session, in-memory,
+  separate from `PracticeClock`'s 5-minute session which counts time, not
+  blocks). Hören and Geben have separate runs, one shared "shown" flag.
+- **Never forced, can be turned off:** card on the block result page with
+  Break / Continue / Don't show again; setting `breakHint` (default on), back
+  on in Settings → General. Not in games, adventure or other modes.
+
+## Decoder: unknown patterns as "*", firmware's extra characters (issue #37)
+
+`MorseDecoder` shows `*` for an undecodable pattern (firmware: CWtree node 63)
+instead of `?`, which was indistinguishable from a keyed `?`. Its table also
+gained the tree's `ä ö ü ch ; ! " '` (decode only). Own Text keeps flattening
+Ä→AE etc. deliberately: the firmware's player does the same (`utf8umlaut` in
+`m32_v6.ino`), and the engine's `morseTable` has no codes for them (the
+generator's `pool[]` has ä ö ü ch, but the player never feeds them).

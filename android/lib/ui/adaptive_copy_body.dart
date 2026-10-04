@@ -28,6 +28,8 @@ import '../util/char_color.dart';
 import '../util/interference_profile.dart';
 import '../l10n/strings.dart';
 import '../util/practice_clock.dart';
+import '../util/break_reminder.dart';
+import 'widgets/break_hint_card.dart';
 import '../content/practice_log.dart' show MilestoneKind;
 
 part 'adaptive_copy_body_views.dart';
@@ -201,6 +203,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // _startBlock(), independent of widget.wpm so a just-accepted override
   // takes effect immediately rather than waiting for a parent rebuild.
   int _activeWpm = 0;
+  int _activeInterChar = 0, _activeInterWord = 0; // spacing of the in-flight block
 
   _Phase _phase = _Phase.idle;
   // Stop<Next>Rep: true = Gruppe wiederholen, false = weiter.
@@ -491,6 +494,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     _activeWpm = wpm ?? widget.wpm;
     final activeInterChar = interCharSpace ?? widget.interCharSpace;
     final activeInterWord = interWordSpace ?? widget.interWordSpace;
+    _activeInterChar = activeInterChar;
+    _activeInterWord = activeInterWord;
+    BreakReminder.dismiss();
     final wasIdle = _phase == _Phase.idle;
     _sessionActive = true;
     // The noise stands for the whole block, until the result is revealed.
@@ -866,8 +872,12 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final trend = await const BlockHistory('hear')
         .record(p, total == 0 ? 0 : correct / total);
     if (total > 0) {
-      PracticeClock.instance.block('hear', correct / total,
-          interference: (await InterferenceProfile.load()).enabled);
+      final interference = (await InterferenceProfile.load()).enabled;
+      PracticeClock.instance.block('hear', correct / total, interference: interference);
+      // Everything that sets the difficulty of this block (issue #5).
+      BreakReminder.onBlock('hear', correct / total,
+          '$_activeWpm|$_activeInterChar|$_activeInterWord|${widget.kochLesson ? widget.kochLevel : 0}'
+          '|${widget.kochLesson}|${widget.contentModeIndex}|$typing|$interference');
     }
 
     final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
