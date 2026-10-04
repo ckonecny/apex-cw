@@ -30,8 +30,15 @@ phone's own data was restored afterwards.
 
 ## Manual: pending for next release
 - `settings*.png` showing the General card: new row "Pausenhinweis" (#5; check which file shows it).
+- Head copy (#7): new `games.png` (nine cards) plus a screenshot per phase (setup, listening, question, result).
 - Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
+
+## Head copy (issue #7, branch `feature/head-copy`, not committed)
+Engine, screen, manual text (DE+EN) done; debug build installed on the test
+phone but **not yet checked on the device** (phone was locked): open Spiele →
+Verstehen, play a round DE and EN, check "KUECHE" plays right, replay, results.
+Later stages: mini-QSO on the same slot engine, Q-groups as a separate mode.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

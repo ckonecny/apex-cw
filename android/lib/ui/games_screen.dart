@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import 'adventure_select_screen.dart';
+import 'head_copy_screen.dart';
 import 'invaders_screen.dart';
 import 'maze_game_screen.dart';
 import 'memory_chain_screen.dart';
@@ -34,6 +35,16 @@ class GamesScreen extends StatelessWidget {
         body: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
           children: [
+            HubCard(
+              icon: Icons.hearing_rounded,
+              title: Strings.t('hc_title'),
+              subtitle: Strings.t('hc_subtitle'),
+              hint: Strings.t('hc_hint'),
+              color: c.accent,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const HeadCopyScreen())),
+            ),
+            const SizedBox(height: 12),
             HubCard(
               icon: Icons.rocket_launch_outlined,
               title: 'Morse Invaders',
