@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Next CW Trainer</title>
+<meta name="description" content="Learn Morse code on Android: Koch method, copy and send training, keyer, decoder, realistic interference, games. Free and open source.">
+<meta name="theme-color" content="#0e1422">
+<link rel="icon" href="img/icon.png">
+<style>
+:root{
+  --bg:#0e1422; --bg2:#131b2e; --card:#1a2540; --line:#26335a;
+  --text:#e4e9f5; --muted:#8c98b8; --teal:#3ecfa8; --amber:#d49a45; --violet:#a56bdc;
+  --radius:20px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* language switch: only matching language visible */
+html[lang=de] [data-l=en], html[lang=en] [data-l=de]{display:none!important}
+
+/* nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(14,20,34,.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:16px;height:56px}
+nav .brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--text)}
+nav .brand img{width:28px;height:28px;border-radius:7px}
+nav .sp{flex:1}
+nav a.l{color:var(--muted);font-size:15px}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--muted);font:inherit;font-size:13px;padding:5px 12px;cursor:pointer}
+html[lang=de] .lang [data-set=de], html[lang=en] .lang [data-set=en]{background:var(--card);color:var(--text)}
+@media(max-width:640px){nav a.l{display:none}}
+
+/* hero */
+.hero{padding:64px 0 40px;background:
+  radial-gradient(800px 400px at 80% 0%,rgba(62,207,168,.13),transparent 60%),
+  radial-gradient(600px 400px at 0% 30%,rgba(165,107,220,.09),transparent 60%)}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+.kicker{color:var(--teal);letter-spacing:.14em;font-size:13px;text-transform:uppercase}
+h1{font-size:clamp(36px,6vw,60px);line-height:1.08;margin:.3em 0 .4em;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--teal)}
+.lead{font-size:19px;color:#b9c3dc;max-width:34em}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 8px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:14px;font-weight:600;
+  border:1px solid var(--line);color:var(--text);background:var(--card)}
+.btn:hover{text-decoration:none;border-color:var(--teal)}
+.btn.p{background:var(--teal);border-color:var(--teal);color:#06231b}
+.btn.p:hover{filter:brightness(1.08)}
+.btn[aria-disabled=true]{opacity:.55;cursor:default}
+.btn[aria-disabled=true]:hover{border-color:var(--line)}
+.small{font-size:14px;color:var(--muted)}
+.phone{border-radius:34px;border:1px solid var(--line);background:#000;padding:8px;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.03) inset;max-width:300px;margin:0 auto}
+.phone img{display:block;width:100%;height:auto;border-radius:27px}
+@media(max-width:820px){.hero .wrap{grid-template-columns:1fr}.phone{max-width:240px}.hero{padding-top:36px}}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{font-size:13.5px;padding:5px 12px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:var(--bg2)}
+
+/* feature rows */
+section{padding:72px 0}
+section.alt{background:var(--bg2);border-block:1px solid var(--line)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.row.rev .txt{order:2}
+.row h2{font-size:clamp(26px,4vw,38px);line-height:1.15;margin:.2em 0 .5em;letter-spacing:-.01em}
+.row p{color:#b9c3dc}
+.row ul{padding:0;margin:18px 0 0;list-style:none}
+.row li{padding-left:28px;position:relative;margin:9px 0;color:#c9d2e8}
+.row li::before{content:"";position:absolute;left:4px;top:.62em;width:10px;height:3px;border-radius:2px;background:var(--teal)}
+.row li:nth-child(even)::before{width:4px;background:var(--amber)}
+.tag{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+.shots{display:flex;gap:18px;justify-content:center}
+.shots .phone{width:230px;max-width:100%;margin:0}
+.shots .phone:nth-child(2){margin-top:44px}
+@media(max-width:820px){
+  .row{grid-template-columns:1fr;gap:32px}.row.rev .txt{order:0}
+  section{padding:52px 0}.shots .phone{max-width:170px}
+}
+
+/* badges, stack, build-by */
+.badge{display:inline-block;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+  color:#06231b;background:var(--teal);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
+.stack{display:grid;gap:22px}
+.stack .diagram{margin:0}
+.single{display:flex;justify-content:center}
+.single .phone{width:260px;max-width:100%;margin:0}
+.by{text-align:center}
+.by h2{font-size:clamp(28px,4.4vw,44px);line-height:1.15;margin:.3em 0 .5em;letter-spacing:-.015em}
+.by h2 em{font-style:normal;color:var(--teal)}
+.by p{color:#b9c3dc;max-width:40em;margin:0 auto 14px}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:36px 0 0;text-align:left}
+
+/* diagrams */
+.diagram{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+.diagram svg{display:block;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.legend span{font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 11px}
+
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:32px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+.card h3{margin:0 0 6px;font-size:18px}
+.card p{margin:0;color:#aab5d0;font-size:15.5px}
+.card i{display:block;width:34px;height:4px;border-radius:2px;margin-bottom:14px}
+h2.c{font-size:clamp(26px,4vw,38px);text-align:center;margin:0 0 8px;letter-spacing:-.01em}
+p.c{text-align:center;color:var(--muted);margin:0 auto;max-width:36em}
+
+/* open source */
+.os{text-align:center}
+.os .btn{margin-top:22px}
+
+footer{padding:40px 0 56px;border-top:1px solid var(--line);color:var(--muted);font-size:14.5px}
+footer .wrap{display:grid;gap:14px}
+footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/icon.png" alt="">Next CW Trainer</a>
+    <span class="sp"></span>
+    <a class="l" href="#key"><span data-l="en">Key</span><span data-l="de">Taste</span></a>
+    <a class="l" href="#learn"><span data-l="en">Learn</span><span data-l="de">Lernen</span></a>
+    <a class="l" href="#qrm"><span data-l="en">Interference</span><span data-l="de">Störungen</span></a>
+    <a class="l" href="#open"><span data-l="en">Open source</span><span data-l="de">Open Source</span></a>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-set="en" type="button">EN</button><button data-set="de" type="button">DE</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="kicker mono">CW · Morse · Android</div>
+      <h1><span data-l="en">Learn Morse code the way it sounds <em>on the band.</em></span>
+          <span data-l="de">Morsen lernen, so wie es <em>auf dem Band</em> klingt.</span></h1>
+      <p class="lead">
+        <span data-l="en">Koch method, copy and send training, a keyer for your real Morse key, realistic interference and games. Free, ad-free and open source.</span>
+        <span data-l="de">Koch-Methode, Hör- und Gebetraining, Keyer für deine echte Morsetaste, realistische Störungen und Spiele. Kostenlos, werbefrei und Open Source.</span>
+      </p>
+      <div class="cta">
+        <a class="btn p" href="https://github.com/ckonecny/next_cw_trainer/releases/latest">
+          <span data-l="en">Download APK</span><span data-l="de">APK herunterladen</span></a>
+        <a class="btn" aria-disabled="true">
+          <span data-l="en">Google Play: coming soon</span><span data-l="de">Google Play: bald verfügbar</span></a>
+      </div>
+      <div class="small">
+        <span data-l="en">Android · free · no account · no ads</span>
+        <span data-l="de">Android · kostenlos · ohne Konto · ohne Werbung</span>
+      </div>
+      <div class="chips">
+        <span class="chip">Koch</span><span class="chip">Iambic A/B</span><span class="chip">QRM / QSB</span>
+        <span class="chip">QSO-Bot</span><span class="chip">GPL-3.0</span>
+        <span class="chip">DE · EN</span>
+      </div>
+    </div>
+    <div class="phone">
+      <img data-l="en" src="img/en_home.webp" alt="Home screen of Next CW Trainer" width="720" height="1497">
+      <img data-l="de" src="img/de_home.webp" alt="Startbildschirm von Next CW Trainer" width="720" height="1497">
+    </div>
+  </div>
+</header>
+
+<!-- 1: real key -->
+<section id="key">
+  <div class="wrap row">
+    <div class="txt">
+      <div class="tag mono"><span data-l="en">Real hardware</span><span data-l="de">Echte Hardware</span></div>
+      <h2><span data-l="en">Plug in your own Morse key.</span><span data-l="de">Schließ deine eigene Morsetaste an.</span></h2>
+      <p>
+        <span data-l="en">A small USB adapter turns the contacts of your paddle or straight key into key presses. The app takes it from there, with latency-free sidetone and live decoding. No adapter yet? The on-screen dit and dah keys work from the first minute.</span>
+        <span data-l="de">Ein kleiner USB-Adapter macht aus den Kontakten deiner Doppelpaddle oder Handtaste Tastendrücke. Den Rest übernimmt die App, mit latenzarmem Mithörton und Live-Dekodierung. Noch kein Adapter? Die Dit- und Dah-Tasten am Bildschirm funktionieren von der ersten Minute an.</span>
+      </p>
+      <ul>
+        <li><span data-l="en">Iambic A and B, Ultimatic, Non-Squeeze and straight key</span><span data-l="de">Iambic A und B, Ultimatic, Non-Squeeze und Handtaste</span></li>
+        <li><span data-l="en">Straight key: the app measures your speed automatically</span><span data-l="de">Handtaste: die App misst dein Tempo automatisch</span></li>
+        <li><span data-l="en">Works with the vband adapter or a homemade one</span><span data-l="de">Funktioniert mit dem vband-Adapter oder einem Selbstbau</span></li>
+      </ul>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 520 250" role="img" aria-label="Key, USB adapter, phone">
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8c98b8"/></marker></defs>
+        <!-- paddle -->
+        <rect x="14" y="150" width="120" height="22" rx="6" fill="#26335a"/>
+        <rect x="26" y="108" width="12" height="46" rx="5" fill="#3ecfa8" transform="rotate(-8 32 154)"/>
+        <rect x="108" y="108" width="12" height="46" rx="5" fill="#d49a45" transform="rotate(8 114 154)"/>
+        <rect x="64" y="132" width="30" height="20" rx="4" fill="#1a2540" stroke="#3a4a7a"/>
+        <text x="74" y="196" fill="#8c98b8" font-size="13" text-anchor="middle" font-family="system-ui">Paddle / Key</text>
+        <path d="M140 150H196" stroke="#8c98b8" stroke-width="2" marker-end="url(#ar)" fill="none"/>
+        <!-- adapter -->
+        <rect x="200" y="128" width="96" height="44" rx="8" fill="#1a2540" stroke="#3ecfa8" stroke-width="1.6"/>
+        <text x="248" y="148" fill="#e4e9f5" font-size="12.5" text-anchor="middle" font-family="ui-monospace,monospace">USB HID</text>
+        <text x="248" y="164" fill="#8c98b8" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">dit · dah</text>
+        <text x="248" y="196" fill="#8c98b8" font-size="13" text-anchor="middle" font-family="system-ui">Adapter</text>
+        <path d="M302 150H358" stroke="#8c98b8" stroke-width="2" marker-end="url(#ar)" fill="none"/>
+        <!-- phone -->
+        <rect x="364" y="60" width="104" height="180" rx="16" fill="#0a0f1b" stroke="#3a4a7a" stroke-width="2"/>
+        <rect x="374" y="76" width="84" height="26" rx="6" fill="#1a2540"/>
+        <text x="416" y="94" fill="#3ecfa8" font-size="12" text-anchor="middle" font-family="ui-monospace,monospace">cq cq de</text>
+        <rect x="374" y="108" width="84" height="26" rx="6" fill="#1a2540"/>
+        <rect x="374" y="190" width="40" height="38" rx="8" fill="#16352f" stroke="#3ecfa8"/>
+        <rect x="418" y="190" width="40" height="38" rx="8" fill="#3a2d16" stroke="#d49a45"/>
+        <text x="394" y="214" fill="#3ecfa8" font-size="14" text-anchor="middle" font-family="ui-monospace,monospace">·</text>
+        <text x="438" y="214" fill="#d49a45" font-size="14" text-anchor="middle" font-family="ui-monospace,monospace">–</text>
+        <text x="416" y="40" fill="#8c98b8" font-size="13" text-anchor="middle" font-family="system-ui">Android</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 2: learn -->
+<section id="learn" class="alt">
+  <div class="wrap row rev">
+    <div class="txt">
+      <div class="tag mono"><span data-l="en">Learn and practise</span><span data-l="de">Lernen und üben</span></div>
+      <h2><span data-l="en">One app, many ways to train.</span><span data-l="de">Eine App, viele Wege zu trainieren.</span></h2>
+      <p>
+        <span data-l="en">Copy by ear, send it back, key freely, talk to a bot or other hams. Everything builds on the Koch method and stays in one place.</span>
+        <span data-l="de">Nach Gehör mitschreiben, zurückgeben, frei tasten, mit einem Bot oder anderen Funkamateuren sprechen. Alles baut auf der Koch-Methode auf und liegt an einem Ort.</span>
+      </p>
+      <ul>
+        <li><b><span data-l="en">Listen</span><span data-l="de">Hören</span></b> – <span data-l="en">Koch lessons with five sequences (M32, LCWO, CW Academy, LICW or your own), random characters, groups, words, call signs</span><span data-l="de">Koch-Lektionen mit fünf Reihenfolgen (M32, LCWO, CW Academy, LICW oder eigene), Zufallszeichen, Gruppen, Wörter, Rufzeichen</span></li>
+        <li><b><span data-l="en">Send</span><span data-l="de">Geben</span></b> – <span data-l="en">Echo Trainer: hear a word, send it back, get instant feedback</span><span data-l="de">Echo-Trainer: Wort hören, zurückgeben, sofort bewertet</span></li>
+        <li><b>CW Keyer &amp; Decoder</b> – <span data-l="en">live decoding from your key or through the microphone</span><span data-l="de">Live-Dekodierung von deiner Taste oder über das Mikrofon</span></li>
+        <li><b>QSO Bot</b> – <span data-l="en">a simulated partner for standard, SOTA/POTA and contest QSOs</span><span data-l="de">ein simulierter Funkpartner für Standard-, SOTA/POTA- und Contest-QSOs</span></li>
+        <li><b>WiFi Trx</b> – <span data-l="en">CW over the internet with other hams</span><span data-l="de">CW übers Internet mit anderen Funkamateuren</span></li>
+      </ul>
+    </div>
+    <div class="single"><div class="phone">
+        <img data-l="en" src="img/en_hear.webp" alt="Listen training" loading="lazy" width="720" height="1497">
+        <img data-l="de" src="img/de_hear.webp" alt="Hörtraining" loading="lazy" width="720" height="1497">
+      </div></div>
+    </div>
+  </section>
+
+<!-- 3: interference -->
+<section id="qrm">
+  <div class="wrap row">
+    <div class="txt">
+      <div class="tag mono"><span data-l="en">Realistic conditions</span><span data-l="de">Realistische Bedingungen</span></div>
+      <h2><span data-l="en">Practise for the band, not for a clean signal.</span><span data-l="de">Üb für das Band, nicht für ein sauberes Signal.</span></h2>
+      <p>
+        <span data-l="en">A perfect tone in a quiet room is easy. A weak station with fading, static and a neighbour two hundred hertz away is not. Switch the interference on and train for that.</span>
+        <span data-l="de">Ein perfekter Ton im stillen Zimmer ist einfach. Eine schwache Station mit Fading, Knacken und einem Nachbarn zweihundert Hertz daneben nicht. Schalte die Störungen ein und trainiere genau das.</span>
+      </p>
+      <ul>
+        <li><span data-l="en">Noise with adjustable signal-to-noise ratio and colour</span><span data-l="de">Rauschen mit einstellbarem Signal-Rausch-Abstand und Klangfarbe</span></li>
+        <li><span data-l="en">QRM (a neighbouring station) and QSB (fading)</span><span data-l="de">QRM (eine Nachbarstation) und QSB (Fading)</span></li>
+        <li><span data-l="en">Pitch drift, timing jitter and a narrow receiver filter</span><span data-l="de">Tonhöhendrift, Timing-Jitter und ein schmales Empfangsfilter</span></li>
+        <li><span data-l="en">Works in all trainings, games and the QSO bot, and your results record whether you used it</span><span data-l="de">Wirkt in allen Trainings, Spielen und im QSO-Bot, die Ergebnisse merken sich, ob du es genutzt hast</span></li>
+      </ul>
+    </div>
+    <div class="shots">
+      <div class="phone">
+        <img data-l="en" src="img/en_qrm.webp" alt="Interference settings" loading="lazy" width="720" height="1497">
+        <img data-l="de" src="img/de_qrm.webp" alt="Störungseinstellungen" loading="lazy" width="720" height="1497">
+      </div>
+      <div class="stack" style="align-self:center;max-width:300px">
+      <div class="diagram">
+        <svg id="wave" viewBox="0 0 520 220" role="img" aria-label="Signal with and without interference">
+          <text x="0" y="14" fill="#3ecfa8" font-size="12" font-family="ui-monospace,monospace">clean</text>
+          <text x="0" y="132" fill="#d49a45" font-size="12" font-family="ui-monospace,monospace">QRM · QSB · noise</text>
+        </svg>
+        <div class="legend"><span>SNR</span><span>QRM</span><span>QSB</span><span>Jitter</span><span>Drift</span></div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+<!-- 4: adaptive -->
+<section id="adaptive" class="alt">
+  <div class="wrap row rev">
+    <div class="txt">
+      <div class="tag mono"><span data-l="en">Adaptive</span><span data-l="de">Adaptiv</span></div>
+      <h2><span data-l="en">It watches every character, so you don't have to.</span><span data-l="de">Die App beobachtet jedes Zeichen, damit du es nicht musst.</span></h2>
+      <p>
+        <span data-l="en">The app tracks your hit rate per character and per block. It tells you when the next Koch character is due, suggests spacing and speed, and brings your weak characters back. You accept or reject every suggestion.</span>
+        <span data-l="de">Die App misst deine Trefferquote pro Zeichen und pro Block. Sie sagt dir, wann das nächste Koch-Zeichen dran ist, schlägt Abstände und Tempo vor und bringt schwache Zeichen zurück. Jeden Vorschlag nimmst du an oder lehnst ihn ab.</span>
+      </p>
+      <ul>
+        <li><span data-l="en">Statistics per character with trend, curves and mix-ups</span><span data-l="de">Statistik pro Zeichen mit Trend, Kurven und Verwechslungen</span></li>
+        <li><span data-l="en">Weak characters come back in the next block until they sit</span><span data-l="de">Schwache Zeichen kommen im nächsten Block wieder, bis sie sitzen</span></li>
+        <li><span data-l="en">Your own texts: share anything from another app and let it play</span><span data-l="de">Eigene Texte: teile etwas aus einer anderen App und lass es abspielen</span></li>
+      </ul>
+    </div>
+    <div class="single"><div class="phone">
+        <img data-l="en" src="img/en_stats.webp" alt="Listening statistics" loading="lazy" width="720" height="1497">
+        <img data-l="de" src="img/de_stats.webp" alt="Statistik Hören" loading="lazy" width="720" height="1497">
+      </div></div>
+    </div>
+  </section>
+
+<!-- streak -->
+<section id="streak">
+  <div class="wrap row">
+    <div class="single"><div class="phone">
+        <img data-l="en" src="img/en_streak.webp" alt="Achievements: daily goal, streak and awards" loading="lazy" width="720" height="1497">
+        <img data-l="de" src="img/de_streak.webp" alt="Erfolge: Tagesziel, Serie und Auszeichnungen" loading="lazy" width="720" height="1497">
+    </div></div>
+    <div class="txt">
+      <div class="tag mono"><span data-l="en">Stay on track</span><span data-l="de">Dranbleiben</span></div>
+      <h2><span data-l="en">Ten minutes a day beat one long session a month.</span><span data-l="de">Zehn Minuten täglich schlagen eine lange Session im Monat.</span></h2>
+      <p>
+        <span data-l="en">Set a daily goal and watch your streak grow. The app counts your active practice time, not the time the screen is on, and shows the week at a glance on the home screen.</span><span data-l="de">Setz dir ein Tagesziel und sieh deine Serie wachsen. Die App zählt deine aktive Übungszeit, nicht die Bildschirmzeit, und zeigt die Woche auf einen Blick auf dem Startbildschirm.</span>
+      </p>
+      <ul>
+        <li><span data-l="en"><b>Streak</b> with one free day per week, so a single miss does not break it</span><span data-l="de"><b>Serie</b> mit einem freien Tag pro Woche, damit ein einzelner Ausfall sie nicht bricht</span></li>
+        <li><span data-l="en">Goal from 5 to 60 minutes, optionally spread over several sessions</span><span data-l="de">Ziel von 5 bis 60 Minuten, auf Wunsch auf mehrere Sessions verteilt</span></li>
+        <li><span data-l="en">Reminder that only fires if your goal is still open</span><span data-l="de">Erinnerung, die nur kommt, wenn dein Ziel noch offen ist</span></li>
+        <li><span data-l="en">Weekly review and awards for real steps, like a new character</span><span data-l="de">Wochenrückblick und Auszeichnungen für echte Schritte, etwa ein neues Zeichen</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- games -->
+<section id="games" class="alt">
+  <div class="wrap">
+    <h2 class="c"><span data-l="en">And when you need a break</span><span data-l="de">Und wenn du eine Pause brauchst</span></h2>
+    <p class="c"><span data-l="en">Games that train real skills, and some that are simply fun.</span><span data-l="de">Spiele, die echte Fähigkeiten trainieren, und manche, die einfach Spaß machen.</span></p>
+    <div class="row" style="margin-top:44px">
+      <div class="txt">
+        <div class="tag mono"><span data-l="en">Understand, don't decode</span><span data-l="de">Verstehen statt entschlüsseln</span></div>
+        <h2 style="margin-top:.1em"><span data-l="en">Head copy</span><span data-l="de">Verstehen</span><span class="badge"><span data-l="en">new</span><span data-l="de">neu</span></span></h2>
+        <p><span data-l="en">Real conversations are not copied letter by letter, they are understood. You hear one to three short sentences in Morse, nothing is written down, and then you answer questions: who, what, where, when. The text stays hidden until the result, and the sentences make sense every time.</span><span data-l="de">Echte Gespräche schreibt man nicht Buchstabe für Buchstabe mit, man versteht sie. Du hörst ein bis drei kurze Sätze in Morse, schreibst nichts auf und beantwortest dann Fragen: Wer, was, wo, wann. Der Text bleibt bis zum Ergebnis verborgen, und die Sätze ergeben jedes Mal Sinn.</span></p>
+      </div>
+      <div class="single"><div class="phone">
+        <img data-l="en" src="img/en_verstehen.webp" alt="Head copy: question with four answers" loading="lazy" width="720" height="1497">
+        <img data-l="de" src="img/de_verstehen.webp" alt="Verstehen: Frage mit vier Antworten" loading="lazy" width="720" height="1497">
+      </div></div>
+    </div>
+    <div class="row rev" style="margin-top:72px">
+      <div class="txt">
+        <div class="tag mono"><span data-l="en">Classic</span><span data-l="de">Klassiker</span></div>
+        <h2 style="margin-top:.1em"><span data-l="en">Play Zork in Morse code.</span><span data-l="de">Spiel Zork in Morsecode.</span></h2>
+        <p><span data-l="en">Zork I, II and III, the legendary text adventures, played entirely in CW. You hear what happens, key your command and explore the Great Underground Empire. It uses the full alphabet, digits and punctuation, so it trains all of it.</span><span data-l="de">Zork I, II und III, die legendären Textadventures, komplett in CW gespielt. Du hörst, was passiert, gibst deinen Befehl und erkundest das Große Unterirdische Imperium. Es nutzt das volle Alphabet samt Ziffern und Satzzeichen und trainiert damit alles.</span></p>
+      </div>
+      <div class="single"><div class="phone">
+        <img data-l="en" src="img/en_zork.webp" alt="Zork: choose one of the three adventures" loading="lazy" width="720" height="1497">
+        <img data-l="de" src="img/de_zork.webp" alt="Zork: Auswahl der drei Abenteuer" loading="lazy" width="720" height="1497">
+      </div></div>
+    </div>
+    <div class="grid" style="margin-top:72px">
+      <div class="card"><i style="background:var(--violet)"></i><h3>Morse Invaders</h3><p><span data-l="en">Shoot falling characters by keying them.</span><span data-l="de">Fallende Zeichen abschießen, indem du sie gibst.</span></p></div>
+      <div class="card"><i style="background:var(--teal)"></i><h3>Morsel</h3><p><span data-l="en">Guess the word from CW, then key it back.</span><span data-l="de">Das Wort aus CW erraten und zurückgeben.</span></p></div>
+      <div class="card"><i style="background:var(--amber)"></i><h3>Memory Chain</h3><p><span data-l="en">One more character each round. How long is your chain?</span><span data-l="de">Jede Runde ein Zeichen mehr. Wie lang wird deine Kette?</span></p></div>
+      <div class="card"><i style="background:var(--violet)"></i><h3>Trailblazer · Fox Hunt</h3><p><span data-l="en">Follow a hidden path through a grid of characters: key the highlighted letter, or in Fox Hunt the direction you hear.</span><span data-l="de">Einem verborgenen Pfad durch ein Zeichen-Raster folgen: das markierte Zeichen geben, bei Fox Hunt die Richtung, die du hörst.</span></p></div>
+      <div class="card"><i style="background:var(--teal)"></i><h3>Fight the Pileup · Radio Cave</h3><p><span data-l="en">Copy a queue of calling stations and answer them before they give up. Radio Cave: a keyed text adventure in an abandoned radio station.</span><span data-l="de">Eine Schlange rufender Stationen mitlesen und beantworten, bevor sie aufgeben. Radio Cave: ein Textadventure in einer verlassenen Funkstation, jeder Befehl wird getastet.</span></p></div>
+      <div class="card"><i style="background:var(--amber)"></i><h3><span data-l="en">Learning resources</span><span data-l="de">Lernhilfen</span></h3><p><span data-l="en">Morse tree, character chart and links to courses.</span><span data-l="de">Morsebaum, Zeichentabelle und Links zu Kursen.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- built by enthusiasts -->
+<section id="by" class="by">
+  <div class="wrap">
+    <div class="tag mono"><span data-l="en">Made by hams</span><span data-l="de">Von Funkamateuren</span></div>
+    <h2><span data-l="en">Built by CW enthusiasts, <em>for CW enthusiasts.</em></span><span data-l="de">Von CW-Enthusiasten, <em>für CW-Enthusiasten.</em></span></h2>
+    <p><span data-l="en">Whether you are learning your first characters or chasing contest speed, the app grows with you. And it keeps growing: it is under active development, with new features and improvements in release after release.</span><span data-l="de">Ob du deine ersten Zeichen lernst oder Contest-Tempo anstrebst, die App wächst mit dir. Und sie wächst weiter: Sie wird aktiv entwickelt, mit neuen Funktionen und Verbesserungen in Release nach Release.</span></p>
+    <p><span data-l="en">Your ideas and bug reports shape what comes next. Tell us on GitHub.</span><span data-l="de">Deine Ideen und Fehlermeldungen bestimmen, was als Nächstes kommt. Schreib uns auf GitHub.</span></p>
+    <div class="levels">
+      <div class="card"><i style="background:var(--teal)"></i><h3><span data-l="en">Just starting</span><span data-l="de">Gerade angefangen</span></h3><p><span data-l="en">Koch lessons, slow character speed with generous spacing, copy by typing on a keyboard that offers only the characters you know.</span><span data-l="de">Koch-Lektionen, langsames Zeichentempo mit großzügigen Abständen, Mitschreiben auf einer Tastatur, die nur die Zeichen anbietet, die du kennst.</span></p></div>
+      <div class="card"><i style="background:var(--amber)"></i><h3><span data-l="en">Getting fluent</span><span data-l="de">Auf dem Weg zur Routine</span></h3><p><span data-l="en">Words, abbreviations and call signs, the Echo Trainer, a bot for your first QSOs, and Head copy to understand instead of decode.</span><span data-l="de">Wörter, Abkürzungen und Rufzeichen, der Echo-Trainer, ein Bot für deine ersten QSOs und Verstehen, um nicht mehr zu entschlüsseln.</span></p></div>
+      <div class="card"><i style="background:var(--violet)"></i><h3><span data-l="en">Chasing speed</span><span data-l="de">Auf Tempo aus</span></h3><p><span data-l="en">Contest QSOs, pile-ups, noise, fading and a neighbouring station, and your own key at your own speed.</span><span data-l="de">Contest-QSOs, Pile-ups, Rauschen, Fading und eine Nachbarstation, dazu deine eigene Taste in deinem Tempo.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- open source -->
+<section id="open" class="alt os">
+  <div class="wrap">
+    <div class="tag mono"><span data-l="en">Free software</span><span data-l="de">Freie Software</span></div>
+    <h2 class="c"><span data-l="en">Open source. No account, no ads, no tracking.</span><span data-l="de">Open Source. Kein Konto, keine Werbung, kein Tracking.</span></h2>
+    <p class="c">
+      <span data-l="en">Licensed under GPL-3.0-or-later. Your settings, progress and statistics stay on your phone. Read the code, report a bug or suggest a feature on GitHub.</span>
+      <span data-l="de">Lizenziert unter GPL-3.0-oder-später. Einstellungen, Fortschritt und Statistiken bleiben auf deinem Handy. Lies den Code, melde einen Fehler oder wünsch dir ein Feature auf GitHub.</span>
+    </p>
+    <a class="btn" href="https://github.com/ckonecny/next_cw_trainer">
+      <span data-l="en">View on GitHub</span><span data-l="de">Auf GitHub ansehen</span></a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="manual-en.html" data-l="en">User manual (EN)</a>
+      <a href="manual-de.html" data-l="de">Handbuch (DE)</a>
+      <a href="manual-en.html" data-l="de">Manual (EN)</a>
+      <a href="manual-de.html" data-l="en">Handbuch (DE)</a>
+      <a href="https://github.com/ckonecny/next_cw_trainer/blob/main/PRIVACY.md"><span data-l="en">Privacy policy</span><span data-l="de">Datenschutzerklärung</span></a>
+      <a href="https://github.com/ckonecny/next_cw_trainer/issues"><span data-l="en">Report a bug</span><span data-l="de">Fehler melden</span></a>
+      <a href="mailto:oe1ckoapps@gmail.com"><span data-l="en">Contact</span><span data-l="de">Kontakt</span></a>
+    </div>
+    <div>
+      <span data-l="en">By Christian Konecny, OE1CKO. Many ideas and much of the training logic come from the open-source firmware of the <a href="https://github.com/oe1wkl/Morserino-32">Morserino-32</a> by Willi Kraml, OE1WKL, many thanks for that. Next CW Trainer is an independent project and not affiliated with the Morserino-32 team.</span>
+      <span data-l="de">Von Christian Konecny, OE1CKO. Viele Ideen und ein Großteil der Trainingslogik stammen aus der Open-Source-Firmware des <a href="https://github.com/oe1wkl/Morserino-32">Morserino-32</a> von Willi Kraml, OE1WKL, herzlichen Dank dafür. Next CW Trainer ist ein unabhängiges Projekt und steht in keiner Verbindung zum Morserino-32-Team.</span>
+    </div>
+    <div>
+      <span data-l="en">Zork is a trademark of its owners; the app is not affiliated with them. Google Play and the Google Play logo are trademarks of Google LLC.</span>
+      <span data-l="de">Zork ist eine Marke ihrer Inhaber; die App steht mit ihnen in keiner Verbindung. Google Play und das Google-Play-Logo sind Marken von Google LLC.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// language: stored choice, else browser language
+(function(){
+  var html=document.documentElement, lang;
+  try{lang=localStorage.getItem('lang')}catch(e){}
+  if(!lang) lang=(navigator.language||'en').slice(0,2)==='de'?'de':'en';
+  function set(l){html.lang=l;try{localStorage.setItem('lang',l)}catch(e){}}
+  set(lang);
+  document.querySelectorAll('.lang button').forEach(function(b){
+    b.addEventListener('click',function(){set(b.dataset.set)});
+  });
+})();
+
+// decorative signal drawing: "SOS-like" keying, clean on top, disturbed below
+(function(){
+  var svg=document.getElementById('wave'); if(!svg) return;
+  var pat=[1,0,1,0,1,0,0,3,0,3,0,3,0,0,1,0,1,0,1]; // dit=1 dah=3 gap=0 (units)
+  var seg=[],t=0; pat.forEach(function(v){var d=v===0?1:v;seg.push([t,t+d,v>0]);t+=d;});
+  var W=520,x0=0,unit=W/(t+2);
+  var s=7; function rnd(){s=(s*16807)%2147483647;return s/2147483647}
+  function env(tt){for(var i=0;i<seg.length;i++)if(tt>=seg[i][0]&&tt<seg[i][1])return seg[i][2]?1:0;return 0}
+  function path(y0,amp,disturbed){
+    var pts=[],N=520;
+    for(var i=0;i<=N;i++){
+      var tt=i/N*(t+2)-1, e=env(tt), y=0;
+      if(disturbed){
+        var fade=.55+.45*Math.sin(i/N*9.4); e*=fade;
+        var qrm=((Math.sin(i*.9)>0.2)&&(i%173>60&&i%173<115))?.35:0;
+        y=(e*Math.sin(i*1.25)+qrm*Math.sin(i*1.05+1))*amp*.7+(rnd()-.5)*amp*.9;
+      }else y=e*Math.sin(i*1.25)*amp;
+      pts.push((i).toFixed(1)+','+(y0-y).toFixed(1));
+    }
+    return pts.join(' ');
+  }
+  function line(y0,col,w){return '<line x1="0" x2="520" y1="'+y0+'" y2="'+y0+'" stroke="'+col+'" stroke-opacity=".18" stroke-width="1"/>'}
+  svg.insertAdjacentHTML('beforeend',
+    line(70,'#8c98b8')+'<polyline fill="none" stroke="#3ecfa8" stroke-width="1.4" points="'+path(70,34,false)+'"/>'+
+    line(170,'#8c98b8')+'<polyline fill="none" stroke="#d49a45" stroke-width="1.2" points="'+path(170,34,true)+'"/>');
+})();
+</script>
+</body>
+</html>

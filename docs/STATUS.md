@@ -28,6 +28,12 @@ Straight-mode shots only if wanted. Adventure map shots show the default zoom
 shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
+## Landing page (branch `feature/landing-page`, not committed yet)
+`site/` + `.github/workflows/pages.yml` ready. To go live: merge to main, then
+repo Settings -> Pages -> Source "GitHub Actions". Then replace the disabled
+"Google Play: coming soon" button with the store link once the app is live,
+and set the Play listing's website to the Pages URL (decision in DECISIONS.md).
+
 ## Manual: pending for next release
 - `settings*.png` showing the General card: new row "Pausenhinweis" (#5; check which file shows it).
 - Head copy (#7): new `games.png` (nine cards) plus a screenshot per phase (setup, listening, question, result).
