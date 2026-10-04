@@ -1567,3 +1567,17 @@ and issue numbers since the nearest earlier tag (release or test, via
 `git describe`) plus GitHub's generated PR list. `DRY_RUN=1` prints the notes
 only. Requested through Claude Code chat; publishing is outward-facing, so
 confirm the tag and ref with the user before running it for real.
+
+## Landing page on GitHub Pages (2026-10-04)
+
+`site/` holds a hand-written static landing page (one `index.html`, dark, DE/EN
+switch, no external fonts or scripts, so no visitor data leaves the page).
+GitHub Pages can only serve the repo root or `/docs`, and `docs/` is internal,
+so `.github/workflows/pages.yml` deploys `site/` with the Actions source. The
+workflow also copies the newest built manuals (`manual/*.html`, self-contained)
+to `manual-en.html` / `manual-de.html`, so the footer links work without
+duplicating content. It runs on pushes to `main` that touch `site/` or the
+manual HTML. Screenshots in `site/img/` are dark phone shots (WebP, 720 px
+wide, status/gesture bar cropped); retake them when the screens change
+noticeably, like the store raw shots. Play button stays "coming soon" until
+the app is live. Claims on the page come from manual/README/PRIVACY.
