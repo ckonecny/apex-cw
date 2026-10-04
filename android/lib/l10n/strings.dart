@@ -100,6 +100,17 @@ class Strings {
     'opt_audio_wired': ['Kabel/USB', 'Wired/USB'],
     'opt_audio_bluetooth': ['Bluetooth', 'Bluetooth'],
     'bt_latency_hint': ['Bluetooth verzögert deinen Seitenton (ca. 100–250 ms). Zum Geben besser Kabel oder USB – tippen für die Audioausgabe.', 'Bluetooth delays your sidetone (about 100–250 ms). For keying, use a cable or USB – tap for audio output.'],
+    'settings_break_hint': ['Pausenhinweis bei steigender Fehlerquote', 'Break hint when the error rate rises'],
+    'break_hint_title': ['Zeit für eine kurze Pause?', 'Time for a short break?'],
+    'break_hint_body': [
+      'Deine Trefferquote ist bei gleichen Bedingungen deutlich gesunken. Eine kurze Pause hilft oft mehr als Weitermachen.',
+      'Your hit rate has dropped clearly under the same conditions. A short break often helps more than carrying on.'],
+    'break_hint_pause': ['Pause', 'Break'],
+    'break_hint_continue': ['Weiter', 'Continue'],
+    'break_hint_never': ['Nicht mehr anzeigen', "Don't show again"],
+    'break_hint_off_note': [
+      'Pausenhinweis aus – wieder einschalten unter Einstellungen → Allgemein.',
+      'Break hint off – turn it back on under Settings → General.'],
     'settings_bt_latency_hint': ['Bluetooth-Hinweis beim Geben', 'Bluetooth hint when keying'],
     'settings_group_length': ['Gruppenlänge', 'Group length'],
     'settings_max_word_length': ['Max. Wortlänge', 'Max word length'],

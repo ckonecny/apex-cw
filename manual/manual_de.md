@@ -966,6 +966,27 @@ Ab dem **sechsten** Block zeigt die Statuszeile einen Trend, z. B.
 Der Trend wird über alle Sitzungen hinweg geführt, getrennt für Hören und
 Geben. Die App speichert dafür die letzten 20 Blöcke.
 
+## Pausenhinweis
+
+Sinkt in **Hören** oder **Geben** die Trefferquote im Lauf einer Sitzung
+deutlich, schlägt die App auf der Ergebnis-Seite eine kurze Pause vor.
+Ermüdung und nachlassende Konzentration lassen sich so früh erkennen; oft
+bringt eine Pause mehr als Weitermachen.
+
+- Verglichen werden die **ersten 3** mit den **letzten 3 Blöcken** unter
+  denselben Bedingungen. Ein Hinweis kommt frühestens nach 6 Blöcken und nur,
+  wenn die Quote um mindestens **15 Prozentpunkte** gefallen ist.
+- Was die Aufgabe schwerer macht, zählt nicht als Müdigkeit: Ein neues Zeichen,
+  ein höheres Tempo, engere Abstände, ein anderer Inhalt, die Störungen oder die
+  Eingabeart beginnen die Beobachtung neu. Nur Blöcke mit gleichen
+  Bedingungen werden verglichen.
+- Der Hinweis erscheint **höchstens einmal pro Sitzung**. Eine Sitzung endet
+  nach 10 Minuten ohne Block. Hören und Geben werden getrennt beobachtet.
+- Er ist nie zwingend. **Pause** führt zur Startseite, **Weiter** schließt die
+  Karte, **Nicht mehr anzeigen** schaltet den Hinweis aus.
+- Wieder einschalten: **Einstellungen → Allgemein → Pausenhinweis bei
+  steigender Fehlerquote**.
+
 ## Einstellungen des adaptiven Modus
 
 Im ⚙-Blatt von **Hören** unter **Adaptiver Modus**. Sie gelten für Hören und
@@ -1192,6 +1213,11 @@ angezeigt.
   (Wortabstand, Voreinstellung 7 Dits). Er legt fest, nach welcher Pause ein
   Leerzeichen gesetzt wird. Der Zeichenabstand hat beim Tasten keine Wirkung, wie
   am Morserino.
+- **Was im Text erscheint:** Ein Muster, das kein Zeichen ergibt, steht als
+  **\*** im Text, wie am Morserino. Ein echtes Fragezeichen (`..--..`) bleibt
+  **?**. Sieben oder mehr Dits hintereinander sind das Fehlerzeichen und
+  erscheinen als **ERR**. Außer den Buchstaben, Ziffern und Prosigns erkennt
+  der Keyer auch Ä, Ö, Ü, CH sowie `;` `!` `"` `'`.
 
 Den Keyer-Modus und seine Feinheiten stellst du in den globalen Einstellungen
 unter **Keyer** ein (siehe [Keyer](#keyer)). Sie gelten überall, wo du
@@ -1988,6 +2014,7 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 | Tonhöhe (Hz) | Frequenz des Mithörtons und der gespielten Zeichen | 300–900 Hz in 50-Hz-Schritten (**600 Hz**) |
 | Tonweichheit | Anstiegs- und Abfallzeit des Tons. Größere Werte klingen weicher und klicken weniger, besonders bei kurzen Dits | 1–9 ms (**5 ms**) |
 | Schreibweise | Zeichen in Klein- oder Großbuchstaben anzeigen. Betrifft nur die Anzeige | **klein** / GROSS |
+| Pausenhinweis bei steigender Fehlerquote | Schlägt in Hören und Geben eine Pause vor, wenn die Trefferquote unter gleichen Bedingungen deutlich fällt (siehe [Pausenhinweis](#pausenhinweis)) | **An** / Aus |
 | Tagesziel und Erfolge anzeigen | Blendet die Karte auf der Startseite ein oder aus und schaltet die Aufzeichnung der Übungszeit an oder aus. Gespeicherte Daten bleiben erhalten | **An** / Aus |
 
 ## Störungen {#stoerungen}

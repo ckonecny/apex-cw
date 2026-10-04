@@ -942,6 +942,26 @@ From the **sixth** block on, the status line shows a trend, for example
 The trend is kept across sessions, separately for Listen and Send. The app
 stores the last 20 blocks for it.
 
+## Break hint
+
+If your hit rate in **Listen** or **Send** drops clearly during a session, the
+app suggests a short break on the result page. Fatigue and fading concentration
+show up this way early; a break often helps more than carrying on.
+
+- The **first 3** blocks are compared with the **last 3** under the same
+  conditions. A hint comes after 6 blocks at the earliest, and only if the rate
+  has fallen by at least **15 percentage points**.
+- Anything that makes the task harder is not counted as fatigue: a new
+  character, higher speed, tighter spacing, other content, the interference or
+  the input method restarts the observation. Only blocks under the same
+  conditions are compared.
+- The hint appears **at most once per session**. A session ends after 10
+  minutes without a block. Listen and Send are watched separately.
+- It is never forced. **Break** returns to the start page, **Continue** closes
+  the card, **Don't show again** switches the hint off.
+- To turn it back on: **Settings → General → Break hint when the error rate
+  rises**.
+
 ## Adaptive mode settings
 
 These are in the ⚙ sheet of **Listen** under **Adaptive mode**. They apply to
@@ -1154,6 +1174,11 @@ For free keying. What you key is heard and shown as decoded text.
 - The ⚙ sheet at the top right holds the **word spacing** (word spacing,
   default 7 dits). It sets the pause after which a space is inserted.
   Character spacing has no effect when keying, as on the Morserino.
+- **What appears in the text:** a pattern that is no character shows as
+  **\*** in the text, as on the Morserino. A real question mark (`..--..`)
+  stays **?**. Seven or more dits in a row are the error sign and show as
+  **ERR**. Besides letters, digits and prosigns the keyer also recognises
+  Ä, Ö, Ü, CH and `;` `!` `"` `'`.
 
 You set the keyer mode and its details in the global settings under
 **Keyer** (see [Keyer](#keyer)). They apply everywhere you key: CW Keyer,
@@ -1917,6 +1942,7 @@ that training's ⚙ sheet.
 | Pitch (Hz) | Frequency of the sidetone and of the played characters | 300–900 Hz in 50 Hz steps (**600 Hz**) |
 | Tone softness | Rise and fall time of the tone. Larger values sound softer and click less, especially on short dits | 1–9 ms (**5 ms**) |
 | Letter case | Show characters in lower or UPPER case. Display only | **lower** / UPPER |
+| Break hint when the error rate rises | Suggests a break in Listen and Send when the hit rate drops clearly under the same conditions (see [Break hint](#break-hint)) | **On** / Off |
 | Show daily goal and achievements | Shows or hides the card on the home screen, and switches the recording of practice time on or off. Stored data is kept | **On** / Off |
 
 ## Interference {#interference}

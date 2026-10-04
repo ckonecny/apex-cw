@@ -10,6 +10,7 @@ import '../licenses.dart';
 import 'widgets/setting_rows.dart';
 import 'interference_settings_card.dart';
 import '../util/bluetooth_hint.dart';
+import '../util/break_reminder.dart';
 import '../util/practice_clock.dart';
 import '../util/reminder.dart';
 
@@ -393,6 +394,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               options: [Strings.t('opt_lower'), Strings.t('opt_upper')],
               selected: _outputCase,
               onChanged: (v) { setState(() => _outputCase = v); _saveLive(); },
+            ),
+            const SettingsDivider(),
+            ValueListenableBuilder<bool>(
+              valueListenable: BreakReminder.enabled,
+              builder: (context, on, _) => ToggleRow(
+                label: Strings.t('settings_break_hint'),
+                value: on,
+                onChanged: BreakReminder.setEnabled,
+              ),
             ),
             const SettingsDivider(),
             // Also in the goal settings; this is the way back once hidden.

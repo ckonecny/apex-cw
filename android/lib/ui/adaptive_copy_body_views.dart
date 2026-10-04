@@ -527,6 +527,10 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           center: true,
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: SizedBox(width: double.infinity, child: BreakHintCard()),
+            ),
             Text('$pct %', style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 52,
                 fontVariations: const [FontVariation('wght', 600)],
                 color: pct >= 90 ? c.accent : pct >= 70 ? c.warning : c.danger)),

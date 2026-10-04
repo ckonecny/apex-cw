@@ -42,6 +42,7 @@ extension _EchoViews on _EchoTrainerScreenState {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        const BreakHintCard(),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text('$pct %',
               style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 52,
