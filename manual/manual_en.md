@@ -952,7 +952,8 @@ show up this way early; a break often helps more than carrying on.
   conditions. A hint comes after 6 blocks at the earliest, and only if the rate
   has fallen by at least **15 percentage points**.
 - Anything that makes the task harder is not counted as fatigue: a new
-  character, higher speed, tighter spacing, other content, the interference or
+  character, higher speed, tighter spacing, other content, the interference (on/off and any
+  change of its levels) or
   the input method restarts the observation. Only blocks under the same
   conditions are compared.
 - The hint appears **at most once per session**. A session ends after 10

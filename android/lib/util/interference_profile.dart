@@ -49,6 +49,12 @@ class InterferenceProfile {
     this.ambient = false,
   });
 
+  /// Everything that sets how hard the interference makes the task ("off"
+  /// while disabled); the break reminder (#5) compares it between blocks.
+  String get difficultySignature => !enabled
+      ? 'off'
+      : '$noise,$qrm,$qsb,$drift,$jitter,$filter,$color,$ambient';
+
   InterferenceProfile copyWith({
     bool? enabled,
     int? preset,

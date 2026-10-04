@@ -388,13 +388,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     final n = _blockResults.length;
     final echoRate = n == 0 ? 0.0 : _blockResults.where((r) => r.outcome == WordOutcome.first).length / n;
     _trend = await const BlockHistory('echo').record(p, echoRate);
-    final interference = (await InterferenceProfile.load()).enabled;
+    final interf = await InterferenceProfile.load();
     if (n > 0) {
-      PracticeClock.instance.block('echo', echoRate, interference: interference);
+      PracticeClock.instance.block('echo', echoRate, interference: interf.enabled);
       // Everything that sets the difficulty of this block (issue #5).
       BreakReminder.onBlock('echo', echoRate,
           '$_wpm|$_answerWpmMax|$_interCharSpace|$_interWordSpace|${_koch ? _kochLevel : 0}'
-          '|${_choice.set.name}|${_choice.content.name}|$_keyerMode|$interference');
+          '|${_choice.set.name}|${_choice.content.name}|$_keyerMode|${interf.difficultySignature}');
     }
     _suggestions = s;
     _pendWpm = s.newWpm;

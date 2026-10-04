@@ -1446,7 +1446,7 @@ tested), UI in `lib/ui/radio_cave_screen.dart`.
   (long concentration is normal for some). Average of the first 3 vs the last 3
   blocks of a run; fires at >= 6 blocks and a drop >= 15 pp (`content/break_hint.dart`).
 - **Run = same difficulty:** a block's signature (speed, answer-speed cap,
-  character/word spacing, Koch level, charset/content, input mode, interference)
+  character/word spacing, Koch level, charset/content, input mode, interference on/off and all its levels)
   must be equal; any change starts the run over, so a harder task is never read
   as fatigue. Deliberately strict: adaptive steps also restart it. Cost: the
   hint rarely fires directly after an adaptive change; tolerable, as a false

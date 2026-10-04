@@ -977,7 +977,8 @@ bringt eine Pause mehr als Weitermachen.
   denselben Bedingungen. Ein Hinweis kommt frühestens nach 6 Blöcken und nur,
   wenn die Quote um mindestens **15 Prozentpunkte** gefallen ist.
 - Was die Aufgabe schwerer macht, zählt nicht als Müdigkeit: Ein neues Zeichen,
-  ein höheres Tempo, engere Abstände, ein anderer Inhalt, die Störungen oder die
+  ein höheres Tempo, engere Abstände, ein anderer Inhalt, die Störungen (An/Aus und jede
+  Änderung ihrer Stärke) oder die
   Eingabeart beginnen die Beobachtung neu. Nur Blöcke mit gleichen
   Bedingungen werden verglichen.
 - Der Hinweis erscheint **höchstens einmal pro Sitzung**. Eine Sitzung endet

@@ -872,12 +872,12 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final trend = await const BlockHistory('hear')
         .record(p, total == 0 ? 0 : correct / total);
     if (total > 0) {
-      final interference = (await InterferenceProfile.load()).enabled;
-      PracticeClock.instance.block('hear', correct / total, interference: interference);
+      final interf = await InterferenceProfile.load();
+      PracticeClock.instance.block('hear', correct / total, interference: interf.enabled);
       // Everything that sets the difficulty of this block (issue #5).
       BreakReminder.onBlock('hear', correct / total,
           '$_activeWpm|$_activeInterChar|$_activeInterWord|${widget.kochLesson ? widget.kochLevel : 0}'
-          '|${widget.kochLesson}|${widget.contentModeIndex}|$typing|$interference');
+          '|${widget.kochLesson}|${widget.contentModeIndex}|$typing|${interf.difficultySignature}');
     }
 
     final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
