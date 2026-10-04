@@ -647,7 +647,8 @@ class _ActionButton extends StatelessWidget {
       child: Row(children: [
         Icon(icon, color: color, size: 20),
         const SizedBox(width: 12),
-        Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: color)),
+        Expanded(child: Text(label,
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: color))),
       ]),
     ),
   );

@@ -239,7 +239,11 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
                   const SizedBox(height: 8),
                   Center(child: _code()),
                   const SizedBox(height: 16),
-                  Row(children: [_chip(), const Spacer(), _speed(c)]),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    runSpacing: 8,
+                    children: [_chip(), _speed(c)]),
                 ],
               ),
       ),

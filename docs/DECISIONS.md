@@ -1534,3 +1534,18 @@ Agreed with the user before any code; mockup comes next.
   `PracticeClock.enter('headcopy')`; the hit rate does not feed the
   adaptive mode or the achievements. The sample tool
   (`test/content/head_copy_samples_tool.dart`) stays for proofreading the blocks.
+
+## Layout overflow: one test over all screens (2026-10-04, issues #29, #38)
+Two settings rows overflowed one after the other (#29 slider header, #38
+`ToggleRow` label in a `Row` with a `Spacer`). Fixing single rows did not stop
+new ones, so the guard is now general:
+- Rule for rows: a label next to a control sits in `Expanded`/`Flexible`
+  (wraps), never a bare `Text` + `Spacer`. Use `Wrap` when two items may not fit.
+- `test/screen_overflow_test.dart` pumps every no-argument screen in DE and
+  EN, at font scale 1.0 and 1.3, on 412x915, 360x640 and a very tall view (so
+  lazy lists lay out every row), and fails on any overflow. A new screen is
+  added to its `screens` map; known failures are listed there with their issue.
+- #39 follow-up: `CharsetHeader` caps itself at 30 % of the screen height and
+  scrolls inside (Hören/Echo start screens have fixed paddles, sliders and
+  Start below it); Echo idle hint scrolls; decoder status bar and goals rows
+  use `Expanded`/`Flexible`. All screens are now in the overflow test.

@@ -110,6 +110,11 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
     instead of `withOpacity`) instead of leaving it for later. `flutter
     analyze` should stay at zero issues.
 
+15. **New screen or row layout: keep it overflow-proof.** Labels beside
+    controls go in `Expanded`/`Flexible`, never bare `Text` + `Spacer`; add
+    every new screen to `android/test/screen_overflow_test.dart` (DE+EN,
+    scale 1.3, small phone). Details: `docs/DECISIONS.md`.
+
 ## Build / run
 
 From `android/`: `flutter build apk --debug`, then

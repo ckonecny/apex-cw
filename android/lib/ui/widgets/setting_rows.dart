@@ -138,9 +138,11 @@ class ToggleRow extends StatelessWidget {
     return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     child: Row(children: [
-      Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-          color: c.textPrimary)),
-      const Spacer(),
+      // Expanded so a long label wraps instead of pushing the switch off the
+      // edge (issue #38).
+      Expanded(child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+          color: c.textPrimary))),
+      const SizedBox(width: 12),
       Switch(
         value: value,
         onChanged: onChanged,

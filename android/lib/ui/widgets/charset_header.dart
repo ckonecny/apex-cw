@@ -56,6 +56,15 @@ class CharsetHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final koch = choice.set == CharSet.koch;
+    // Scrolls inside a cap instead of overflowing small phones or big fonts
+    // (issue #39); the screens below it keep their share of the height.
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.3),
+      child: SingleChildScrollView(child: _content(context, c, koch)),
+    );
+  }
+
+  Widget _content(BuildContext context, AppColors c, bool koch) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       _Chips(
         labels: [for (final s in CharSet.values) charSetLabel(s)],
