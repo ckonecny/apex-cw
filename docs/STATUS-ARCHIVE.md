@@ -865,3 +865,9 @@ Port of `MorseRadioCave.cpp` on branch `feature/radio-cave`: tested engine (17 t
 
 ## Layout overflow #38/#39 (2026-10-04)
 ToggleRow/_ActionButton/goals/decoder rows, morse-tree row, CharsetHeader cap, Echo idle scroll; `test/screen_overflow_test.dart` covers all no-argument screens.
+
+## Head copy / comprehension (#7), merged into main 2026-10-04
+Engine (tagged blocks DE+EN, question chain, levels 1-3), screen in the Games
+hub (own spacing, effective WPM, speed 10-60), hit-rate log, manual DE+EN.
+Details: DECISIONS.md "Head copy / comprehension". Follow-ups: #40 (mini-QSO),
+#41 (Q-groups).
