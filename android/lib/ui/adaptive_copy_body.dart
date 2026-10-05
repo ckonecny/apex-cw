@@ -73,6 +73,9 @@ class AdaptiveCopyBody extends StatefulWidget {
   final bool kochLesson;
   final int randomOption;
   final int wordLengthMax;
+  final int wordLengthMin;
+  final int abbrevLengthMin;
+  final int groupLengthMax;
   // Firmware "Stop<Next>Rep": nach jeder Gruppe warten, Dit = Wiederholen, Dah = Weiter.
   final bool stopEachGroup;
   final int kochLevel;
@@ -112,6 +115,9 @@ class AdaptiveCopyBody extends StatefulWidget {
     this.kochLesson = true,
     this.randomOption = 0,
     this.wordLengthMax = 0,
+    this.wordLengthMin = 0,
+    this.abbrevLengthMin = 0,
+    this.groupLengthMax = 0,
     this.stopEachGroup = false,
     required this.kochLevel,
     required this.activeKochChars,
@@ -425,7 +431,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       'mode': ordinal,
       'kochLevel': widget.kochLevel,
       'kochActive': widget.kochLesson && ordinal != 2,
-      if (ordinal == 0 || ordinal == 4) 'groupLength': widget.groupLength,
+      if (ordinal == 0 || ordinal == 3 || ordinal == 4) 'groupLength': widget.groupLength,
+      if (ordinal == 0 || ordinal == 3 || ordinal == 4) 'groupLengthMax': widget.groupLengthMax,
+      if (ordinal == 1 || ordinal == 3) 'wordLengthMin': widget.wordLengthMin,
+      if (ordinal != 0 && ordinal != 4) 'abbrevLengthMin': widget.abbrevLengthMin,
       if (ordinal == 0 && !widget.kochLesson) 'randomOption': widget.randomOption,
       if (ordinal == 1 || ordinal == 3) 'wordLengthMax': widget.wordLengthMax,
       // Sent unconditionally for the non-Random modes, same as

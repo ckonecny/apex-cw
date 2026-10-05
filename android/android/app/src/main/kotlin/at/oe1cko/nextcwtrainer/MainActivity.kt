@@ -240,6 +240,9 @@ class MainActivity : FlutterActivity() {
                         generator.interWordSpace = (args?.get("interWordSpace") as? Number)?.toInt() ?: 7
                         generator.eachWordTwice  = args?.get("eachWordTwice")  as? Boolean ?: false
                         generator.groupLength    = (args?.get("groupLength")    as? Number)?.toInt() ?: 5
+                        generator.groupLengthMax = (args?.get("groupLengthMax") as? Number)?.toInt() ?: 0
+                        generator.wordLengthMin  = (args?.get("wordLengthMin")  as? Number)?.toInt() ?: 0
+                        generator.abbrevLengthMin = (args?.get("abbrevLengthMin") as? Number)?.toInt() ?: 0
                         generator.randomOption   = (args?.get("randomOption")   as? Number)?.toInt() ?: 0
                         generator.wordLengthMax  = (args?.get("wordLengthMax")  as? Number)?.toInt() ?: 0
                         generator.stopAfterItem  = args?.get("stopAfterItem") as? Boolean ?: false
@@ -315,6 +318,9 @@ class MainActivity : FlutterActivity() {
                         generator.kochLevel     = (args?.get("kochLevel")     as? Number)?.toInt() ?: 5
                         generator.wordLengthMax = (args?.get("wordLengthMax") as? Number)?.toInt() ?: 0
                         generator.groupLength   = (args?.get("groupLength")   as? Number)?.toInt() ?: 5
+                        generator.groupLengthMax = (args?.get("groupLengthMax") as? Number)?.toInt() ?: 0
+                        generator.wordLengthMin  = (args?.get("wordLengthMin")  as? Number)?.toInt() ?: 0
+                        generator.abbrevLengthMin = (args?.get("abbrevLengthMin") as? Number)?.toInt() ?: 0
                         generator.randomOption  = (args?.get("randomOption")  as? Number)?.toInt() ?: 0
                         generator.abbrevLengthMax = (args?.get("abbrevLengthMax") as? Number)?.toInt() ?: 0
                         generator.callLengthOpt   = (args?.get("callLengthOpt")   as? Number)?.toInt() ?: 0

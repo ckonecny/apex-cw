@@ -27,8 +27,8 @@ class TrainingProfile {
 
   static const _intFields = [
     'wpm',
-    'kochLevel', 'groupLength', 'randomOption', 'maxWords', 'wordLengthMax',
-    'abbrevLengthMax', 'interCharSpace', 'interWordSpace', 'boostLevel',
+    'kochLevel', 'groupLength', 'groupLengthMax', 'randomOption', 'maxWords',
+    'wordLengthMax', 'wordLengthMin', 'abbrevLengthMax', 'abbrevLengthMin', 'interCharSpace', 'interWordSpace', 'boostLevel',
     'blockFlow', 'charset', 'content', 'stopEach',
     // Hören typing mode: last used start (0 paper, 1 typing), attempts per
     // word, key vibration.

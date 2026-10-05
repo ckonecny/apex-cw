@@ -1669,3 +1669,16 @@ concept; own mode next to head copy and Q-groups.
   (`understand_screen.dart`), like the Zork games behind "Text-Adventure". The
   sentence mode is called "Sätze" / "Sentences" there. The games list got a
   permanently visible scroll bar (it is longer than most screens).
+
+## Length ranges for groups, words, abbreviations (2026-10-05)
+Group length, word length and abbreviation length are min–max range sliders.
+min = max is the old fixed length; min < max draws a new random length for
+every group/word/abbreviation, so the listener can't tell whether it is over.
+Storage stays compatible: `groupLength` is the minimum, new `groupLengthMax`
+(absent = same as min); `wordLengthMax`/`abbrevLengthMax` keep their meaning
+(0 = all, abbrev max in the firmware's 1..5 = length 2..6 encoding), new
+`wordLengthMin`/`abbrevLengthMin` hold real lengths (0 = no limit). Words and
+abbreviations are filtered from the pool by the range; groups draw the length
+per group (`CwGenerator.drawGroupLength`, and `_pickAdaptiveGroup` for the
+Dart-side adaptive draw). The Mixed content shows the group slider too, since
+Koch-mixed already draws groups. This is an app extension, not in the firmware.

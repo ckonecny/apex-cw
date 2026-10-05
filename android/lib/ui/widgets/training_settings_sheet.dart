@@ -64,7 +64,10 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _wpm = 20;   // keyer / trx only: shows the word gap in seconds
   int _randomOption = 0;
   int _groupLength = 5;
+  int _groupLengthMax = 5;
   int _wordLengthMax = 0;
+  int _wordLengthMin = 0;
+  int _abbrevLengthMin = 0;
   int _abbrevLengthMax = 0;
   int _maxWords = 0;
   bool _stopEach = false;
@@ -117,7 +120,10 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               : TrainingProfile.clampWpm(prof.getInt('wpm') ?? p.getInt('wpm'));
       _randomOption = (prof.getInt('randomOption') ?? 0).clamp(0, _randomOptionKeys.length - 1);
       _groupLength = (prof.getInt('groupLength') ?? 5).clamp(2, 8);
+      _groupLengthMax = (prof.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);
+      _wordLengthMin = (prof.getInt('wordLengthMin') ?? 0).clamp(0, 8);
+      _abbrevLengthMin = (prof.getInt('abbrevLengthMin') ?? 0).clamp(0, 6);
       _abbrevLengthMax = (prof.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _maxWords = (prof.getInt('maxWords') ?? 0).clamp(0, 250);
       _stopEach = (prof.getInt('stopEach') ?? 0) == 1;
@@ -392,6 +398,12 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
     ];
   }
 
+  /// "5" when both ends match, else "2–7"; [allAt] shows as "all" (open end).
+  String _rangeText(int lo, int hi, {int? allAt}) {
+    final h = hi == allAt ? Strings.t('opt_all') : '$hi';
+    return lo == hi ? h : '$lo–$h';
+  }
+
   List<Widget> _wordSelection() {
     final k = _choice.content;
     // Only what fits the chosen content (docs/archive/training/P7, decision 8).
@@ -406,30 +418,55 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             _setInt('randomOption', v);
           },
         ),
-      if (k == ContentKind.random)
-        LabeledSlider(
-            label: Strings.t('settings_group_length'), value: _groupLength.toDouble(),
-            min: 2, max: 8, divisions: 6, display: '$_groupLength',
+      if (k == ContentKind.random || k == ContentKind.mixed)
+        LabeledRangeSlider(
+            label: Strings.t('settings_group_length'),
+            values: RangeValues(_groupLength.toDouble(), _groupLengthMax.toDouble()),
+            min: 2, max: 8, divisions: 6,
+            display: _rangeText(_groupLength, _groupLengthMax),
             onChanged: (v) {
-              setState(() => _groupLength = v.round());
+              setState(() {
+                _groupLength = v.start.round();
+                _groupLengthMax = v.end.round();
+              });
               _setInt('groupLength', _groupLength);
+              _setInt('groupLengthMax', _groupLengthMax);
             }),
+      // Words: stored 0 = no limit on either side (slider ends 1 and 9).
       if (k == ContentKind.words || k == ContentKind.mixed)
-        LabeledSlider(
-            label: Strings.t('settings_max_word_length'), value: _wordLengthMax.toDouble(),
-            min: 0, max: 8, divisions: 8,
-            display: _wordLengthMax == 0 ? Strings.t('opt_all') : '$_wordLengthMax',
+        LabeledRangeSlider(
+            label: Strings.t('settings_word_length'),
+            values: RangeValues(
+                _wordLengthMin == 0 ? 1 : _wordLengthMin.toDouble(),
+                _wordLengthMax == 0 ? 9 : _wordLengthMax.toDouble()),
+            min: 1, max: 9, divisions: 8,
+            display: _rangeText(_wordLengthMin == 0 ? 1 : _wordLengthMin,
+                _wordLengthMax == 0 ? 9 : _wordLengthMax, allAt: 9),
             onChanged: (v) {
-              setState(() => _wordLengthMax = v.round());
+              setState(() {
+                _wordLengthMin = v.start.round() <= 1 ? 0 : v.start.round();
+                _wordLengthMax = v.end.round() >= 9 ? 0 : v.end.round();
+              });
+              _setInt('wordLengthMin', _wordLengthMin);
               _setInt('wordLengthMax', _wordLengthMax);
             }),
+      // Abbreviations: slider 2..7, the end 7 = no limit. The stored max keeps
+      // the firmware's option encoding (1..5 = length 2..6, 0 = all).
       if (k == ContentKind.abbrevs || k == ContentKind.mixed)
-        LabeledSlider(
-            label: Strings.t('settings_max_abbrev_length'), value: _abbrevLengthMax.toDouble(),
-            min: 0, max: 5, divisions: 5,
-            display: _abbrevLengthMax == 0 ? Strings.t('opt_all') : '${_abbrevLengthMax + 1}',
+        LabeledRangeSlider(
+            label: Strings.t('settings_abbrev_length'),
+            values: RangeValues(
+                _abbrevLengthMin == 0 ? 2 : _abbrevLengthMin.toDouble(),
+                _abbrevLengthMax == 0 ? 7 : _abbrevLengthMax + 1.0),
+            min: 2, max: 7, divisions: 5,
+            display: _rangeText(_abbrevLengthMin == 0 ? 2 : _abbrevLengthMin,
+                _abbrevLengthMax == 0 ? 7 : _abbrevLengthMax + 1, allAt: 7),
             onChanged: (v) {
-              setState(() => _abbrevLengthMax = v.round());
+              setState(() {
+                _abbrevLengthMin = v.start.round() <= 2 ? 0 : v.start.round();
+                _abbrevLengthMax = v.end.round() >= 7 ? 0 : v.end.round() - 1;
+              });
+              _setInt('abbrevLengthMin', _abbrevLengthMin);
               _setInt('abbrevLengthMax', _abbrevLengthMax);
             }),
     ];
