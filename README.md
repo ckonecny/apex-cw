@@ -26,6 +26,12 @@ By Christian Konecny, OE1CKO.
   that only fires if the goal is still open, and awards for single steps
   (a new character, a week with three new ones, spread-out practice, ...).
   All of it stays on the device.
+- **Head copy — understand, don't just decode:** three listening modes
+  with no key and no writing, each ending in four-option questions:
+  everyday **sentences** (German or English), **Q-groups** (hear QTH, QRZ,
+  QRM ... and pick the meaning, with a cheat sheet) and a **mini QSO**
+  (a short on-air exchange between two stations on two pitches, in real
+  radio style).
 - **Your own material and more games:** share any text from another app
   into Own texts and let the app play it, plus games from arcade to a CW
   text adventure.
@@ -128,6 +134,14 @@ characters, boosts and Koch unlocks.
 
 ### Play (games)
 
+- **Head copy** (listening, no key needed) — three modes behind one card:
+  **Sentences** (one to three short sentences built from blocks, German or
+  English, then questions about who, what, where, when), **Q-groups** (24
+  groups in three levels: hear one, pick its meaning from four options; a
+  cheat sheet lists them all) and **Mini QSO** (an on-air exchange between
+  two stations on two pitches, with callsign, QTH, name, report and station
+  info to remember, in three levels). Hit rate per round, counts for the
+  daily goal.
 - **Morse Invaders** — arcade game: shoot falling characters by keying
   them, from your current Koch lesson.
 - **Text adventure** — Infocom's **Zork I, II and III** (1980–82), played
