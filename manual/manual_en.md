@@ -67,7 +67,7 @@ The home screen has four groups:
 | **Practice** | **Listen** | Practice copying: CW Generator and Koch Trainer in the block flow |
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
 | **Free** | **Free modes** | Opens five tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) and **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) |
-| **Play** | **Games** | Head copy, Q-groups, Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
+| **Play** | **Games** | Head copy (sentences, Q-groups, Mini QSO), Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
 
 At the very top sits the **daily goal card**: a ring with your active
@@ -326,7 +326,7 @@ than letter by letter, you are on the right track.
 
 After that, move towards sentences and texts:
 
-- **[Head copy](#head-copy)** (under **Games**): you hear one to three short
+- **[Head copy → Sentences](#head-copy)** (under **Games**): you hear one to three short
   sentences and answer questions about them without writing anything down. This
   trains understanding Morse, not just decoding it.
 - **[Own texts](#own-texts)** (under **Free modes**): copy a text that interests
@@ -1670,8 +1670,10 @@ a text.
 
 # Games
 
-Under **Play → Games** there are ten games. The listening games
-[Head copy](#head-copy) and [Q-groups](#q-groups) need no key. You play Morsel, Morse Invaders,
+Under **Play → Games** there are nine entries. **Head copy** holds the three
+listening games [Sentences](#head-copy), [Q-groups](#q-groups) and
+[Mini QSO](#mini-qso); they need no key. The list is longer than the screen; a
+scroll bar at the edge shows that it goes on. You play Morsel, Morse Invaders,
 Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup and Radio Cave with the
 touch keyer or the adapter. They use the keyer settings. Morsel, Morse
 Invaders, Memory Chain, Trailblazer and Fox Hunt take the Koch lesson from
@@ -1687,6 +1689,10 @@ settings.
 
 ## Head copy {#head-copy}
 
+Under **Play → Games → Head copy** you pick one of three listening modes:
+**Sentences**, [Q-groups](#q-groups) or [Mini QSO](#mini-qso). This section
+describes **Sentences**.
+
 Here you practise **understanding** Morse without writing it down. You hear one
 to three short sentences, then answer questions with four answers each. The
 text stays hidden until the result.
@@ -1694,7 +1700,7 @@ text stays hidden until the result.
 **Start.** Choose the **language of the sentences** (German or English; it is
 independent of the app language), the **level** (1, 2 or 3 sentences) and the
 **speed**, plus **character spacing** and **word spacing** (in dits, with the
-time in seconds below). They apply to Head copy only; on first open the app
+time in seconds below). They apply to Sentences only; on first open the app
 takes them from **Listen**, after that they are separate. Below the spacing the **effective speed** in WPM
 is shown, the result of speed and both spacings (formula under
 [Effective speed](#effective-speed)). Below the start button you see the hit rate of the recent rounds.
@@ -1723,7 +1729,7 @@ make sense: places fit the activity. German umlauts are sent as AE, OE, UE, so
 
 Here you learn to **understand Q-groups** (QTH, QRZ, QRM ...) at once when you
 hear them. You hear a group in Morse and pick from four answers what it means.
-Like [Head copy](#head-copy), it needs no key.
+Like [Sentences](#head-copy), it needs no key.
 
 **Start.** Choose the **language of the answers** (German or English,
 independent of the app language), the **level** (1, 2 or 3; the groups are
@@ -1755,6 +1761,46 @@ wording differs for some: QRL there means "Are you busy?", QRT "Stop sending",
 QTH gives latitude and longitude, and QSP asks for relaying free of charge. For
 QRP, QRO, QRS, QRQ and QSY the statement is a request to the other station
 ("Send slower").
+
+## Mini QSO {#mini-qso}
+
+Here you hear a short **on-air exchange** between two stations in real radio
+style ("CQ CQ DE OE1ABC K" ... "UR 579 QTH BONN NAME TOM BK") and answer
+questions about it. As with [Sentences](#head-copy) you write nothing down and
+need no key. The abbreviations are the same in both languages; only the
+questions are translated.
+
+**Start.** Choose the **language of the questions** (German or English,
+independent of the app language), the **level** (1, 2 or 3; below the choice it
+says what the level means), **speed**, **character spacing** and **word
+spacing**. They apply to Mini QSO only; on first open the app takes them from
+**Listen**. Below the spacing the **effective speed** is shown, below the
+start button the hit rate of the recent rounds.
+
+**Listening.** Station A (it calls CQ) sounds a little lower, station B (it
+answers) a little higher than your set pitch, like two signals in the band. The
+callsigns are random ones as in the QSO bot; names and places are made up. You
+can hear the exchange as often as you like; the text stays hidden. **To the
+questions** goes on.
+
+**Levels.**
+
+| Level | Exchange | Questions |
+|---|---|---|
+| 1 | call and answer | callsign, place (QTH) and name of the answering station |
+| 2 | as level 1, plus report and one piece of station info (RIG, PWR, ANT or WX) | also report and station info (5 questions) |
+| 3 | full exchange of both sides with closing | both callsigns and four randomly chosen items from both sides (6 questions) |
+
+**Questions.** Four answers to choose from, always in the order you heard the
+facts. In levels 1 and 2 the station is called "the answering station". In
+level 3 the first two questions ask for the callsigns; after that every
+question names the station by its callsign ("What is the name of DL2XYZ?"),
+even after a wrong answer. So no question gives away something that comes
+later, and one mistake does not spoil the rest.
+
+**Result.** The hit rate of the round, the whole exchange as "A: ... / B: ..."
+(with **Play with text**) and every question with the right answer and yours.
+The time counts for the [daily goal](#daily-goal).
 
 ## Morsel
 

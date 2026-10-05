@@ -69,7 +69,7 @@ Die Startseite hat vier Gruppen:
 | **Üben** | **Hören** | Mitschreiben üben: CW Generator und Koch Trainer im Blockablauf |
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
 | **Frei** | **Freie Modi** | Öffnet fünf Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) |
-| **Spielen** | **Spiele** | Verstehen, Q-Gruppen, Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
+| **Spielen** | **Spiele** | Verstehen (Sätze, Q-Gruppen, Mini-QSO), Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
 
 Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
@@ -338,7 +338,7 @@ erkennst, statt Buchstabe für Buchstabe, bist du auf dem richtigen Weg.
 
 Danach geht es Richtung Sätze und Texte:
 
-- **[Verstehen](#verstehen)** (unter **Spiele**): Du hörst ein bis drei kurze
+- **[Verstehen → Sätze](#verstehen)** (unter **Spiele**): Du hörst ein bis drei kurze
   Sätze und beantwortest Fragen dazu, ohne mitzuschreiben. Das übt, Morse zu
   verstehen, nicht nur zu entschlüsseln.
 - **[Eigene Texte](#eigene-texte)** (unter **Freie Modi**): Kopiere einen Text,
@@ -1726,8 +1726,10 @@ an, solange du in einem Text bist.
 
 # Spiele
 
-Unter **Spielen → Spiele** findest du zehn Spiele. Die Hörspiele
-[Verstehen](#verstehen) und [Q-Gruppen](#q-gruppen) brauchen keine Taste. Morsel, Morse Invaders,
+Unter **Spielen → Spiele** findest du neun Einträge. Unter **Verstehen** liegen
+die drei Hörspiele [Sätze](#verstehen), [Q-Gruppen](#q-gruppen) und
+[Mini-QSO](#mini-qso); sie brauchen keine Taste. Die Liste ist länger als der
+Bildschirm; ein Balken am Rand zeigt, dass es nach unten weitergeht. Morsel, Morse Invaders,
 Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup und Radio Cave spielst du
 mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden die Keyer-Einstellungen.
 Morsel, Morse Invaders, Memory Chain, Trailblazer und Fox Hunt übernehmen die
@@ -1743,6 +1745,10 @@ Eingabe; den Keyer-Modus nimmt es ebenfalls aus den Keyer-Einstellungen.
 
 ## Verstehen {#verstehen}
 
+Unter **Spiele → Verstehen** wählst du einen von drei Hörmodi: **Sätze**,
+[Q-Gruppen](#q-gruppen) oder [Mini-QSO](#mini-qso). Dieser Abschnitt beschreibt
+**Sätze**.
+
 Hier übst du, Morse zu **verstehen**, ohne mitzuschreiben. Du hörst ein bis
 drei kurze Sätze und beantwortest danach Fragen mit je vier Antworten. Der Text
 bleibt bis zur Auswertung verdeckt.
@@ -1750,7 +1756,7 @@ bleibt bis zur Auswertung verdeckt.
 **Start.** Wähle die **Sprache der Sätze** (Deutsch oder Englisch; sie ist
 unabhängig von der App-Sprache), die **Stufe** (1, 2 oder 3 Sätze) und das
 **Tempo** sowie **Zeichenabstand** und **Wortabstand** (in Dits, mit der Zeit
-in Sekunden darunter). Die Werte gelten nur für Verstehen; beim ersten Öffnen
+in Sekunden darunter). Die Werte gelten nur für Sätze; beim ersten Öffnen
 übernimmt die App sie aus **Hören**, danach laufen sie getrennt. Unter den Abständen steht das **effektive Tempo** in
 WPM, das sich aus Tempo und beiden Abständen ergibt (Formel unter
 [Effektives Tempo](#effektives-tempo)). Unter dem Start steht die Trefferquote der letzten Runden.
@@ -1780,7 +1786,7 @@ KUECHE. Die Zeit zählt für das [Tagesziel](#tagesziel).
 
 Hier lernst du, **Q-Gruppen** (QTH, QRZ, QRM ...) beim Hören sofort zu
 verstehen. Du hörst eine Gruppe in Morse und wählst aus vier Antworten, was sie
-bedeutet. Wie bei [Verstehen](#verstehen) braucht das keine Taste.
+bedeutet. Wie bei [Sätzen](#verstehen) braucht das keine Taste.
 
 **Start.** Wähle die **Sprache der Antworten** (Deutsch oder Englisch,
 unabhängig von der App-Sprache), die **Stufe** (1, 2 oder 3; die Gruppen sind
@@ -1814,6 +1820,46 @@ einigen ab: QRL heißt dort „Bist du beschäftigt?“, QRT „Stelle den Sende
 ein“, QTH nennt Breite und Länge und QSP verlangt gebührenfreies Vermitteln.
 Bei QRP, QRO, QRS, QRQ und QSY ist die Aussage eine Aufforderung an das
 Gegenüber („Gib langsamer“).
+
+## Mini-QSO {#mini-qso}
+
+Hier hörst du einen kurzen **Funkdialog** zweier Stationen im echten Funkstil
+(„CQ CQ DE OE1ABC K“ ... „UR 579 QTH BONN NAME TOM BK“) und beantwortest Fragen
+dazu. Wie bei [Sätzen](#verstehen) schreibst du nichts mit und brauchst keine
+Taste. Die Abkürzungen sind in beiden Sprachen dieselben; übersetzt werden nur
+die Fragen.
+
+**Start.** Wähle die **Sprache der Fragen** (Deutsch oder Englisch, unabhängig
+von der App-Sprache), die **Stufe** (1, 2 oder 3; unter der Auswahl steht, was
+die Stufe bedeutet), **Tempo**, **Zeichenabstand** und **Wortabstand**. Die
+Werte gelten nur für Mini-QSO; beim ersten Öffnen übernimmt die App sie aus
+**Hören**. Unter den Abständen steht das **effektive Tempo**, unter dem Start
+die Trefferquote der letzten Runden.
+
+**Hören.** Station A (sie ruft CQ) klingt etwas tiefer, Station B (sie antwortet)
+etwas höher als deine eingestellte Tonhöhe, wie zwei Signale im Band. Die
+Rufzeichen sind Zufallsrufzeichen wie im QSO-Bot, Namen und Orte erfunden. Du
+kannst den Dialog beliebig oft nochmal hören; der Text bleibt verborgen. Mit
+**Zu den Fragen** geht es weiter.
+
+**Stufen.**
+
+| Stufe | Dialog | Fragen |
+|---|---|---|
+| 1 | Anruf und Antwort | Rufzeichen, Ort (QTH) und Name der antwortenden Station |
+| 2 | wie Stufe 1, dazu Rapport und eine Station-Info (RIG, PWR, ANT oder WX) | zusätzlich Rapport und Station-Info (5 Fragen) |
+| 3 | voller Austausch beider Seiten mit Abschluss | beide Rufzeichen und vier zufällig gewählte Angaben beider Seiten (6 Fragen) |
+
+**Fragen.** Vier Antworten zur Wahl, immer in der Reihenfolge, in der du die
+Angaben gehört hast. In Stufe 1 und 2 heißt die Station „die antwortende
+Station“. In Stufe 3 fragen die ersten zwei Fragen nach den Rufzeichen; danach
+nennt jede Frage die Station beim Rufzeichen („Wie heißt DL2XYZ?“), auch nach
+einer falschen Antwort. So verrät keine Frage etwas, das erst später dran ist,
+und ein Fehler zieht keine Folgefehler nach sich.
+
+**Auswertung.** Die Trefferquote der Runde, der ganze Dialog als „A: … / B: …“
+(mit **Abspielen mit Mitlesen**) und jede Frage mit richtiger und deiner
+Antwort. Die Zeit zählt für das [Tagesziel](#tagesziel).
 
 ## Morsel
 

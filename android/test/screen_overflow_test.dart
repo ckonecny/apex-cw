@@ -12,7 +12,9 @@ import 'package:next_cw_trainer/ui/adventure_select_screen.dart';
 import 'package:next_cw_trainer/ui/free_screen.dart';
 import 'package:next_cw_trainer/ui/games_screen.dart';
 import 'package:next_cw_trainer/ui/head_copy_screen.dart';
+import 'package:next_cw_trainer/ui/mini_qso_screen.dart';
 import 'package:next_cw_trainer/ui/q_groups_screen.dart';
+import 'package:next_cw_trainer/ui/understand_screen.dart';
 import 'package:next_cw_trainer/ui/q_groups_sheet_screen.dart';
 import 'package:next_cw_trainer/ui/home_screen.dart';
 import 'package:next_cw_trainer/ui/invaders_screen.dart';
@@ -44,6 +46,8 @@ void main() {
     'morse_tree': () => const MorseTreeScreen(),
     'head_copy': () => const HeadCopyScreen(),
     'q_groups': () => const QGroupsScreen(),
+    'mini_qso': () => const MiniQsoScreen(),
+    'understand': () => const UnderstandScreen(),
     'q_groups_sheet': () => const QGroupsSheetScreen(),
     'q_groups_sheet_all': () => const QGroupsSheetScreen(level: 3),
     'radio_cave': () => const RadioCaveScreen(),
