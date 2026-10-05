@@ -588,6 +588,15 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         onIncrement: _accAnswer ? () => setState(() => _pendAnswer = min(_wpm, _pendAnswer! + 1)) : null,
       ));
     }
+    // Title only over real suggestions; the weak-character block has its own
+    // title (same as in Hören).
+    if (rows.isNotEmpty) {
+      rows.insert(0, Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(Strings.t('ac_suggestions_title'), textAlign: TextAlign.center,
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+      ));
+    }
     if (s.weakChars.isNotEmpty) {
       rows.add(Padding(
         padding: const EdgeInsets.only(bottom: 8),
@@ -619,14 +628,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         ]),
       ));
     }
-    if (rows.isNotEmpty) {
-      rows.insert(0, Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(Strings.t('ac_suggestions_title'), textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
-      ));
-      rows.add(const Divider());
-    }
+    if (rows.isNotEmpty) rows.add(const Divider());
     return rows;
   }
 

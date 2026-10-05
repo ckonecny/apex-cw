@@ -59,7 +59,7 @@ class CharsetHeader extends StatelessWidget {
     // Scrolls inside a cap instead of overflowing small phones or big fonts
     // (issue #39); the screens below it keep their share of the height.
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.3),
+      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.4),
       child: SingleChildScrollView(child: _content(context, c, koch)),
     );
   }

@@ -587,12 +587,10 @@ class Strings {
     // ── CW Generator / Koch Trainer screen ───────────────────────────────
     'repeat_upper': ['WIEDERHOLEN', 'REPEAT'],
     'next_upper': ['WEITER', 'NEXT'],
-    'echo_idle_hint': ['Das Wort anhören und mit der Morsetaste zurückgeben.', 'Listen to the word and key it back with the Morse key.'],
     'get_ready': ['Bereit machen …', 'Get ready …'],
 
     // ── Echo Trainer screen ──────────────────────────────────────────────
     'echo_trainer_title': ['Echo Trainer', 'Echo Trainer'],
-    'echo_status_idle': ['Drücke START', 'Press START'],
   'pairs_block': ['Verwechslungen', 'Mix-ups'],
   'echo_attempt': ['Versuch {n} von {max}', 'Attempt {n} of {max}'],
     'echo_status_playing': ['Anhören …', 'Listening …'],

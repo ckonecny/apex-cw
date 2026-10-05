@@ -38,6 +38,37 @@ class SettingsCard extends StatelessWidget {
   }
 }
 
+// Label and value above a slider. Both texts may wrap instead of overflowing
+// (issue #29), but share the width by text length: the font is monospace, so
+// a value that fits next to its label stays on one line instead of being
+// cut at half the row.
+class _SliderHead extends StatelessWidget {
+  final String label, display;
+  const _SliderHead({required this.label, required this.display});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Flexible(
+        flex: label.length + 2,   // +2: the 12 dp gap
+        child: Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+              color: c.textPrimary)),
+        ),
+      ),
+      Flexible(
+        flex: display.length.clamp(1, 1000),
+        child: Text(display, textAlign: TextAlign.end,
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent)),
+      ),
+    ]);
+  }
+}
+
 class LabeledSlider extends StatelessWidget {
   final String label, display;
   final double value, min, max;
@@ -53,18 +84,7 @@ class LabeledSlider extends StatelessWidget {
     return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      // Both texts may wrap instead of overflowing (issue #29).
-      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Flexible(
-          child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-              color: c.textPrimary)),
-        ),
-        const SizedBox(width: 12),
-        Flexible(
-          child: Text(display, textAlign: TextAlign.end,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent)),
-        ),
-      ]),
+      _SliderHead(label: label, display: display),
       SliderTheme(
         data: SliderTheme.of(context).copyWith(
           activeTrackColor: c.accent,
@@ -99,18 +119,7 @@ class LabeledRangeSlider extends StatelessWidget {
     return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      // Both texts may wrap instead of overflowing (issue #29).
-      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Flexible(
-          child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-              color: c.textPrimary)),
-        ),
-        const SizedBox(width: 12),
-        Flexible(
-          child: Text(display, textAlign: TextAlign.end,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent)),
-        ),
-      ]),
+      _SliderHead(label: label, display: display),
       SliderTheme(
         data: SliderTheme.of(context).copyWith(
           activeTrackColor: c.accent,
