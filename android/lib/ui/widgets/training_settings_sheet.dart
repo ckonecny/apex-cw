@@ -207,7 +207,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         // the Settings screen this was moved from).
         LabeledSlider(
             label: Strings.t('settings_char_spacing'), value: _interCharSpace.toDouble(),
-            min: 3, max: 45, divisions: 42, display: '${_dits(_interCharSpace)} · ${ditsToSeconds(_interCharSpace, _wpm)} @ $_wpm WPM',
+            min: 3, max: 45, divisions: 42, display: '${_dits(_interCharSpace)} · ${ditsToSeconds(_interCharSpace, _wpm)} @\u00A0$_wpm\u00A0WPM',
             onChanged: (v) {
               final newChar = v.round();
               setState(() {
@@ -220,7 +220,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         const SettingsDivider(),
         LabeledSlider(
             label: Strings.t('settings_word_spacing'), value: _interWordSpace.toDouble(),
-            min: 6, max: 105, divisions: 99, display: '${_dits(_interWordSpace)} · ${ditsToSeconds(_interWordSpace, _wpm)} @ $_wpm WPM',
+            min: 6, max: 105, divisions: 99, display: '${_dits(_interWordSpace)} · ${ditsToSeconds(_interWordSpace, _wpm)} @\u00A0$_wpm\u00A0WPM',
             onChanged: (v) {
               setState(() => _interWordSpace = v.round().clamp(_interCharSpace, 105));
               _setInt('interWordSpace', _interWordSpace);
@@ -241,7 +241,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         LabeledSlider(
             label: Strings.t('settings_word_spacing'), value: _interWordSpace.toDouble(),
             min: 6, max: 105, divisions: 99,
-            display: '${_dits(_interWordSpace)} · ${ditsToSeconds(_interWordSpace, _wpm)} @ $_wpm WPM',
+            display: '${_dits(_interWordSpace)} · ${ditsToSeconds(_interWordSpace, _wpm)} @\u00A0$_wpm\u00A0WPM',
             onChanged: (v) {
               setState(() => _interWordSpace = v.round());
               _setInt('interWordSpace', _interWordSpace);
