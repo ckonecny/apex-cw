@@ -1061,7 +1061,8 @@ reached **and** you have practised at least that many sessions. A session
 counts if it lasts at least 5 minutes and starts at least 15 minutes after the
 previous counted session ended. A session that starts too early still adds
 practice time but does not count as a session. The ring then shows the
-sessions (e.g. "1 of 3"), and below it says when the next session counts. Off
+sessions (e.g. "1 of 3"), and below it says when the next session counts, plus
+how many minutes are still missing. The countdown updates by itself. Off
 by default, not everybody has time for several sessions a day.
 
 **Reminder.** Optional and off by default. At the chosen time you get a

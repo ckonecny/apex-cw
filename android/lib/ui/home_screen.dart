@@ -116,8 +116,8 @@ class _HomeScreenState extends State<HomeScreen> {
             if (showGoal) ...[
               SizedBox(
                 height: compactGoal ? compactH : fullH,
-                child: DailyGoalCard(
-                  status: goalStatus(PracticeClock.instance.log, _goal, DateTime.now()),
+                child: LiveGoalCard(
+                  settings: _goal,
                   compact: compactGoal,
                   onTap: () => _open(const GoalsScreen()),
                 ),
