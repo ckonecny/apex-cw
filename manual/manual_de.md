@@ -1759,6 +1759,10 @@ Unter **Spiele → Verstehen** wählst du einen von drei Hörmodi: **Sätze**,
 [Q-Gruppen](#q-gruppen) oder [Mini-QSO](#mini-qso). Dieser Abschnitt beschreibt
 **Sätze**.
 
+::: {.shots .one}
+![Verstehen: die drei Hörmodi](img/de/understand.png)
+:::
+
 Hier übst du, Morse zu **verstehen**, ohne mitzuschreiben. Du hörst ein bis
 drei kurze Sätze und beantwortest danach Fragen mit je vier Antworten. Der Text
 bleibt bis zur Auswertung verdeckt.
@@ -1771,10 +1775,18 @@ in Sekunden darunter). Die Werte gelten nur für Sätze; beim ersten Öffnen
 WPM, das sich aus Tempo und beiden Abständen ergibt (Formel unter
 [Effektives Tempo](#effektives-tempo)). Unter dem Start steht die Trefferquote der letzten Runden.
 
+::: {.shots .one}
+![Sätze: Start mit Sprache, Stufe, Tempo und Abständen](img/de/headcopy_setup.png)
+:::
+
 **Hören.** Die Sätze laufen nacheinander, mit kurzer Pause dazwischen. Mit
 **Nochmal hören** wiederholst du die ganze Runde, so oft du willst. **Zu den
 Fragen** geht weiter. Die Störungssimulation (Symbol oben) wirkt wie in den
 anderen Trainings.
+
+::: {.shots .one}
+![Sätze: die Runde wird gespielt, der Text bleibt verdeckt](img/de/headcopy_listen.png)
+:::
 
 **Fragen.** Pro Satz wird nach den Teilen des Satzes gefragt, in der Reihenfolge
 **Wer? – Was tut die Person? – Wo? – Wann?** (Wann nur, wenn der Satz eine Zeit
@@ -1785,6 +1797,10 @@ gefragt. Bei **Stufe 2 und 3** gibt es pro Satz „Wer?“ und eine weitere Frag
 vorangestellt steht „Satz N:“. Die Sätze haben nichts miteinander zu tun. Auch
 während der Fragen kannst du die Sätze nochmal anhören.
 
+::: {.shots .one}
+![Sätze: eine Frage mit vier Antworten](img/de/headcopy_question.png)
+:::
+
 **Auswertung.** Die Trefferquote der Runde (richtige Antworten von allen
 Fragen), die Sätze im Klartext, **Abspielen mit Mitlesen** (der gerade
 gespielte Satz ist hervorgehoben) und deine Antworten. Die Sätze sind aus
@@ -1792,6 +1808,10 @@ Bausteinen gebaut und ergeben immer sinnvolles Deutsch bzw. Englisch: Orte
 passen zur Tätigkeit. Umlaute werden als AE, OE, UE gesendet; „Küche“ also als
 KUECHE. Die Zeit zählt für das [Tagesziel](#tagesziel).
 
+
+::: {.shots .one}
+![Sätze: Auswertung mit Klartext und deinen Antworten](img/de/headcopy_result.png)
+:::
 ## Q-Gruppen {#q-gruppen}
 
 Hier lernst du, **Q-Gruppen** (QTH, QRZ, QRM ...) beim Hören sofort zu
@@ -1808,6 +1828,10 @@ beim ersten Öffnen übernimmt die App sie aus **Hören**. Unter den Abständen
 steht das **effektive Tempo**, unter dem Start die Trefferquote der letzten
 Runden. **Spickzettel** öffnet die Liste aller Gruppen.
 
+::: {.shots .one}
+![Q-Gruppen: Start mit Stufe, Fragen pro Runde und Tempo](img/de/qgroups_setup.png)
+:::
+
 **Fragen.** Die Gruppe wird beim Erscheinen der Frage automatisch gespielt;
 die Taste oben rechts spielt sie nochmal. Welche Gruppe es war, siehst du erst
 nach deiner Antwort. Manche Gruppen kommen auch als **Frage** („QRZ?“); dann
@@ -1817,9 +1841,17 @@ Aussage. Ab Stufe 2 steht hinter manchen Gruppen ein Wert, etwa
 zwei ähnliche Bedeutungen (zum Beispiel QRM und QRN, QRS und QRQ) stehen nie
 zusammen in einer Frage.
 
+::: {.shots .one}
+![Q-Gruppen: die Gruppe wurde gespielt, vier Bedeutungen zur Wahl](img/de/qgroups_question.png)
+:::
+
 **Auswertung.** Die Trefferquote der Runde und jede Frage mit der gespielten
 Gruppe, der richtigen Bedeutung und deiner Antwort. Tippe auf eine Zeile, um die
 Gruppe nochmal zu hören. Die Zeit zählt für das [Tagesziel](#tagesziel).
+
+::: {.shots .one}
+![Q-Gruppen: Auswertung mit gespielter Gruppe und Bedeutung](img/de/qgroups_result.png)
+:::
 
 **Spickzettel.** Alle Gruppen mit Bedeutung, nach Stufen geordnet, mit der
 Frageform darunter (mit „?“ gekennzeichnet). Du erreichst ihn im Start und in
@@ -1831,6 +1863,10 @@ ein“, QTH nennt Breite und Länge und QSP verlangt gebührenfreies Vermitteln.
 Bei QRP, QRO, QRS, QRQ und QSY ist die Aussage eine Aufforderung an das
 Gegenüber („Gib langsamer“).
 
+
+::: {.shots .one}
+![Q-Gruppen: der Spickzettel](img/de/qgroups_cheat.png)
+:::
 ## Mini-QSO {#mini-qso}
 
 Hier hörst du einen kurzen **Funkdialog** zweier Stationen im echten Funkstil
@@ -1846,11 +1882,19 @@ Werte gelten nur für Mini-QSO; beim ersten Öffnen übernimmt die App sie aus
 **Hören**. Unter den Abständen steht das **effektive Tempo**, unter dem Start
 die Trefferquote der letzten Runden.
 
+::: {.shots .one}
+![Mini-QSO: Start mit Stufe und Tempo](img/de/miniqso_setup.png)
+:::
+
 **Hören.** Station A (sie ruft CQ) klingt etwas tiefer, Station B (sie antwortet)
 etwas höher als deine eingestellte Tonhöhe, wie zwei Signale im Band. Die
 Rufzeichen sind Zufallsrufzeichen wie im QSO-Bot, Namen und Orte erfunden. Du
 kannst den Dialog beliebig oft nochmal hören; der Text bleibt verborgen. Mit
 **Zu den Fragen** geht es weiter.
+
+::: {.shots .one}
+![Mini-QSO: der Dialog läuft, der Text bleibt verdeckt](img/de/miniqso_listen.png)
+:::
 
 **Stufen.**
 
@@ -1867,10 +1911,18 @@ nennt jede Frage die Station beim Rufzeichen („Wie heißt DL2XYZ?“), auch na
 einer falschen Antwort. So verrät keine Frage etwas, das erst später dran ist,
 und ein Fehler zieht keine Folgefehler nach sich.
 
+::: {.shots .one}
+![Mini-QSO: eine Frage zum Dialog](img/de/miniqso_question.png)
+:::
+
 **Auswertung.** Die Trefferquote der Runde, der ganze Dialog als „A: … / B: …“
 (mit **Abspielen mit Mitlesen**) und jede Frage mit richtiger und deiner
 Antwort. Die Zeit zählt für das [Tagesziel](#tagesziel).
 
+
+::: {.shots .one}
+![Mini-QSO: Auswertung mit dem ganzen Dialog](img/de/miniqso_result.png)
+:::
 ## Morsel
 
 Ein Worträtsel wie Wordle, nur in CW.

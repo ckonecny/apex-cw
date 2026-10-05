@@ -1703,6 +1703,10 @@ Under **Play → Games → Head copy** you pick one of three listening modes:
 **Sentences**, [Q-groups](#q-groups) or [Mini QSO](#mini-qso). This section
 describes **Sentences**.
 
+::: {.shots .one}
+![Head copy: the three listening modes](img/en/understand.png)
+:::
+
 Here you practise **understanding** Morse without writing it down. You hear one
 to three short sentences, then answer questions with four answers each. The
 text stays hidden until the result.
@@ -1715,10 +1719,18 @@ takes them from **Listen**, after that they are separate. Below the spacing the 
 is shown, the result of speed and both spacings (formula under
 [Effective speed](#effective-speed)). Below the start button you see the hit rate of the recent rounds.
 
+::: {.shots .one}
+![Sentences: start view with language, level, speed and spacing](img/en/headcopy_setup.png)
+:::
+
 **Listening.** The sentences play one after the other with a short pause. **Listen
 again** replays the whole round as often as you like. **To the questions**
 goes on. The interference simulation (icon at the top) works as in the other
 trainings.
+
+::: {.shots .one}
+![Sentences: the round plays, the text stays hidden](img/en/headcopy_listen.png)
+:::
 
 **Questions.** For each sentence you are asked for its parts, in the order
 **Who? – What does the person do? – Where? – When?** (When only if the sentence
@@ -1729,12 +1741,20 @@ tap you see at once what was right. **Level 1** asks every part. **Levels 2 and
 The sentences are unrelated. You can listen to the sentences again during the
 questions too.
 
+::: {.shots .one}
+![Sentences: a question with four answers](img/en/headcopy_question.png)
+:::
+
 **Result.** The round's hit rate (right answers out of all questions), the
 sentences in plain text, **Play with text** (the sentence playing is
 highlighted) and your answers. The sentences are built from blocks and always
 make sense: places fit the activity. German umlauts are sent as AE, OE, UE, so
 "Küche" goes out as KUECHE. The time counts towards the [daily goal](#daily-goal).
 
+
+::: {.shots .one}
+![Sentences: result with the plain text and your answers](img/en/headcopy_result.png)
+:::
 ## Q-groups {#q-groups}
 
 Here you learn to **understand Q-groups** (QTH, QRZ, QRM ...) at once when you
@@ -1751,6 +1771,10 @@ first open the app takes them from **Listen**. Below the spacing the **effective
 speed** is shown, below the start button the hit rate of the recent rounds.
 **Cheat sheet** opens the list of all groups.
 
+::: {.shots .one}
+![Q-groups: start view with level, questions per round and speed](img/en/qgroups_setup.png)
+:::
+
 **Questions.** The group plays by itself when the question appears; the button
 at the top right plays it again. You only see which group it was after you
 answer. Some groups also come as a **question** ("QRZ?"); then the four
@@ -1759,9 +1783,17 @@ level 2 on, some are followed by a value, like "QTH WIEN" or "QRG
 7030". The answers come from the groups of your level; two similar meanings
 (for example QRM and QRN, QRS and QRQ) never appear together in one question.
 
+::: {.shots .one}
+![Q-groups: the group has played, four meanings to choose from](img/en/qgroups_question.png)
+:::
+
 **Result.** The round's hit rate and every question with the group played, the
 right meaning and your answer. Tap a row to hear the group again. The time
 counts towards the [daily goal](#daily-goal).
+
+::: {.shots .one}
+![Q-groups: result with the group played and its meaning](img/en/qgroups_result.png)
+:::
 
 **Cheat sheet.** All groups with their meaning, ordered by level, with the
 question form below (marked with "?"). You reach it from the start and the
@@ -1772,6 +1804,10 @@ QTH gives latitude and longitude, and QSP asks for relaying free of charge. For
 QRP, QRO, QRS, QRQ and QSY the statement is a request to the other station
 ("Send slower").
 
+
+::: {.shots .one}
+![Q-groups: the cheat sheet](img/en/qgroups_cheat.png)
+:::
 ## Mini QSO {#mini-qso}
 
 Here you hear a short **on-air exchange** between two stations in real radio
@@ -1787,11 +1823,19 @@ spacing**. They apply to Mini QSO only; on first open the app takes them from
 **Listen**. Below the spacing the **effective speed** is shown, below the
 start button the hit rate of the recent rounds.
 
+::: {.shots .one}
+![Mini QSO: start view with level and speed](img/en/miniqso_setup.png)
+:::
+
 **Listening.** Station A (it calls CQ) sounds a little lower, station B (it
 answers) a little higher than your set pitch, like two signals in the band. The
 callsigns are random ones as in the QSO bot; names and places are made up. You
 can hear the exchange as often as you like; the text stays hidden. **To the
 questions** goes on.
+
+::: {.shots .one}
+![Mini QSO: the exchange plays, the text stays hidden](img/en/miniqso_listen.png)
+:::
 
 **Levels.**
 
@@ -1808,10 +1852,18 @@ question names the station by its callsign ("What is the name of DL2XYZ?"),
 even after a wrong answer. So no question gives away something that comes
 later, and one mistake does not spoil the rest.
 
+::: {.shots .one}
+![Mini QSO: a question about the exchange](img/en/miniqso_question.png)
+:::
+
 **Result.** The hit rate of the round, the whole exchange as "A: ... / B: ..."
 (with **Play with text**) and every question with the right answer and yours.
 The time counts for the [daily goal](#daily-goal).
 
+
+::: {.shots .one}
+![Mini QSO: result with the whole exchange](img/en/miniqso_result.png)
+:::
 ## Morsel
 
 A word puzzle like Wordle, but in CW.

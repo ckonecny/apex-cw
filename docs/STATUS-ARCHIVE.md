@@ -7,6 +7,7 @@ ideas and deferred bugs are GitHub issues (rule 12), not listed here.
 
 ## Done
 
+- **v1.6.0 release (2026-10-05).** Version 1.6.0+6, tag `v1.6.0` (45fe7e4), APK + AAB via `tools/build_release.sh`, installed on the test phone. Since v1.5.0: Head copy (Sentences, #7), Q-groups (#41), Mini QSO (#40), break hint, manual beginner chapter. Manual screenshots retaken DE+EN (home, games, understand, headcopy_*, qgroups_*, miniqso_*, settings1-3, achievements), HTML/PDF built, landing page text and screenshots refreshed.
 - Mini-QSO stage (#40, closed), 2026-10-05: two-station on-air dialogue (two pitches), 3 levels, questions in order of appearance, callsigns from the QSO-bot generator; the three listening modes now sit behind one games card "Verstehen" and the games list has a visible scroll bar. Concept in DECISIONS.md; screenshots are on the pending list in `STATUS.md`.
 - Q-groups mode (#41, closed), 2026-10-05: 24 groups in three levels, hear a group and pick its meaning, cheat sheet, manual DE+EN, concept in DECISIONS.md. Follow-up #40 (mini-QSO) can reuse the groups and `qgTails`. Screenshots are on the pending list in `STATUS.md`.
 - Bluetooth latency hint above all paddles (#9), tappable to Settings → Audio output, setting + manual DE+EN. The optional Echo-deadline shift by output latency was deliberately dropped: Bluetooth latency varies by device and AAudio doesn't report it reliably on A2DP, so a shift would be a guess, not a correction; the hint above the keys covers the real problem.

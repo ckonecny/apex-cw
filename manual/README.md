@@ -2,8 +2,8 @@
 
 | | Deutsch | English |
 |---|---|---|
-| PDF | [NextCWTrainer_Handbuch_v1.5.0.pdf](NextCWTrainer_Handbuch_v1.5.0.pdf) | [NextCWTrainer_Manual_v1.5.0.pdf](NextCWTrainer_Manual_v1.5.0.pdf) |
-| HTML | [NextCWTrainer_Handbuch_v1.5.0.html](NextCWTrainer_Handbuch_v1.5.0.html) | [NextCWTrainer_Manual_v1.5.0.html](NextCWTrainer_Manual_v1.5.0.html) |
+| PDF | [NextCWTrainer_Handbuch_v1.6.0.pdf](NextCWTrainer_Handbuch_v1.6.0.pdf) | [NextCWTrainer_Manual_v1.6.0.pdf](NextCWTrainer_Manual_v1.6.0.pdf) |
+| HTML | [NextCWTrainer_Handbuch_v1.6.0.html](NextCWTrainer_Handbuch_v1.6.0.html) | [NextCWTrainer_Manual_v1.6.0.html](NextCWTrainer_Manual_v1.6.0.html) |
 | Source (Markdown) | [manual_de.md](manual_de.md) | [manual_en.md](manual_en.md) |
 
 The title page states the app version and source commit the manual was built
@@ -61,7 +61,7 @@ release"* in `docs/STATUS.md`.
    If the manual sources changed after the tag (e.g. screenshot blocks), run
    `MANUAL_COMMIT=<tagged hash> ./build.sh` so the title page names the release
    commit, not `-dirty`. The version is taken from `android/pubspec.yaml` and goes into the file
-   names (`NextCWTrainer_Handbuch_v1.5.0.pdf`, …); the previous release's
+   names (`NextCWTrainer_Handbuch_v1.6.0.pdf`, …); the previous release's
    files are deleted and the links in both READMEs are updated. Attach the
    PDFs to the GitHub release under these versioned names.
 5. Clear the list in `docs/STATUS.md` and commit screenshots, built manual
