@@ -672,9 +672,8 @@ From top to bottom, the result page shows:
 - **Accuracy** in percent, meaning the share of characters copied correctly,
   plus "*x* of *y* correct". It is green from 90 %, yellow from 70 % and red
   below that.
-- The **status line**: speed, effective speed, spacing and, from the sixth
-  block on, the [trend](#trend). These values already apply to the **next**
-  block, including the ticked suggestions.
+- The **trend** line, from the sixth block on (see [trend](#trend)). Speed,
+  effective speed and spacing are in the WPM slider and **Adjust spacing**.
 - **Adjust spacing:** − and + change character spacing and word spacing together
   by 1 dit each. This takes effect immediately and doesn't depend on the
   suggestions.
@@ -865,8 +864,8 @@ After the last word of a block the result page appears:
   - **● right**: correct on the first attempt.
   - **◐ after repeat**: correct only after a repeat.
   - **○ wrong**: not made even after all repeats.
-- The **status line** shows listening speed, sending speed (if capped), lesson
-  and the [trend](#trend).
+- The **status line** shows the lesson and the [trend](#trend) (speeds are in
+  the controls below).
 - **Mix-ups** lists which characters you confused in this block, as "target
   → given", for example `p → w`. A `–` means nothing came at that position.
 - The **Listen** and **Send** speed controls. A change here replaces the

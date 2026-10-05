@@ -592,11 +592,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       rows.add(Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Column(children: [
-          Text(Strings.t('ac_weak_chars'),
+          Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
-          Text(Strings.t('ac_boost_hint'), textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textMuted,
-                  fontStyle: FontStyle.italic)),
           const SizedBox(height: 6),
           Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
             for (final e in s.weakChars.entries)
@@ -1076,14 +1073,15 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(children: [
-              SliderRow(label: Strings.t('block_hear'), labelWidth: 56, valueWidth: 84, value: _wpm.toDouble(),
+              SliderRow(label: Strings.t('block_hear'), labelWidth: 56, valueWidth: 112, value: _wpm.toDouble(),
+                  display: '$_wpm (eff. ${(50 * _wpm / (31 + 4 * _interCharSpace + _interWordSpace)).round()})',
                   min: TrainingProfile.minWpm.toDouble(), max: 60,
                   divisions: 60 - TrainingProfile.minWpm,
                   onChanged: (v) { setState(() => _wpm = v.round()); _savePrefs(); }),
               // Leftmost notch (kGiveWpmMin - 1) = "same as Hören".
               if (_keyerMode == 4) _straightGiveRow()
               else
-              SliderRow(label: Strings.t('block_give'), labelWidth: 56, valueWidth: 84,
+              SliderRow(label: Strings.t('block_give'), labelWidth: 56, valueWidth: 112,
                   value: (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax).toDouble(),
                   min: kGiveWpmMin - 1.0, max: 60, divisions: 61 - kGiveWpmMin,
                   display: _answerWpmMax == 0

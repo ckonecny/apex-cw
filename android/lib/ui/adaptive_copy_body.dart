@@ -374,15 +374,6 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   int get _effectiveInterWord =>
       (_acceptSpacing && _pendingInterWord != null) ? _pendingInterWord! : widget.interWordSpace;
 
-  // Farnsworth text speed implied by char speed + spacing: PARIS at
-  // standard timing is 50 dit units/word, 31 of which are the marks
-  // themselves (tied to char speed) — swap in the actual inter-char/
-  // inter-word counts for the rest to get the real words-per-minute rate.
-  int get _effectiveTextWpm {
-    final unitsPerWord = 31 + 4 * _effectiveInterChar + _effectiveInterWord;
-    return (50 * _effectiveWpm / unitsPerWord).round();
-  }
-
   void _stepPendingWpm(int delta) {
     if (_pendingWpm == null) return;
     setState(() => _pendingWpm = (_pendingWpm! + delta).clamp(widget.wpm, widget.wpm + 5));

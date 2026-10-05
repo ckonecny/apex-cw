@@ -30,8 +30,6 @@ extension _EchoViews on _EchoTrainerScreenState {
     final total = _blockResults.length;
     final pct = total == 0 ? 0 : first * 100 ~/ total;
     final status = [
-      '${Strings.t('block_hear')} $_wpm WPM',
-      if (_answerWpmMax > 0 && _answerWpm < _wpm) '${Strings.t('block_give')} $_answerWpm WPM',
       if (_koch) '${Strings.t('block_lesson')} $_kochLevel',
       if (_trend != null)
         Strings.t('trend_line')
@@ -59,8 +57,9 @@ extension _EchoViews on _EchoTrainerScreenState {
           ]),
         ]),
         const SizedBox(height: 6),
-        Text(status, textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+        if (status.isNotEmpty)
+          Text(status, textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
         if (_blockPairs.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),
@@ -145,9 +144,8 @@ extension _EchoViews on _EchoTrainerScreenState {
     );
   }
 
-  // Idle: hint and the current tempo/spacing, like the Hören block view.
+  // Idle: just the hint; tempo is on the sliders below.
   Widget _buildIdle(AppColors c) {
-    final ewpm = (50 * _wpm / (31 + 4 * _interCharSpace + _interWordSpace)).round();
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -155,13 +153,6 @@ extension _EchoViews on _EchoTrainerScreenState {
           Text(Strings.t('echo_idle_hint'), textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
                   color: c.textMuted, fontStyle: FontStyle.italic)),
-          const SizedBox(height: 10),
-          Text(Strings.t('gen_status_line')
-                  .replaceFirst('{wpm}', '$_wpm')
-                  .replaceFirst('{ewpm}', '$ewpm')
-                  .replaceFirst('{ic}', '$_interCharSpace')
-                  .replaceFirst('{iw}', '$_interWordSpace'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
         ]),
       ),
     );

@@ -693,9 +693,8 @@ Die Ergebnisseite zeigt von oben nach unten:
 
 - **Trefferquote** in Prozent (Anteil richtig mitgeschriebener Zeichen) –
   grün ab 90 %, gelb ab 70 %, darunter rot – und „*x* von *y* richtig“.
-- Die **Statuszeile**: Tempo, effektives Tempo, Abstände und, ab dem sechsten
-  Block, der [Trend](#trend). Die Werte gelten bereits für den **nächsten**
-  Block, also inklusive der angehakten Vorschläge.
+- Die **Trend**-Zeile, ab dem sechsten Block (siehe [Trend](#trend)). Tempo,
+  effektives Tempo und Abstände stehen im WPM-Regler und bei **Abstand anpassen**.
 - **Abstand anpassen** – mit − und + änderst du Zeichenabstand und Wortabstand
   gemeinsam um je 1 Dit. Das gilt sofort und unabhängig von den
   Vorschlägen.
@@ -891,8 +890,8 @@ Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
   - **● richtig** – beim ersten Versuch richtig,
   - **◐ nach Wiederholung** – erst nach einer Wiederholung richtig,
   - **○ falsch** – auch nach allen Wiederholungen nicht geschafft.
-- Die **Statuszeile**: Hörtempo, Gebetempo (falls begrenzt), Lektion und der
-  [Trend](#trend).
+- Die **Statuszeile**: Lektion und der [Trend](#trend) (die Tempi stehen in
+  den Reglern darunter).
 - **Verwechslungen** – welche Zeichen du in diesem Block verwechselt hast, als
   „Soll → Gegeben“, z. B. `p → w`. Ein `–` heißt, dass an dieser Stelle nichts
   kam.

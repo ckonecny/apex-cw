@@ -45,7 +45,7 @@ class SliderRow extends StatelessWidget {
         )),
         SizedBox(width: valueWidth, child: Text(
             display ?? value.round().toString(),
-            textAlign: TextAlign.right,
+            textAlign: TextAlign.right, softWrap: false,
             style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
                 color: c.accent))),
       ],

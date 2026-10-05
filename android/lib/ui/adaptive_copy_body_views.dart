@@ -8,7 +8,6 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   // and the boost it drives on the very first block — is visible right
   // away, not only from the second block onward.
   Widget _buildIdle(BuildContext context) {
-    final c = AppColors.of(context);
     return LayoutBuilder(builder: (context, constraints) {
       return SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -16,24 +15,9 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           constraints: BoxConstraints(minHeight: constraints.maxHeight),
           child: Center(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Text(Strings.t('ac_idle_hint'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
-                      color: c.textMuted, fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.center),
-              const SizedBox(height: 10),
-              // Same status-line format as the result screen (gen_status_line),
-              // minus Trend/EMA — that's only meaningful once a block has been
-              // scored, and none has run yet on this start screen.
-              Text(Strings.t('gen_status_line')
-                      .replaceFirst('{wpm}', '$_effectiveWpm')
-                      .replaceFirst('{ewpm}', '$_effectiveTextWpm')
-                      .replaceFirst('{ic}', '$_effectiveInterChar')
-                      .replaceFirst('{iw}', '$_effectiveInterWord'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
-              const SizedBox(height: 24),
               _buildSpacingControl(context, scale: 1.2),
               if (_weakChars.isNotEmpty) ...[
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 _buildWeakCharsSection(context, scale: 1.2),
               ],
             ]),
@@ -53,13 +37,8 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   Widget _buildWeakCharsSection(BuildContext context, {double scale = 1}) {
     final c = AppColors.of(context);
     return SizedBox(width: double.infinity, child: AppCard(child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Text(Strings.t('ac_weak_chars'),
+      Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
           style: TextStyle(fontFamily: 'CwMono', fontSize: 11 * scale, color: c.textMuted)),
-      const SizedBox(height: 2),
-      Text(Strings.t('ac_boost_hint'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 10 * scale,
-              color: c.textMuted, fontStyle: FontStyle.italic),
-          textAlign: TextAlign.center),
       const SizedBox(height: 8),
       Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
         children: _weakChars.entries.map((e) {
@@ -109,28 +88,20 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
 
   Widget _buildSpacingControl(BuildContext context, {double scale = 1}) {
     final c = AppColors.of(context);
-    return SizedBox(width: double.infinity, child: AppCard(child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Text(Strings.t('ac_spacing_control_title'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 11 * scale, color: c.textMuted)),
-      const SizedBox(height: 2),
-      Text(Strings.t('ac_spacing_control_hint'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 10 * scale,
-              color: c.textMuted, fontStyle: FontStyle.italic),
-          textAlign: TextAlign.center),
-      const SizedBox(height: 6),
-      Row(mainAxisSize: MainAxisSize.min, children: [
-        _TapTarget(onTap: () => _adjustSpacing(-1),
-            child: Icon(Icons.remove, size: 20, color: c.accent)),
-        SizedBox(
-          width: 84 * scale,
-          child: Text('${widget.interCharSpace}/${widget.interWordSpace}',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 15 * scale,
-                  fontWeight: FontWeight.bold, color: c.textPrimary)),
-        ),
-        _TapTarget(onTap: () => _adjustSpacing(1),
-            child: Icon(Icons.add, size: 20, color: c.accent)),
-      ]),
+    return SizedBox(width: double.infinity, child: AppCard(child: Row(children: [
+      Expanded(child: Text(Strings.t('ac_spacing_control_title'),
+          style: TextStyle(fontFamily: 'CwMono', fontSize: 11 * scale, color: c.textMuted))),
+      _TapTarget(onTap: () => _adjustSpacing(-1),
+          child: Icon(Icons.remove, size: 20, color: c.accent)),
+      SizedBox(
+        width: 60 * scale,
+        child: Text('${widget.interCharSpace}/${widget.interWordSpace}',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontFamily: 'CwMono', fontSize: 15 * scale,
+                fontWeight: FontWeight.bold, color: c.textPrimary)),
+      ),
+      _TapTarget(onTap: () => _adjustSpacing(1),
+          child: Icon(Icons.add, size: 20, color: c.accent)),
     ])));
   }
 
@@ -537,16 +508,13 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             Text(Strings.t('ac_correct_of')
                     .replaceFirst('{c}', '$_resultCorrect').replaceFirst('{t}', '$_resultTotal'),
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textMuted)),
-            const SizedBox(height: 10),
-            Text(Strings.t('gen_status_line')
-                    .replaceFirst('{wpm}', '$_effectiveWpm')
-                    .replaceFirst('{ewpm}', '$_effectiveTextWpm')
-                    .replaceFirst('{ic}', '$_effectiveInterChar')
-                    .replaceFirst('{iw}', '$_effectiveInterWord') +
-                    (_trend == null ? '' : ' · ${Strings.t('trend_line')
-                        .replaceFirst('{pct}', '${_trend!.percent}')
-                        .replaceFirst('{arrow}', _trend!.arrow)}'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+            if (_trend != null) ...[
+              const SizedBox(height: 10),
+              Text(Strings.t('trend_line')
+                      .replaceFirst('{pct}', '${_trend!.percent}')
+                      .replaceFirst('{arrow}', _trend!.arrow),
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+            ],
             const SizedBox(height: 20),
             _buildSpacingControl(context, scale: 1.2),
             if (weak.isNotEmpty) ...[
