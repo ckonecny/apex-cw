@@ -1535,6 +1535,57 @@ Agreed with the user before any code; mockup comes next.
   adaptive mode or the achievements. The sample tool
   (`test/content/head_copy_samples_tool.dart`) stays for proofreading the blocks.
 
+## Q-groups mode — concept (issue #41)
+
+Agreed with the user before any code (2026-10-05). Third content kind of the
+head-copy concept above; a separate mode because Q-groups are special
+knowledge on top of the sentence mode.
+
+- **Direction**: hear the group, pick its meaning from four options. The
+  reverse (meaning -> hear four groups) is not part of the first version.
+- **Statement and question are separate entries**: "QRZ" and "QRZ?" each have
+  their own DE and EN meaning; wrong options always have the same form as the
+  right one (question next to question).
+- **Context by level**: level 1 plays the bare group, higher levels put it in
+  a short phrase ("QTH Wien", "QRZ de Tom"), which prepares the mini-QSO (#40).
+- **Scope**: about 25 groups in three levels by how common they are. Texts are
+  hand-written own text, no list copied from elsewhere (rule 11).
+- **Wrong options**: from the same level and form; never two near-synonyms in
+  one question (QRM/QRN, QRS/QRQ), kept in a conflict list that a test checks.
+- **Round**: 5 or 10 questions, replay allowed, text hidden while playing.
+  Hit rate in its own log like head copy; time counts for the daily goal via
+  `PracticeClock`; no effect on adaptive mode or achievements.
+- **Cheat sheet**: own page with all groups of the chosen level (or all), DE
+  and EN, reachable from setup and result. Content language is its own
+  setting, independent of the app language.
+- **Settings** in their own profile, pushed to the shared generator before
+  every playback (rule 2).
+- **Group list built and checked** (2026-10-05): `lib/content/q_groups_data.dart`,
+  24 groups (8 per level), wording checked against the ITU list and two
+  secondary sources. Statements of QRP, QRO, QRS, QRQ and QSY are requests to
+  the other station ("Please ..."), as in the ITU list. QRM, QRN and QSB have
+  no question form (hardly used on air; `QText.question` is null, the engine
+  never asks it). Where ITU and amateur practice differ, the practice wins and
+  the ITU reading goes into the manual as an addition: QRL = "frequency is
+  busy" (ITU: "I am busy"), QRT = "I am closing down" (ITU: "stop sending"),
+  QTH = location (ITU: latitude/longitude), QSP = relay a message (ITU: free
+  of charge). `qgValidate` keeps each question fillable with three wrong
+  options outside the right one's cluster.
+- **Engine built** (2026-10-05): `lib/content/q_groups_engine.dart`, test
+  `test/content/q_groups_engine_test.dart`. Levels are **cumulative**: a round
+  at level L draws from all groups of level <= L (and wrong options from the
+  same pool), so higher levels keep refreshing the common groups instead of
+  drilling only the rare ones. Each group once per pass through the pool, never
+  twice in a row. Question form is asked with a 50 % chance where it exists.
+  "In context" (level >= 2) means a value after the statement ("QTH WIEN",
+  `qgTails`, fictional ASCII values, only for groups whose meaning ends in
+  "..."); the question form is always the bare "QTH?".
+- **Setup wording** (2026-10-05): the choice is called "Stufe" (1/2/3) with a
+  line below saying what it means ("Stufe 2: 16 Gruppen, manche mit Wert").
+  A first version showed only the group counts (8/16/24) and hid the word
+  level, which the user did not understand; the cheat sheet uses the same
+  "Stufe N" headings.
+
 ## Layout overflow: one test over all screens (2026-10-04, issues #29, #38)
 Two settings rows overflowed one after the other (#29 slider header, #38
 `ToggleRow` label in a `Row` with a `Spacer`). Fixing single rows did not stop

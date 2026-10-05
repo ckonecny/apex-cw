@@ -66,7 +66,7 @@ Die Startseite hat vier Gruppen:
 | **Üben** | **Hören** | Mitschreiben üben: CW Generator und Koch Trainer im Blockablauf |
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
 | **Frei** | **Freie Modi** | Öffnet fünf Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) |
-| **Spielen** | **Spiele** | Verstehen, Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
+| **Spielen** | **Spiele** | Verstehen, Q-Gruppen, Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
 
 Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
@@ -1483,8 +1483,8 @@ an, solange du in einem Text bist.
 
 # Spiele
 
-Unter **Spielen → Spiele** findest du neun Spiele. Das Hörspiel
-[Verstehen](#verstehen) braucht keine Taste. Morsel, Morse Invaders,
+Unter **Spielen → Spiele** findest du zehn Spiele. Die Hörspiele
+[Verstehen](#verstehen) und [Q-Gruppen](#q-gruppen) brauchen keine Taste. Morsel, Morse Invaders,
 Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup und Radio Cave spielst du
 mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden die Keyer-Einstellungen.
 Morsel, Morse Invaders, Memory Chain, Trailblazer und Fox Hunt übernehmen die
@@ -1532,6 +1532,45 @@ gespielte Satz ist hervorgehoben) und deine Antworten. Die Sätze sind aus
 Bausteinen gebaut und ergeben immer sinnvolles Deutsch bzw. Englisch: Orte
 passen zur Tätigkeit. Umlaute werden als AE, OE, UE gesendet; „Küche“ also als
 KUECHE. Die Zeit zählt für das [Tagesziel](#tagesziel).
+
+## Q-Gruppen {#q-gruppen}
+
+Hier lernst du, **Q-Gruppen** (QTH, QRZ, QRM ...) beim Hören sofort zu
+verstehen. Du hörst eine Gruppe in Morse und wählst aus vier Antworten, was sie
+bedeutet. Wie bei [Verstehen](#verstehen) braucht das keine Taste.
+
+**Start.** Wähle die **Sprache der Antworten** (Deutsch oder Englisch,
+unabhängig von der App-Sprache), die **Stufe** (1, 2 oder 3; die Gruppen sind
+nach Häufigkeit geordnet, und jede Stufe nimmt die seltenere dazu: Stufe 1 hat
+die 8 häufigsten, Stufe 2 insgesamt 16, Stufe 3 alle 24; unter der Auswahl
+steht, was die Stufe bedeutet), die **Fragen pro Runde** (5 oder 10), **Tempo**,
+**Zeichenabstand** und **Wortabstand**. Die Werte gelten nur für Q-Gruppen;
+beim ersten Öffnen übernimmt die App sie aus **Hören**. Unter den Abständen
+steht das **effektive Tempo**, unter dem Start die Trefferquote der letzten
+Runden. **Spickzettel** öffnet die Liste aller Gruppen.
+
+**Fragen.** Die Gruppe wird beim Erscheinen der Frage automatisch gespielt;
+die Taste oben rechts spielt sie nochmal. Welche Gruppe es war, siehst du erst
+nach deiner Antwort. Manche Gruppen kommen auch als **Frage** („QRZ?“); dann
+sind die vier Antworten ebenfalls Fragen. QRM, QRN und QSB gibt es nur als
+Aussage. Ab Stufe 2 steht hinter manchen Gruppen ein Wert, etwa
+„QTH WIEN“ oder „QRG 7030“. Die Antworten stammen aus den Gruppen deiner Stufe;
+zwei ähnliche Bedeutungen (zum Beispiel QRM und QRN, QRS und QRQ) stehen nie
+zusammen in einer Frage.
+
+**Auswertung.** Die Trefferquote der Runde und jede Frage mit der gespielten
+Gruppe, der richtigen Bedeutung und deiner Antwort. Tippe auf eine Zeile, um die
+Gruppe nochmal zu hören. Die Zeit zählt für das [Tagesziel](#tagesziel).
+
+**Spickzettel.** Alle Gruppen mit Bedeutung, nach Stufen geordnet, mit der
+Frageform darunter (mit „?“ gekennzeichnet). Du erreichst ihn im Start und in
+der Auswertung, nicht während einer Frage; **Alle** zeigt auch Gruppen, die in
+deiner Stufe nicht vorkommen. Die Bedeutungen sind so formuliert, wie die
+Gruppen im Funkverkehr benutzt werden. Die amtliche ITU-Fassung weicht bei
+einigen ab: QRL heißt dort „Bist du beschäftigt?“, QRT „Stelle den Sendebetrieb
+ein“, QTH nennt Breite und Länge und QSP verlangt gebührenfreies Vermitteln.
+Bei QRP, QRO, QRS, QRQ und QSY ist die Aussage eine Aufforderung an das
+Gegenüber („Gib langsamer“).
 
 ## Morsel
 

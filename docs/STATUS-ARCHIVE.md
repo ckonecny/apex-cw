@@ -7,6 +7,7 @@ ideas and deferred bugs are GitHub issues (rule 12), not listed here.
 
 ## Done
 
+- Q-groups mode (#41, closed), 2026-10-05: 24 groups in three levels, hear a group and pick its meaning, cheat sheet, manual DE+EN, concept in DECISIONS.md. Follow-up #40 (mini-QSO) can reuse the groups and `qgTails`. Screenshots are on the pending list in `STATUS.md`.
 - Bluetooth latency hint above all paddles (#9), tappable to Settings → Audio output, setting + manual DE+EN. The optional Echo-deadline shift by output latency was deliberately dropped: Bluetooth latency varies by device and AAudio doesn't report it reliably on A2DP, so a shift would be a guess, not a correction; the hint above the keys covers the real problem.
 - Daily goal series (#3, closed): #30 practice log, #31 goal card and achievements page, #32 reminder, #33 spaced sessions, #34 achievements, #35 weekly review; merged into `main` (follow-up #36 open).
 - Game ports (#13–#15): Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave; merged and pushed 2026-10-03.

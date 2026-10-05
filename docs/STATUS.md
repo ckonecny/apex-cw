@@ -36,7 +36,8 @@ and set the Play listing's website to the Pages URL (decision in DECISIONS.md).
 
 ## Manual: pending for next release
 - `settings*.png` showing the General card: new row "Pausenhinweis" (#5; check which file shows it).
-- Head copy (#7): new `games.png` (nine cards) plus a screenshot per phase (setup, listening, question, result).
+- Head copy (#7): new `games.png` (nine cards, now ten with Q-groups) plus a screenshot per phase (setup, listening, question, result).
+- Q-groups (#41): screenshots of setup, question, result and cheat sheet (`qgroups_*.png`, DE+EN); `games.png` shows the new card.
 - Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
 

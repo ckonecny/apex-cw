@@ -64,7 +64,7 @@ The home screen has four groups:
 | **Practice** | **Listen** | Practice copying: CW Generator and Koch Trainer in the block flow |
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
 | **Free** | **Free modes** | Opens five tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) and **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) |
-| **Play** | **Games** | Head copy, Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
+| **Play** | **Games** | Head copy, Q-groups, Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
 
 At the very top sits the **daily goal card**: a ring with your active
@@ -1438,8 +1438,8 @@ a text.
 
 # Games
 
-Under **Play → Games** there are nine games. The listening game
-[Head copy](#head-copy) needs no key. You play Morsel, Morse Invaders,
+Under **Play → Games** there are ten games. The listening games
+[Head copy](#head-copy) and [Q-groups](#q-groups) need no key. You play Morsel, Morse Invaders,
 Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup and Radio Cave with the
 touch keyer or the adapter. They use the keyer settings. Morsel, Morse
 Invaders, Memory Chain, Trailblazer and Fox Hunt take the Koch lesson from
@@ -1486,6 +1486,43 @@ sentences in plain text, **Play with text** (the sentence playing is
 highlighted) and your answers. The sentences are built from blocks and always
 make sense: places fit the activity. German umlauts are sent as AE, OE, UE, so
 "Küche" goes out as KUECHE. The time counts towards the [daily goal](#daily-goal).
+
+## Q-groups {#q-groups}
+
+Here you learn to **understand Q-groups** (QTH, QRZ, QRM ...) at once when you
+hear them. You hear a group in Morse and pick from four answers what it means.
+Like [Head copy](#head-copy), it needs no key.
+
+**Start.** Choose the **language of the answers** (German or English,
+independent of the app language), the **level** (1, 2 or 3; the groups are
+ordered by how common they are, and each level adds the rarer ones: level 1
+has the 8 most common, level 2 has 16 in all, level 3 all 24; below the choice
+it says what the level means), the **questions per round** (5 or 10), **speed**,
+**character spacing** and **word spacing**. They apply to Q-groups only; on
+first open the app takes them from **Listen**. Below the spacing the **effective
+speed** is shown, below the start button the hit rate of the recent rounds.
+**Cheat sheet** opens the list of all groups.
+
+**Questions.** The group plays by itself when the question appears; the button
+at the top right plays it again. You only see which group it was after you
+answer. Some groups also come as a **question** ("QRZ?"); then the four
+answers are questions too. QRM, QRN and QSB only exist as statements. From
+level 2 on, some are followed by a value, like "QTH WIEN" or "QRG
+7030". The answers come from the groups of your level; two similar meanings
+(for example QRM and QRN, QRS and QRQ) never appear together in one question.
+
+**Result.** The round's hit rate and every question with the group played, the
+right meaning and your answer. Tap a row to hear the group again. The time
+counts towards the [daily goal](#daily-goal).
+
+**Cheat sheet.** All groups with their meaning, ordered by level, with the
+question form below (marked with "?"). You reach it from the start and the
+result, not during a question; **All** also shows groups outside your level.
+The meanings are worded the way the groups are used on air. The official ITU
+wording differs for some: QRL there means "Are you busy?", QRT "Stop sending",
+QTH gives latitude and longitude, and QSP asks for relaying free of charge. For
+QRP, QRO, QRS, QRQ and QSY the statement is a request to the other station
+("Send slower").
 
 ## Morsel
 
