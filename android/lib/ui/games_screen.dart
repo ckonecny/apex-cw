@@ -11,6 +11,7 @@ import 'maze_game_screen.dart';
 import 'memory_chain_screen.dart';
 import 'morsel_screen.dart';
 import 'pileup_screen.dart';
+import 'q_groups_screen.dart';
 import 'radio_cave_screen.dart';
 import 'widgets/app_ui.dart';
 
@@ -43,6 +44,16 @@ class GamesScreen extends StatelessWidget {
               color: c.accent,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const HeadCopyScreen())),
+            ),
+            const SizedBox(height: 12),
+            HubCard(
+              icon: Icons.question_answer_outlined,
+              title: Strings.t('qg_title'),
+              subtitle: Strings.t('qg_subtitle'),
+              hint: Strings.t('qg_hint'),
+              color: c.info,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const QGroupsScreen())),
             ),
             const SizedBox(height: 12),
             HubCard(
