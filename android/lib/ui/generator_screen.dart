@@ -304,6 +304,10 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                 label: 'WPM', value: _wpm.toDouble(),
                 min: TrainingProfile.minWpm.toDouble(), max: 60,
                 divisions: 60 - TrainingProfile.minWpm,
+                valueWidth: 112,
+                // Farnsworth text speed implied by wpm + spacing, like the
+                // adaptive block's status line used to show it.
+                display: '$_wpm (eff. ${(50 * _wpm / (31 + 4 * _interCharSpace + _interWordSpace)).round()})',
                 onChanged: (v) {
                   setState(() => _wpm = v.round());
                   _savePrefs();

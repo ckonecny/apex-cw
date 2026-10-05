@@ -38,6 +38,9 @@ and set the Play listing's website to the Pages URL (decision in DECISIONS.md).
 - Branch `feature/random-group-length` (installed on the test phone): group,
   word and abbreviation length are now min–max range sliders; retake the
   screenshots of the ⚙ sheet's Word selection (`settings*.png`, DE+EN).
+- Branch `feature/compact-session-dialogs`: Hören start view (no hint/status
+  line, one-line "Adjust spacing", WPM slider shows eff. WPM), Geben summary and
+  start view: retake `hear*.png`, `echo_result*.png`, `echo*.png` idle (DE+EN).
 - Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
 

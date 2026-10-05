@@ -589,9 +589,6 @@ class Strings {
     'next_upper': ['WEITER', 'NEXT'],
     'echo_idle_hint': ['Das Wort anhören und mit der Morsetaste zurückgeben.', 'Listen to the word and key it back with the Morse key.'],
     'get_ready': ['Bereit machen …', 'Get ready …'],
-    'gen_status_line': [
-      'WPM {wpm} (eff. {ewpm}) · Abstand {ic}/{iw}',
-      'WPM {wpm} (eff. {ewpm}) · Spacing {ic}/{iw}'],
 
     // ── Echo Trainer screen ──────────────────────────────────────────────
     'echo_trainer_title': ['Echo Trainer', 'Echo Trainer'],
@@ -605,7 +602,6 @@ class Strings {
 
     // ── Adaptive Copy mode (Koch Trainer "Adaptiv" flow) ─────────────────
     'ac_block_label': ['BLOCK {n}', 'BLOCK {n}'],
-    'ac_idle_hint': ['Zuhören und mitschreiben.', 'Listen and copy.'],
     'ac_start_paper': ['Papier', 'Paper'],
     'ac_start_typing': ['Tippen', 'Type'],
     'ac_type_pass': ['Passen', 'Pass'],
@@ -642,10 +638,7 @@ class Strings {
     'ac_paddle_hint': ['Morsetaste: Dit = wiederholen, Dah = weiter', 'Morse key: dit = repeat, dah = next'],
     'ac_done_errors': ['Fertig · {n} Fehler', 'Done · {n} errors'],
     'ac_correct_of': ['{c} von {t} richtig', '{c} of {t} correct'],
-    'ac_weak_chars': ['SCHWACHE ZEICHEN', 'WEAK CHARACTERS'],
-    'ac_boost_hint': [
-      'Tippen zum Aus-/Einschließen — öfter abfragen im nächsten Block',
-      'Tap to include/exclude — practiced more in the next block'],
+    'ac_weak_chars': ['Schwache Zeichen: öfter abfragen?', 'Weak characters: practice more?'],
     'ac_finish': ['Beenden', 'Finish'],
     'ac_next_block': ['Nächster Block', 'Next block'],
     'echo_hear_speed_up': ['Hörtempo erhöht', 'Listening speed increased'],
@@ -659,8 +652,7 @@ class Strings {
     'ac_outlook_more': ['+{n} weitere', '+{n} more'],
     'ac_char_unlocked': ['Neues Zeichen freigeschaltet', 'New character unlocked'],
     'ac_suggestions_title': ['VORSCHLÄGE · ANTIPPEN ZUM ÄNDERN', 'SUGGESTIONS · TAP TO TOGGLE'],
-    'ac_spacing_control_title': ['ABSTAND ANPASSEN', 'ADJUST SPACING'],
-    'ac_spacing_control_hint': ['Zeichen/Wort (Dits) — größer = mehr Pause', 'Char/word (dits) — higher = more pause'],
+    'ac_spacing_control_title': ['Abstand anpassen Zeichen/Wort (Dits)', 'Adjust spacing char/word (dits)'],
 
     // ── Adaptive Mode settings ───────────────────────────────────────────
     'settings_koch_sequence_desc': ['Gilt für alle Trainings, die die Koch-Methode nutzen (auch Geben und der adaptive Modus).', 'Applies to every training that uses the Koch method (Send and the adaptive mode too).'],
