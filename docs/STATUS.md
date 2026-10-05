@@ -40,6 +40,8 @@ and set the Play listing's website to the Pages URL (decision in DECISIONS.md).
 - Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
 
+- Goal card (branch `feature/goal-card-polish`): subtitle now shows minutes left next to the session countdown, no chevron on the Erfolge page; retake the screenshot of the Erfolge page / home goal card if shown.
+
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual

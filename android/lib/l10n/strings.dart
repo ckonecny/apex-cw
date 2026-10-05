@@ -137,6 +137,8 @@ class Strings {
     'goal_sessions_off': ['Aus', 'Off'],
     'goal_sessions_desc': ['Das Tagesziel zählt erst, wenn die Zeit auf so viele Sessions verteilt ist. Eine Session dauert mindestens 5 Minuten und beginnt frühestens 15 Minuten nach dem Ende der vorigen.', 'The daily goal only counts once the time is spread over that many sessions. A session lasts at least 5 minutes and starts at least 15 minutes after the previous one ended.'],
     'goal_sess_now': ['Nächste Session: jetzt', 'Next session: now'],
+    'goal_left_now': ['Noch {n} Min. · jetzt starten', '{n} min to go · start now'],
+    'goal_left_wait': ['Noch {n} Min. · weiter in {m} Min.', '{n} min to go · next in {m} min'],
     'goal_sess_wait': ['Nächste Session in {m} Min.', 'Next session in {m} min'],
     'ach_title': ['Auszeichnungen', 'Awards'],
     'ach_locked': ['Noch offen', 'Not yet'],

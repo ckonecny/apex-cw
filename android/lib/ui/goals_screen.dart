@@ -55,7 +55,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
         ],
       ),
       body: ListView(padding: const EdgeInsets.all(20), children: [
-        DailyGoalCard(status: g, compact: false, onTap: () {}),
+        LiveGoalCard(settings: _s, compact: false),
         const SizedBox(height: 16),
         SettingsCard(children: [
           _row(c, Strings.t('goal_today'), _min(g.todaySeconds)),

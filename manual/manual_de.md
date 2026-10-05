@@ -1088,8 +1088,8 @@ erreicht ist **und** du mindestens so viele Sessions geübt hast. Eine Session
 zählt, wenn sie mindestens 5 Minuten dauert und frühestens 15 Minuten nach dem
 Ende der vorigen gezählten Session beginnt. Eine Session, die zu früh beginnt,
 bringt weiter Übungszeit, zählt aber nicht als Session. Der Ring zeigt dann die
-Sessions (z. B. „1 von 3“), darunter steht, wann die nächste Session zählt.
-Standardmäßig aus, nicht jeder hat Zeit für mehrere Sessions am Tag.
+Sessions (z. B. „1 von 3“), darunter steht, wann die nächste Session zählt, und wie viele Minuten noch
+fehlen. Der Countdown aktualisiert sich von selbst. Standardmäßig aus, nicht jeder hat Zeit für mehrere Sessions am Tag.
 
 **Erinnerung.** Optional und standardmäßig aus. Zur gewählten Uhrzeit bekommst
 du eine freundliche Benachrichtigung, aber nur, wenn dein Ziel für diesen Tag

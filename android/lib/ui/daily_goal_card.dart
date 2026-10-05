@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../content/daily_goal.dart';
 import '../l10n/strings.dart';
+import '../util/practice_clock.dart';
 import '../theme/app_colors.dart';
 
 String goalStreakText(int n) => n <= 0
@@ -13,11 +15,15 @@ String goalStreakText(int n) => n <= 0
 String goalSubtitle(GoalStatus g) {
   if (g.met) return Strings.t('goal_done');
   final wait = g.nextIn;
-  // Spaced goal: while sessions are still missing, say when the next one counts.
+  // Spaced goal: while sessions are still missing, say when the next one counts
+  // (and, while the time goal is still open, how many minutes are left).
   if (wait != null) {
     final m = (wait.inSeconds / 60).ceil();
-    return Strings.t(m == 0 ? 'goal_sess_now' : 'goal_sess_wait')
-        .replaceFirst('{m}', '$m');
+    final timeLeft = g.minutesLeft > 0 && g.todaySeconds > 0;
+    final key = timeLeft
+        ? (m == 0 ? 'goal_left_now' : 'goal_left_wait')
+        : (m == 0 ? 'goal_sess_now' : 'goal_sess_wait');
+    return Strings.t(key).replaceFirst('{m}', '$m').replaceFirst('{n}', '${g.minutesLeft}');
   }
   return g.todaySeconds == 0 && g.streak == 0
       ? Strings.t('goal_hint').replaceFirst('{n}', '${g.goalSeconds ~/ 60}')
@@ -130,8 +136,9 @@ class _WeekDots extends StatelessWidget {
 class DailyGoalCard extends StatelessWidget {
   final GoalStatus status;
   final bool compact;
-  final VoidCallback onTap;
-  const DailyGoalCard({super.key, required this.status, required this.compact, required this.onTap});
+  /// Null = not tappable (no chevron), e.g. on the page the card leads to.
+  final VoidCallback? onTap;
+  const DailyGoalCard({super.key, required this.status, required this.compact, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -173,10 +180,45 @@ class DailyGoalCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     _WeekDots(status),
                   ])),
-            Icon(Icons.chevron_right, color: c.textFaint),
+            if (onTap != null) Icon(Icons.chevron_right, color: c.textFaint),
           ]),
         ),
       ),
     );
   }
+}
+
+/// [DailyGoalCard] that recomputes its status on a timer, so the countdown to
+/// the next counted session ticks down without leaving the screen.
+class LiveGoalCard extends StatefulWidget {
+  final DailyGoalSettings settings;
+  final bool compact;
+  final VoidCallback? onTap;
+  const LiveGoalCard({super.key, required this.settings, required this.compact, this.onTap});
+
+  @override
+  State<LiveGoalCard> createState() => _LiveGoalCardState();
+}
+
+class _LiveGoalCardState extends State<LiveGoalCard> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 10), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => DailyGoalCard(
+      status: goalStatus(PracticeClock.instance.log, widget.settings, DateTime.now()),
+      compact: widget.compact, onTap: widget.onTap);
 }
