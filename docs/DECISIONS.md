@@ -1682,3 +1682,12 @@ abbreviations are filtered from the pool by the range; groups draw the length
 per group (`CwGenerator.drawGroupLength`, and `_pickAdaptiveGroup` for the
 Dart-side adaptive draw). The Mixed content shows the group slider too, since
 Koch-mixed already draws groups. This is an app extension, not in the firmware.
+
+
+## Swap on-screen paddles affects the touch buttons only (2026-10-05)
+Keyer setting `touchPaddlesSwapped` (default off) puts dah left / dit right on
+the on-screen paddles (`IambicPaddles`, via `PaddleLayout`). It deliberately
+does not touch the learned hardware keys: anyone who taught dit/dah to their
+adapter did so on purpose for that device, and a second reversal from this
+setting would undo it. The buttons keep their meaning (the DIT button still
+sends dit); only their position changes. Hidden for Straight (one button).

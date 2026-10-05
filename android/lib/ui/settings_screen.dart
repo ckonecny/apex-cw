@@ -11,6 +11,7 @@ import 'widgets/setting_rows.dart';
 import 'interference_settings_card.dart';
 import '../util/bluetooth_hint.dart';
 import '../util/break_reminder.dart';
+import '../util/paddle_layout.dart';
 import '../util/practice_clock.dart';
 import '../util/reminder.dart';
 
@@ -437,6 +438,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
               selected: _keyerMode,
               onChanged: _applyKeyerMode,
             ),
+            // On-screen paddles only; learned hardware keys stay as learned.
+            if (_keyerMode != 4) ...[
+              const SettingsDivider(),
+              ValueListenableBuilder<bool>(
+                valueListenable: PaddleLayout.swapped,
+                builder: (context, on, _) => ToggleRow(
+                  label: Strings.t('settings_swap_touch_paddles'),
+                  value: on,
+                  onChanged: PaddleLayout.setSwapped,
+                ),
+              ),
+            ],
             if (_keyerMode == 1 || _keyerMode == 2) ...[
               const SettingsDivider(),
               LabeledSlider(label: Strings.t('settings_curtisb_dit'),

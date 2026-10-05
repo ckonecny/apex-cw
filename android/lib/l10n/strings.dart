@@ -549,6 +549,7 @@ class Strings {
     'settings_answer_wpm_same': ['wie Hören', 'same as prompt'],
     'settings_answer_wpm_help': ['Deine Antwort wird mit höchstens diesem Tempo erwartet. Vorgespielt wird weiter mit dem normalen Tempo.', 'Your answer is expected at this speed at most. The prompt still plays at the normal speed.'],
     'echo_answer_wpm': ['Geben', 'Send'],
+    'settings_swap_touch_paddles': ['Bildschirm-Paddles vertauschen (Dah links)', 'Swap on-screen paddles (dah left)'],
     'settings_learn_paddle_keys': ['Dit-/Dah-Tasten anlernen', 'Learn dit/dah keys'],
     'settings_analyze_key_events': ['Key-Events analysieren', 'Analyze key events'],
     'settings_build_time': ['Gebaut', 'Built'],
