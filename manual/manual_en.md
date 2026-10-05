@@ -35,6 +35,9 @@ example **Character spacing** instead of "Interchar Spc"). The table
 [Morserino terms](#morserino-terms) lists which Morserino menu item belongs to
 which setting.
 
+If you are new, read the chapter [Getting started: learning Morse step by step](#getting-started-guide)
+first: a practice plan that puts the app's features into a sensible order.
+
 # Getting started
 
 ## Installation
@@ -212,6 +215,235 @@ writes them in angle brackets:
 In Listen (block flow), prosigns from **Group characters** are shown and graded
 as two separate letters: `<ka>` appears as "K A". When copying on the
 on-screen keyboard you type them as two letters as well.
+
+# Getting started: learning Morse step by step {#getting-started-guide}
+
+This chapter is a practice plan for beginners. It does not explain what every
+setting means (the chapters on each mode do that), but **in which order to do
+what** and how to set up the app for it. The steps build on each other. You
+don't have to read everything in one day, and certainly not practice
+everything in one day.
+
+## The basic ideas {-}
+
+- **Listening comes before sending.** If you recognize a character reliably,
+  sending it later is much easier. The other way round works poorly.
+- **Learn characters as a sound, not as dots and dashes.** An "A" is not "dot,
+  dash" but a small pattern you recognize as a whole, like a word. If you start
+  counting dots, you will be held back at higher speeds. That is why the app
+  plays characters at **full speed** from the start and only lengthens the
+  pauses (Farnsworth method, see
+  [Spacing in dits](#spacing-in-dits-character-spacing-and-word-spacing)).
+- **Few characters, then slowly more.** You start with two characters. A new
+  one only comes when the previous ones are solid (Koch method, see
+  [The Koch method](#the-koch-method)). The app checks this for you.
+- **Short and often instead of long and rarely.** The brain learns sound
+  patterns best in small portions with sleep in between.
+- **It is not a sprint but a long road.** It takes **several months** until
+  you can copy Morse reasonably well by ear. Until you can also **send**, and
+  at a sensible speed, most learners say it takes about **two years**. These
+  are no guarantees; everyone learns differently and puts in different amounts
+  of time. But don't plan in weeks. There are phases in which nothing seems to
+  improve. That is normal. Enjoy small milestones, such as the next character
+  or the first word you recognize.
+
+## How to practice well {-}
+
+- **Several short sessions beat one long one.** About 10 to 15 minutes, a few
+  blocks, two or three times a day if you like. If you stop while it still goes
+  well, you look forward to the next time.
+- **Focused, not on the side.** Headphones, quiet, paper and pencil.
+- **Breaks are part of learning.** When your hit rate drops, a break usually
+  helps more than carrying on. The app suggests one by itself (see
+  [Break hint](#break-hint)).
+- **The daily goal helps you stay on track.** It counts active practice time;
+  the default is 10 minutes a day. A short day with the goal reached beats a
+  missed one (see [Daily goal and streak](#daily-goal)).
+- **Mistakes are part of it.** The app does not treat them as failure; it needs
+  them to give you the right characters more often.
+
+## Step 1: Hear characters (Listen, Koch lesson, Random)
+
+Open **Listen** and set:
+
+- **Character set:** **Koch lesson**, **Content:** **Random**.
+- **KOCH:** **2**. These are the first two characters of the Koch sequence
+  (with **M32**: `m` and `k`). The default is 5; moving the slider back is a
+  good idea for the start. Which sequence you use is secondary; the main thing
+  is to stick to it (see [Koch sequence](#koch-sequence)).
+- **WPM (character speed):** **20**, the default. It sounds fast at first but
+  is right, because characters should arrive as a sound. If you can't get used
+  to it, go to 15. Don't play the characters much slower than that, or you
+  will start counting dots and dashes.
+- **Spacing:** **28 / 40 dits**, the default. At 20 WPM this gives an effective
+  speed of about 5 WPM (see [Effective speed](#effective-speed)). The app shows
+  it below the sliders. If that is too hard, you can widen the spacing further
+  in the ⚙ sheet (up to 45 / 105 dits).
+- In the ⚙ sheet under **Word selection** you can set **Group length** to 3 if
+  groups of five are too long at the start.
+
+Before you start, **tap each character of the lesson**: the app plays it three
+times and shows the code. You don't have to memorize it. Just listen to the
+sound.
+
+Then press **Paper**. The app plays a block, you copy on paper, at the end it
+reveals the text, and you mark what was wrong (see
+[How a block runs](#how-a-block-runs)). Mark honestly: only then can the
+app judge your progress correctly.
+
+**Tip for the first lessons:** In the ⚙ sheet, switch on **Flow → Stop after
+each group**. Then you can hear each group again with **Dit** or **REPEAT**
+until you have it.
+
+### When it moves on
+
+You do **not have to raise the lesson yourself**. As soon as every character of
+the lesson has at least 20 attempts and was recently 90 % correct, the app
+suggests the next character (see
+[When the next Koch character comes](#when-the-next-koch-character-comes)).
+You accept it or stay a while longer. If you are not sure yet, stay. You can
+set the thresholds higher or lower in the ⚙ sheet under **Adaptive mode**.
+
+The [Character statistics](#character-statistics) show which characters aren't
+solid yet. If you keep confusing two characters, tap them one after the other
+and compare them directly.
+
+In this phase the app does **not** shorten the pauses and does not raise the
+speed (see [Pauses and speed](#pauses-and-speed)). You are meant to focus on
+new characters without everything getting faster at the same time.
+
+## Step 2: Words, abbreviations and sentences
+
+After a few lessons there are enough characters for real words. Then set
+**Content** to **Words**, **Abbreviations** or **Mixed**. With the Koch lesson
+only words made entirely of characters you already know are used; at the start
+that is very few, with more every lesson. Feel free to switch between
+**Random** and **Words**: random groups train the sound of each character,
+words train recognizing the whole.
+
+If you catch yourself recognizing a word **as a word** while listening, rather
+than letter by letter, you are on the right track.
+
+After that, move towards sentences and texts:
+
+- **[Head copy](#head-copy)** (under **Games**): you hear one to three short
+  sentences and answer questions about them without writing anything down. This
+  trains understanding Morse, not just decoding it.
+- **[Own texts](#own-texts)** (under **Free modes**): copy a text that interests
+  you and listen to it as Morse. With shrinking pauses this becomes a good
+  everyday exercise.
+- With **All characters** and **Callsigns** you practice how callsigns sound.
+  This is especially useful for radio amateurs.
+
+## Step 3: Send yourself
+
+As soon as you hear a few characters reliably, you can start **Send** (the
+Echo Trainer). The app plays a word or group and you send it back with the key.
+Here you have a **profile of your own**, with its own Koch lesson, its own speed
+and its own statistics, separate from **Listen**. Start with few characters,
+even if you are further along when listening.
+
+Settings for the start:
+
+- **Listen** (speed of the prompt): as in Listen.
+- **Send** (speed of your answer): better a little lower than the
+  listening speed (not with the straight key, where the app measures your
+  speed). Your sending should be **even**, not fast. Clean slow sending beats fast bumpy
+  sending (see [Sending speed](#sending-speed)).
+- **Prompt = Display** helps to get from the written word to sending: you see
+  the word and send it without hearing it.
+- You practice a single new character by **long-pressing** it: the app plays it
+  again and again and you send it back (see
+  [Practicing a single character](#practicing-a-single-character)). It doesn't
+  count in any statistic, so it is stress-free.
+
+### The key: optimum and alternative
+
+**A real Morse key is the optimum.** A phone has no input for it, so you need
+a small **USB adapter** that turns the key contacts into key presses, for
+example the vband or a homemade one. Which adapters exist and how to connect
+and teach it is in the chapter
+[A real Morse key or straight key](#a-real-morse-key-or-straight-key). You feel
+the pressure point, the movement is the same as later at the radio, and you
+don't have to look at the screen. Which key you take depends on the goal:
+
+- **Paddle (dit/dah)** with keyer mode **Iambic A** or **B**: the standard on
+  the air; the keyer produces the characters evenly.
+- **Straight key** with keyer mode **Straight**: the app measures the speed from
+  your keying (see [Straight key: automatic speed](#straight-key-automatic-speed)).
+  If you send much slower than 15 WPM, set **Straight key start speed** to your
+  speed.
+
+**The on-screen touch keys** are a good alternative for the start and on the
+go, and for Send, the games and the CW Keyer they are **fully sufficient up to
+a point**. They have limits, though:
+
+- No pressure point; you have to look, and you don't hit the areas equally well
+  every time. This slows you down, above all at higher speeds.
+- Iambic squeeze (both keys at once) is awkward on a touchscreen.
+- The movements you get used to are different from those on a real key.
+
+If you want to continue seriously with keying, plan for a real key sooner or
+later.
+
+## Step 4: Shorten pauses, raise speed
+
+So far the effective speed (about 5 WPM) was much lower than the character
+speed (20 WPM). That changes now, in this order:
+
+1. **Shorten the pauses.** As soon as all characters of the Koch sequence are
+   unlocked (or you practice with **All characters**), the app suggests shorter
+   pauses after two good blocks in a row, one dit per step, down to the normal
+   3 / 7 dits (see [Pauses and speed](#pauses-and-speed)). You can also do this
+   yourself: **Adjust spacing** on the start view and the result page.
+2. **Only then raise the speed.** Once the pauses are at 3 / 7, the app suggests
+   +1 WPM when things go well. Small steps, no jumps.
+3. **If it goes badly, it goes back.** If the block EMA falls below the lower
+   threshold (70 %), the app suggests longer pauses. That is not a punishment
+   but the right move: better one step back than skipping everything.
+
+All suggestions appear on the result page. You decide whether to accept them
+(see [Adaptive mode](#adaptive-mode)).
+
+## Step 5: Add interference
+
+Under real conditions signals are rarely clean. With **Settings →
+Interference** you simulate noise, fading, a second station and a "bad fist"
+(see [Interference](#interference)). Start carefully, and only once you are
+reliable at normal pauses:
+
+1. **Light**: little noise and slight fading.
+2. **HF evening**: noticeable noise, fading and a neighbouring station.
+3. **Pile-up**: demanding, with a loud second station.
+
+The quickest way to switch interference on and off is the **wave symbol** in
+the header. With **Constant noise** the noise is also there between characters,
+which is more realistic but more tiring. Practice with interference best with
+characters you already know well, not with brand-new ones. Your hit rate will
+often drop briefly with interference. That is expected.
+
+## Afterwards: practice where it is fun
+
+Once the basics are in place, you can use everything else with a purpose:
+
+- **QSO Bot**: a simulated radio conversation in which you learn callsigns,
+  reports and phrases.
+- **CW Decoder**, **WiFi Trx**: read CW from a radio or connect with other
+  Morserinos.
+- **Games**: variety that still trains listening and sending.
+- **Learning resources**: Morse tree and character table for looking things up.
+
+## When it doesn't move on {-}
+
+- **One character holds up the unlock.** The 📊 statistics show which one. Tap
+  it, listen to it calmly and keep practicing for a few blocks (the app boosts
+  weak characters by itself).
+- **Two characters get confused.** Good that you know: play them one after the
+  other and compare the sound.
+- **It feels like a plateau.** That is normal and usually resolves after a few
+  days of break or other exercises. Change the content, practice shorter, take
+  a rest day.
+- **You are annoyed.** Then stop for today. Annoyance is a bad teacher.
 
 # Listen: practice copying
 
