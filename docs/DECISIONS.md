@@ -1638,3 +1638,34 @@ Sia, OE1LMR is thanked for the app icon *and* for testing and brainstorming
 ideas; README "Credits" says the same. The in-app Info page (`settings_thanks_value`
 in `l10n/strings.dart`) and the manual's "Thanks" row were changed to match in
 the same change.
+
+## Mini-QSO stage — concept (issue #40)
+
+Agreed with the user (2026-10-05). Second content kind of the head-copy
+concept; own mode next to head copy and Q-groups.
+
+- **Radio style**, same abbreviations in DE and EN ("CQ CQ DE OE1ABC K" ->
+  "OE1ABC DE DL2XYZ UR 579 QTH BONN NAME TOM RIG K3 BK"). Only the questions
+  are translated; content language is its own setting.
+- **Two stations, two pitches** (A calls CQ, B answers), so the turn change is
+  audible like two signals in the band. Callsigns come from the app's existing
+  random callsign generator (`randomCallInfo`), the engine gets them as a list
+  (8 per round: two stations, wrong options for the call questions).
+- **Facts** (slots): callsign, RST, QTH, name, one extra (RIG, PWR, ANT or WX).
+  Questions in order of appearance; stations named by role ("the calling /
+  answering station"), never by a fact asked later.
+- **Levels by number of facts**: 1 = B's call, QTH, name (3 questions);
+  2 = + RST and an extra (5); 3 = full exchange of both sides with closing
+  (both callsigns plus 4 random facts of the 8 heard, 6 questions).
+- **Telling the sides apart in questions**: levels 1/2 only ask about B, so
+  "the answering station" is enough. At level 3 the first two questions ask
+  both callsigns ("the calling station", "the answering station"); every
+  later question names the station by its callsign ("What is the name of
+  DL2XYZ?"), the correct one even after a wrong answer, like the head-copy chain.
+- **Engine built**: `lib/content/mini_qso_data.dart`, `mini_qso_engine.dart`,
+  test `test/content/mini_qso_engine_test.dart`.
+- **Games hub grouping** (2026-10-05): the three listening modes (sentences,
+  Q-groups, Mini QSO) sit behind one hub card "Verstehen" / "Head copy"
+  (`understand_screen.dart`), like the Zork games behind "Text-Adventure". The
+  sentence mode is called "Sätze" / "Sentences" there. The games list got a
+  permanently visible scroll bar (it is longer than most screens).
