@@ -338,9 +338,19 @@ erkennst, statt Buchstabe für Buchstabe, bist du auf dem richtigen Weg.
 
 Danach geht es Richtung Sätze und Texte:
 
-- **[Verstehen → Sätze](#verstehen)** (unter **Spiele**): Du hörst ein bis drei kurze
-  Sätze und beantwortest Fragen dazu, ohne mitzuschreiben. Das übt, Morse zu
-  verstehen, nicht nur zu entschlüsseln.
+- **[Verstehen](#verstehen)** (unter **Spiele**): drei Hörspiele, bei denen du
+  **nichts mitschreibst**, sondern Fragen beantwortest. Das übt, Morse zu
+  verstehen, nicht nur zu entschlüsseln. Du brauchst dafür keine Taste:
+  - **[Sätze](#verstehen)**: Du hörst ein bis drei kurze Sätze und beantwortest
+    Fragen dazu (Wer? Was? Wo? Wann?).
+  - **[Q-Gruppen](#q-gruppen)**: Du hörst eine Q-Gruppe (QTH, QRZ, QRM ...) und
+    wählst, was sie bedeutet. Ein Spickzettel hilft beim Einstieg.
+  - **[Mini-QSO](#mini-qso)**: Du hörst einen kurzen Funkdialog zweier Stationen
+    und beantwortest Fragen zu Rufzeichen, Namen, Ort und Rapport. Das ist die
+    beste Vorbereitung auf echte Funkgespräche.
+
+  Jedes hat drei Stufen, vom leichten Einstieg bis zum vollen Dialog. Probiere
+  sie aus, sobald du die meisten Buchstaben und Ziffern kennst.
 - **[Eigene Texte](#eigene-texte)** (unter **Freie Modi**): Kopiere einen Text,
   der dich interessiert, und höre ihn als Morse. Mit abnehmenden Pausen wird
   das zu einer guten Übung für den Alltag.

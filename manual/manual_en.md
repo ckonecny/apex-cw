@@ -326,9 +326,19 @@ than letter by letter, you are on the right track.
 
 After that, move towards sentences and texts:
 
-- **[Head copy → Sentences](#head-copy)** (under **Games**): you hear one to three short
-  sentences and answer questions about them without writing anything down. This
-  trains understanding Morse, not just decoding it.
+- **[Head copy](#head-copy)** (under **Games**): three listening games where you
+  **write nothing down** but answer questions. This trains understanding Morse,
+  not just decoding it. You don't need a key for them:
+  - **[Sentences](#head-copy)**: you hear one to three short sentences and
+    answer questions about them (Who? What? Where? When?).
+  - **[Q-groups](#q-groups)**: you hear a Q-group (QTH, QRZ, QRM ...) and pick
+    what it means. A cheat sheet helps you get started.
+  - **[Mini QSO](#mini-qso)**: you hear a short radio exchange between two
+    stations and answer questions about call signs, names, place and report.
+    This is the best preparation for real on-air contacts.
+
+  Each has three levels, from an easy start to the full exchange. Try them as
+  soon as you know most letters and digits.
 - **[Own texts](#own-texts)** (under **Free modes**): copy a text that interests
   you and listen to it as Morse. With shrinking pauses this becomes a good
   everyday exercise.
