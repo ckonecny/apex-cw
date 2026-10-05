@@ -35,6 +35,9 @@ Einstellungen, die es auch am Morserino gibt, heißen in der App deutsch
 zu welcher Einstellung gehört, steht in der Tabelle
 [Morserino-Begriffe](#morserino-begriffe).
 
+Wenn du neu bist, lies zuerst das Kapitel [Einstieg](#einstieg): ein
+Übungsplan, der die Möglichkeiten der App in eine sinnvolle Reihenfolge bringt.
+
 # Erste Schritte
 
 ## Installation
@@ -220,6 +223,246 @@ Beim Hören (Blockablauf) werden Prosigns aus **Zeichen für Gruppen** wie zwei
 einzelne Buchstaben angezeigt und bewertet (`<ka>` erscheint als „K A“).
 Beim Mitschreiben mit der Bildschirmtastatur tippst du sie ebenso als zwei
 Buchstaben.
+
+# Einstieg: Morse lernen Schritt für Schritt {#einstieg}
+
+Dieses Kapitel ist ein Übungsplan für Neulinge. Es sagt nicht, was jede
+Einstellung bedeutet (das steht in den Kapiteln dazu), sondern **in welcher
+Reihenfolge du was tust** und wie du die App dafür einstellst. Die Schritte
+bauen aufeinander auf. Du musst nicht alles an einem Tag lesen und schon gar
+nicht alles an einem Tag üben.
+
+## Die Grundideen {-}
+
+- **Hören kommt vor Geben.** Wer ein Zeichen sicher erkennt, kann es später viel
+  leichter geben. Umgekehrt klappt es schlecht.
+- **Zeichen als Klang lernen, nicht als Punkte und Striche.** Das „A“ ist nicht
+  „Punkt, Strich“, sondern ein kleines Muster, das du als Ganzes erkennst, wie
+  ein Wort. Wenn du anfängst, Punkte zu zählen, wirst du später bei höherem
+  Tempo ausgebremst. Deshalb spielt die App die Zeichen von Anfang an in
+  **vollem Tempo** und verlängert nur die Pausen (Farnsworth-Methode, siehe
+  [Abstände in Dits](#abstände-in-dits-zeichenabstand-und-wortabstand)).
+- **Wenige Zeichen, dann langsam mehr.** Du startest mit zwei Zeichen. Ein
+  neues kommt erst, wenn die bisherigen sitzen (Koch-Methode, siehe
+  [Die Koch-Methode](#die-koch-methode)). Die App prüft das für dich.
+- **Kurz und oft statt lang und selten.** Das Gehirn lernt Klangmuster am
+  besten in kleinen Portionen mit Schlaf dazwischen.
+- **Es ist kein Sprint, sondern ein langer Weg.** Bis du Morse halbwegs
+  hören und mitschreiben kannst, vergehen **mehrere Monate**. Bis du auch
+  **geben** kannst, und das in einem vernünftigen Tempo, brauchst du nach
+  Erfahrung der meisten Lernenden etwa **zwei Jahre**. Das sind keine
+  Garantien, jeder lernt anders und mit anderem Zeitaufwand. Aber plane nicht
+  mit Wochen. Es gibt Phasen, in denen es scheinbar nicht vorangeht. Das ist
+  normal. Freu dich über kleine Etappen, etwa das nächste Zeichen oder das
+  erste erkannte Wort.
+
+## So übst du richtig {-}
+
+- **Mehrere kleine Einheiten schlagen eine lange.** Gut sind etwa 10 bis
+  15 Minuten, ein paar Blöcke, gern zwei- oder dreimal am Tag. Hörst du auf,
+  solange es noch gut läuft, freust du dich auf das nächste Mal.
+- **Konzentriert, nicht nebenbei.** Kopfhörer, Ruhe, Papier und Stift.
+- **Pausen sind Teil des Lernens.** Sinkt deine Trefferquote, hilft Pause
+  meist mehr als Weitermachen. Die App schlägt das von selbst vor (siehe
+  [Pausenhinweis](#pausenhinweis)).
+- **Das Tagesziel hilft dir dranzubleiben.** Es zählt aktive Übungszeit, die
+  Voreinstellung sind 10 Minuten am Tag. Ein kurzer Tag mit erreichtem Ziel
+  ist besser als ein verpasster (siehe [Tagesziel und Serie](#tagesziel)).
+- **Fehler gehören dazu.** Die App wertet sie nicht als Versagen, sondern
+  braucht sie, um dir die richtigen Zeichen öfter zu geben.
+
+## Schritt 1: Zeichen hören (Hören, Koch-Lektion, Zufall)
+
+Öffne **Hören** und stelle ein:
+
+- **Zeichenvorrat:** **Koch-Lektion**, **Inhalt:** **Zufall**.
+- **KOCH:** **2**. Das sind die ersten zwei Zeichen der Koch-Reihenfolge
+  (bei **M32**: `m` und `k`). Die Voreinstellung steht auf 5, stell den Regler
+  zum Einstieg ruhig zurück. Welche Reihenfolge du nimmst, ist zweitrangig;
+  Hauptsache, du bleibst dabei (siehe [Koch-Reihenfolge](#koch-reihenfolge)).
+- **WPM (Zeichentempo):** **20**, die Voreinstellung. Das klingt anfangs
+  schnell, ist aber richtig, denn die Zeichen sollen als Klang ankommen. Wirst
+  du damit gar nicht warm, geh auf 15. Deutlich langsamer solltest du die
+  Zeichen nicht spielen, sonst fängst du an, Punkte und Striche zu zählen.
+- **Abstände:** **28 / 40 Dits**, die Voreinstellung. Mit 20 WPM ergibt das ein
+  effektives Tempo von rund 5 WPM (siehe
+  [Effektives Tempo](#effektives-tempo)). Die App zeigt es unter den Reglern
+  an. Fällt dir das zu schwer, kannst du die Abstände im ⚙-Blatt noch weiter
+  vergrößern (bis 45 / 105 Dits).
+- Im ⚙-Blatt unter **Wortauswahl** kannst du **Gruppenlänge** auf 3 stellen,
+  wenn dir Fünfergruppen am Anfang zu lang sind.
+
+Vorher **tippe jedes Zeichen der Lektion an**: Die App spielt es dreimal und
+zeigt den Code. Du musst ihn nicht auswendig lernen. Höre dir nur den Klang
+an.
+
+Dann **Papier** drücken. Die App spielt einen Block, du schreibst auf Papier
+mit, am Ende deckt sie den Text auf, und du markierst, was falsch war (siehe
+[Ein Block im Ablauf](#ein-block-im-ablauf)). Ehrlich markieren: Nur dann
+kann die App deine Fortschritte richtig beurteilen.
+
+**Tipp für die ersten Lektionen:** Schalte im ⚙-Blatt **Ablauf → Nach jeder
+Gruppe anhalten** ein. Dann kannst du jede Gruppe mit **Dit** oder
+**WIEDERHOLEN** nochmal hören, bis du sie hast.
+
+### Wann es weitergeht
+
+Du musst die Lektion **nicht selbst erhöhen**. Sobald alle Zeichen der
+Lektion mindestens 20 Versuche hinter sich haben und zuletzt zu 90 % richtig
+waren, schlägt die App das nächste Zeichen vor (siehe
+[Wann das nächste Koch-Zeichen kommt](#wann-das-nächste-koch-zeichen-kommt)).
+Du nimmst es an oder bleibst noch eine Weile. Wenn du dir noch nicht sicher
+bist, bleib. Die Schwellen kannst du im ⚙-Blatt unter **Adaptiver Modus**
+höher oder niedriger setzen.
+
+Die [Zeichenstatistik](#zeichenstatistik) zeigt dir, welche Zeichen noch nicht
+sitzen. Verwechselst du zwei Zeichen immer wieder, hilft es, sie hintereinander
+einzeln anzutippen und direkt zu vergleichen.
+
+Die Pausen verkürzt die App in dieser Phase **nicht** und das Tempo erhöht
+sie auch nicht (siehe [Pausen und Tempo](#pausen-und-tempo)). Du sollst dich
+auf neue Zeichen konzentrieren, ohne dass sich gleichzeitig alles
+beschleunigt.
+
+## Schritt 2: Wörter, Abkürzungen und Sätze
+
+Nach ein paar Lektionen gibt es genug Zeichen für echte Wörter. Stelle dann
+**Inhalt** auf **Wörter**, **Abkürzungen** oder **Gemischt**. Bei der
+Koch-Lektion kommen nur Wörter vor, die ausschließlich aus Zeichen bestehen,
+die du schon kennst; am Anfang sind das sehr wenige, mit jeder Lektion
+mehr. Wechsle ruhig zwischen **Zufall** und **Wörtern**: Zufallsgruppen
+trainieren den Klang des einzelnen Zeichens, Wörter das Erkennen als Ganzes.
+
+Wenn du dich dabei ertappst, dass du ein Wort schon beim Hören **als Wort**
+erkennst, statt Buchstabe für Buchstabe, bist du auf dem richtigen Weg.
+
+Danach geht es Richtung Sätze und Texte:
+
+- **[Verstehen](#verstehen)** (unter **Spiele**): Du hörst ein bis drei kurze
+  Sätze und beantwortest Fragen dazu, ohne mitzuschreiben. Das übt, Morse zu
+  verstehen, nicht nur zu entschlüsseln.
+- **[Eigene Texte](#eigene-texte)** (unter **Freie Modi**): Kopiere einen Text,
+  der dich interessiert, und höre ihn als Morse. Mit abnehmenden Pausen wird
+  das zu einer guten Übung für den Alltag.
+- Mit **Alle Zeichen** und **Rufzeichen** übst du, wie Rufzeichen klingen. Das
+  ist besonders für Funkamateure nützlich.
+
+## Schritt 3: Selbst geben
+
+Sobald du ein paar Zeichen sicher hörst, kannst du mit **Geben** (dem Echo
+Trainer) anfangen. Die App spielt ein Wort oder eine Gruppe, du gibst sie mit
+der Taste zurück. Hier hast du ein **eigenes Profil**, mit eigener
+Koch-Lektion, eigenem Tempo und eigener Statistik, getrennt von **Hören**.
+Fang mit wenigen Zeichen an, auch wenn du beim Hören schon weiter bist.
+
+Einstellungen für den Anfang:
+
+- **Hören** (Tempo der Vorgabe): wie bei Hören.
+- **Geben** (Tempo deiner Antwort): lieber etwas niedriger als das
+  Hörtempo (nicht bei der Handtaste, dort misst die App dein Tempo). Dein
+  Geben soll **gleichmäßig** sein, nicht schnell. Ein
+  sauberes langsames Geben ist besser als ein schnelles holpriges (siehe
+  [Gebetempo](#gebetempo)).
+- **Vorgabe = Anzeige** hilft, vom Geschriebenen zum Geben zu kommen: Du siehst
+  das Wort und gibst es, ohne es zu hören.
+- Ein einzelnes neues Zeichen übst du über **langes Drücken** auf das
+  Zeichen: Die App spielt es immer wieder, du gibst es nach (siehe
+  [Einzelzeichen üben](#einzelzeichen-üben)). Das zählt in keine Statistik und
+  ist deshalb stressfrei.
+
+### Die Taste: Optimum und Alternative
+
+**Optimal ist eine echte Morsetaste.** Ein Handy hat dafür keinen Eingang, du
+brauchst einen kleinen **USB-Adapter**, der die Tastenkontakte in Tastendrücke
+übersetzt, etwa den vband oder einen Selbstbau. Welche Adapter es gibt und wie
+du ihn anschließt und einlernst, steht im Kapitel
+[Echte Morsetaste oder Handtaste](#echte-morsetaste-oder-handtaste). Du fühlst
+den Druckpunkt, die Bewegung ist die gleiche wie später am Funkgerät, und du
+brauchst nicht auf den Bildschirm zu schauen. Welche Taste du nimmst,
+hängt vom Ziel ab:
+
+- **Paddle (Dit/Dah)** mit Keyer-Modus **Iambic A** oder **B**: der Standard
+  im Funkbetrieb; der Keyer erzeugt die Zeichen gleichmäßig.
+- **Handtaste** mit Keyer-Modus **Straight**: Das Tempo misst die App aus deinem
+  Tasten (siehe [Handtaste: automatisches Tempo](#handtaste-automatisches-tempo)).
+  Gibst du deutlich langsamer als 15 WPM, stell **Starttempo Handtaste** auf
+  dein Tempo.
+
+**Die Touch-Tasten auf dem Bildschirm** sind eine gute Alternative für den
+Anfang und unterwegs, und für Geben, die Spiele und den CW Keyer reichen sie
+**bis zu einem gewissen Grad** völlig aus. Sie haben aber Grenzen:
+
+- Kein Druckpunkt, du musst hinschauen und triffst die Flächen nicht immer
+  gleich gut. Das bremst vor allem bei höherem Tempo.
+- Iambic-Squeeze (beide Tasten gleichzeitig) ist auf dem Touchscreen
+  mühsam.
+- Die Bewegungen, die du dir damit angewöhnst, sind andere als an einer echten
+  Taste.
+
+Wenn du mit der Taste ernsthaft weitermachen willst, plane früher oder später
+eine echte Taste ein.
+
+## Schritt 4: Pausen verkürzen, Tempo erhöhen
+
+Bisher war das effektive Tempo (rund 5 WPM) viel niedriger als das
+Zeichentempo (20 WPM). Das ändert sich jetzt, in dieser Reihenfolge:
+
+1. **Pausen verkürzen.** Sobald alle Zeichen der Koch-Reihenfolge freigeschaltet
+   sind (oder du mit **Alle Zeichen** übst), schlägt die App nach zwei guten
+   Blöcken in Folge kürzere Pausen vor, je einen Dit pro Schritt, bis zu den
+   normalen 3 / 7 Dits (siehe [Pausen und Tempo](#pausen-und-tempo)). Du kannst
+   das auch selbst tun: **Abstand anpassen** auf der Startansicht und der
+   Ergebnisseite.
+2. **Erst dann das Tempo erhöhen.** Sind die Pausen bei 3 / 7, schlägt die App
+   +1 WPM vor, wenn es gut läuft. Kleine Schritte, keine Sprünge.
+3. **Läuft es schlecht, geht es zurück.** Fällt die Block-EMA unter die untere
+   Schwelle (70 %), schlägt die App längere Pausen vor. Das ist keine Strafe,
+   sondern der richtige Gang: Lieber einen Schritt zurück als alles
+   überspringen.
+
+Alle Vorschläge erscheinen auf der Ergebnisseite. Du entscheidest, ob du sie
+annimmst (siehe [Der adaptive Modus](#der-adaptive-modus)).
+
+## Schritt 5: Störungen hinzufügen
+
+Unter echten Bedingungen sind Signale selten sauber. Mit
+**Einstellungen → Störungen** simulierst du Rauschen, Schwund, eine zweite
+Station und eine „schlechte Hand“ (siehe [Störungen](#stoerungen)).
+Fang vorsichtig an und erst dann, wenn du bei normalen Pausen zuverlässig
+liegst:
+
+1. **Leicht**: wenig Rauschen und ein leichter Schwund.
+2. **KW abends**: spürbares Rauschen, Schwund und eine Nachbarstation.
+3. **Pile-up**: anspruchsvoll, mit einer lauten zweiten Station.
+
+Am schnellsten schaltest du die Störungen mit dem **Wellen-Symbol** in der
+Kopfzeile an und aus. Mit **Dauerrauschen** liegt das Rauschen auch zwischen
+den Zeichen an, das ist realistischer, aber anstrengender. Übe mit
+Störungen am besten mit Zeichen, die du schon sicher kennst, nicht mit
+brandneuen. Die Trefferquote wird bei Störungen oft kurz sinken. Das ist erwartet.
+
+## Danach: üben, wo es Spaß macht
+
+Wenn die Grundlagen stehen, kannst du alles andere gezielt nutzen:
+
+- **QSO Bot**: ein simuliertes Funkgespräch, in dem du Rufzeichen, Rapporte
+  und Floskeln lernst.
+- **CW-Decoder**, **WiFi Trx**: CW von einem Funkgerät lesen oder mit anderen
+  Morserinos verbinden.
+- **Spiele**: Auflockerung, die trotzdem Hören und Geben übt.
+- **Lernressourcen**: Morse-Baum und Zeichentabelle zum Nachschlagen.
+
+## Wenn es nicht vorangeht {-}
+
+- **Ein Zeichen hält die Freischaltung auf.** Die 📊-Statistik zeigt welches.
+  Tippe es an, höre es dir in Ruhe an und übe einige Blöcke weiter (die
+  schwachen Zeichen verstärkt die App von selbst).
+- **Zwei Zeichen werden verwechselt.** Gut, dass du das weißt: Spiele sie
+  nacheinander vor und vergleiche den Klang.
+- **Es fühlt sich an wie ein Plateau.** Das ist normal und löst sich meist
+  nach ein paar Tagen Pause oder anderen Übungen. Wechsle den Inhalt, übe
+  kürzer, mach einen Ruhetag.
+- **Du ärgerst dich.** Dann hör für heute auf. Ärger ist ein schlechter Lehrer.
 
 # Hören – Mitschreiben üben
 
