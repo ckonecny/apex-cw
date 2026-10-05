@@ -35,20 +35,14 @@ repo Settings -> Pages -> Source "GitHub Actions". Then replace the disabled
 and set the Play listing's website to the Pages URL (decision in DECISIONS.md).
 
 ## Manual: pending for next release
-- Retaken 2026-10-05 (DE+EN): `hear_start`, `hear_result`, `hear_weak`,
-  `hear_sheet2`, `echo_start`, `echo_result`. Still open: `echo_result2`
-  (Send result with a ticked suggestion; shows the old status line, needs a
-  100 % block, adb keying isn't reliable enough for it) — DE+EN. Taken on a
-  debug build with the phone's prefs backed up and restored afterwards;
-  `tools/echo_loop.py` now also knows "Gruppe n /" and "Geben …", needs
-  Echo Prompt = Both (`echoDisplayMode` 3).
-- Branch `fix/charset-header-and-sheet-wraps`: the character grid now shows in
-  full (header cap 40 % instead of 30 %) and ⚙ sheet slider values no longer
-  wrap; retake `hear_start`, `hear_sheet2`, `echo_start` (DE+EN) again from
-  that build, and check other ⚙ sheet shots for old wraps.
-- Branch `fix/echo-consistency-with-hear`: Send start view without hint and
-  "Press START" label, result card shows "Suggestions" only over real
-  suggestions; retake `echo_start`, `echo_result`, `echo_result2` (DE+EN).
+- Retaken 2026-10-05 (DE+EN, after the layout fixes): `hear_start`,
+  `hear_result`, `hear_weak`, `hear_sheet2`, `echo_start`, `echo_result`.
+  Still open: `echo_result2` (Send result with a ticked suggestion; needs a
+  100 % block, adb keying isn't reliable enough, tap one block by hand) —
+  DE+EN. Other ⚙ sheet shots may still show the old wraps. Taken on a debug
+  build with the phone's prefs backed up and restored afterwards;
+  `tools/echo_loop.py` knows "Gruppe n /" and "Geben …", needs Echo Prompt =
+  Both (`echoDisplayMode` 3).
 - Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
 
