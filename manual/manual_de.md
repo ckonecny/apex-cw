@@ -289,7 +289,7 @@ nicht alles an einem Tag üben.
   [Effektives Tempo](#effektives-tempo)). Die App zeigt es unter den Reglern
   an. Fällt dir das zu schwer, kannst du die Abstände im ⚙-Blatt noch weiter
   vergrößern (bis 45 / 105 Dits).
-- Im ⚙-Blatt unter **Wortauswahl** kannst du **Gruppenlänge** auf 3 stellen,
+- Im ⚙-Blatt unter **Wortauswahl** kannst du **Gruppenlänge** auf 3–3 stellen,
   wenn dir Fünfergruppen am Anfang zu lang sind.
 
 Vorher **tippe jedes Zeichen der Lektion an**: Die App spielt es dreimal und
@@ -779,9 +779,9 @@ Zeile „Gilt für: …“ zeigt, für welche Kombination du gerade einstellst.
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Zeichen für Gruppen | Nur bei **Alle Zeichen · Zufall**: aus welchen Zeichenklassen gezogen wird | **Alle** / Buchstaben / Ziffern / Satzzeichen / Prosigns / Buchst.+Ziff. / Ziff.+Satzz. / Satzz.+Prosigns / Buchst.+Ziff.+Satzz. / Ziff.+Satzz.+Prosigns |
-| Gruppenlänge | Zeichen pro Zufallsgruppe (nur bei **Zufall**) | 2–8 (**5**) |
-| Max. Wortlänge | Nur Wörter bis zu dieser Länge (bei **Wörter** und **Gemischt**) | **alle**, 1–8 |
-| Max. Abkürzungslänge | Nur Abkürzungen bis zu dieser Länge (bei **Abkürzungen** und **Gemischt**) | **alle**, 2–6 |
+| Gruppenlänge (min–max) | Zeichen pro Zufallsgruppe (bei **Zufall** und **Gemischt**). Bereichsregler: bei min = max (z. B. 5–5) sind alle Gruppen gleich lang; bei min < max (z. B. 2–7) bekommt jede Gruppe eine zufällige Länge, du weißt beim Hören also nicht, ob die Gruppe schon zu Ende ist | 2–8 (**5–5**) |
+| Wortlänge (min–max) | Nur Wörter in diesem Längenbereich (bei **Wörter** und **Gemischt**); die offenen Enden bedeuten keine Grenze | 1–**alle** (1–8, **alle**) |
+| Abkürzungslänge (min–max) | Nur Abkürzungen in diesem Längenbereich (bei **Abkürzungen** und **Gemischt**); die offenen Enden bedeuten keine Grenze | 2–**alle** (2–6, **alle**) |
 | Gruppen pro Block / Wörter pro Block | Anzahl der Gruppen (bei **Zufall**) bzw. Wörter in einem Block | 1–50 (**10**) |
 
 ### Ablauf

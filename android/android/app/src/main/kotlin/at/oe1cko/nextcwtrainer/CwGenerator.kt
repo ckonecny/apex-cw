@@ -34,13 +34,16 @@ class CwGenerator(private val tone: CwTonePlugin) {
     @Volatile var interCharSpace: Int = 3     // total inter-character gap, in dits
     @Volatile var interWordSpace: Int = 7     // total inter-word gap, in dits
     @Volatile var eachWordTwice: Boolean = false
-    @Volatile var groupLength: Int = 5        // random char group length
+    @Volatile var groupLength: Int = 5        // random char group length (minimum)
+    @Volatile var groupLengthMax: Int = 0     // 0 = same as groupLength (fixed length)
     // "Random Groups" (M32 posRandomOption): which subset of the alphabet the
     // plain (non-Koch) Random Chars mode draws from. Ignored when kochActive —
     // Koch Trainer's Random always draws from the active Koch level instead,
     // exactly like getRandomChars()'s own kochActive branch in m32_v6.ino.
     @Volatile var randomOption: Int = 0
     @Volatile var wordLengthMax: Int = 0      // 0 = no filter
+    @Volatile var wordLengthMin: Int = 0      // 0 = no filter
+    @Volatile var abbrevLengthMin: Int = 0    // real length, 0 = no filter
     @Volatile var stopAfterItem: Boolean = false  // Morserino "Stop<>Next": false=continue, true=stop after one item
     @Volatile var abbrevLengthMax: Int = 0    // 0 = no filter (M32 "Length Abbrev")
     @Volatile var maxWords: Int = 0           // 0 = unlimited (M32 "Max # of Words"); ignored when stopAfterItem is on
@@ -375,8 +378,16 @@ class CwGenerator(private val tone: CwTonePlugin) {
         return intArrayOf(1, 3, 8)[boostLevel.coerceIn(0, 2)]
     }
 
+    // Group length: fixed when min == max, otherwise drawn anew for every
+    // group, so the listener can't tell whether a group is over.
+    private fun drawGroupLength(lo: Int, hi: Int): Int {
+        val a = lo.coerceIn(1, 8)
+        val b = (if (groupLengthMax > 0) groupLengthMax else lo).coerceIn(1, 8)
+        return if (a >= b) a else Random.nextInt(a, b + 1)
+    }
+
     private fun randomCharGroup(): String {
-        val len = groupLength.coerceIn(2, 8)
+        val len = drawGroupLength(groupLength.coerceIn(2, 8), groupLengthMax)
         return if (kochActive) randomKochChars(len) else randomPoolChars(len)
     }
 
@@ -449,7 +460,9 @@ class CwGenerator(private val tone: CwTonePlugin) {
     // Koch-level-limited, not boosted — matches getRandomChars()'s usePracticeChars path).
     private fun randomPracticeGroup(): String {
         if (practiceChars.isEmpty()) return randomCharGroup()
-        val len = (if (wordLengthMax > 0) minOf(groupLength, wordLengthMax) else groupLength).coerceIn(1, 8)
+        val len = drawGroupLength(groupLength, groupLengthMax).let {
+            if (wordLengthMax > 0) minOf(it, wordLengthMax) else it
+        }.coerceIn(1, 8)
         return (1..len).map { practiceChars.random() }.joinToString("")
     }
 
@@ -462,7 +475,9 @@ class CwGenerator(private val tone: CwTonePlugin) {
     }
 
     private fun randomWord(): String {
-        var pool = if (wordLengthMax > 0) words.filter { it.length <= wordLengthMax } else words
+        var pool = words.filter {
+            (wordLengthMax <= 0 || it.length <= wordLengthMax) && it.length >= wordLengthMin
+        }
         if (kochActive) {
             pool = pool.filter { kochQualifies(it) }
             // No qualifying word at this (early) Koch level: fall back to a single
@@ -476,7 +491,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
     // (0=unlimited, 1..5 => max length 2..6 — see getRandomAbbrev()'s ++maxLength).
     private fun randomAbbrev(): String {
         val maxLen = if (abbrevLengthMax in 1..5) abbrevLengthMax + 1 else 0
-        var pool = if (maxLen > 0) abbreviations.filter { it.length <= maxLen } else abbreviations
+        var pool = abbreviations.filter { (maxLen <= 0 || it.length <= maxLen) && it.length >= abbrevLengthMin }
         if (kochActive) {
             pool = pool.filter { kochQualifies(it) }
             if (pool.isEmpty()) return randomKochChars(1)

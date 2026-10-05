@@ -97,6 +97,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       kochSequenceChars(_kochSeq, _customKochChars, licwCarouselStart: _licwCarouselStart);
   int  _abbrevLengthMax = 0;
   int  _wordLengthMax = 0;
+  int  _wordLengthMin = 0;
+  int  _abbrevLengthMin = 0;
+  int  _groupLengthMax = 5;
   int  _callLengthOpt   = 0;
   int  _callRegionOpt   = 0;
   bool _callCommonOnly  = true;
@@ -300,6 +303,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
       _outputCase      = (p.getInt('outputCase') ?? 0).clamp(0, 1);
       _groupLength     = pf.getInt('groupLength')    ?? 5;
+      _groupLengthMax  = (pf.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
+      _wordLengthMin   = (pf.getInt('wordLengthMin') ?? 0).clamp(0, 8);
+      _abbrevLengthMin = (pf.getInt('abbrevLengthMin') ?? 0).clamp(0, 6);
       _randomOption    = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
       _maxWords        = pf.getInt('maxWords')        ?? 0;
       _kochLevel = _kochLevel.clamp(2, _activeKochChars.length);
@@ -336,8 +342,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   // "Adapt. Rand." echoes a GROUP, same as Random — matches
   // getRandomChars(posRandomLength, OPT_KOCH_ADAPTIVE) in m32_v6.ino.
-  String _pickAdaptiveGroup() =>
-      List.generate(_groupLength.clamp(2, 8), (_) => _pickAdaptiveChar()).join();
+  // Length drawn per group between the min and max setting.
+  String _pickAdaptiveGroup() {
+    final lo = _groupLength.clamp(2, 8);
+    final hi = _groupLengthMax.clamp(lo, 8);
+    final len = lo + _random.nextInt(hi - lo + 1);
+    return List.generate(len, (_) => _pickAdaptiveChar()).join();
+  }
 
   // Block flow: every echo content feeds the Geben track, once per word
   // after the first attempt (docs/archive/training/P6-echo-vorschlaege.md).
@@ -954,6 +965,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       'kochLevel': _kochLevel,
       'kochActive': e.kochActive,
       'groupLength': _groupLength,
+      'groupLengthMax': _groupLengthMax,
+      'wordLengthMin': _wordLengthMin,
+      'abbrevLengthMin': _abbrevLengthMin,
       if (e.usesRandomOption) 'randomOption': _randomOption,
       'wordLengthMax': _wordLengthMax,
       'abbrevLengthMax': _abbrevLengthMax,

@@ -279,7 +279,7 @@ Open **Listen** and set:
   speed of about 5 WPM (see [Effective speed](#effective-speed)). The app shows
   it below the sliders. If that is too hard, you can widen the spacing further
   in the ⚙ sheet (up to 45 / 105 dits).
-- In the ⚙ sheet under **Word selection** you can set **Group length** to 3 if
+- In the ⚙ sheet under **Word selection** you can set **Group length** to 3–3 if
   groups of five are too long at the start.
 
 Before you start, **tap each character of the lesson**: the app plays it three
@@ -756,9 +756,9 @@ to: …" tells you which combination you are setting up.
 | Setting | Meaning | Values |
 |---|---|---|
 | Group characters | Only with **All characters · Random**: which character classes are drawn from | **All** / Letters / Digits / Punctuation / Prosigns / Letters+Digits / Digits+Punct. / Punct.+Prosigns / Letters+Digits+Punct. / Digits+Punct.+Prosigns |
-| Group length | Characters per random group (only with **Random**) | 2–8 (**5**) |
-| Max word length | Only words up to this length (with **Words** and **Mixed**) | **all**, 1–8 |
-| Max abbreviation length | Only abbreviations up to this length (with **Abbreviations** and **Mixed**) | **all**, 2–6 |
+| Group length (min–max) | Characters per random group (with **Random** and **Mixed**). A range slider: with min = max (e.g. 5–5) all groups are equally long; with min < max (e.g. 2–7) each group gets a random length, so you can't tell while listening whether a group is over | 2–8 (**5–5**) |
+| Word length (min–max) | Only words within this length range (with **Words** and **Mixed**); the open ends mean no limit | 1–**all** (1–8, **all**) |
+| Abbreviation length (min–max) | Only abbreviations within this length range (with **Abbreviations** and **Mixed**); the open ends mean no limit | 2–**all** (2–6, **all**) |
 | Groups per block / Words per block | Number of groups (with **Random**) or words in a block | 1–50 (**10**) |
 
 ### Flow

@@ -38,6 +38,9 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   bool get _koch => _choice.set == CharSet.koch;
   int  _outputCase = 0;   // 0=lower, 1=UPPER — display only, content stays uppercase internally
   int  _wordLengthMax  = 0;
+  int  _wordLengthMin  = 0;
+  int  _abbrevLengthMin = 0;
+  int  _groupLengthMax = 5;
   bool _stopEach       = false;
   int  _groupLength    = 5;
   int  _randomOption   = 0;
@@ -86,6 +89,9 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _stopEach       = (pf.getInt('stopEach') ?? 0) == 1;
       _copyMode       = (pf.getInt('copyMode') ?? 0).clamp(0, 1);
       _groupLength    = pf.getInt('groupLength')    ?? 5;
+      _groupLengthMax = (pf.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
+      _wordLengthMin  = (pf.getInt('wordLengthMin') ?? 0).clamp(0, 8);
+      _abbrevLengthMin = (pf.getInt('abbrevLengthMin') ?? 0).clamp(0, 6);
       _randomOption   = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
       _abbrevLengthMax = (pf.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _maxWords        = pf.getInt('maxWords')        ?? 0;
@@ -267,6 +273,9 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               contentModeLabels: [for (final k in allowedContents(_choice.set)) contentLabel(k)],
               wpm: _wpm,
               groupLength: _groupLength,
+              groupLengthMax: _groupLengthMax,
+              wordLengthMin: _wordLengthMin,
+              abbrevLengthMin: _abbrevLengthMin,
               maxWords: _maxWords,
               abbrevLengthMax: _abbrevLengthMax,
               interCharSpace: _interCharSpace,
