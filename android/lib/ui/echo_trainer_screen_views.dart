@@ -144,19 +144,9 @@ extension _EchoViews on _EchoTrainerScreenState {
     );
   }
 
-  // Idle: just the hint; tempo is on the sliders below.
-  Widget _buildIdle(AppColors c) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Text(Strings.t('echo_idle_hint'), textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
-                  color: c.textMuted, fontStyle: FontStyle.italic)),
-        ]),
-      ),
-    );
-  }
+  // Idle: nothing but empty space, like the Hören start view; the tempo is
+  // on the sliders below.
+  Widget _buildIdle(AppColors c) => const SizedBox.shrink();
 
   // Running: the current word centred — the prompt (if shown), what the
   // operator keyed so far, and the verdict. Same one-thing-at-a-time layout

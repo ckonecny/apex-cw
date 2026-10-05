@@ -13,9 +13,9 @@ t_end = time.time() + 300
 while time.time() < t_end:
     n = nodes(); labs = [l for l, b in n]
     if any(re.search('Nächster Block|Next block', l) for l in labs): print('result'); break
-    word = next((int(m.group(1)) for l in labs for m in [re.search(r'(?:Wort|Word) (\d+) /', l)] if m), 0)
+    word = next((int(m.group(1)) for l in labs for m in [re.search(r'(?:Wort|Word|Gruppe|Group) (\d+) /', l)] if m), 0)
     att = next((int(m.group(1)) for l in labs for m in [re.search(r'(?:Versuch|Attempt) (\d+)', l)] if m), 1)
-    sending = any(re.search('Senden|Sending', l) for l in labs)
+    sending = any(re.search('Senden|Sending|Geben …', l) for l in labs)
     tgt = next((l.strip() for l, b in n if 950 < b[1] < 1150 and re.fullmatch(r'\s*[a-z0-9]+\s*', l)), None)
     if sending and tgt and (word, att) not in done:
         done.add((word, att))

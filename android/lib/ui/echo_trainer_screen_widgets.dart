@@ -11,8 +11,10 @@ class _StatusLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
+    // Nothing to say while idle (the Hören start view has no label either).
+    if (state == _State.idle) return const SizedBox.shrink();
     final (text, color) = switch (state) {
-      _State.idle      => (Strings.t('echo_status_idle'), c.textDisabled),
+      _State.idle      => ('', c.textDisabled),
       _State.playing   => preparing
           ? (Strings.t('get_ready'), c.warning)
           : (Strings.t('echo_status_playing'), c.warning),
