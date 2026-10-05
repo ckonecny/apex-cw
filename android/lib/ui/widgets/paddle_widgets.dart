@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import '../../util/bluetooth_hint.dart';
+import '../../util/paddle_layout.dart';
 import '../settings_screen.dart';
 
 class IambicPaddles extends StatelessWidget {
@@ -19,13 +20,20 @@ class IambicPaddles extends StatelessWidget {
       const BluetoothLatencyHint(),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(children: [
-          Expanded(child: PaddleButton(label: 'DIT  ·',
-              color: c.accent, onDown: onDitDown, onUp: onDitUp)),
-          const SizedBox(width: 12),
-          Expanded(child: PaddleButton(label: 'DAH  —',
-              color: c.warning, onDown: onDahDown, onUp: onDahUp)),
-        ]),
+        child: ValueListenableBuilder<bool>(
+          valueListenable: PaddleLayout.swapped,
+          builder: (context, swapped, _) {
+            final dit = Expanded(child: PaddleButton(label: 'DIT  ·',
+                color: c.accent, onDown: onDitDown, onUp: onDitUp));
+            final dah = Expanded(child: PaddleButton(label: 'DAH  —',
+                color: c.warning, onDown: onDahDown, onUp: onDahUp));
+            return Row(children: [
+              swapped ? dah : dit,
+              const SizedBox(width: 12),
+              swapped ? dit : dah,
+            ]);
+          },
+        ),
       ),
     ]);
   }

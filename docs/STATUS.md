@@ -35,14 +35,16 @@ repo Settings -> Pages -> Source "GitHub Actions". Then replace the disabled
 and set the Play listing's website to the Pages URL (decision in DECISIONS.md).
 
 ## Manual: pending for next release
-- Retaken 2026-10-05 (DE+EN, after the layout fixes): `hear_start`,
-  `hear_result`, `hear_weak`, `hear_sheet2`, `echo_start`, `echo_result`.
-  Still open: `echo_result2` (Send result with a ticked suggestion; needs a
-  100 % block, adb keying isn't reliable enough, tap one block by hand) —
-  DE+EN. Other ⚙ sheet shots may still show the old wraps. Taken on a debug
-  build with the phone's prefs backed up and restored afterwards;
+- Retaken 2026-10-05 (DE+EN): `hear_start`, `hear_result`, `hear_weak`,
+  `hear_sheet2`, `echo_start`, `echo_result`, `echo_result2` (the last one
+  needs a 100 % block played by hand; the suggestion is not pre-ticked, tick
+  it before the shot). Other ⚙ sheet shots may still show the old wraps. Taken
+  on a debug build with the phone's prefs backed up and restored afterwards;
   `tools/echo_loop.py` knows "Gruppe n /" and "Geben …", needs Echo Prompt =
   Both (`echoDisplayMode` 3).
+- Branch `feature/swap-touch-paddles`: new Keyer setting "Swap on-screen
+  paddles"; retake the Keyer settings shot (`settings1.png`, DE+EN) and
+  `keyer.png` if wanted (the touch paddles themselves look the same by default).
 - Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
 

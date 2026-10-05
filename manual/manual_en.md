@@ -2411,6 +2411,7 @@ These settings apply wherever you key.
 | Setting | Meaning | Values |
 |---|---|---|
 | Mode | How the keyer reads the keys (see below) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
+| Swap on-screen paddles | Puts **dah** on the left and **dit** on the right of the two touch buttons. Affects only the on-screen buttons, not the keys of an adapter (those stay as you taught them, see [Learning the dit and dah keys](#learning-the-dit-and-dah-keys)). Not shown for Straight | **Off** / On |
 | CurtisB dit timing | Iambic B and Ultimatic only: from what percentage of a dit a press on the other key is already stored | 0–100 % in steps of 5 (**75 %**) |
 | CurtisB dah timing | The same for dahs | 0–100 % in steps of 5 (**45 %**) |
 | Auto character spacing | Enforces a minimum pause between characters so they don't run together. Not available for Straight | **Off** / 2 / 3 / 4 dits |

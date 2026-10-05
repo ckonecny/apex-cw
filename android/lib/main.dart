@@ -7,6 +7,7 @@ import 'licenses.dart';
 import 'util/bluetooth_hint.dart';
 import 'util/break_reminder.dart';
 import 'util/interference_profile.dart';
+import 'util/paddle_layout.dart';
 import 'util/practice_clock.dart';
 import 'util/reminder.dart';
 import 'util/share_intake.dart';
@@ -20,6 +21,7 @@ void main() async {
   ]);
   await ThemeController.load();
   await Strings.load();
+  await PaddleLayout.load();
   registerAppLicenses();
   InterferenceProfile.pushSaved();
   await PracticeClock.instance.init();
