@@ -12,6 +12,23 @@ String bucketLabel(DateTime d, Granularity g) {
   return de ? '${d.day}.${d.month}.' : '${d.month}/${d.day}';
 }
 
+/// "Woche ab 5.10." / "Week of 10/5" for week buckets, plain label otherwise.
+String bucketTitle(DateTime d, Granularity g) => g == Granularity.week
+    ? Strings.t('pr_week_of').replaceFirst('{d}', bucketLabel(d, g))
+    : bucketLabel(d, g);
+
+/// Tap detail line shared by the charts: "Woche ab 5.10.: 17 Versuche · 88.2 % Treffer".
+String bucketDetail(DateTime d, Granularity g, int attempts, double? rate) {
+  final title = bucketTitle(d, g);
+  if (attempts == 0 || rate == null) {
+    return Strings.t('pr_point_none').replaceFirst('{d}', title);
+  }
+  return Strings.t('pr_point_detail')
+      .replaceFirst('{d}', title)
+      .replaceFirst('{n}', '$attempts')
+      .replaceFirst('{p}', (rate * 100).toStringAsFixed(1));
+}
+
 String unitName(Granularity g) =>
     Strings.t(const {
       Granularity.day: 'pr_unit_day',
@@ -27,7 +44,7 @@ Color rateColor(AppColors c, double rate) {
       : Color.lerp(c.warning, c.accent, (t - 0.5) * 2)!;
 }
 
-class ProgressLineChart extends StatelessWidget {
+class ProgressLineChart extends StatefulWidget {
   final List<double?> values; // null = no data in that bucket (gap)
   final double yMin, yMax;
   final String Function(double) yLabel;
@@ -35,6 +52,8 @@ class ProgressLineChart extends StatelessWidget {
   final Color color;
   final double? threshold; // dashed line, same unit as the values
   final double height;
+  /// Text for the tapped point (index into [values]); null = chart is not tappable.
+  final String Function(int index)? detail;
   const ProgressLineChart({
     super.key,
     required this.values,
@@ -46,23 +65,56 @@ class ProgressLineChart extends StatelessWidget {
     required this.color,
     this.threshold,
     this.height = 110,
+    this.detail,
   });
+
+  @override
+  State<ProgressLineChart> createState() => _ProgressLineChartState();
+}
+
+class _ProgressLineChartState extends State<ProgressLineChart> {
+  int? _sel;
+
+  void _pick(double dx, double width) {
+    final n = widget.values.length;
+    final plotW = width - _LinePainter._left - _LinePainter._right;
+    final i = n == 1 ? 0 : ((dx - _LinePainter._left) / (plotW / (n - 1))).round().clamp(0, n - 1);
+    setState(() => _sel = i);
+  }
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return SizedBox(
-      height: height,
+    final w = widget;
+    final sel = _sel != null && _sel! < w.values.length ? _sel : null;
+    final chart = SizedBox(
+      height: w.height,
       width: double.infinity,
-      child: CustomPaint(painter: _LinePainter(this, c)),
+      child: CustomPaint(painter: _LinePainter(w, c, sel)),
     );
+    if (w.detail == null) return chart;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      LayoutBuilder(
+        builder: (context, box) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTapDown: (d) => _pick(d.localPosition.dx, box.maxWidth),
+          child: chart,
+        ),
+      ),
+      const SizedBox(height: 4),
+      _detailText(c, sel == null ? Strings.t('pr_tap_point') : w.detail!(sel), sel != null),
+    ]);
   }
 }
+
+Widget _detailText(AppColors c, String text, bool active) => Text(text,
+    style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: active ? c.textPrimary : c.textFaint));
 
 class _LinePainter extends CustomPainter {
   final ProgressLineChart w;
   final AppColors c;
-  _LinePainter(this.w, this.c);
+  final int? sel;
+  _LinePainter(this.w, this.c, this.sel);
 
   static const _left = 38.0, _bottom = 16.0, _top = 6.0, _right = 8.0;
 
@@ -124,6 +176,16 @@ class _LinePainter extends CustomPainter {
     if (lastIdx != null) {
       canvas.drawCircle(Offset(x(lastIdx), y(w.values[lastIdx]!)), 4, Paint()..color = w.color);
     }
+    final si = sel;
+    if (si != null) {
+      final mark = Paint()..color = c.textMuted..strokeWidth = 1;
+      canvas.drawLine(Offset(x(si), plot.top), Offset(x(si), plot.bottom), mark);
+      final v = w.values[si];
+      if (v != null) {
+        canvas.drawCircle(Offset(x(si), y(v)), 6,
+            Paint()..color = c.textPrimary..style = PaintingStyle.stroke..strokeWidth = 1.5);
+      }
+    }
     _text(canvas, w.firstLabel, Offset(plot.left, size.height - 6));
     _text(canvas, w.lastLabel, Offset(plot.right, size.height - 6), alignRight: true);
   }
@@ -133,12 +195,14 @@ class _LinePainter extends CustomPainter {
 }
 
 /// One bar per bucket, height = value / max.
-class ProgressBars extends StatelessWidget {
+class ProgressBars extends StatefulWidget {
   final List<double> values;
   final double max;
   final Color color;
   final String firstLabel, lastLabel;
   final double height;
+  /// Text for the tapped bar (index into [values]); null = bars are not tappable.
+  final String Function(int index)? detail;
   const ProgressBars({
     super.key,
     required this.values,
@@ -147,25 +211,43 @@ class ProgressBars extends StatelessWidget {
     required this.firstLabel,
     required this.lastLabel,
     this.height = 56,
+    this.detail,
   });
+
+  @override
+  State<ProgressBars> createState() => _ProgressBarsState();
+}
+
+class _ProgressBarsState extends State<ProgressBars> {
+  int? _sel;
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
+    final w = widget;
     final faint = TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textFaint);
-    return Column(children: [
+    final sel = _sel != null && _sel! < w.values.length ? _sel : null;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       SizedBox(
-        height: height,
+        height: w.height,
         child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          for (final v in values)
+          for (var i = 0; i < w.values.length; i++)
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 1),
-                child: Container(
-                  height: v <= 0 ? 2 : (v / max).clamp(0.04, 1.0) * height,
-                  decoration: BoxDecoration(
-                    color: v <= 0 ? c.border : color,
-                    borderRadius: BorderRadius.circular(2),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: w.detail == null ? null : () => setState(() => _sel = i),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 1),
+                    child: Container(
+                      height: w.values[i] <= 0 ? 2 : (w.values[i] / w.max).clamp(0.04, 1.0) * w.height,
+                      decoration: BoxDecoration(
+                        color: w.values[i] <= 0 ? c.border : w.color,
+                        borderRadius: BorderRadius.circular(2),
+                        border: i == sel ? Border.all(color: c.textPrimary, width: 1.5) : null,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -174,7 +256,11 @@ class ProgressBars extends StatelessWidget {
       ),
       const SizedBox(height: 2),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Text(firstLabel, style: faint), Text(lastLabel, style: faint)]),
+          children: [Text(w.firstLabel, style: faint), Text(w.lastLabel, style: faint)]),
+      if (w.detail != null) ...[
+        const SizedBox(height: 4),
+        _detailText(c, sel == null ? Strings.t('pr_tap_bar') : w.detail!(sel), sel != null),
+      ],
     ]);
   }
 }

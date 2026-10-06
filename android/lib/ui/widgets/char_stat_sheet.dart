@@ -208,11 +208,10 @@ class _CharStatSheet extends StatelessWidget {
                         style: mono.copyWith(color: c.accent))
                     : Column(crossAxisAlignment: CrossAxisAlignment.start,
                         children: [for (final l in unlockLines) Text(l, style: mono)])),
-          section(
+          if (!isHear)
+            section(
               Strings.t('cs_mixups'),
-              isHear
-                  ? Text(Strings.t('cs_mixups_hear'), style: faint)
-                  : mix.isEmpty
+              mix.isEmpty
                       ? Text(Strings.t('cs_mixups_none'), style: faint)
                       : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                           for (final e in mix.take(5))
@@ -259,6 +258,10 @@ class _CharCurveState extends State<_CharCurve> {
     final rates = [
       for (final b in s.buckets) b.charRate(widget.ch) == null ? null : b.charRate(widget.ch)! * 100
     ];
+    String detail(int i) {
+      final b = s.buckets[i];
+      return bucketDetail(b.start, s.granularity, b.charAttempts(widget.ch), b.charRate(widget.ch));
+    }
     final present = rates.whereType<double>();
     final lo = ((present.reduce((a, b) => a < b ? a : b) / 10).floor() * 10).clamp(0, 90).toDouble();
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -288,6 +291,7 @@ class _CharCurveState extends State<_CharCurve> {
           lastLabel: last,
           color: c.accent,
           threshold: widget.highThreshold * 100,
+          detail: detail,
         )
       else
         ProgressBars(
@@ -296,6 +300,7 @@ class _CharCurveState extends State<_CharCurve> {
           color: c.info,
           firstLabel: first,
           lastLabel: last,
+          detail: detail,
         ),
       const SizedBox(height: 4),
       Text(
@@ -303,6 +308,14 @@ class _CharCurveState extends State<_CharCurve> {
               ? Strings.t('pr_curve_note').replaceFirst('{t}', '${(widget.highThreshold * 100).round()}')
               : Strings.t('pr_curve_note_attempts'),
           style: faint),
+      if (_hits && rates.last != null) ...[
+        const SizedBox(height: 4),
+        Text(
+            Strings.t('pr_curve_this_week')
+                .replaceFirst('{p}', rates.last!.toStringAsFixed(1))
+                .replaceFirst('{n}', '${attempts.last}'),
+            style: faint),
+      ],
     ]);
   }
 }

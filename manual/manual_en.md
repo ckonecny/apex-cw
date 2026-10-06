@@ -1349,15 +1349,18 @@ attempts (default 20) **and** a current accuracy above the threshold (default
   history.
 - **Hit rate per week** – a curve of the last 12 weeks for this character
   (tab *Hits*; dashed: the unlock threshold) or the number of attempts per
-  week (tab *Attempts*). Weeks without practice are left out.
+  week (tab *Attempts*). Each point is one calendar week (Mon–Sun), the last
+  one the current week; below it you see its rate and number of attempts. Tap
+  a point (tab *Hits*) or a bar (tab *Attempts*) to see that week's attempts
+  and hit rate below the chart. The last point can therefore differ clearly from *Overall* and *Current*, especially with
+  few attempts. Weeks without practice are left out.
 - **Last practised** – today, yesterday or *n* days ago (also only from the
   next practice on).
 - **Practice weight** – from 1 to 20. The higher, the more often the
   character comes up in adaptive exercises.
 - **Unlock** – what is still missing: how many attempts and how
   many right answers in a row until the rate is back above the threshold.
-- **Mix-ups** (Send only) – what you sent instead. In Listen you only mark
-  what was wrong, so what you heard is not recorded there.
+- **Mix-ups** (Send only) – what you sent instead. Listen has no such item.
 - **Listen** – plays the character three times, at this training's speed.
 
 ::: {.shots}
@@ -1376,12 +1379,13 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
   a year on) with practice, weighted by attempts, with an arrow against the
   period before. "Days practised" reads like *42/88*.
 - **Hit rate per day / week / month** and **speed (WPM)** as curves. Periods
-  without practice are gaps, not zero.
+  without practice are gaps, not zero. Tap a point of the hit rate to see
+  that period's attempts and rate.
 - **Days practised**: one box per day (4 weeks), otherwise a bar per week or
   month.
 - **All characters, week by week**: a heatmap, characters down, weeks across,
   from red (below 60 %) to green (from 90 %). A cell with fewer than 5
-  attempts stays empty. If the weeks don't fit the width (All), the cells scroll
+  attempts stays empty. The columns fill the whole width; if the weeks don't fit (All), the cells scroll
   and start at the newest week; the characters and week headings stay in place. **Weakest first** sorts by the latest hit rate. Tap
   a character to open its detail view.
 

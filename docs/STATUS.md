@@ -61,6 +61,11 @@ Done in the app (launcher icons), README, landing page. Pending:
 - Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
 
+- Branch `feature/char-curve-legend`: weekly curve note + current-week line in
+  the character detail; tap detail on the curves/bars (also the Verlauf rate
+  curve); no Mix-ups item in Listen; heatmap columns fill the width. Retake
+  `hear_char_detail.png`, `hear_progress2.png`, `echo_progress.png` (DE+EN).
+
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual

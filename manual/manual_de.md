@@ -1389,8 +1389,13 @@ zeigt nur die Versuche, nicht die Quote.
   Daten haben keinen Verlauf.
 - **Trefferquote pro Woche** – eine Kurve der letzten 12 Wochen für dieses
   Zeichen (Reiter *Treffer*; gestrichelt: die Freischalt-Schwelle) oder die
-  Zahl der Versuche pro Woche (Reiter *Versuche*). Wochen ohne Übung bleiben
-  leer.
+  Zahl der Versuche pro Woche (Reiter *Versuche*). Jeder Punkt ist eine
+  Kalenderwoche (Mo–So), der letzte die laufende Woche; darunter steht seine
+  Quote mit der Zahl der Versuche. Tippst du auf einen Punkt (Reiter *Treffer*)
+  oder einen Balken (Reiter *Versuche*), siehst du darunter die Versuche und
+  die Trefferquote dieser Woche. Der letzte Punkt kann daher deutlich von *Gesamt* und
+  *Aktuell* abweichen, vor allem bei wenigen Versuchen. Wochen ohne Übung
+  bleiben leer.
 - **Zuletzt geübt** – heute, gestern oder vor *n* Tagen (ebenfalls erst ab
   dem nächsten Üben).
 - **Übungsgewicht** – von 1 bis 20. Je höher, desto öfter kommt das Zeichen
@@ -1399,8 +1404,7 @@ zeigt nur die Versuche, nicht die Quote.
   viele richtige Antworten in Folge, bis die Quote wieder über der Schwelle
   liegt.
 - **Verwechslungen** (nur Geben) – was du stattdessen gegeben hast. Beim
-  Hören markierst du nur, was falsch war, deshalb wird dort nicht erfasst,
-  was du gehört hast.
+  Hören gibt es diesen Punkt nicht.
 - **Anhören** – spielt das Zeichen dreimal ab, mit dem Tempo dieses Trainings.
 
 ::: {.shots}
@@ -1421,13 +1425,14 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
   Versuchen, mit Pfeil gegenüber dem Zeitraum davor. „Übungstage“ liest sich
   wie *42/88*.
 - **Trefferquote pro Tag / Woche / Monat** und **Tempo (WPM)** als Kurven.
-  Zeiträume ohne Übung sind Lücken, keine Null.
+  Zeiträume ohne Übung sind Lücken, keine Null. Tippe auf einen Punkt der
+  Trefferquote, um die Versuche und die Quote dieses Zeitraums zu sehen.
 - **Übungstage**: ein Kästchen pro Tag (4 Wochen), sonst ein Balken pro Woche
   oder Monat.
 - **Alle Zeichen, Woche für Woche**: eine Heatmap, Zeichen untereinander,
   Wochen nebeneinander, von rot (unter 60 %) bis grün (ab 90 %). Eine Zelle
-  mit weniger als 5 Versuchen bleibt leer. Passen die Wochen
-  nicht in die Breite (Alles), scrollen die Zellen und starten bei der
+  mit weniger als 5 Versuchen bleibt leer. Die Spalten füllen die ganze
+  Breite; passen die Wochen nicht (Alles), scrollen die Zellen und starten bei der
   neuesten Woche; die Zeichen und Wochenüberschriften bleiben stehen. **Schwächste zuerst**
   sortiert nach der letzten Trefferquote. Tippe auf ein Zeichen, um seine
   Detailansicht zu öffnen.
