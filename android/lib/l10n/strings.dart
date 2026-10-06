@@ -345,7 +345,7 @@ class Strings {
     'qg_sheet_level': ['Stufe {n}', 'Level {n}'],
     'home_section_learn': ['Lernen', 'Learn'],
     'learn_title': ['Lernressourcen', 'Learning resources'],
-    'home_learn_subtitle': ['Morse-Baum · Zeichentabelle · Links zu Kursen', 'Morse tree · character chart · links to courses'],
+    'home_learn_subtitle': ['Morse-Baum · Zeichentabelle · Prüfungssimulation · Links', 'Morse tree · character chart · exam simulation · links'],
     'tree_title': ['Morse-Baum', 'Morse tree'],
     'tree_subtitle': ['Punkt links, Strich rechts – Zeichen antippen', 'Dit left, dah right – tap a character'],
     'tree_hint': ['Hören, wie der Weg zum Zeichen klingt', 'Hear the path to a character'],

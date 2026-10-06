@@ -1779,3 +1779,8 @@ sends dit); only their position changes. Hidden for Straight (one button).
   every attempt is still stored as its own result. The rules card in the setup
   now lists receive and send rules (send: minutes, errors, speed, 80 % text).
 - Custom profile also has retries (0–5, JSON `r`), same attempt logic as the presets.
+- Text language (2026-10-06): plain texts are German only for AT/DE; UK, NZ,
+  India and USA use English (`exam_texts_en.dart`: 100+ sentences, QSO lines
+  with call signs and towns of the country). The custom profile has a language
+  setting (`lang`, JSON `g`, part of the id). Figure and letter groups have no
+  language. The home Learn card now names the exam simulation.

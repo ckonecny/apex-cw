@@ -2389,8 +2389,10 @@ Du wählst zuerst das **Land**, dann das **Tempo**:
 | **Eigenes Profil** | dein eigenes Profil, siehe unten |
 
 Die Karte unter der Auswahl zeigt die Regeln der gewählten Prüfung für beide
-Teile (Hören und Geben), die Quelle dafür und die Textart. Der Klartext ist deutscher Amateurfunk-Text ohne Umlaute
-mit Ziffern. Der Text ist in Morse so lang, wie der Prüfungsteil dauert (ein
+Teile (Hören und Geben), die Quelle dafür und die Textart. Der Klartext ist Amateurfunk-Text mit Ziffern: **deutsch** (ohne Umlaute) für
+Österreich und Deutschland, **englisch** für UK, Neuseeland, Indien und die
+USA, mit Rufzeichen und Orten des Landes in den erzeugten QSO-Zeilen. Im
+eigenen Profil wählst du die Sprache. Der Text ist in Morse so lang, wie der Prüfungsteil dauert (ein
 Text aus „WPM × 5 Zeichen“ wäre kürzer, weil Leerzeichen und kurze Zeichen
 schnell gehen). Ziffern- und Buchstabengruppen sind Fünfergruppen.
 

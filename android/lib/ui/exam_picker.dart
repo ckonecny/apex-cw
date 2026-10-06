@@ -142,6 +142,23 @@ class _CustomEditor extends StatelessWidget {
             kindChip(ExamKind.groups, 'ex_kind_groups'),
           ]),
           if (p.kind == ExamKind.plain) ...[
+            const SizedBox(height: 8),
+            AppCaption(ExamStrings.t('ex_custom_lang')),
+            const SizedBox(height: 6),
+            Wrap(spacing: 8, runSpacing: 4, children: [
+              for (final (code, key) in const [('de', 'ex_lang_de'), ('en', 'ex_lang_en')])
+                ChoiceChip(
+                  label: Text(ExamStrings.t(key),
+                      style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+                          color: p.lang == code ? c.accent : c.textPrimary)),
+                  selected: p.lang == code,
+                  showCheckmark: false,
+                  selectedColor: c.accent.withValues(alpha: 0.15),
+                  backgroundColor: c.surface,
+                  side: BorderSide(color: p.lang == code ? c.accent : c.border),
+                  onSelected: (_) => onChanged(p.copyWith(lang: code)),
+                ),
+            ]),
             sw('ex_custom_punct', p.punctuation, (v) => onChanged(p.copyWith(punctuation: v))),
             sw('ex_custom_ar', p.prosigns, (v) => onChanged(p.copyWith(prosigns: v))),
           ],

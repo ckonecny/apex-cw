@@ -57,6 +57,21 @@ class ExamStrings {
       'Text: Klartext ohne Umlaute, mit Ziffern, . , ? = / und AR (als + tippen).',
       'Text: plain text without umlauts, with figures, . , ? = / and AR (type +).',
     ],
+    'ex_chars_en': [
+      'Text: englischer Amateurfunk-Klartext mit Ziffern.',
+      'Text: English amateur-radio plain text with figures.',
+    ],
+    'ex_chars_en_punct': [
+      'Text: englischer Klartext mit Ziffern und Satzzeichen (. , ? = /).',
+      'Text: English plain text with figures and punctuation (. , ? = /).',
+    ],
+    'ex_chars_en_ar': [
+      'Text: englischer Klartext mit Ziffern, . , ? = / und AR (als + tippen).',
+      'Text: English plain text with figures, . , ? = / and AR (type +).',
+    ],
+    'ex_custom_lang': ['Sprache des Textes', 'Language of the text'],
+    'ex_lang_de': ['Deutsch', 'German'],
+    'ex_lang_en': ['Englisch', 'English'],
     'ex_chars_fig': [
       'Text: Ziffern in Fünfergruppen.',
       'Text: figures in groups of five.',

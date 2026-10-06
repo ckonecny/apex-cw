@@ -358,6 +358,8 @@ class _ExamScreenState extends State<ExamScreen> {
   String _charsKey(ExamProfile p) => switch (p.kind) {
         ExamKind.figures => 'ex_chars_fig',
         ExamKind.groups => 'ex_chars_grp',
+        ExamKind.plain when p.lang == 'en' =>
+          p.prosigns ? 'ex_chars_en_ar' : (p.punctuation ? 'ex_chars_en_punct' : 'ex_chars_en'),
         ExamKind.plain => p.prosigns ? 'ex_chars_de' : (p.punctuation ? 'ex_chars_punct' : 'ex_chars_plain'),
       };
 

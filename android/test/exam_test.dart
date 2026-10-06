@@ -5,6 +5,7 @@ import 'package:next_cw_trainer/content/exam_grading.dart';
 import 'package:next_cw_trainer/content/exam_log.dart';
 import 'package:next_cw_trainer/content/exam_profile.dart';
 import 'package:next_cw_trainer/content/exam_texts.dart';
+import 'package:next_cw_trainer/content/exam_texts_en.dart';
 
 void main() {
   test('Farnsworth 5/9 stretches the gaps so a PARIS word takes 12 s', () {
@@ -197,6 +198,52 @@ void main() {
       expect(ExamProfile.fromJson(r.toJson()).retries, 2);
       expect(r.copyWith(retries: 1).id, isNot(r.id));
       expect(ExamProfile.custom(wpm: 8, charWpm: 12).farnsworth, isTrue);
+    });
+  });
+
+  group('text language', () {
+    String norm(String t) => t.toUpperCase().replaceAll(RegExp('[.,]'), '');
+
+    test('English pool is big enough and clean', () {
+      expect(examSentencesEn.length, greaterThanOrEqualTo(100));
+      expect(examSentencesEn.toSet().length, examSentencesEn.length);
+      for (final t in examSentencesEn) {
+        expect(RegExp(r'^[A-Za-z0-9 ,.]+$').hasMatch(t), isTrue, reason: t);
+      }
+    });
+
+    test('exams outside Austria and Germany never use German text', () {
+      final german = examSentencePool.map(norm).toList();
+      final english = examSentencesEn.map(norm).toList();
+      for (final p in examProfiles.where((p) => p.kind == ExamKind.plain)) {
+        expect(p.lang, ['at', 'de'].contains(p.family) ? 'de' : 'en', reason: p.id);
+        final rng = Random(5);
+        for (var i = 0; i < 20; i++) {
+          final t = norm(examText(p, rng));
+          final wrong = p.lang == 'en' ? german : english;
+          expect(wrong.any(t.contains), isFalse, reason: '${p.id}: $t');
+          // Generated lines too: no German words.
+          expect(RegExp(r'\b(ICH|UND|DER|DIE|DAS|HALLO|MEIN|RAPPORT|DEIN|FUER|WATT UND)\b').hasMatch(t),
+              p.lang == 'de' ? anything : isFalse, reason: '${p.id}: $t');
+        }
+      }
+    });
+
+    test('QSO lines use call signs of the country', () {
+      final rng = Random(9);
+      final uk = {for (var i = 0; i < 40; i++) examTemplateEn('uk', rng)};
+      expect(uk.any((t) => RegExp(r'\b(G|M|2E)\d[A-Z]{2,3}\b').hasMatch(t)), isTrue);
+      expect(uk.any((t) => RegExp(r'\b(ZL|VU|W|K|N)\d[A-Z]{2,3}\b').hasMatch(t)), isFalse);
+      final nz = {for (var i = 0; i < 40; i++) examTemplateEn('nz', rng)};
+      expect(nz.any((t) => RegExp(r'\bZL\d[A-Z]{2,3}\b').hasMatch(t)), isTrue);
+    });
+
+    test('custom profile: language is kept and part of the id', () {
+      final en = ExamProfile.custom(lang: 'en');
+      expect(en.lang, 'en');
+      expect(ExamProfile.fromJson(en.toJson()).lang, 'en');
+      expect(en.id, isNot(ExamProfile.custom().id));
+      expect(ExamProfile.custom(lang: 'xx').lang, 'de');
     });
   });
 }

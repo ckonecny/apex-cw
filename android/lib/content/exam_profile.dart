@@ -47,6 +47,10 @@ class ExamProfile {
   /// False for exams that only test receiving (ARRL).
   final bool hasSend;
 
+  /// Language of a plain text: 'de' (Austria, Germany) or 'en' (everywhere
+  /// else). Figure and letter groups have no language.
+  final String lang;
+
   const ExamProfile({
     required this.id,
     required this.family,
@@ -59,6 +63,7 @@ class ExamProfile {
     this.punctuation = false,
     this.prosigns = false,
     this.hasSend = true,
+    this.lang = 'de',
   }) : charWpm = charWpm ?? wpm;
 
   bool get farnsworth => charWpm > wpm;
@@ -107,6 +112,7 @@ class ExamProfile {
     ExamKind kind = ExamKind.plain,
     bool punctuation = false,
     bool prosigns = false,
+    String lang = 'de',
   }) {
     final w = wpm.clamp(5, customMaxWpm);
     final cw = (charWpm ?? w).clamp(w, customMaxWpm);
@@ -116,7 +122,7 @@ class ExamProfile {
     final punct = kind == ExamKind.plain && punctuation;
     final pros = kind == ExamKind.plain && prosigns;
     return ExamProfile(
-      id: 'custom:$w/$cw/$m/$e/$rt/${kind.name}/${punct ? 1 : 0}${pros ? 1 : 0}',
+      id: 'custom:$w/$cw/$m/$e/$rt/${kind.name}/${punct ? 1 : 0}${pros ? 1 : 0}/$lang',
       family: customFamily,
       wpm: w,
       charWpm: cw,
@@ -126,12 +132,13 @@ class ExamProfile {
       kind: kind,
       punctuation: punct,
       prosigns: pros,
+      lang: lang == 'en' ? 'en' : 'de',
     );
   }
 
   Map<String, dynamic> toJson() => {
         'w': wpm, 'c': charWpm, 'm': minutes, 'e': errorLimit, 'r': retries,
-        'k': kind.name, 'p': punctuation, 'a': prosigns,
+        'k': kind.name, 'p': punctuation, 'a': prosigns, 'g': lang,
       };
 
   factory ExamProfile.fromJson(Map<String, dynamic> j) => ExamProfile.custom(
@@ -143,6 +150,7 @@ class ExamProfile {
         kind: ExamKind.values.firstWhere((k) => k.name == j['k'], orElse: () => ExamKind.plain),
         punctuation: j['p'] as bool? ?? false,
         prosigns: j['a'] as bool? ?? false,
+        lang: j['g'] as String? ?? 'de',
       );
 
   ExamProfile copyWith({
@@ -154,6 +162,7 @@ class ExamProfile {
     ExamKind? kind,
     bool? punctuation,
     bool? prosigns,
+    String? lang,
   }) =>
       ExamProfile.custom(
         wpm: wpm ?? this.wpm,
@@ -164,6 +173,7 @@ class ExamProfile {
         kind: kind ?? this.kind,
         punctuation: punctuation ?? this.punctuation,
         prosigns: prosigns ?? this.prosigns,
+        lang: lang ?? this.lang,
       );
 }
 
@@ -192,17 +202,17 @@ final List<ExamProfile> examProfiles = [
   // UK, RSGB Certificate of Competency: plain text 3 minutes (at most 4
   // errors) and figures in groups of five for 1 minute (at most 3 errors).
   for (final s in const [5, 10, 12, 15, 20, 25, 30]) ...[
-    ExamProfile(id: 'uk$s', family: 'uk', wpm: s, errorLimit: 4, punctuation: true),
+    ExamProfile(id: 'uk$s', family: 'uk', wpm: s, errorLimit: 4, punctuation: true, lang: 'en'),
     ExamProfile(id: 'uk${s}f', family: 'uk', wpm: s, minutes: 1, errorLimit: 3, kind: ExamKind.figures),
   ],
   // New Zealand, NZART: 5 WPM, 3 minutes, at most 4 errors, up to 5 attempts.
-  const ExamProfile(id: 'nz5', family: 'nz', wpm: 5, errorLimit: 4, retries: 4),
+  const ExamProfile(id: 'nz5', family: 'nz', wpm: 5, errorLimit: 4, retries: 4, lang: 'en'),
   // India, WPC: 5 or 8 WPM, receive 1 minute without a mistake.
   for (final s in const [5, 8])
-    ExamProfile(id: 'in$s', family: 'in', wpm: s, minutes: 1, errorLimit: 0),
+    ExamProfile(id: 'in$s', family: 'in', wpm: s, minutes: 1, errorLimit: 0, lang: 'en'),
   // USA, ARRL Code Proficiency: 1 minute of solid copy, receive only.
   for (final s in const [10, 15, 20, 25, 30, 35, 40])
-    ExamProfile(id: 'us$s', family: 'us', wpm: s, minutes: 1, errorLimit: 0, hasSend: false),
+    ExamProfile(id: 'us$s', family: 'us', wpm: s, minutes: 1, errorLimit: 0, hasSend: false, lang: 'en'),
 ];
 
 /// The preset profiles of one family, in picker order.
