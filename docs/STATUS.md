@@ -61,10 +61,6 @@ Done in the app (launcher icons), README, landing page. Pending:
 - Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
 
-- Branch `fix/tree-path-on-deep-toggle` (installed, not committed): Morse tree
-  plays Ä Ö Ü CH, CH footnote, path fix on toggle; retake `tree_letters.png`
-  only if CH/umlauts should show (DE+EN).
-
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual
