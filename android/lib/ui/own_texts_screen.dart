@@ -93,10 +93,10 @@ class _OwnTextsScreenState extends State<OwnTextsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: c.surface,
-        title: Text(heading, style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
+        title: Text(heading, style: TextStyle(fontSize: 16, color: c.textPrimary)),
         content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (info != null) ...[
-            Text(info, style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+            Text(info, style: TextStyle(fontSize: 12, color: c.textMuted)),
             const SizedBox(height: 10),
           ],
           TextField(
@@ -182,7 +182,7 @@ class _OwnTextsScreenState extends State<OwnTextsScreen> {
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Text(Strings.t('ot_empty'),
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+                    style: TextStyle(fontSize: 13, color: c.textMuted)),
               )
             else
               for (final i in texts) ...[
@@ -210,10 +210,10 @@ class _OwnTextsScreenState extends State<OwnTextsScreen> {
           child: Row(children: [
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(i.title, maxLines: 2, overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 15, color: c.textPrimary)),
+                  style: TextStyle(fontSize: 15, color: c.textPrimary)),
               const SizedBox(height: 3),
               Text('${Strings.t('ot_words').replaceAll('{n}', '${i.words}')}$progress',
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+                  style: TextStyle(fontSize: 11, color: c.textFaint)),
             ])),
             PopupMenuButton<String>(
               icon: Icon(Icons.more_vert, color: c.textMuted),

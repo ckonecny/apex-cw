@@ -329,6 +329,10 @@ class _RadioCaveScreenState extends State<RadioCaveScreen> with WidgetsBindingOb
   }
 
   TextStyle _mono(double size, Color color, {bool bold = false}) => TextStyle(
+      fontSize: size, color: color,
+      fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(double size, Color color, {bool bold = false}) => TextStyle(
       fontFamily: 'CwMono', fontSize: size, color: color,
       fontWeight: bold ? FontWeight.bold : null);
 
@@ -357,9 +361,9 @@ class _RadioCaveScreenState extends State<RadioCaveScreen> with WidgetsBindingOb
     final Widget inputLine;
     if (_input.isNotEmpty) {
       inputLine = Text('> ${_input.toUpperCase()}${cursor ? '▌' : ' '}',
-          style: _mono(18, c.accent, bold: true));
+          style: _morse(18, c.accent, bold: true));
     } else if (_message.isNotEmpty) {
-      inputLine = Text('= $_message', style: _mono(14, c.textPrimary));
+      inputLine = Text('= $_message', style: _morse(14, c.textPrimary));
     } else {
       inputLine = Text(Strings.t('rc_key_hint'), style: _mono(13, c.textFaint));
     }
@@ -400,7 +404,7 @@ class _RadioCaveScreenState extends State<RadioCaveScreen> with WidgetsBindingOb
             Text(Strings.t('rc_cw_playing'), style: _mono(12, c.warning))
           else ...[
             Text(_engine.exitLetters.isEmpty ? '-' : _engine.exitLetters.join(' '),
-                style: _mono(12, c.accent)),
+                style: _morse(12, c.accent)),
             const SizedBox(width: 16),
             Text('${_engine.invCount}/$rcInvMax • ${_engine.steps}',
                 style: _mono(12, c.textFaint)),

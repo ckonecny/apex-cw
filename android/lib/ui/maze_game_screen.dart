@@ -385,7 +385,11 @@ class _MazeGameScreenState extends State<MazeGameScreen> with WidgetsBindingObse
   }
 
   TextStyle _mono(double size, Color color, {bool bold = false}) => TextStyle(
-      fontFamily: 'CwMono', fontSize: size, color: color,
+      fontSize: size, color: color,
+      fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(double size, Color color, {bool bold = false}) => TextStyle(
+      fontSize: size, color: color,
       fontWeight: bold ? FontWeight.bold : null);
 
   Widget _buildLobby(AppColors c) {
@@ -409,7 +413,7 @@ class _MazeGameScreenState extends State<MazeGameScreen> with WidgetsBindingObse
               Text(kochActiveChars(_koch, _kochSeq).join(' '),
                   textAlign: TextAlign.center,
                   maxLines: 2, overflow: TextOverflow.ellipsis,
-                  style: _mono(11, c.textFaint)),
+                  style: _morse(11, c.textFaint)),
             ])),
             IconButton(
               icon: Icon(Icons.add, color: c.textMuted),
@@ -522,7 +526,7 @@ class _MazeGameScreenState extends State<MazeGameScreen> with WidgetsBindingObse
             Icon(arrows[d], size: 18, color: c.textMuted),
             const SizedBox(width: 4),
             Text(legend[d].ltr,
-                style: _mono(18, legend[d].substituted ? c.warning : c.textPrimary,
+                style: _morse(18, legend[d].substituted ? c.warning : c.textPrimary,
                     bold: true)),
           ]),
         ),
@@ -641,7 +645,7 @@ class _MazePainter extends CustomPainter {
     void letter(String s, double x, double y, Color color) {
       final tp = TextPainter(
         text: TextSpan(text: s, style: TextStyle(
-            fontFamily: 'CwMono', fontSize: fontSize, color: color,
+            fontSize: fontSize, color: color,
             fontWeight: FontWeight.bold)),
         textDirection: TextDirection.ltr,
       )..layout();

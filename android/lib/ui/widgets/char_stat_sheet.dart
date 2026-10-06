@@ -76,14 +76,14 @@ class _CharStatSheet extends StatelessWidget {
     final chColor = charTypeColor(ch, c);
     final current = 1 - stat.emaErrorRate;
     final overall = stat.overallRate;
-    final mono = TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary);
-    final faint = TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint);
+    final mono = TextStyle(fontSize: 13, color: c.textPrimary);
+    final faint = TextStyle(fontSize: 12, color: c.textFaint);
 
     Widget section(String label, Widget child) => Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(label,
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                style: TextStyle(fontSize: 12, color: c.textMuted)),
             const SizedBox(height: 4),
             child,
           ]),
@@ -242,12 +242,12 @@ class _CharCurveState extends State<_CharCurve> {
   bool _hits = true;
 
   static TextStyle _label(AppColors c, bool on) =>
-      TextStyle(fontFamily: 'CwMono', fontSize: 13, color: on ? c.accent : c.textMuted);
+      TextStyle(fontSize: 13, color: on ? c.accent : c.textMuted);
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    final faint = TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint);
+    final faint = TextStyle(fontSize: 12, color: c.textFaint);
     final s = buildSeries(widget.days, ProgressRange.weeks12, DateTime.now());
     final attempts = [for (final b in s.buckets) b.charAttempts(widget.ch)];
     if (attempts.every((a) => a == 0)) {

@@ -45,6 +45,8 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
   cover/info for the old look; screenshots with the launcher icon, if any.
 
 ## Manual: pending for next release
+- UI font DM Sans (branch `feature/dm-sans-ui`, not yet merged): every screenshot
+  changes its look (titles/labels no longer monospace); retake all at release.
 - Retaken 2026-10-05 (DE+EN): `hear_start`, `hear_result`, `hear_weak`,
   `hear_sheet2`, `echo_start`, `echo_result`, `echo_result2` (the last one
   needs a 100 % block played by hand; the suggestion is not pre-ticked, tick

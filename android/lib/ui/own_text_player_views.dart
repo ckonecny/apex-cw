@@ -56,7 +56,7 @@ extension _OwnTextPlayerViews on _OwnTextPlayerScreenState {
           onPressed: _s.wpm < 60 ? () => set(_s.wpm + 1) : null,
         ),
         SizedBox(width: 62, child: Text('${_s.wpm} WPM', textAlign: TextAlign.right,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent))),
+            style: TextStyle(fontSize: 12, color: c.accent))),
       ]),
     );
   }
@@ -77,7 +77,7 @@ extension _OwnTextPlayerViews on _OwnTextPlayerScreenState {
                 Icon(Icons.visibility_outlined, size: 18, color: c.textMuted),
                 const SizedBox(width: 8),
                 Text(Strings.t('adv_tap_reveal'),
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+                    style: TextStyle(fontSize: 13, color: c.textMuted)),
               ]),
             ),
           ),
@@ -192,12 +192,12 @@ extension _OwnTextPlayerViews on _OwnTextPlayerScreenState {
         Widget stepper(String label, String value, String sub, VoidCallback? minus, VoidCallback? plus) =>
             Row(children: [
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary)),
-                Text(sub, style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+                Text(label, style: TextStyle(fontSize: 13, color: c.textPrimary)),
+                Text(sub, style: TextStyle(fontSize: 11, color: c.textFaint)),
               ])),
               IconButton(icon: const Icon(Icons.remove_circle_outline), color: c.accent, onPressed: minus),
               SizedBox(width: 50, child: Text(value, textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.accent,
+                  style: TextStyle(fontSize: 14, color: c.accent,
                       fontWeight: FontWeight.bold))),
               IconButton(icon: const Icon(Icons.add_circle_outline), color: c.accent, onPressed: plus),
             ]);
@@ -208,7 +208,7 @@ extension _OwnTextPlayerViews on _OwnTextPlayerScreenState {
             Center(child: Container(width: 36, height: 4, margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(color: c.border, borderRadius: BorderRadius.circular(2)))),
             Text(Strings.t('ot_settings'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary,
+                style: TextStyle(fontSize: 16, color: c.textPrimary,
                     fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             SettingsSectionHeader(Strings.t('adv_tempo').toUpperCase()),
@@ -238,7 +238,7 @@ extension _OwnTextPlayerViews on _OwnTextPlayerScreenState {
             ),
             Padding(padding: const EdgeInsets.only(top: 4),
                 child: Text(Strings.t('ot_show_desc'),
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint))),
+                    style: TextStyle(fontSize: 11, color: c.textFaint))),
           ]),
         ));
       }),

@@ -9,6 +9,9 @@ extension _HeadCopyViews on _HeadCopyScreenState {
       };
 
   TextStyle _mono(Color color, double size, {bool bold = false}) =>
+      TextStyle(fontSize: size, color: color, fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(Color color, double size, {bool bold = false}) =>
       TextStyle(fontFamily: 'CwMono', fontSize: size, color: color, fontWeight: bold ? FontWeight.bold : null);
 
   String _fill(String key, Map<String, Object> values) {
@@ -165,7 +168,7 @@ extension _HeadCopyViews on _HeadCopyScreenState {
           ),
         ]),
         AppCard(
-          child: Text('${_sentenceLabel(q.sentence)}${q.prompt}', style: _mono(c.textPrimary, 17)),
+          child: Text('${_sentenceLabel(q.sentence)}${q.prompt}', style: _morse(c.textPrimary, 17)),
         ),
         const SizedBox(height: 12),
         for (var i = 0; i < q.options.length; i++) ...[
@@ -247,7 +250,7 @@ extension _HeadCopyViews on _HeadCopyScreenState {
                 padding: EdgeInsets.only(top: i == 0 ? 0 : 10),
                 child: Text(
                   '${_sentenceLabel(i)}${r.sentences[i].text}',
-                  style: _mono(_playingIdx == i ? c.accent : c.textPrimary, 15, bold: _playingIdx == i),
+                  style: _morse(_playingIdx == i ? c.accent : c.textPrimary, 15, bold: _playingIdx == i),
                 ),
               ),
           ]),
@@ -286,8 +289,8 @@ extension _HeadCopyViews on _HeadCopyScreenState {
         const SizedBox(width: 8),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${_sentenceLabel(q.sentence)}${q.prompt}', style: _mono(c.textMuted, 12)),
-            Text(q.answer, style: _mono(c.textPrimary, 14)),
+            Text('${_sentenceLabel(q.sentence)}${q.prompt}', style: _morse(c.textMuted, 12)),
+            Text(q.answer, style: _morse(c.textPrimary, 14)),
             if (!ok) Text(q.options[answer], style: _mono(c.danger, 12)),
           ]),
         ),

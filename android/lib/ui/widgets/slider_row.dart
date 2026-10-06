@@ -24,7 +24,7 @@ class SliderRow extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: labelWidth, child: Text(label,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
+            style: TextStyle(fontSize: 11,
                 color: c.textMuted))),
         Expanded(child: SliderTheme(
           data: SliderTheme.of(context).copyWith(
@@ -46,7 +46,7 @@ class SliderRow extends StatelessWidget {
         SizedBox(width: valueWidth, child: Text(
             display ?? value.round().toString(),
             textAlign: TextAlign.right, softWrap: false,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
+            style: TextStyle(fontSize: 12,
                 color: c.accent))),
       ],
     );

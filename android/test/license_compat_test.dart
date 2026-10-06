@@ -45,8 +45,8 @@ const _assetLicences = <String, String>{
   'assets/zork/': 'Zork I–III',
   'assets/fonts/AnonymousPro': 'Anonymous Pro (font)',
   'assets/fonts/OFL-AnonymousPro.txt': 'Anonymous Pro (font)',
-  'assets/fonts/SpaceGrotesk': 'Space Grotesk (font)',
-  'assets/fonts/OFL-SpaceGrotesk.txt': 'Space Grotesk (font)',
+  'assets/fonts/DMSans': 'DM Sans (font)',
+  'assets/fonts/OFL-DMSans.txt': 'DM Sans (font)',
   'assets/licenses/GPL-3.0.txt': 'Next CW Trainer',
 };
 

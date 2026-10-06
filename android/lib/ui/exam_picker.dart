@@ -28,7 +28,7 @@ class ExamPicker extends StatelessWidget {
   Widget _chip(BuildContext context, String label, bool on, VoidCallback onTap) {
     final c = AppColors.of(context);
     return ChoiceChip(
-      label: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+      label: Text(label, style: TextStyle(fontSize: 13,
           color: on ? c.accent : c.textPrimary)),
       selected: on,
       showCheckmark: false,
@@ -108,7 +108,7 @@ class _CustomEditor extends StatelessWidget {
         );
     Widget kindChip(ExamKind k, String key) => ChoiceChip(
           label: Text(ExamStrings.t(key),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+              style: TextStyle(fontSize: 13,
                   color: p.kind == k ? c.accent : c.textPrimary)),
           selected: p.kind == k,
           showCheckmark: false,
@@ -119,7 +119,7 @@ class _CustomEditor extends StatelessWidget {
         );
     Widget sw(String key, bool v, ValueChanged<bool> set) => Row(children: [
           Expanded(child: Text(ExamStrings.t(key),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary))),
+              style: TextStyle(fontSize: 13, color: c.textPrimary))),
           Switch(value: v, onChanged: set),
         ]);
     return Padding(
@@ -149,7 +149,7 @@ class _CustomEditor extends StatelessWidget {
               for (final (code, key) in const [('de', 'ex_lang_de'), ('en', 'ex_lang_en')])
                 ChoiceChip(
                   label: Text(ExamStrings.t(key),
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+                      style: TextStyle(fontSize: 13,
                           color: p.lang == code ? c.accent : c.textPrimary)),
                   selected: p.lang == code,
                   showCheckmark: false,
@@ -164,7 +164,7 @@ class _CustomEditor extends StatelessWidget {
           ],
           const SizedBox(height: 6),
           Text(ExamStrings.t('ex_custom_hint'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+              style: TextStyle(fontSize: 11, color: c.textFaint)),
         ]),
       ),
     );

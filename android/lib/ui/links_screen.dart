@@ -67,10 +67,10 @@ class LinksScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(l.title, style: TextStyle(
-                              fontFamily: 'CwMono', fontSize: 18, color: c.textPrimary)),
+                              fontSize: 18, color: c.textPrimary)),
                           const SizedBox(height: 4),
                           Text(Strings.t(l.descKey), style: TextStyle(
-                              fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                              fontSize: 12, color: c.textMuted)),
                         ],
                       )),
                       Icon(Icons.open_in_new, color: c.textFaint, size: 20),
@@ -83,7 +83,7 @@ class LinksScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
               child: Text(Strings.t('links_note'), style: TextStyle(
-                  fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+                  fontSize: 11, color: c.textFaint)),
             ),
           ],
         ),

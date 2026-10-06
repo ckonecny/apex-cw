@@ -421,6 +421,10 @@ class _PileupScreenState extends State<PileupScreen> with WidgetsBindingObserver
   }
 
   TextStyle _mono(double size, Color color, {bool bold = false}) => TextStyle(
+      fontSize: size, color: color,
+      fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(double size, Color color, {bool bold = false}) => TextStyle(
       fontFamily: 'CwMono', fontSize: size, color: color,
       fontWeight: bold ? FontWeight.bold : null);
 
@@ -479,7 +483,7 @@ class _PileupScreenState extends State<PileupScreen> with WidgetsBindingObserver
         const SizedBox(height: 6),
         Text(Strings.t('pu_send'), style: _mono(14, c.accentPurple)),
         const SizedBox(height: 6),
-        Text(_engine.attackPrompt, style: _mono(30, c.accentPurple, bold: true)),
+        Text(_engine.attackPrompt, style: _morse(30, c.accentPurple, bold: true)),
       ]);
     } else if (cur == null) {
       center = Text(Strings.t('pu_waiting'), style: _mono(13, c.textFaint));
@@ -497,7 +501,7 @@ class _PileupScreenState extends State<PileupScreen> with WidgetsBindingObserver
         ),
         const SizedBox(height: 12),
         if (reveal)
-          Text(cur.call, style: _mono(30, c.textPrimary, bold: true))
+          Text(cur.call, style: _morse(30, c.textPrimary, bold: true))
         else
           Text(Strings.t('pu_listen')
                   .replaceAll('{n}', '${min(_plays + 1, d.playsBeforeReveal)}')
@@ -544,8 +548,8 @@ class _PileupScreenState extends State<PileupScreen> with WidgetsBindingObserver
           SizedBox(
             height: 34,
             child: _input.isEmpty
-                ? Text(Strings.t('pu_key_hint'), style: _mono(12, c.textFaint))
-                : Text(_input, style: _mono(24, c.info, bold: true)),
+                ? Text(Strings.t('pu_key_hint'), style: _morse(12, c.textFaint))
+                : Text(_input, style: _morse(24, c.info, bold: true)),
           ),
           OutlinedButton(
             onPressed: _input.isEmpty ? null : _submit,

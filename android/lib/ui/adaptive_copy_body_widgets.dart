@@ -62,7 +62,7 @@ class SuggestionRow extends StatelessWidget {
             if (highlight) const SizedBox(width: 4),
             Expanded(
               child: Text(label,
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: highlight ? 15 : 14,
+                  style: TextStyle(fontSize: highlight ? 15 : 14,
                       fontWeight: highlight ? FontWeight.bold : FontWeight.normal,
                       color: accepted ? c.accent : c.textMuted,
                       decoration: accepted ? null : TextDecoration.lineThrough)),

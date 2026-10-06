@@ -64,7 +64,7 @@ class _ProgressViewState extends State<ProgressView> {
   }
 
   static TextStyle _chipLabel(AppColors c, bool on) =>
-      TextStyle(fontFamily: 'CwMono', fontSize: 13, color: on ? c.accent : c.textMuted);
+      TextStyle(fontSize: 13, color: on ? c.accent : c.textMuted);
 
   static String _time(int seconds, ProgressRange r) =>
       seconds == 0 ? '–' : formatDuration(seconds, days: r == ProgressRange.all);
@@ -81,7 +81,7 @@ class _ProgressViewState extends State<ProgressView> {
           border: Border.all(color: c.borderAlt),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title, style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+          Text(title, style: TextStyle(fontSize: 12, color: c.textMuted)),
           const SizedBox(height: 8),
           child,
         ]),
@@ -98,7 +98,7 @@ class _ProgressViewState extends State<ProgressView> {
           ),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text.rich(TextSpan(
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
+                style: TextStyle(fontSize: 16,
                     fontWeight: FontWeight.bold, color: c.textPrimary),
                 children: [
                   TextSpan(text: value),
@@ -106,7 +106,7 @@ class _ProgressViewState extends State<ProgressView> {
                     TextSpan(text: ' $arrow', style: TextStyle(color: arrowColor, fontSize: 13)),
                 ])),
             const SizedBox(height: 2),
-            Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+            Text(label, style: TextStyle(fontSize: 11, color: c.textFaint)),
           ]),
         ),
       );
@@ -118,7 +118,7 @@ class _ProgressViewState extends State<ProgressView> {
     final s = buildSeries(widget.days, _range, now, practice: widget.practice, track: widget.track);
     final g = s.granularity;
     final unit = unitName(g);
-    final mono12 = TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint);
+    final mono12 = TextStyle(fontSize: 12, color: c.textFaint);
 
     final chips = chipsThemed(context, Wrap(spacing: 8, runSpacing: 4, children: [
       for (final r in ProgressRange.values)
@@ -277,8 +277,8 @@ class _ProgressViewState extends State<ProgressView> {
     final hs = buildSeries(widget.days, _range, now, weekly: true);
     final rows = heatmapRows(hs, widget.order, weakestFirst: _weakestFirst);
     if (rows.isEmpty) return const SizedBox.shrink();
-    final mono12 = TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint);
-    final mono10 = TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textFaint);
+    final mono12 = TextStyle(fontSize: 12, color: c.textFaint);
+    final mono10 = TextStyle(fontSize: 10, color: c.textFaint);
     final month = hs.granularity == Granularity.month;
     // As tall as the screen allows (all rows if they fit), then the rows scroll.
     final bodyH = (rows.length * _cellH)
@@ -367,7 +367,7 @@ class _ProgressViewState extends State<ProgressView> {
                       height: _cellH,
                       child: Center(
                           child: Text(_display(ch),
-                              style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
+                              style: TextStyle(fontSize: 14,
                                   fontWeight: FontWeight.bold, color: c.textPrimary))),
                     ),
                   ),

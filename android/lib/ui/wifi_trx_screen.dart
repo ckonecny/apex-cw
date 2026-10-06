@@ -421,7 +421,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
             isExpanded: true,
             isDense: true,
             dropdownColor: c.surface,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.accent),
+            style: TextStyle(fontSize: 14, color: c.accent),
             decoration: InputDecoration(
               isDense: true, filled: true, fillColor: c.surface,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
@@ -454,13 +454,13 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
           const SizedBox(width: 6),
           Expanded(child: Text(
               _status.isEmpty ? Strings.t('trx_not_connected') : _status,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted))),
+              style: TextStyle(fontSize: 11, color: c.textMuted))),
         ]),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(children: [
-          Text('${_keyerMode == 4 ? _measuredWpm : _wpm} WPM', style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent)),
+          Text('${_keyerMode == 4 ? _measuredWpm : _wpm} WPM', style: TextStyle(fontSize: 12, color: c.accent)),
           // Straight key: disabled, follows the measured speed.
           Expanded(child: _keyerMode == 4
               ? Slider(value: _measuredWpm.toDouble(), min: 5, max: 60,
@@ -514,7 +514,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
             decoration: InputDecoration(
               isDense: true, filled: true, fillColor: c.surface,
               hintText: Strings.t('trx_send_hint'),
-              hintStyle: TextStyle(fontFamily: 'CwMono', color: c.textDisabled),
+              hintStyle: TextStyle(color: c.textDisabled),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
                   borderSide: BorderSide(color: c.border)),
             ),

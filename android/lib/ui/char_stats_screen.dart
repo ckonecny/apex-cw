@@ -170,7 +170,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
                           st.contains(WidgetState.selected) ? c.accent : c.textMuted),
                       side: WidgetStatePropertyAll(BorderSide(color: c.borderAlt)),
                       textStyle: const WidgetStatePropertyAll(
-                          TextStyle(fontFamily: 'CwMono', fontSize: 14)),
+                          TextStyle(fontSize: 14)),
                     ),
                     segments: [
                       ButtonSegment(value: 0, label: Text(Strings.t('pr_tab_chars'))),
@@ -201,7 +201,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
     if (_active.isEmpty) {
       return Center(
         child: Text(Strings.t('char_stats_empty'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.textMuted)),
+            style: TextStyle(fontSize: 14, color: c.textMuted)),
       );
     }
     final rows = _active.map((ch) {
@@ -225,20 +225,20 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
       padding: const EdgeInsets.all(20),
       children: [
         Text(Strings.t(_isHear ? 'char_stats_desc' : 'char_stats_desc_echo'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint)),
+            style: TextStyle(fontSize: 12, color: c.textFaint)),
         const SizedBox(height: 8),
         Text(
             Strings.t('char_stats_rule')
                 .replaceFirst('{n}', '$_unlockOccurrences')
                 .replaceFirst('{x}', '${(_highThreshold * 100).round()}'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint)),
+            style: TextStyle(fontSize: 12, color: c.textFaint)),
         const SizedBox(height: 8),
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Icon(Icons.touch_app, size: 16, color: c.textMuted),
           const SizedBox(width: 6),
           Expanded(
             child: Text(Strings.t('char_stats_tap_hint'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                style: TextStyle(fontSize: 12, color: c.textMuted)),
           ),
         ]),
         const SizedBox(height: 12),
@@ -254,7 +254,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
               Strings.t('char_stats_ready_summary')
                   .replaceFirst('{ready}', '$readyCount')
                   .replaceFirst('{total}', '${rows.length}'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+              style: TextStyle(fontSize: 13,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
         ),
         const SizedBox(height: 16),
@@ -336,7 +336,7 @@ class _CharStatRow extends StatelessWidget {
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(reasons.join(' · '),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                style: TextStyle(fontSize: 12, color: c.textMuted)),
             const SizedBox(height: 4),
             ClipRRect(
               borderRadius: BorderRadius.circular(3),
@@ -352,10 +352,10 @@ class _CharStatRow extends StatelessWidget {
         const SizedBox(width: 12),
         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Text('${(hitRate * 100).toStringAsFixed(1)}%',
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, fontWeight: FontWeight.bold,
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold,
                   color: hitRate >= highThreshold ? c.accent : c.textMuted)),
           Text(Strings.t('char_stats_current'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textFaint)),
+              style: TextStyle(fontSize: 10, color: c.textFaint)),
         ]),
         const SizedBox(width: 8),
         Icon(ready ? Icons.check_circle : Icons.hourglass_bottom,

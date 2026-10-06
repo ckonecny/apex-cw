@@ -108,7 +108,7 @@ class _ProgressLineChartState extends State<ProgressLineChart> {
 }
 
 Widget _detailText(AppColors c, String text, bool active) => Text(text,
-    style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: active ? c.textPrimary : c.textFaint));
+    style: TextStyle(fontSize: 12, color: active ? c.textPrimary : c.textFaint));
 
 class _LinePainter extends CustomPainter {
   final ProgressLineChart w;
@@ -120,7 +120,7 @@ class _LinePainter extends CustomPainter {
 
   void _text(Canvas canvas, String s, Offset at, {bool alignRight = false, bool center = false}) {
     final tp = TextPainter(
-      text: TextSpan(text: s, style: TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textFaint)),
+      text: TextSpan(text: s, style: TextStyle(fontFamily: 'DMSans', fontSize: 10, color: c.textFaint)),
       textDirection: TextDirection.ltr,
     )..layout();
     final dx = alignRight ? at.dx - tp.width : center ? at.dx - tp.width / 2 : at.dx;
@@ -225,7 +225,7 @@ class _ProgressBarsState extends State<ProgressBars> {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final w = widget;
-    final faint = TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textFaint);
+    final faint = TextStyle(fontSize: 10, color: c.textFaint);
     final sel = _sel != null && _sel! < w.values.length ? _sel : null;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       SizedBox(
@@ -274,8 +274,8 @@ Widget chipsThemed(BuildContext context, Widget child) {
         backgroundColor: c.surfaceAlt,
         selectedColor: c.accent.withValues(alpha: 0.18),
         side: BorderSide(color: c.borderAlt),
-        labelStyle: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted),
-        secondaryLabelStyle: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent),
+        labelStyle: TextStyle(fontSize: 13, color: c.textMuted),
+        secondaryLabelStyle: TextStyle(fontSize: 13, color: c.accent),
         checkmarkColor: c.accent,
       ),
     ),

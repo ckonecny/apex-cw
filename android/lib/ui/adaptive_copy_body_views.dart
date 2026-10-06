@@ -38,7 +38,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
     final c = AppColors.of(context);
     return SizedBox(width: double.infinity, child: AppCard(child: Column(mainAxisSize: MainAxisSize.min, children: [
       Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 11 * scale, color: c.textMuted)),
+          style: TextStyle(fontSize: 11 * scale, color: c.textMuted)),
       const SizedBox(height: 8),
       Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
         children: _weakChars.entries.map((e) {
@@ -90,14 +90,14 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
     final c = AppColors.of(context);
     return SizedBox(width: double.infinity, child: AppCard(child: Row(children: [
       Expanded(child: Text(Strings.t('ac_spacing_control_title'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 11 * scale, color: c.textMuted))),
+          style: TextStyle(fontSize: 11 * scale, color: c.textMuted))),
       _TapTarget(onTap: () => _adjustSpacing(-1),
           child: Icon(Icons.remove, size: 20, color: c.accent)),
       SizedBox(
         width: 60 * scale,
         child: Text('${widget.interCharSpace}/${widget.interWordSpace}',
             textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 15 * scale,
+            style: TextStyle(fontSize: 15 * scale,
                 fontWeight: FontWeight.bold, color: c.textPrimary)),
       ),
       _TapTarget(onTap: () => _adjustSpacing(1),
@@ -111,10 +111,10 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(Strings.t('ac_block_label').replaceFirst('{n}', '$_blockNumber'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
+            style: TextStyle(fontSize: 12,
                 fontWeight: FontWeight.bold, color: c.textMuted)),
         Text('${widget.contentModeLabels[widget.contentModeIndex]}${widget.kochLesson ? ' · KOCH ${widget.kochLevel}' : ''}',
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+            style: TextStyle(fontSize: 12, color: c.textMuted)),
       ]),
     );
   }
@@ -127,7 +127,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
         child: Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Text(_preparing ? Strings.t('get_ready') : Strings.t('ac_listening'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 26,
+                style: TextStyle(fontSize: 26,
                     fontWeight: FontWeight.bold,
                     color: _preparing ? c.warning : c.textPrimary)),
             const SizedBox(height: 20),
@@ -150,10 +150,10 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                 Strings.t(_playsGroups ? 'ac_group_of' : 'ac_word_of')
                     .replaceFirst('{n}', '${(_currentGroupIndex + 1).clamp(1, _blockSize)}')
                     .replaceFirst('{total}', '$_blockSize'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+                style: TextStyle(fontSize: 13, color: c.textMuted)),
             const SizedBox(height: 6),
             Text('$_activeWpm WPM',
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textDisabled)),
+                style: TextStyle(fontSize: 12, color: c.textDisabled)),
             if (_awaitingChoice) ...[
               const SizedBox(height: 24),
               Padding(
@@ -168,7 +168,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
               ),
               const SizedBox(height: 6),
               Text(Strings.t('ac_paddle_hint'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 10, color: c.textMuted)),
+                  style: TextStyle(fontSize: 10, color: c.textMuted)),
             ],
           ]),
         ),
@@ -194,7 +194,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   Widget _buildTyping(BuildContext context) {
     final c = AppColors.of(context);
     final i = _currentGroupIndex;
-    final mono = TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted);
+    final mono = TextStyle(fontSize: 13, color: c.textMuted);
     final attempts = i < _typedAttempts.length ? _typedAttempts[i] : const <String?>[];
     // The fixed heights below keep the layout from jumping between states;
     // they grow with the system font size so the text still fits.
@@ -203,7 +203,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
     Widget center;
     if (_preparing) {
       center = Text(Strings.t('get_ready'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 26,
+          style: TextStyle(fontSize: 26,
               fontWeight: FontWeight.bold, color: c.warning));
     } else {
       final solution = _typeState == _TypeState.solution;
@@ -270,7 +270,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(color: badgeColor.withValues(alpha: 0.13),
               borderRadius: BorderRadius.circular(14)),
-          child: Text(badge, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: badgeColor)),
+          child: Text(badge, style: TextStyle(fontSize: 13, color: badgeColor)),
         )),
         const SizedBox(height: 6),
         // Earlier attempts of this word, struck through — no hint where the
@@ -283,7 +283,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             ? Column(mainAxisSize: MainAxisSize.min, children: [
                 for (var a = 0; a < attempts.length; a++)
                   SizedBox(height: 18 * f, child: Text('${a + 1}.  ${attempts[a] == null ? '— ${Strings.t('ac_type_passed')}'
-                      : attempts[a]!.split('').map(_displayChar).join()}', style: mono)),
+                      : attempts[a]!.split('').map(_displayChar).join()}', style: mono.copyWith(fontFamily: 'CwMono'))),
               ])
             : Text([
                 for (final a in attempts.take(wrong ? attempts.length - 1 : attempts.length))
@@ -303,7 +303,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                 Icon(Icons.graphic_eq, size: 16, color: c.accent),
                 const SizedBox(width: 6),
                 Text(Strings.t(_submitRequested ? 'ac_type_check_after' : 'ac_type_playing'),
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent)),
+                    style: TextStyle(fontSize: 12, color: c.accent)),
               ])
             : null),
       ]);
@@ -343,10 +343,10 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(Strings.t('ac_sent_title'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 18,
+              style: TextStyle(fontSize: 18,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
           Text(Strings.t(_typing ? 'ac_sent_desc_typed' : 'ac_sent_desc'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+              style: TextStyle(fontSize: 12, color: c.textMuted)),
         ]),
       ),
       Expanded(
@@ -404,7 +404,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
         ),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Text('${i + 1}',
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textDisabled)),
+              style: TextStyle(fontSize: 11, color: c.textDisabled)),
           const SizedBox(height: 2),
           Wrap(
             alignment: WrapAlignment.center,
@@ -425,7 +425,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                 a == null ? '— ${Strings.t('ac_type_passed')}' : a.split('').map(_displayChar).join()
             ].join(' · '),
                 textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                style: TextStyle(fontSize: 12, color: c.textMuted)),
           ],
         ]),
       ),
@@ -443,10 +443,10 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(Strings.t(_playsGroups ? 'ac_group_title' : 'ac_word_title').replaceFirst('{n}', '${wordIndex + 1}'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 18,
+              style: TextStyle(fontSize: 18,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
           Text(Strings.t('ac_mark_desc'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+              style: TextStyle(fontSize: 12, color: c.textMuted)),
         ]),
       ),
       Expanded(
@@ -502,18 +502,18 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: SizedBox(width: double.infinity, child: BreakHintCard()),
             ),
-            Text('$pct %', style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 52,
+            Text('$pct %', style: TextStyle(fontFamily: 'DMSans', fontSize: 52,
                 fontVariations: const [FontVariation('wght', 600)],
                 color: pct >= 90 ? c.accent : pct >= 70 ? c.warning : c.danger)),
             Text(Strings.t('ac_correct_of')
                     .replaceFirst('{c}', '$_resultCorrect').replaceFirst('{t}', '$_resultTotal'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textMuted)),
+                style: TextStyle(fontSize: 16, color: c.textMuted)),
             if (_trend != null) ...[
               const SizedBox(height: 10),
               Text(Strings.t('trend_line')
                       .replaceFirst('{pct}', '${_trend!.percent}')
                       .replaceFirst('{arrow}', _trend!.arrow),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+                  style: TextStyle(fontSize: 13, color: c.textMuted)),
             ],
             const SizedBox(height: 20),
             _buildSpacingControl(context, scale: 1.2),
@@ -528,7 +528,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             if (_hasSuggestions) ...[
               const SizedBox(height: 20),
               Text(Strings.t('ac_suggestions_title'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+                  style: TextStyle(fontSize: 13, color: c.textMuted)),
               const SizedBox(height: 8),
               ..._buildSuggestionRows(context),
             ],
@@ -599,7 +599,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
         if (items.length > maxChips) Padding(
           padding: const EdgeInsets.symmetric(vertical: 3),
           child: Text(Strings.t('ac_outlook_more').replaceFirst('{n}', '${items.length - maxChips}'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+              style: TextStyle(fontSize: 13, color: c.textMuted)),
         ),
       ]);
     }
@@ -615,13 +615,13 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           .replaceFirst('{pct}', '${(th.highThreshold * 100).round()}'),
           [for (final x in e) '${_displayChar(x.key)} ${x.value} %']));
     }
-    final mono = TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted);
+    final mono = TextStyle(fontSize: 13, color: c.textMuted);
     return SizedBox(
       width: double.infinity,
       child: AppCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(Strings.t('ac_outlook_title').replaceFirst('{ch}', next),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
+              style: TextStyle(fontSize: 14,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
           const SizedBox(height: 10),
           ClipRRect(

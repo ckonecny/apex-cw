@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 ICON = os.path.join(ROOT, 'android', 'tool', 'icon', 'icon_fullbleed.png')
-FONT = os.path.join(ROOT, 'android', 'assets', 'fonts', 'SpaceGrotesk.ttf')
+FONT = os.path.join(ROOT, 'android', 'assets', 'fonts', 'DMSans.ttf')
 OUT = os.path.join(ROOT, 'store', 'out')
 
 FEATURE = {

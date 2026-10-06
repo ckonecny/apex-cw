@@ -188,14 +188,14 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
 
   Widget _speed(AppColors c) => Row(mainAxisSize: MainAxisSize.min, children: [
         Text(Strings.t('tree_speed'), style: TextStyle(
-            fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+            fontSize: 12, color: c.textMuted)),
         IconButton(
           icon: const Icon(Icons.remove),
           color: c.textMuted,
           onPressed: () => _setWpm(_wpm - 1),
         ),
         Text('$_wpm', style: TextStyle(
-            fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
+            fontSize: 16, color: c.textPrimary)),
         IconButton(
           icon: const Icon(Icons.add),
           color: c.textMuted,
@@ -216,7 +216,7 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
       ? Padding(
           padding: const EdgeInsets.only(top: 6),
           child: Text(Strings.t('tree_ch_note'), style: TextStyle(
-              fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)))
+              fontSize: 11, color: c.textMuted)))
       : const SizedBox.shrink();
 
   @override
@@ -258,7 +258,7 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
                 children: [
                   Text(Strings.t('tree_intro'), style: TextStyle(
-                      fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                      fontSize: 12, color: c.textMuted)),
                   const SizedBox(height: 12),
                   _treeArea(
                       height: 52.0 * (maxDepth + 1) + 30, landscape: false),

@@ -267,7 +267,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(Strings.t('cp_pause_desc'),
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
+                    style: TextStyle(fontSize: 11,
                         color: c.textFaint, fontStyle: FontStyle.italic)),
               ),
             ]),
@@ -338,7 +338,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
                                 _ok!
                                     ? Strings.t('cp_correct')
                                     : Strings.t('cp_wrong').replaceFirst('{ch}', _shown(_given)),
-                                style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
+                                style: TextStyle(fontSize: 14,
                                     color: feedbackColor)),
                       ),
                     ]),
@@ -348,7 +348,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text(Strings.t('cp_hint'),
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
+                      style: TextStyle(fontSize: 11,
                           color: c.textFaint, fontStyle: FontStyle.italic)),
                 ),
               ]),

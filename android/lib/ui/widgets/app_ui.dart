@@ -1,5 +1,5 @@
 // Shared look of the app (start-page style): flat cards, solid buttons,
-// Space Grotesk titles. Screens use these instead of restyling locally.
+// DM Sans titles. Screens use these instead of restyling locally.
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 
@@ -28,7 +28,7 @@ class NoTextScale extends StatelessWidget {
 
 /// App bar title in the modern title font.
 Widget appBarTitle(AppColors c, String text) => Text(text,
-    style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 20,
+    style: TextStyle(fontFamily: 'DMSans', fontSize: 20,
         color: c.textPrimary, fontVariations: _titleVariations));
 
 /// Flat surface card, no border.
@@ -64,7 +64,7 @@ class AppCaption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(text.toUpperCase(),
-      style: TextStyle(fontFamily: 'CwMono', fontSize: 11, letterSpacing: 1,
+      style: TextStyle(fontSize: 11, letterSpacing: 1,
           color: AppColors.of(context).textMuted));
 }
 
@@ -86,7 +86,7 @@ class AppButton extends StatelessWidget {
     // One line, shrunk to fit rather than clipped or wrapped: half-width
     // buttons ("Nächster Block") run out of room at larger font sizes.
     final label0 = Text(label, maxLines: 1, softWrap: false,
-        style: const TextStyle(fontFamily: 'CwMono', fontSize: 15, fontWeight: FontWeight.bold));
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold));
     final Widget text = FittedBox(fit: BoxFit.scaleDown, child: icon == null
         ? label0
         : Row(mainAxisSize: MainAxisSize.min, children: [
@@ -228,13 +228,13 @@ class HubCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: TextStyle(
-                    fontFamily: 'CwMono', fontSize: 20, color: c.textPrimary)),
+                    fontSize: 20, color: c.textPrimary)),
                 const SizedBox(height: 4),
                 Text(subtitle, style: TextStyle(
-                    fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                    fontSize: 12, color: c.textMuted)),
                 const SizedBox(height: 6),
                 Text(hint, style: TextStyle(
-                    fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+                    fontSize: 11, color: c.textFaint)),
               ],
             )),
             Icon(Icons.chevron_right, color: c.textFaint),

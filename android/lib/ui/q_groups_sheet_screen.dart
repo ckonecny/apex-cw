@@ -22,6 +22,9 @@ class _QGroupsSheetScreenState extends State<QGroupsSheetScreen> {
   bool _all = false;
 
   TextStyle _mono(Color color, double size, {bool bold = false}) =>
+      TextStyle(fontSize: size, color: color, fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(Color color, double size, {bool bold = false}) =>
       TextStyle(fontFamily: 'CwMono', fontSize: size, color: color, fontWeight: bold ? FontWeight.bold : null);
 
   @override
@@ -77,7 +80,7 @@ class _QGroupsSheetScreenState extends State<QGroupsSheetScreen> {
     return Padding(
       padding: EdgeInsets.only(bottom: last ? 0 : 12),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SizedBox(width: 60, child: Text(g.code, style: _mono(c.accent, 16, bold: true))),
+        SizedBox(width: 60, child: Text(g.code, style: _morse(c.accent, 16, bold: true))),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(t.statement, style: _mono(c.textPrimary, 14)),

@@ -49,6 +49,7 @@ class NextCwTrainerApp extends StatelessWidget {
           surface: c.surface,
           onSurface: c.textPrimary,
         ),
+        fontFamily: 'DMSans',
         scaffoldBackgroundColor: c.background,
         useMaterial3: true,
       );

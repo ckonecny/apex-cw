@@ -495,6 +495,10 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
   }
 
   TextStyle _mono(double size, Color color, {bool bold = false}) => TextStyle(
+      fontSize: size, color: color,
+      fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(double size, Color color, {bool bold = false}) => TextStyle(
       fontFamily: 'CwMono', fontSize: size, color: color,
       fontWeight: bold ? FontWeight.bold : null);
 
@@ -550,7 +554,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
                 Text(kochActiveChars(_koch, _kochSeq).join(' '),
                     textAlign: TextAlign.center,
                     maxLines: 2, overflow: TextOverflow.ellipsis,
-                    style: _mono(11, c.textFaint)),
+                    style: _morse(11, c.textFaint)),
               ])),
               IconButton(
                 icon: Icon(Icons.add, color: c.textMuted),
@@ -586,7 +590,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
         height: 96 * textScaleOf(context),
         child: Center(
           child: _promptShown && _chain.isNotEmpty
-              ? Text(_chain.last, style: _mono(64, c.warning, bold: true))
+              ? Text(_chain.last, style: _morse(64, c.warning, bold: true))
               : _promptPlaying
                   ? Icon(Icons.volume_up, size: 40, color: c.info)
                   : null,
@@ -690,7 +694,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
                 ),
                 child: slice[i].$3 == null
                     ? null
-                    : Text(slice[i].$3!, style: _mono(w * 0.5, slice[i].$4, bold: true)),
+                    : Text(slice[i].$3!, style: _morse(w * 0.5, slice[i].$4, bold: true)),
               ),
             ],
           ]),

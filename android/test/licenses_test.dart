@@ -17,7 +17,7 @@ void main() {
     final entries = await LicenseRegistry.licenses.toList();
     final packages = entries.expand((e) => e.packages).toSet();
     expect(packages, containsAll(['Next CW Trainer', 'Zork I–III',
-        'Anonymous Pro (font)', 'Space Grotesk (font)']));
+        'Anonymous Pro (font)', 'DM Sans (font)']));
     final gpl = entries.firstWhere((e) => e.packages.contains('Next CW Trainer'));
     expect(gpl.paragraphs.map((p) => p.text).join('\n'),
         contains('GNU GENERAL PUBLIC LICENSE'));

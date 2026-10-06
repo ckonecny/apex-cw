@@ -118,14 +118,14 @@ class _MorseChartScreenState extends State<MorseChartScreen> {
 
   Widget _speed(AppColors c) => Row(mainAxisSize: MainAxisSize.min, children: [
         Text(Strings.t('tree_speed'), style: TextStyle(
-            fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+            fontSize: 12, color: c.textMuted)),
         IconButton(
           icon: const Icon(Icons.remove),
           color: c.textMuted,
           onPressed: () => _setWpm(_wpm - 1),
         ),
         Text('$_wpm', style: TextStyle(
-            fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
+            fontSize: 16, color: c.textPrimary)),
         IconButton(
           icon: const Icon(Icons.add),
           color: c.textMuted,
@@ -138,7 +138,7 @@ class _MorseChartScreenState extends State<MorseChartScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(2, 16, 0, 8),
         child: Text(Strings.t(titleKey).toUpperCase(), style: TextStyle(
-            fontFamily: 'CwMono', fontSize: 12, letterSpacing: 1.2,
+            fontSize: 12, letterSpacing: 1.2,
             color: c.textMuted)),
       ),
       LayoutBuilder(builder: (context, box) {
@@ -185,7 +185,7 @@ class _MorseChartScreenState extends State<MorseChartScreen> {
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
           children: [
             Text(Strings.t('chart_intro'), style: TextStyle(
-                fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                fontSize: 12, color: c.textMuted)),
             const SizedBox(height: 4),
             Align(alignment: Alignment.centerRight, child: _speed(c)),
             _section(c, 'chart_letters', _letters),

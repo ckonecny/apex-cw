@@ -74,7 +74,7 @@ class _AdventureMapScreenState extends State<AdventureMapScreen> {
   /// (show, don't ask again).
   Future<(bool, bool)> _confirmWhole() async {
     final c = AppColors.of(context);
-    TextStyle mono(double s, Color col, {bool bold = false}) => TextStyle(fontFamily: 'CwMono',
+    TextStyle mono(double s, Color col, {bool bold = false}) => TextStyle(
         fontSize: s, color: col, fontWeight: bold ? FontWeight.bold : FontWeight.normal);
     var noAsk = false;
     final ok = await showDialog<bool>(
@@ -170,7 +170,7 @@ class _AdventureMapScreenState extends State<AdventureMapScreen> {
         Padding(
           padding: EdgeInsets.fromLTRB(16, 8, 16, 12 + MediaQuery.of(context).padding.bottom),
           child: Text(Strings.t(_whole ? 'adv_map_legend_whole' : 'adv_map_legend'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+              style: TextStyle(fontSize: 11, color: c.textFaint)),
         ),
       ]),
     );
@@ -187,7 +187,7 @@ class _AdventureMapScreenState extends State<AdventureMapScreen> {
             alignment: Alignment.center,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: on ? c.accent : c.border)),
-            child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+            child: Text(label, style: TextStyle(fontSize: 13,
                 fontWeight: on ? FontWeight.bold : FontWeight.normal,
                 color: on ? c.accent : c.textMuted)),
           ),

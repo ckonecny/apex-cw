@@ -67,7 +67,7 @@ extension _AdventureViews on _AdventureScreenState {
             Icon(Icons.visibility_outlined, size: 18, color: c.textMuted),
             const SizedBox(width: 8),
             Text(Strings.t('adv_tap_reveal'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+                style: TextStyle(fontSize: 13, color: c.textMuted)),
           ]),
         ),
       );
@@ -152,7 +152,7 @@ extension _AdventureViews on _AdventureScreenState {
                 fit: BoxFit.scaleDown,
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(icon, size: 20, color: onTap == null ? c.textDisabled : c.textPrimary),
-                  Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
+                  Text(label, style: TextStyle(fontSize: 10,
                       color: onTap == null ? c.textDisabled : c.textMuted)),
                 ]),
               ))),
@@ -178,7 +178,7 @@ extension _AdventureViews on _AdventureScreenState {
                   Icon(Icons.replay, color: canPlay ? c.background : c.textDisabled),
                   const SizedBox(width: 8),
                   Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(Strings.t('adv_again'),
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 15, fontWeight: FontWeight.bold,
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,
                           color: canPlay ? c.background : c.textDisabled)))),
                 ],
               )),
@@ -227,7 +227,7 @@ extension _AdventureViews on _AdventureScreenState {
       if (!_compact) Padding(
         padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
         child: Text(hint, maxLines: 1, overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+            style: TextStyle(fontSize: 11, color: c.textFaint)),
       ),
       if (paddle) ..._paddleInput(c) else CwKeyboard(
         active: _keyboardKeys,
@@ -258,7 +258,7 @@ extension _AdventureViews on _AdventureScreenState {
                 Icon(icon, size: 18, color: color != null ? c.background : c.textMuted),
                 const SizedBox(width: 6),
                 Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(label,
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+                    style: TextStyle(fontSize: 13,
                         fontWeight: color != null ? FontWeight.bold : FontWeight.normal,
                         color: color != null ? c.background : c.textMuted)))),
               ])),
@@ -305,11 +305,11 @@ extension _AdventureViews on _AdventureScreenState {
       padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + MediaQuery.of(context).padding.bottom),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Text(Strings.t('adv_end_title'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 18, fontWeight: FontWeight.bold,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,
                 color: c.textPrimary)),
         const SizedBox(height: 4),
         Text(Strings.t('adv_end_body').replaceAll('{s}', '${st.score}').replaceAll('{m}', '${st.moves}'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+            style: TextStyle(fontSize: 13, color: c.textMuted)),
         const SizedBox(height: 14),
         Row(children: [
           Expanded(child: AppButton(label: Strings.t('adv_load_save'), color: c.accent, onTap: _openSaves)),

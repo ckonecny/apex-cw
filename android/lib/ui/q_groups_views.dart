@@ -8,6 +8,9 @@ extension _QGroupsViews on _QGroupsScreenState {
       };
 
   TextStyle _mono(Color color, double size, {bool bold = false}) =>
+      TextStyle(fontSize: size, color: color, fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(Color color, double size, {bool bold = false}) =>
       TextStyle(fontFamily: 'CwMono', fontSize: size, color: color, fontWeight: bold ? FontWeight.bold : null);
 
   String _fill(String key, Map<String, Object> values) {
@@ -153,7 +156,7 @@ extension _QGroupsViews on _QGroupsScreenState {
             const SizedBox(height: 8),
             // The group stays hidden until it is answered.
             Text(_picked == null ? '?' : q.cwText,
-                style: _mono(_picked == null ? c.textFaint : c.textPrimary, 26, bold: true)),
+                style: _morse(_picked == null ? c.textFaint : c.textPrimary, 26, bold: true)),
             const SizedBox(height: 4),
             Text(Strings.t('qg_prompt'), style: _mono(c.textMuted, 13)),
           ]),
@@ -265,7 +268,7 @@ extension _QGroupsViews on _QGroupsScreenState {
           const SizedBox(width: 8),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(q.cwText, style: _mono(playing ? c.accent : c.textPrimary, 15, bold: true)),
+              Text(q.cwText, style: _morse(playing ? c.accent : c.textPrimary, 15, bold: true)),
               Text(q.answer, style: _mono(c.textMuted, 13)),
               if (!ok) Text(q.options[answer], style: _mono(c.danger, 12)),
             ]),
