@@ -11,7 +11,7 @@ import 'widgets/app_ui.dart';
 import 'widgets/setting_rows.dart';
 
 TextStyle _mono(double size, Color color, {bool bold = false}) => TextStyle(
-    fontFamily: 'CwMono', fontSize: size, color: color,
+    fontSize: size, color: color,
     fontWeight: bold ? FontWeight.bold : FontWeight.normal);
 
 Widget _grab(AppColors c) => Center(child: Container(

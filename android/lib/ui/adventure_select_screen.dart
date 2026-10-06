@@ -77,14 +77,14 @@ class _AdventureSelectScreenState extends State<AdventureSelectScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
                   Text(Strings.t('adv_hint'),
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                      style: TextStyle(fontSize: 12, color: c.textMuted)),
                   const SizedBox(height: 16),
                   AppCaption(Strings.t('adv_choose')),
                   const SizedBox(height: 8),
                   for (final g in adventureGames) _gameCard(c, g),
                   const SizedBox(height: 12),
                   Text(Strings.t('adv_credits'),
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+                      style: TextStyle(fontSize: 11, color: c.textFaint)),
                 ],
               ),
       ),
@@ -104,10 +104,10 @@ class _AdventureSelectScreenState extends State<AdventureSelectScreen> {
       margin: const EdgeInsets.only(bottom: 10),
       borderColor: a != null ? c.accent.withValues(alpha: 0.5) : null,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(g.title, style: TextStyle(fontFamily: 'CwMono', fontSize: 15,
+        Text(g.title, style: TextStyle(fontSize: 15,
             fontWeight: FontWeight.bold, color: c.textPrimary)),
         const SizedBox(height: 4),
-        Text(meta, style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+        Text(meta, style: TextStyle(fontSize: 11, color: c.textMuted)),
         const SizedBox(height: 10),
         Row(children: [
           Expanded(flex: 3, child: AppButton(

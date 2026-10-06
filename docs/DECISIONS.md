@@ -1802,3 +1802,19 @@ sends dit); only their position changes. Hidden for Straight (one button).
 - `buildSeries(..., practice:, track:)` adds each log day's seconds to its
   bucket (the 04:00 day key is read as a plain date).
 - Shown as "h min", with days only for the range *All* from 24 h on.
+
+## 2026-10-06: UI font DM Sans, Anonymous Pro only for Morse text
+
+The monospace look (Anonymous Pro for almost all text, Space Grotesk for a few
+titles) read as dated. Now `ThemeData.fontFamily` is **DM Sans** (SIL OFL 1.1,
+`assets/fonts/DMSans.ttf`, variable font; Space Grotesk removed). `CwMono`
+(Anonymous Pro) stays wherever the text *is* Morse content: decoded/typed/sent
+text in CW Keyer, Decoder, QSO Bot and WiFi Trx logs and send fields, text
+adventure log and input, own-text player, exam texts, characters in Hören/Geben
+and the games, alphabet/Koch character grids, Morse tree and chart, key and
+paddle labels (DIT/DAH), head copy/Mini QSO/Q-group transcripts. Labels,
+titles, hints, buttons, settings, statistics and dialogs use DM Sans.
+Per-file helpers (`_mono`) now give the UI font; the Morse variant is `_morse`
+(or an explicit `fontFamily: 'CwMono'`). Canvas text (`TextPainter`) does not
+inherit the theme font, so such styles must set `fontFamily: 'DMSans'` themselves
+(`progress_charts.dart`).

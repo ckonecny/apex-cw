@@ -486,7 +486,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SettingsSectionHeader(Strings.t('settings_audio_output'), key: _audioKey),
           const SizedBox(height: 4),
           Text(Strings.t('settings_audio_output_desc'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+              style: TextStyle(fontSize: 11, color: c.textFaint)),
           const SizedBox(height: 12),
           SettingsCard(children: [
             SegmentRow(
@@ -553,7 +553,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SettingsSectionHeader(Strings.t('settings_analyze_key_events')),
           const SizedBox(height: 8),
           Text(Strings.t('settings_analyze_key_events_desc'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+              style: TextStyle(fontSize: 11, color: c.textFaint)),
           const SizedBox(height: 12),
           _ActionButton(
             label: _keyDiagActive ? Strings.t('settings_stop_analyzer') : Strings.t('settings_start_analyzer'),
@@ -575,7 +575,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 itemBuilder: (_, i) => Padding(
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Text(_keyDiagLog[i],
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
+                      style: TextStyle(fontSize: 10,
                           color: c.logText)),
                 ),
               ),
@@ -629,11 +629,11 @@ class _InfoRow extends StatelessWidget {
     return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     child: Row(children: [
-      Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+      Text(label, style: TextStyle(fontSize: 13,
           color: c.textMuted)),
       const SizedBox(width: 16),
       Expanded(child: Text(value, textAlign: TextAlign.right,
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary))),
+          style: TextStyle(fontSize: 13, color: c.textPrimary))),
     ]),
   );
   }
@@ -661,7 +661,7 @@ class _ActionButton extends StatelessWidget {
         Icon(icon, color: color, size: 20),
         const SizedBox(width: 12),
         Expanded(child: Text(label,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: color))),
+            style: TextStyle(fontSize: 14, color: color))),
       ]),
     ),
   );
@@ -690,11 +690,11 @@ class _LearnCard extends StatelessWidget {
                 child: CircularProgressIndicator(strokeWidth: 2, color: color)),
         const SizedBox(width: 12),
         Expanded(child: Text(message,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: color))),
+            style: TextStyle(fontSize: 14, color: color))),
         if (state != _LearnState.done)
           TextButton(onPressed: onCancel,
               child: Text(Strings.t('cancel'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
+                  style: TextStyle(fontSize: 12,
                       color: c.textMuted))),
       ]),
     );

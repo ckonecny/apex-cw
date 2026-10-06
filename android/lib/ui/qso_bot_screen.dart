@@ -455,7 +455,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
                     controller: callCtl,
                     autocorrect: false,
                     textCapitalization: TextCapitalization.characters,
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 15, color: c.textPrimary),
+                    style: TextStyle(fontSize: 15, color: c.textPrimary),
                     decoration: InputDecoration(
                       labelText: Strings.t('qso_my_call'),
                       hintText: 'OE1XXX',
@@ -484,9 +484,9 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
                 const SettingsDivider(),
                 ListTile(
                   title: Text(Strings.t('qso_word_gap'), style: TextStyle(
-                      fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary)),
+                      fontSize: 13, color: c.textPrimary)),
                   subtitle: Text(Strings.t('qso_word_gap_hint'), style: TextStyle(
-                      fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+                      fontSize: 11, color: c.textMuted)),
                   trailing: Icon(Icons.chevron_right, color: c.textFaint),
                   onTap: () async {
                     await showTrainingSettingsSheet(context,
@@ -498,7 +498,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
               ]),
               const SizedBox(height: 12),
               Text(Strings.t('qso_rules'), style: TextStyle(
-                  fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+                  fontSize: 11, color: c.textMuted)),
             ],
           )),
         );
@@ -556,7 +556,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
             isExpanded: true,
             isDense: true,
             dropdownColor: c.surface,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.accent),
+            style: TextStyle(fontSize: 14, color: c.accent),
             decoration: InputDecoration(
               isDense: true, filled: true, fillColor: c.surface,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
@@ -580,15 +580,15 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
               color: _running ? c.accent : c.textMuted),
           const SizedBox(width: 6),
           Expanded(child: Text(_status.isEmpty ? Strings.t('qso_idle') : _status,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted))),
+              style: TextStyle(fontSize: 11, color: c.textMuted))),
           Text('${_levelNames()[_level]} · $myCall',
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+              style: TextStyle(fontSize: 11, color: c.textFaint)),
         ]),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(children: [
-          Text('${_keyerMode == 4 ? _measuredWpm : _wpm} WPM', style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent)),
+          Text('${_keyerMode == 4 ? _measuredWpm : _wpm} WPM', style: TextStyle(fontSize: 12, color: c.accent)),
           // Straight key: disabled, follows the measured speed.
           Expanded(child: _keyerMode == 4
               ? Slider(value: _measuredWpm.toDouble(), min: 5, max: 60,
@@ -647,7 +647,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
             decoration: InputDecoration(
               isDense: true, filled: true, fillColor: c.surface,
               hintText: Strings.t('qso_type_hint'),
-              hintStyle: TextStyle(fontFamily: 'CwMono', color: c.textDisabled),
+              hintStyle: TextStyle(color: c.textDisabled),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
                   borderSide: BorderSide(color: c.border)),
             ),

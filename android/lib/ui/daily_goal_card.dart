@@ -53,10 +53,10 @@ class GoalRing extends StatelessWidget {
               status.met
                   ? Icon(Icons.check, color: c.accent, size: size * 0.3)
                   : Text('${status.sessionsGoal > 0 ? status.sessionsDone : status.minutesToday}', style: TextStyle(
-                      fontFamily: 'CwMono', fontSize: size * 0.27, color: c.textPrimary)),
+                      fontSize: size * 0.27, color: c.textPrimary)),
               Text(Strings.t('goal_of_min').replaceFirst('{n}',
                   '${status.sessionsGoal > 0 ? status.sessionsGoal : status.goalSeconds ~/ 60}'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: size * 0.14, color: c.textMuted)),
+                  style: TextStyle(fontSize: size * 0.14, color: c.textMuted)),
             ],
           )),
       ]),
@@ -100,7 +100,7 @@ class _WeekDots extends StatelessWidget {
         Column(mainAxisSize: MainAxisSize.min, children: [
           _dot(c, status.week[i]),
           const SizedBox(height: 2),
-          Text(names[i], style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
+          Text(names[i], style: TextStyle(fontSize: 10,
               color: i == status.todayIndex ? c.textPrimary : c.textMuted)),
         ]),
         if (i < 6) const SizedBox(width: 10),
@@ -150,7 +150,7 @@ class DailyGoalCard extends StatelessWidget {
       const SizedBox(width: 4),
       Expanded(child: Text(goalStreakText(status.streak), maxLines: 1,
           overflow: TextOverflow.ellipsis, style: TextStyle(
-              fontFamily: 'CwMono', fontSize: compact ? 14 : 15, color: c.textPrimary))),
+              fontSize: compact ? 14 : 15, color: c.textPrimary))),
     ]);
     return Material(
       color: c.surface,
@@ -169,14 +169,14 @@ class DailyGoalCard extends StatelessWidget {
                     streak,
                     Text('${status.sessionsGoal > 0 ? '${status.sessionsDone}/${status.sessionsGoal} · ' : ''}'
                         '${status.minutesToday} / ${status.goalSeconds ~/ 60} min',
-                        style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                        style: TextStyle(fontSize: 12, color: c.textMuted)),
                   ])
                 : Column(mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start, children: [
                     streak,
                     const SizedBox(height: 2),
                     Text(goalSubtitle(status), maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                        style: TextStyle(fontSize: 12, color: c.textMuted)),
                     const SizedBox(height: 8),
                     _WeekDots(status),
                   ])),

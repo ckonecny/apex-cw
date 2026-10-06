@@ -523,6 +523,10 @@ class _MorselScreenState extends State<MorselScreen> {
   }
 
   TextStyle _mono(double size, Color color, {bool bold = false}) => TextStyle(
+      fontSize: size, color: color,
+      fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(double size, Color color, {bool bold = false}) => TextStyle(
       fontFamily: 'CwMono', fontSize: size, color: color,
       fontWeight: bold ? FontWeight.bold : null);
 
@@ -550,7 +554,7 @@ class _MorselScreenState extends State<MorselScreen> {
               Text(kochActiveChars(_koch, _kochSeq).join(' '),
                   textAlign: TextAlign.center,
                   maxLines: 2, overflow: TextOverflow.ellipsis,
-                  style: _mono(11, c.textFaint)),
+                  style: _morse(11, c.textFaint)),
             ])),
             IconButton(
               icon: Icon(Icons.add, color: c.textMuted),
@@ -732,7 +736,7 @@ class _MorselScreenState extends State<MorselScreen> {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: border, width: 2),
         ),
-        child: Text(ch, style: _mono(w * 0.5, fg, bold: true)),
+        child: Text(ch, style: _morse(w * 0.5, fg, bold: true)),
       ),
       const SizedBox(height: 4),
       Text('${i + 1}', style: _mono(11, isReveal ? c.info : c.textFaint)),

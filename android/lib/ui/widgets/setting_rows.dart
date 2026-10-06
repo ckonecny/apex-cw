@@ -18,7 +18,7 @@ class SettingsSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     return Text(text,
-      style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
+      style: TextStyle(fontSize: 12,
           color: c.textMuted, letterSpacing: 1.2));
   }
 }
@@ -56,14 +56,14 @@ class _SliderHead extends StatelessWidget {
         flex: label.length + 2,   // +2: the 12 dp gap
         child: Padding(
           padding: const EdgeInsets.only(right: 12),
-          child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+          child: Text(label, style: TextStyle(fontSize: 13,
               color: c.textPrimary)),
         ),
       ),
       Flexible(
         flex: display.length.clamp(1, 1000),
         child: Text(display, textAlign: TextAlign.end,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent)),
+            style: TextStyle(fontSize: 13, color: c.accent)),
       ),
     ]);
   }
@@ -149,7 +149,7 @@ class ToggleRow extends StatelessWidget {
     child: Row(children: [
       // Expanded so a long label wraps instead of pushing the switch off the
       // edge (issue #38).
-      Expanded(child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+      Expanded(child: Text(label, style: TextStyle(fontSize: 13,
           color: c.textPrimary))),
       const SizedBox(width: 12),
       Switch(
@@ -184,21 +184,21 @@ class CharSetField extends StatelessWidget {
     return Padding(
     padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+      Text(label, style: TextStyle(fontSize: 13,
           color: c.textPrimary)),
       const SizedBox(height: 8),
       TextFormField(
         initialValue: initialValue,
         onChanged: onChanged,
         textCapitalization: TextCapitalization.characters,
-        style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
+        style: TextStyle(fontSize: 14,
             color: c.accent),
         decoration: InputDecoration(
           isDense: true,
           filled: true,
           fillColor: c.background,
           hintText: hint ?? Strings.t('settings_char_hint_default'),
-          hintStyle: TextStyle(fontFamily: 'CwMono', color: c.textDisabled),
+          hintStyle: TextStyle(color: c.textDisabled),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
               borderSide: BorderSide(color: c.border)),
           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6),
@@ -208,7 +208,7 @@ class CharSetField extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 6),
-      Text(countLabel, style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
+      Text(countLabel, style: TextStyle(fontSize: 11,
           color: c.textFaint)),
     ]),
   );
@@ -229,7 +229,7 @@ class SegmentRow extends StatelessWidget {
     return Padding(
     padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
+      Text(label, style: TextStyle(fontSize: 13,
           color: c.textPrimary)),
       const SizedBox(height: 8),
       LayoutBuilder(builder: (context, constraints) {
@@ -251,7 +251,7 @@ class SegmentRow extends StatelessWidget {
                   border: Border.all(color: active ? c.accent : c.border),
                 ),
                 child: Text(options[i], textAlign: TextAlign.center,
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
+                    style: TextStyle(fontSize: 11,
                         color: active ? c.accent : c.textMuted)),
               ),
             ));

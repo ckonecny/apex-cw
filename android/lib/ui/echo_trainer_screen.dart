@@ -507,12 +507,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Widget _tempoStepper(AppColors c, String label, String value,
       VoidCallback? onMinus, VoidCallback? onPlus) {
     return Row(mainAxisSize: MainAxisSize.min, children: [
-      Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+      Text(label, style: TextStyle(fontSize: 12, color: c.textMuted)),
       IconButton(
           icon: const Icon(Icons.remove_circle_outline), color: c.accent,
           visualDensity: VisualDensity.compact, onPressed: onMinus),
       SizedBox(width: 62, child: Text(value, textAlign: TextAlign.center,
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent))),
+          style: TextStyle(fontSize: 13, color: c.accent))),
       IconButton(
           icon: const Icon(Icons.add_circle_outline), color: c.accent,
           visualDensity: VisualDensity.compact, onPressed: onPlus),
@@ -594,7 +594,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       rows.insert(0, Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Text(Strings.t('ac_suggestions_title'), textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+            style: TextStyle(fontSize: 11, color: c.textMuted)),
       ));
     }
     if (s.weakChars.isNotEmpty) {
@@ -602,7 +602,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         padding: const EdgeInsets.only(bottom: 8),
         child: Column(children: [
           Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+              style: TextStyle(fontSize: 11, color: c.textMuted)),
           const SizedBox(height: 6),
           Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
             for (final e in s.weakChars.entries)

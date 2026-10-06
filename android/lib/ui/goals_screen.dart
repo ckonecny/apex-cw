@@ -67,7 +67,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
           child: Text(Strings.t('ach_title').toUpperCase(), style: TextStyle(
-              fontFamily: 'CwMono', fontSize: 11, letterSpacing: 1, color: c.textMuted)),
+              fontSize: 11, letterSpacing: 1, color: c.textMuted)),
         ),
         SettingsCard(children: [
           for (final (i, a) in achievements(PracticeClock.instance.log).indexed) ...[
@@ -91,7 +91,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
         padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
         child: Text('${Strings.t('wr_title')} · ${Strings.t(r.current ? 'wr_this' : 'wr_last')}'
             .toUpperCase(), style: TextStyle(
-            fontFamily: 'CwMono', fontSize: 11, letterSpacing: 1, color: c.textMuted)),
+            fontSize: 11, letterSpacing: 1, color: c.textMuted)),
       ),
       SettingsCard(children: [
         _row(c, Strings.t('wr_time'),
@@ -111,9 +111,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
     Widget row(String label, String value) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: Row(children: [
-            Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary)),
+            Text(label, style: TextStyle(fontSize: 13, color: c.textPrimary)),
             const Spacer(),
-            Text(value, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent)),
+            Text(value, style: TextStyle(fontSize: 13, color: c.accent)),
           ]),
         );
     showModalBottomSheet<void>(
@@ -128,11 +128,11 @@ class _GoalsScreenState extends State<GoalsScreen> {
                 color: a.unlocked ? c.accent : c.textFaint, size: 28),
             const SizedBox(width: 12),
             Expanded(child: Text(Strings.t('ach_${a.id}'), style: TextStyle(
-                fontFamily: 'CwMono', fontSize: 18, color: c.textPrimary))),
+                fontSize: 18, color: c.textPrimary))),
           ]),
           const SizedBox(height: 12),
           Text(Strings.t('ach_${a.id}_i'), style: TextStyle(
-              fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+              fontSize: 13, color: c.textMuted)),
           const SizedBox(height: 12),
           if (a.unlocked) ...[
             row(Strings.t('ach_first'), _date(a.earned!)),
@@ -140,7 +140,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
             row(Strings.t('ach_count'), Strings.t('ach_count_n').replaceFirst('{n}', '${a.count}')),
           ] else
             Text(Strings.t('ach_not_yet'), style: TextStyle(
-                fontFamily: 'CwMono', fontSize: 13, color: c.textFaint)),
+                fontSize: 13, color: c.textFaint)),
         ]),
       ))),
     );
@@ -155,14 +155,14 @@ class _GoalsScreenState extends State<GoalsScreen> {
         const SizedBox(width: 14),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(Strings.t('ach_${a.id}'), style: TextStyle(
-              fontFamily: 'CwMono', fontSize: 14,
+              fontSize: 14,
               color: a.unlocked ? c.textPrimary : c.textMuted)),
           const SizedBox(height: 2),
           Text(Strings.t('ach_${a.id}_d'), style: TextStyle(
-              fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+              fontSize: 11, color: c.textMuted)),
           const SizedBox(height: 2),
           Text(a.unlocked ? _date(a.earned!) : Strings.t('ach_locked'), style: TextStyle(
-              fontFamily: 'CwMono', fontSize: 11, color: color)),
+              fontSize: 11, color: color)),
         ])),
       ]),
     ));
@@ -180,10 +180,10 @@ class _GoalsScreenState extends State<GoalsScreen> {
   Widget _row(AppColors c, String label, String value) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(children: [
-          Flexible(child: Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary))),
+          Flexible(child: Text(label, style: TextStyle(fontSize: 13, color: c.textPrimary))),
           const SizedBox(width: 12),
           Flexible(child: Text(value, textAlign: TextAlign.end,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted))),
+              style: TextStyle(fontSize: 13, color: c.textMuted))),
         ]),
       );
 }
@@ -250,7 +250,7 @@ class _GoalSettingsScreenState extends State<GoalSettingsScreen> {
     Widget desc(String key) => Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
           child: Text(Strings.t(key), style: TextStyle(
-              fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+              fontSize: 11, color: c.textMuted)),
         );
     return Scaffold(
       backgroundColor: c.background,
@@ -301,11 +301,11 @@ class _GoalSettingsScreenState extends State<GoalSettingsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 child: Row(children: [
                   Text(Strings.t('reminder_time'), style: TextStyle(
-                      fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary)),
+                      fontSize: 13, color: c.textPrimary)),
                   const Spacer(),
                   Text('${(_remMin ~/ 60).toString().padLeft(2, '0')}:'
                       '${(_remMin % 60).toString().padLeft(2, '0')}',
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.accent)),
+                      style: TextStyle(fontSize: 13, color: c.accent)),
                 ]),
               ),
             ),

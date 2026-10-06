@@ -813,7 +813,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
         ),
         body: _error != null
             ? Center(child: Padding(padding: const EdgeInsets.all(24),
-                child: Text(_error!, style: TextStyle(fontFamily: 'CwMono', color: c.danger))))
+                child: Text(_error!, style: TextStyle(color: c.danger))))
             : !_ready
                 ? const Center(child: CircularProgressIndicator())
                 : _body(c),
@@ -825,7 +825,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
       PopupMenuItem(value: v, child: Row(children: [
         Icon(icon, size: 20, color: color ?? c.textMuted),
         const SizedBox(width: 12),
-        Text(label, style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: color ?? c.textPrimary)),
+        Text(label, style: TextStyle(fontSize: 14, color: color ?? c.textPrimary)),
       ]));
 
   /// Small phones (or a large font): drop the speed strip and key hint so

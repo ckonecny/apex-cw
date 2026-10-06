@@ -198,6 +198,10 @@ class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserv
   // ── UI ──────────────────────────────────────────────────────────────────
 
   TextStyle _mono(double size, Color color, {bool bold = false}) => TextStyle(
+      fontSize: size, color: color,
+      fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(double size, Color color, {bool bold = false}) => TextStyle(
       fontFamily: 'CwMono', fontSize: size, color: color,
       fontWeight: bold ? FontWeight.bold : null);
 
@@ -243,7 +247,7 @@ class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserv
                   : SingleChildScrollView(
                       controller: _scroll,
                       child: SizedBox(width: double.infinity, child: Text(_text,
-                          style: _mono(22, c.textPrimary, bold: true)
+                          style: _morse(22, c.textPrimary, bold: true)
                               .copyWith(height: 1.35, letterSpacing: 1))),
                     ),
             )),

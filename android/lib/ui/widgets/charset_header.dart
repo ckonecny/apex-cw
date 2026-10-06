@@ -80,7 +80,7 @@ class CharsetHeader extends StatelessWidget {
       if (koch) ...[
         Row(children: [
           SizedBox(width: 50, child: Text('KOCH',
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted))),
+              style: TextStyle(fontSize: 11, color: c.textMuted))),
           Expanded(child: SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: c.accent, inactiveTrackColor: c.border,
@@ -94,7 +94,7 @@ class CharsetHeader extends StatelessWidget {
             ),
           )),
           SizedBox(width: 40, child: Text('$kochLevel', textAlign: TextAlign.right,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.accent))),
+              style: TextStyle(fontSize: 12, color: c.accent))),
         ]),
         Padding(
           padding: const EdgeInsets.only(top: 4),
@@ -132,7 +132,7 @@ class CharsetHeader extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 6),
             child: Text(Strings.t('charset_tap_hint'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 10,
+                style: TextStyle(fontSize: 10,
                     color: c.textFaint, fontStyle: FontStyle.italic)),
           ),
       ],
@@ -178,7 +178,7 @@ class _Chips extends StatelessWidget {
                 border: Border.all(color: i == selected ? c.accent : c.border),
               ),
               child: Text(labels[i],
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 11,
+                  style: TextStyle(fontSize: 11,
                       color: i == selected ? c.accent : c.textMuted)),
             ),
           ),

@@ -257,7 +257,7 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
       children: [
         Text(ExamStrings.label(_p),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 15, color: c.textPrimary)),
+            style: TextStyle(fontSize: 15, color: c.textPrimary)),
         const SizedBox(height: 6),
         Text(
           ExamStrings.f('ex_send_rules', [
@@ -267,7 +267,7 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
             (_p.wpm * kExamSendMinSpeed).toStringAsFixed(1),
             (kExamSendMinText * 100).round(),
           ]),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted),
+          style: TextStyle(fontSize: 12, color: c.textMuted),
         ),
         const SizedBox(height: 12),
         AppCaption(ExamStrings.t('ex_send_text')),
@@ -278,7 +278,7 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
         ),
         const SizedBox(height: 12),
         Text(ExamStrings.t(_keyerMode == 4 ? 'ex_send_straight' : 'ex_send_paddle'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+            style: TextStyle(fontSize: 11, color: c.textMuted)),
         // Straight key: the speed is the operator's own, nothing to set.
         if (_keyerMode != 4) ...[
           const SizedBox(height: 8),
@@ -292,7 +292,7 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
           const SizedBox(height: 4),
           Text(ExamStrings.f(_p.farnsworth ? 'ex_send_wpm_farns' : 'ex_send_wpm_hint',
                   [_p.wpm, _p.charWpm]),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+              style: TextStyle(fontSize: 11, color: c.textFaint)),
         ],
         const SizedBox(height: 12),
         AppButton(label: ExamStrings.t('ex_send_start'), icon: Icons.play_arrow_rounded,
@@ -320,7 +320,7 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
         child: Text(counting ? '$_leadIn' : _clock(_secondsLeft),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 20, color: c.accent)),
+            style: TextStyle(fontSize: 20, color: c.accent)),
       ),
       Expanded(
         flex: 3,
@@ -382,7 +382,7 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
                 size: 18, color: ok ? c.accent : c.danger),
             const SizedBox(width: 8),
             Expanded(child: Text(text,
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary))),
+                style: TextStyle(fontSize: 13, color: c.textPrimary))),
           ]),
         );
     return ListView(
@@ -392,7 +392,7 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
           borderColor: color,
           child: Column(children: [
             Text(ExamStrings.t(g.passed ? 'ex_passed' : 'ex_failed'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 22, color: color)),
+                style: TextStyle(fontSize: 22, color: color)),
             if (_p.retries > 0) ...[
               const SizedBox(height: 6),
               Text(
@@ -400,7 +400,7 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
                       ? ExamStrings.t('ex_exhausted')
                       : ExamStrings.f('ex_attempt', [_attempt, _p.retries + 1]),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                  style: TextStyle(fontSize: 12, color: c.textMuted)),
             ],
             const SizedBox(height: 10),
             Align(
@@ -418,13 +418,13 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
               const SizedBox(height: 6),
               Text(ExamStrings.f('ex_weak', [weak.take(8).map((e) => e.key).join(' ')]),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                  style: TextStyle(fontSize: 12, color: c.textMuted)),
             ],
           ]),
         ),
         const SizedBox(height: 8),
         Text(ExamStrings.t('ex_send_estimate'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+            style: TextStyle(fontSize: 11, color: c.textFaint)),
         const SizedBox(height: 16),
         AppCaption(ExamStrings.t('ex_send_text')),
         const SizedBox(height: 6),

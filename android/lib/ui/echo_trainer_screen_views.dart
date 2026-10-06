@@ -16,9 +16,9 @@ extension _EchoViews on _EchoTrainerScreenState {
       padding: const EdgeInsets.only(top: 8),
       child: Column(children: [
         Text(Strings.t(_choice.content == ContentKind.random ? 'block_group_of' : 'block_word_of').replaceFirst('{n}', '$n').replaceFirst('{t}', '$_blockSize'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.textMuted)),
+            style: TextStyle(fontSize: 14, color: c.textMuted)),
         const SizedBox(height: 2),
-        Text(dots, style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
+        Text(dots, style: TextStyle(fontSize: 16, color: c.textPrimary)),
       ]),
     );
   }
@@ -43,23 +43,23 @@ extension _EchoViews on _EchoTrainerScreenState {
         const BreakHintCard(),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text('$pct %',
-              style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 52,
+              style: TextStyle(fontFamily: 'DMSans', fontSize: 52,
                   fontVariations: const [FontVariation('wght', 600)],
                   color: pct >= 90 ? c.accent : pct >= 70 ? c.warning : c.danger)),
           const SizedBox(width: 20),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('● ${Strings.t('block_right')} $first',
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.accent)),
+                style: TextStyle(fontSize: 14, color: c.accent)),
             Text('◐ ${Strings.t('block_after')} $again',
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.warning)),
+                style: TextStyle(fontSize: 14, color: c.warning)),
             Text('○ ${Strings.t('block_wrong')} $failed',
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.danger)),
+                style: TextStyle(fontSize: 14, color: c.danger)),
           ]),
         ]),
         const SizedBox(height: 6),
         if (status.isNotEmpty)
           Text(status, textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textMuted)),
+              style: TextStyle(fontSize: 13, color: c.textMuted)),
         if (_blockPairs.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),
@@ -169,7 +169,7 @@ extension _EchoViews on _EchoTrainerScreenState {
                       .replaceFirst('{n}', '$_repeats')
                       .replaceFirst('{max}', _echoRepeats == 7 ? '∞' : '${_echoRepeats + 1}')
                   : ' ',
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 16,
+              style: TextStyle(fontSize: 16,
                   fontWeight: FontWeight.bold, color: c.warning)),
           const SizedBox(height: 8),
           Text(showTarget ? cs(_target) : ' ', textAlign: TextAlign.center,

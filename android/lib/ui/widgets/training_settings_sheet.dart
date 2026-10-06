@@ -155,7 +155,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
     return Padding(
       padding: const EdgeInsets.only(top: 4, bottom: 8),
       child: Text(text,
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+          style: TextStyle(fontSize: 11, color: c.textFaint)),
     );
   }
 
@@ -259,7 +259,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       SettingsSectionHeader(Strings.t('settings_koch_sequence')),
       const SizedBox(height: 4),
       Text(Strings.t('settings_koch_sequence_desc'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+          style: TextStyle(fontSize: 11, color: c.textFaint)),
       const SizedBox(height: 12),
       SettingsCard(children: [
         SegmentRow(
@@ -348,7 +348,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       SettingsSectionHeader(Strings.t('settings_adaptive_mode')),
       const SizedBox(height: 4),
       Text(Strings.t('settings_adaptive_mode_desc'),
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+          style: TextStyle(fontSize: 11, color: c.textFaint)),
       const SizedBox(height: 12),
       SettingsCard(children: [
         LabeledRangeSlider(
@@ -592,7 +592,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         ),
         const SizedBox(height: 12),
         Text(title,
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.textPrimary)),
+            style: TextStyle(fontSize: 16, color: c.textPrimary)),
         const SizedBox(height: 16),
         for (final s in widget.sections)
           ...switch (s) {

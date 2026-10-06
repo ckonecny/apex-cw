@@ -72,7 +72,7 @@ flutter:
   # Licence texts for the licence page (lib/licenses.dart).
     - assets/licenses/GPL-3.0.txt
     - assets/fonts/OFL-AnonymousPro.txt
-    - assets/fonts/OFL-SpaceGrotesk.txt
+    - assets/fonts/OFL-DMSans.txt
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -111,6 +111,6 @@ flutter:
         - asset: assets/fonts/AnonymousPro-Regular.ttf
         - asset: assets/fonts/AnonymousPro-Bold.ttf
           weight: 700
-    - family: SpaceGrotesk
+    - family: DMSans
       fonts:
-        - asset: assets/fonts/SpaceGrotesk.ttf
+        - asset: assets/fonts/DMSans.ttf

@@ -273,7 +273,7 @@ class _ExamScreenState extends State<ExamScreen> {
                 p.wpm,
                 p.farnsworth ? ExamStrings.f('ex_farns', [p.charWpm]) : '',
               ]),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary),
+              style: TextStyle(fontSize: 13, color: c.textPrimary),
             ),
             if (p.hasSend) ...[
               const SizedBox(height: 6),
@@ -285,24 +285,24 @@ class _ExamScreenState extends State<ExamScreen> {
                   (p.wpm * kExamSendMinSpeed).toStringAsFixed(1),
                   (kExamSendMinText * 100).round(),
                 ]),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary),
+                style: TextStyle(fontSize: 13, color: c.textPrimary),
               ),
             ],
             const SizedBox(height: 8),
             Text(ExamStrings.t(_charsKey(p)),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                style: TextStyle(fontSize: 12, color: c.textMuted)),
             const SizedBox(height: 8),
             Text(ExamStrings.t('ex_src_${p.family}'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+                style: TextStyle(fontSize: 11, color: c.textFaint)),
             if (!p.hasSend) ...[
               const SizedBox(height: 8),
               Text(ExamStrings.t('ex_receive_only'),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                  style: TextStyle(fontSize: 12, color: c.textMuted)),
             ],
             if (p.retries > 0) ...[
               const SizedBox(height: 8),
               Text(ExamStrings.f('ex_retries', [p.retries]),
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                  style: TextStyle(fontSize: 12, color: c.textMuted)),
             ],
           ]),
         ),
@@ -316,13 +316,13 @@ class _ExamScreenState extends State<ExamScreen> {
         ],
         const SizedBox(height: 6),
         Text(ExamStrings.t('ex_start_hint'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)),
+            style: TextStyle(fontSize: 11, color: c.textMuted)),
         const SizedBox(height: 16),
         AppCaption(ExamStrings.t('ex_history')),
         const SizedBox(height: 8),
         if (recent.isEmpty)
           Text(ExamStrings.t('ex_no_history'),
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted))
+              style: TextStyle(fontSize: 12, color: c.textMuted))
         else
           for (final r in recent.reversed)
             Padding(
@@ -335,7 +335,7 @@ class _ExamScreenState extends State<ExamScreen> {
                     '${_date(r.time)} · ${ExamStrings.t('ex_part_${r.part}')} · '
                     '${ExamStrings.f('ex_errors', [r.errors, r.limit])}'
                     '${r.wpm > 0 ? ' · ${r.wpm} WPM' : ''}',
-                    style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textPrimary))),
+                    style: TextStyle(fontSize: 12, color: c.textPrimary))),
               ]),
             ),
         for (final part in p.hasSend ? const ['rx', 'tx'] : const ['rx']) ...[
@@ -344,13 +344,13 @@ class _ExamScreenState extends State<ExamScreen> {
             final ready = examReady(_results, p.id, part);
             final name = ExamStrings.t('ex_part_$part');
             return Text(ExamStrings.f(ready == true ? 'ex_ready' : 'ex_not_ready', [name]),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 12,
+                style: TextStyle(fontSize: 12,
                     color: ready == true ? c.accent : c.textMuted));
           }),
         ],
         const SizedBox(height: 16),
         Text(ExamStrings.t('ex_disclaimer'),
-            style: TextStyle(fontFamily: 'CwMono', fontSize: 11, color: c.textFaint)),
+            style: TextStyle(fontSize: 11, color: c.textFaint)),
       ],
     );
   }
@@ -379,7 +379,7 @@ class _ExamScreenState extends State<ExamScreen> {
               ? ExamStrings.f('ex_correct', [_correctLeft])
               : (_leadIn > 0 ? '$_leadIn' : ExamStrings.t('ex_listening')),
           textAlign: TextAlign.center,
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 16, color: c.accent),
+          style: TextStyle(fontSize: 16, color: c.accent),
         ),
         const SizedBox(height: 12),
         Expanded(
@@ -430,10 +430,10 @@ class _ExamScreenState extends State<ExamScreen> {
           borderColor: color,
           child: Column(children: [
             Text(ExamStrings.t(g.passed ? 'ex_passed' : 'ex_failed'),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 22, color: color)),
+                style: TextStyle(fontSize: 22, color: color)),
             const SizedBox(height: 6),
             Text(ExamStrings.f('ex_errors', [g.errors, g.limit]),
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: c.textPrimary)),
+                style: TextStyle(fontSize: 14, color: c.textPrimary)),
             if (_profile.retries > 0) ...[
               const SizedBox(height: 6),
               Text(
@@ -441,7 +441,7 @@ class _ExamScreenState extends State<ExamScreen> {
                       ? ExamStrings.t('ex_exhausted')
                       : ExamStrings.f('ex_attempt', [_attempt, _profile.retries + 1]),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                  style: TextStyle(fontSize: 12, color: c.textMuted)),
             ],
             const SizedBox(height: 6),
             Text(
@@ -449,7 +449,7 @@ class _ExamScreenState extends State<ExamScreen> {
                   ? ExamStrings.t('ex_none_weak')
                   : ExamStrings.f('ex_weak', [weak.take(8).map((e) => e.key).join(' ')]),
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textMuted),
+              style: TextStyle(fontSize: 12, color: c.textMuted),
             ),
           ]),
         ),

@@ -9,6 +9,9 @@ extension _MiniQsoViews on _MiniQsoScreenState {
       };
 
   TextStyle _mono(Color color, double size, {bool bold = false}) =>
+      TextStyle(fontSize: size, color: color, fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(Color color, double size, {bool bold = false}) =>
       TextStyle(fontFamily: 'CwMono', fontSize: size, color: color, fontWeight: bold ? FontWeight.bold : null);
 
   String _fill(String key, Map<String, Object> values) {
@@ -175,7 +178,7 @@ extension _MiniQsoViews on _MiniQsoScreenState {
           ),
         ]),
         AppCard(
-          child: Text(_prompt(q), style: _mono(c.textPrimary, 17)),
+          child: Text(_prompt(q), style: _morse(c.textPrimary, 17)),
         ),
         const SizedBox(height: 12),
         for (var i = 0; i < q.options.length; i++) ...[
@@ -257,7 +260,7 @@ extension _MiniQsoViews on _MiniQsoScreenState {
                 padding: EdgeInsets.only(top: i == 0 ? 0 : 10),
                 child: Text(
                   '${r.turns[i].station == 0 ? 'A' : 'B'}: ${r.turns[i].text}',
-                  style: _mono(_playingIdx == i ? c.accent : c.textPrimary, 15, bold: _playingIdx == i),
+                  style: _morse(_playingIdx == i ? c.accent : c.textPrimary, 15, bold: _playingIdx == i),
                 ),
               ),
           ]),
@@ -296,8 +299,8 @@ extension _MiniQsoViews on _MiniQsoScreenState {
         const SizedBox(width: 8),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(_prompt(q), style: _mono(c.textMuted, 12)),
-            Text(q.answer, style: _mono(c.textPrimary, 14)),
+            Text(_prompt(q), style: _morse(c.textMuted, 12)),
+            Text(q.answer, style: _morse(c.textPrimary, 14)),
             if (!ok) Text(q.options[answer], style: _mono(c.danger, 12)),
           ]),
         ),

@@ -62,7 +62,7 @@ void registerAppLicenses() {
     yield const LicenseEntryWithLineBreaks(['SoLoud (audio engine)'], _soloud);
     yield await file(['Anonymous Pro (font)'],
         'assets/fonts/OFL-AnonymousPro.txt');
-    yield await file(['Space Grotesk (font)'],
-        'assets/fonts/OFL-SpaceGrotesk.txt');
+    yield await file(['DM Sans (font)'],
+        'assets/fonts/OFL-DMSans.txt');
   });
 }

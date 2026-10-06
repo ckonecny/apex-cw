@@ -501,7 +501,11 @@ class _InvadersScreenState extends State<InvadersScreen>
   // ── UI ───────────────────────────────────────────────────────────────────
 
   TextStyle _mono(double size, Color color, {bool bold = false}) => TextStyle(
-      fontFamily: 'CwMono', fontSize: size, color: color,
+      fontSize: size, color: color,
+      fontWeight: bold ? FontWeight.bold : null);
+
+  TextStyle _morse(double size, Color color, {bool bold = false}) => TextStyle(
+      fontSize: size, color: color,
       fontWeight: bold ? FontWeight.bold : null);
 
   @override
@@ -579,7 +583,7 @@ class _InvadersScreenState extends State<InvadersScreen>
               style: _mono(20, c.textPrimary)),
           const SizedBox(height: 4),
           Text(_pool.map(_display).join(' '), textAlign: TextAlign.center,
-              style: _mono(12, c.textFaint)),
+              style: _morse(12, c.textFaint)),
           const SizedBox(height: 6),
           Text(Strings.t('inv_koch_hint'), textAlign: TextAlign.center,
               style: _mono(11, c.textFaint)),
@@ -840,7 +844,7 @@ class _FieldPainter extends CustomPainter {
       final prosign = label.length > 1;
       final tp = TextPainter(
         text: TextSpan(text: label, style: TextStyle(
-            fontFamily: 'CwMono', fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.bold,
             fontSize: boxH * (prosign ? 0.5 : 0.7), color: Colors.white)),
         textDirection: TextDirection.ltr,
       )..layout();

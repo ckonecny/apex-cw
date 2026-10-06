@@ -25,7 +25,7 @@ class _StatusLabel extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(text,
-          style: TextStyle(fontFamily: 'CwMono', fontSize: 14, color: color)),
+          style: TextStyle(fontSize: 14, color: color)),
     );
   }
 }
@@ -69,6 +69,6 @@ class _StatsBar extends StatelessWidget {
       color: c.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(20),
       border: Border.all(color: c.withValues(alpha: 0.3)),
     ),
-    child: Text(t, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c)),
+    child: Text(t, style: TextStyle(fontSize: 13, color: c)),
   );
 }

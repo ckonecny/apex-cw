@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           backgroundColor: c.background,
           title: Text('Next CW Trainer',
-              style: TextStyle(fontFamily: 'SpaceGrotesk', fontSize: 22,
+              style: TextStyle(fontFamily: 'DMSans', fontSize: 22,
                   letterSpacing: 0.3, color: c.textPrimary,
                   fontVariations: const [FontVariation('wght', 600)])),
           actions: [
@@ -192,7 +192,7 @@ class _SectionLabel extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
       child: Text(text.toUpperCase(), style: TextStyle(
-          fontFamily: 'CwMono', fontSize: 11, letterSpacing: 1,
+          fontSize: 11, letterSpacing: 1,
           color: c.textMuted)),
     );
   }
@@ -234,10 +234,10 @@ class _ModeCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(
-                      fontFamily: 'CwMono', fontSize: 20, color: c.textPrimary)),
+                      fontSize: 20, color: c.textPrimary)),
                   const SizedBox(height: 4),
                   Text(subtitle, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(
-                      fontFamily: 'CwMono', fontSize: 12, color: c.textMuted)),
+                      fontSize: 12, color: c.textMuted)),
                 ],
               )),
               Icon(Icons.chevron_right, color: c.textFaint),
