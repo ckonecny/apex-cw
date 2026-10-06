@@ -946,6 +946,12 @@ character you keyed), and shortly after the character plays again. If you
 key nothing, it repeats after a pause. That is no error, and nothing is
 counted or added to any statistics. **Back** leaves the page.
 
+Above the keyer two sliders set the speed: **Listen** is the speed the
+character plays at, **Send** the speed you key back at (the leftmost step is
+"same as prompt"; with a straight key it only shows the measured speed). They
+are the same two settings as in Send, so a change applies there too, from the
+next play on.
+
 ::: {.shots .one}
 ![Practice: a character, keyed back correctly](img/en/char_practice.png)
 :::
