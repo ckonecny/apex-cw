@@ -173,8 +173,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
               child: SingleChildScrollView(
                 reverse: true,
                 child: SizedBox(width: double.infinity, child: Text(
-                  _decodedText.isEmpty ? '·' :
-                      (_outputCase == 1 ? _decodedText.toUpperCase() : _decodedText.toLowerCase()),
+                  _outputCase == 1 ? _decodedText.toUpperCase() : _decodedText.toLowerCase(),
                   style: TextStyle(
                     fontFamily: 'CwMono', fontSize: fontSize,
                     color: c.accent, height: 1.4,
