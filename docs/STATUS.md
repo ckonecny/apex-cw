@@ -46,7 +46,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 
 ## Manual: pending for next release
 - Practice a character (#44): new Hear/Send sliders above the keyer; retake `char_practice.png` (DE+EN).
-- UI font DM Sans (branch `feature/dm-sans-ui`, not yet merged): every screenshot
+- UI font DM Sans (on main): every screenshot
   changes its look (titles/labels no longer monospace); retake all at release.
 - Retaken 2026-10-05 (DE+EN): `hear_start`, `hear_result`, `hear_weak`,
   `hear_sheet2`, `echo_start`, `echo_result`, `echo_result2` (the last one
@@ -73,9 +73,9 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 Receive and send part, six country families and the custom profile done, unit and overflow tests green; checked on the test phone. Next: KA/SK, feed weak characters into the statistics, check the ARRL steps (13 WPM?) and the Indian/UK/NZ details against the official sources. Decisions:
 `docs/DECISIONS.md` "Exam simulation".
 
-- Branch `feature/practice-time`: practice time (this training + total) at the top of Progress, tap
+- Practice time (on main): practice time (this training + total) at the top of Progress, tap
   detail on the days-practised bars; retake `hear_progress.png`,
-  `echo_progress.png` (DE+EN). Not yet installed/verified on the phone.
+  `echo_progress.png` (DE+EN).
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
