@@ -131,6 +131,7 @@ class PracticeClock with WidgetsBindingObserver {
       final wasLong = s.seconds >= kLongSessionSeconds;
       s.seconds += whole;
       day.seconds += whole;
+      day.modes[_modes.last] = (day.modes[_modes.last] ?? 0) + whole;
       if (!wasLong && s.seconds >= kLongSessionSeconds) day.longSessions++;
     }
     _unsavedMs += elapsed;

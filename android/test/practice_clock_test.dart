@@ -33,6 +33,21 @@ void main() {
     expect(day.sessions, 1);
     expect(clock.log.sessions.single.mode, 'hear');
     expect(clock.log.sessions.single.seconds, 60);
+    expect(day.modes, {'hear': 60});
+  });
+
+  test('time is booked per mode and survives JSON', () async {
+    await setUpClock();
+    clock.enter('hear');
+    run(30);
+    clock.leave();
+    clock.enter('echo');
+    run(20);
+    clock.leave();
+    final day = clock.log.dayOf('2026-10-05');
+    expect(day.seconds, 50);
+    expect(day.modes, {'hear': 30, 'echo': 20});
+    expect(PracticeDay.fromJson(day.toJson()).modes, {'hear': 30, 'echo': 20});
   });
 
   test('idle time does not count, activity resumes it', () async {

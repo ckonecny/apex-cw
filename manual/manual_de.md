@@ -1419,7 +1419,15 @@ entwickelt, getrennt für jedes Training. Er füllt sich ab dem Tag, an dem es
 die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
 **12 Wochen** oder **Alles**:
 
-- **Trefferquote, WPM und Übungstage** oben. Quote und WPM sind die des
+- **Übungszeit** ganz oben für den gewählten Zeitraum, als „3 h 25 min“, bei
+  *Alles* ab 24 Stunden auch mit Tagen („2 d 3 h 25 min“). Zwei Kacheln: die
+  Zeit **dieses Trainings** (Hören bzw. Geben) und die **Gesamtzeit aller
+  Trainings**. Es ist dieselbe aktive Übungszeit, die auch das Tagesziel
+  zählt; sie läuft, solange du aktiv übst, und hängt nicht von Pausen oder
+  Abständen ab. Die Zeit je Training wird erst seit diesem Update getrennt
+  erfasst; bei früheren Tagen steckt sie nur in der Gesamtzeit (ein Hinweis
+  nennt ihre Zahl). Vor dem Tagesziel gibt es gar keine Zeit.
+- **Trefferquote, WPM und Übungstage** darunter. Quote und WPM sind die des
   letzten Tages (4 Wochen), der letzten Woche (12 Wochen) oder des letzten
   Monats (Alles, ab etwa einem halben Jahr) mit Übung, gewichtet nach
   Versuchen, mit Pfeil gegenüber dem Zeitraum davor. „Übungstage“ liest sich
@@ -1428,7 +1436,8 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
   Zeiträume ohne Übung sind Lücken, keine Null. Tippe auf einen Punkt der
   Trefferquote, um die Versuche und die Quote dieses Zeitraums zu sehen.
 - **Übungstage**: ein Kästchen pro Tag (4 Wochen), sonst ein Balken pro Woche
-  oder Monat.
+  oder Monat. Tippe darauf, um die Zahl der Tage, die Zeit dieses Trainings und
+  die Gesamtzeit dieses Zeitraums zu sehen.
 - **Alle Zeichen, Woche für Woche**: eine Heatmap, Zeichen untereinander,
   Wochen nebeneinander, von rot (unter 60 %) bis grün (ab 90 %). Eine Zelle
   mit weniger als 5 Versuchen bleibt leer. Die Spalten füllen die ganze

@@ -25,15 +25,21 @@ class PracticeDay {
   int seconds = 0;
   int sessions = 0; // sessions started this day
   int longSessions = 0; // of them (or earlier ones), reaching kLongSessionSeconds
+  /// Seconds per mode ('hear', 'echo', 'game' …). Empty on days from before
+  /// the split existed; those only have [seconds].
+  final Map<String, int> modes = {};
 
   PracticeDay();
 
   PracticeDay.fromJson(Map<String, dynamic> j)
       : seconds = j['s'] as int? ?? 0,
         sessions = j['n'] as int? ?? 0,
-        longSessions = j['l'] as int? ?? 0;
+        longSessions = j['l'] as int? ?? 0 {
+    (j['m'] as Map<String, dynamic>? ?? const {}).forEach((k, v) => modes[k] = v as int);
+  }
 
-  Map<String, dynamic> toJson() => {'s': seconds, 'n': sessions, 'l': longSessions};
+  Map<String, dynamic> toJson() =>
+      {'s': seconds, 'n': sessions, 'l': longSessions, if (modes.isNotEmpty) 'm': modes};
 }
 
 class PracticeSession {

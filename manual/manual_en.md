@@ -1374,7 +1374,15 @@ and *Progress*. Progress shows how practice develops over time, separately for
 each training. It fills up from the day this feature was added; earlier
 practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
 
-- **Hit rate, WPM and days practised** at the top. Hit rate and WPM are those
+- **Practice time** right at the top for the chosen period, as "3 h 25 min";
+  with *All* from 24 hours on also with days ("2 d 3 h 25 min"). Two tiles:
+  the time of **this training** (Listen or Send) and the **total of all
+  trainings**. It is the same active practice time the daily goal counts; it
+  runs while you practise actively and doesn't depend on breaks or gaps. The
+  time per training has only been recorded separately since this update; for
+  earlier days it is only in the total (a note gives their number). Before the
+  daily goal there is no time at all.
+- **Hit rate, WPM and days practised** below it. Hit rate and WPM are those
   of the latest day (4 weeks), week (12 weeks) or month (All, from about half
   a year on) with practice, weighted by attempts, with an arrow against the
   period before. "Days practised" reads like *42/88*.
@@ -1382,7 +1390,8 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
   without practice are gaps, not zero. Tap a point of the hit rate to see
   that period's attempts and rate.
 - **Days practised**: one box per day (4 weeks), otherwise a bar per week or
-  month.
+  month. Tap one to see the number of days, this training's time and the
+  total time of that period.
 - **All characters, week by week**: a heatmap, characters down, weeks across,
   from red (below 60 %) to green (from 90 %). A cell with fewer than 5
   attempts stays empty. The columns fill the whole width; if the weeks don't fit (All), the cells scroll

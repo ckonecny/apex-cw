@@ -70,6 +70,10 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 Receive and send part, six country families and the custom profile done, unit and overflow tests green; checked on the test phone. Next: KA/SK, feed weak characters into the statistics, check the ARRL steps (13 WPM?) and the Indian/UK/NZ details against the official sources. Decisions:
 `docs/DECISIONS.md` "Exam simulation".
 
+- Branch `feature/practice-time`: practice time (this training + total) at the top of Progress, tap
+  detail on the days-practised bars; retake `hear_progress.png`,
+  `echo_progress.png` (DE+EN). Not yet installed/verified on the phone.
+
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual

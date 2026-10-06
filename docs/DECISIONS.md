@@ -1785,3 +1785,20 @@ sends dit); only their position changes. Hidden for Straight (one button).
   with call signs and towns of the country). The custom profile has a language
   setting (`lang`, JSON `g`, part of the id). Figure and letter groups have no
   language. The home Learn card now names the exam simulation.
+
+## Practice time in the progress view (2026-10-06)
+
+- **Source: the practice log** (`PracticeClock` / `PracticeLog.days`, #30) — the
+  same active time the daily goal counts, so the two always agree. Spread
+  (5 min sessions, 15 min pause, #33) only matters for the goal; the total
+  keeps counting whenever the user practises actively. A first attempt added
+  its own estimate to `DayStat` (cap per block/word); it was dropped because it
+  duplicated the clock, was less exact and had no history.
+- **Per training:** `PracticeDay.modes` (JSON `m`) books every credited second
+  to the mode of the screen on top (`hear`, `echo`, `game` …). The Listen tab
+  shows `hear`, the Send tab `echo`, next to the total of all trainings. Days
+  from before the split have no modes: their time is only in the total
+  (`unsplitDays`, announced by a note); days before the practice log have none.
+- `buildSeries(..., practice:, track:)` adds each log day's seconds to its
+  bucket (the 04:00 day key is read as a plain date).
+- Shown as "h min", with days only for the range *All* from 24 h on.
