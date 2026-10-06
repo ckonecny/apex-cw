@@ -29,7 +29,7 @@ class _ProgressViewState extends State<ProgressView> {
   ProgressRange _range = ProgressRange.weeks12;
   bool _weakestFirst = false;
 
-  static const _cellW = 40.0, _cellH = 24.0, _labelW = 30.0, _headH = 18.0;
+  static const _cellH = 24.0, _labelW = 30.0, _headH = 18.0;
   // Narrowest a heatmap column may get when all buckets are squeezed into the
   // card width (issue #26); below that the grid scrolls, starting at the newest.
   static const _minCellW = 28.0;
@@ -181,6 +181,7 @@ class _ProgressViewState extends State<ProgressView> {
             firstLabel: labels.first,
             lastLabel: labels.last,
             color: c.accent,
+            detail: (i) => bucketDetail(s.buckets[i].start, g, s.buckets[i].attempts, s.buckets[i].rate),
           )),
       if (wpmPresent.isNotEmpty)
         _card(
@@ -239,11 +240,12 @@ class _ProgressViewState extends State<ProgressView> {
         .toDouble();
 
     // Squeeze all columns into the card if they stay at least _minCellW wide,
-    // otherwise keep _cellW and scroll (to the newest week, see below).
+    // otherwise keep _minCellW and scroll (to the newest week, see below).
+    // Few columns (4 weeks, young "All") are stretched to the full width.
     // Card padding 12 + 12 and list padding 20 + 20 surround the grid.
     final avail = MediaQuery.sizeOf(context).width - 64 - _labelW;
     final n = hs.buckets.length;
-    final cellW = (avail / n).clamp(_minCellW, _cellW).toDouble();
+    final cellW = avail / n < _minCellW ? _minCellW : avail / n;
     if (_jumpToNewest) {
       _jumpToNewest = false;
       WidgetsBinding.instance.addPostFrameCallback((_) {
