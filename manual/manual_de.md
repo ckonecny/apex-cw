@@ -976,6 +976,12 @@ kommt das Zeichen erneut. Gibst du nichts, wird es nach einer Pause
 wiederholt. Das ist kein Fehler, und nichts wird gezählt oder in eine
 Statistik übernommen. Mit **Zurück** verlässt du die Seite.
 
+Über dem Keyer stellen zwei Regler die Geschwindigkeit ein: **Hören** ist das
+Tempo, in dem das Zeichen gespielt wird, **Geben** das Tempo, in dem du es
+nachgibst (die unterste Stufe heißt „wie Hören“; bei der Handtaste zeigt der
+Regler nur das gemessene Tempo). Es sind dieselben Einstellungen wie in Geben,
+Änderungen gelten also auch dort, ab dem nächsten Abspielen.
+
 ::: {.shots .one}
 ![Üben: ein Zeichen, nachgegeben und richtig](img/de/char_practice.png)
 :::

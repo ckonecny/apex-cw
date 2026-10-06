@@ -45,6 +45,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
   cover/info for the old look; screenshots with the launcher icon, if any.
 
 ## Manual: pending for next release
+- Practice a character (#44): new Hear/Send sliders above the keyer; retake `char_practice.png` (DE+EN).
 - UI font DM Sans (branch `feature/dm-sans-ui`, not yet merged): every screenshot
   changes its look (titles/labels no longer monospace); retake all at release.
 - Retaken 2026-10-05 (DE+EN): `hear_start`, `hear_result`, `hear_weak`,

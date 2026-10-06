@@ -17,6 +17,7 @@ import 'widgets/char_playback_overlay.dart';
 import 'widgets/interference_button.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/setting_rows.dart';
+import 'widgets/slider_row.dart';
 
 /// Long press on a Koch character in Hören or Geben (user request 2026-09-27,
 /// replaces the fixedTarget echo drill): the same tile as the tap playback,
@@ -237,6 +238,46 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
     _replayAfter(ok ? 1200 : 1500);
   }
 
+  // Hören/Geben speed: the same two values (and prefs keys) as the Echo
+  // Trainer's sliders, so both screens always agree. Applied with the next play.
+  Future<void> _setWpm(int v) async {
+    setState(() => _wpm = v);
+    final pf = await TrainingProfile.open(TrainingProfile.echo);
+    await pf.setInt('wpm', _wpm);
+  }
+
+  // 0 = "same as Hören" (leftmost notch), as in the Echo Trainer.
+  Future<void> _setGiveWpm(int v) async {
+    setState(() => _answerWpmMax = v.clamp(0, 60));
+    final p = await SharedPreferences.getInstance();
+    await p.setInt('echoAnswerWpmMax', _answerWpmMax);
+  }
+
+  Widget _speedSliders() => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(children: [
+          SliderRow(label: Strings.t('block_hear'), labelWidth: 56, valueWidth: 112,
+              value: _wpm.toDouble(), display: '$_wpm',
+              min: TrainingProfile.minWpm.toDouble(), max: 60,
+              divisions: 60 - TrainingProfile.minWpm,
+              onChanged: (v) => _setWpm(v.round())),
+          // Straight key: the Geben speed is measured from the keying, so the
+          // row is disabled and just follows it (nothing saved).
+          if (_keyerMode == 4)
+            SliderRow(label: Strings.t('block_give'), labelWidth: 56, valueWidth: 112,
+                value: _measuredWpm.toDouble().clamp(kGiveWpmMin - 1.0, 60.0),
+                min: kGiveWpmMin - 1.0, max: 60, divisions: 61 - kGiveWpmMin,
+                display: '$_measuredWpm', onChanged: null)
+          else
+            SliderRow(label: Strings.t('block_give'), labelWidth: 56, valueWidth: 112,
+                value: (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax).toDouble(),
+                min: kGiveWpmMin - 1.0, max: 60, divisions: 61 - kGiveWpmMin,
+                display: _answerWpmMax == 0
+                    ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax',
+                onChanged: (v) => _setGiveWpm(v < kGiveWpmMin ? 0 : v.round())),
+        ]),
+      );
+
   void _setTouchInputs({bool? dit, bool? dah}) {
     if (dit != null) _touchDit = dit;
     if (dah != null) _touchDah = dah;
@@ -354,6 +395,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
               ]),
             ),
           ),
+          _speedSliders(),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: _keyerMode == 4

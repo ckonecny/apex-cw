@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/l10n/strings.dart';
+import 'package:next_cw_trainer/ui/char_practice_screen.dart';
 import 'package:next_cw_trainer/ui/decoder_screen.dart';
 import 'package:next_cw_trainer/ui/echo_trainer_screen.dart';
 import 'package:next_cw_trainer/content/exam_profile.dart';
@@ -40,6 +41,7 @@ void main() {
   final screens = <String, Widget Function()>{
     'generator': () => const GeneratorScreen(),
     'decoder': () => const DecoderScreen(),
+    'char_practice': () => const CharPracticeScreen(ch: 'q'),
     'echo': () => const EchoTrainerScreen(),
     'settings': () => const SettingsScreen(),
     'goals': () => const GoalsScreen(),
