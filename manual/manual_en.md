@@ -68,7 +68,7 @@ The home screen has four groups:
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
 | **Free** | **Free modes** | Opens five tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) and **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) |
 | **Play** | **Games** | Head copy (sentences, Q-groups, Mini QSO), Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
-| **Learn** | **Learning resources** | Interactive Morse tree, character chart, links to courses and practice sites |
+| **Learn** | **Learning resources** | Interactive Morse tree, character chart, exam simulation, links to courses and practice sites |
 
 At the very top sits the **daily goal card**: a ring with your active
 practice minutes today, your streak, and the week Monday to Sunday as dots.
@@ -2282,6 +2282,90 @@ they sound. The speed starts at the value from the Listen training; **−** and
 ::: {.shots .one}
 ![Character chart: a character lights up while it plays](img/en/chart.png)
 :::
+
+## Exam simulation {#exam-simulation}
+
+Some countries offer a voluntary Morse exam. Under **Learn → Learning
+resources → Exam simulation** you can practise its receive part in the exam's
+own format and see whether you would pass. The app does not replace the
+official exam: the values come from public sources and the real exam may
+differ.
+
+You first choose a **country**, then the **speed**:
+
+| Choice | Variants and rules |
+|---|---|
+| **Austria** | 12 WPM, 3 minutes, at most 3 errors (the official limit is not published) |
+| **Germany** | 5 WPM Farnsworth (characters at 9 WPM, long pauses), 5 WPM or 12 WPM, 3 minutes, at most 4 errors, with `. , ? = /` and AR (type `+`) |
+| **UK** | 5, 10, 12, 15, 20, 25 or 30 WPM; plain text 3 minutes (at most 4 errors) or **Figures**: groups of five figures for 1 minute (at most 3 errors) |
+| **New Zealand** | 5 WPM, 3 minutes, at most 4 errors, up to 5 attempts |
+| **India** | 5 or 8 WPM, 1 minute without a mistake |
+| **USA** | ARRL Code Proficiency: 10 to 40 WPM, 1 minute without a mistake, receive only |
+| **Custom** | your own profile, see below |
+
+The card below the choice shows the rules of the chosen exam for both parts
+(receiving and sending), the source they come from and the kind of text. The plain text is German amateur-radio text
+without umlauts with figures. The text is as long in Morse as the exam part
+lasts (a text of "WPM × 5 characters" would be shorter, because spaces and
+short characters go quickly). Figure and letter groups are groups of five
+characters.
+
+### Custom profile {#exam-custom}
+
+**Custom** lets you define an exam yourself, for receiving and sending alike:
+**overall speed** (5 to 40 WPM), **character speed** (from the overall speed up
+to 40 WPM; a higher value gives Farnsworth pauses when receiving), **minutes**
+(1 to 10), the allowed **errors** (0 to 10), the **retries** of a failed part (0 to 5, see
+*Retries* above) and the **kind of text**: plain
+text (with switches for punctuation and AR at the end), figure groups or
+groups of letters and figures. The settings are saved. Your runs are listed
+per combination of settings, so "ready" refers to exactly this exam.
+
+**Start receiving** begins after a 3 second countdown. The text plays once,
+without a pause and without a replay, while you copy it into the text field.
+When it ends you have 30 seconds left to correct your copy (or tap **Done**).
+Spaces and case do not matter. Every wrong, missing or extra character counts
+as one error.
+
+The result page shows passed or not passed, the number of errors against the
+limit, the characters you copied wrong, the text that was sent (wrong
+characters in red) and your copy. **Recent runs** lists your last five runs per
+exam. After three passes in a row the app tells you that you look ready for the
+receive part.
+
+The speed and spacing of the exam are set by the profile; your other
+settings (such as the pitch) are used.
+
+### Sending
+
+**Start sending** on the exam page (or **On to sending** after a receive run)
+opens the send part. You first see the text and the rules. **Start sending**
+begins a 3 second countdown, then the time of the exam runs (three minutes) and
+you key the shown text with the touch paddle or a Morse key, in the keyer mode
+set under **Settings → Keyer**. With a paddle, a **WPM** slider sets the keyer
+speed: it starts at the exam speed (at 5 WPM Farnsworth at the character speed
+of 9 WPM) and you may send faster, up to 40 WPM, but not slower; the setting
+is remembered per exam. With a straight key there is no slider. The text you
+have keyed so far is highlighted, and below it you see what the app decoded. A
+correction (eight dots) deletes the last character, like a correction on
+paper. **Done** ends the run early.
+
+The result page shows three checks: the **errors** (substituted, missing or
+extra characters, against the limit), how much of the text you **reached**
+(at least 80 %) and your **speed**, estimated from the time between the first
+and the last element keyed (at least 85 % of the exam speed, measured in real Morse length, so figure groups count as they sound). All three must be
+fine to pass. Speed and amount of text are estimates by the app and not part of
+the official rules; an examiner also judges rhythm and readability. Wrong
+characters are shown in red in the text, and the decoded text is listed below.
+The runs of both parts appear under **Recent runs**.
+
+**Retries.** Where the exam allows a retry of a failed part (Germany: one per
+part, New Zealand: up to five attempts in all), the result page shows
+**Attempt 1 of 2** and the button changes to **Retry**. A new text is used for
+every attempt. When the retries are used up and the part is failed, it counts
+as failed, as in the exam, and the button becomes **New exam**. A passed part
+starts again with attempt 1. Receiving and sending count their attempts
+separately, and the counting starts again when you leave the screen.
 
 ## Links
 

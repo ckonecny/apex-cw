@@ -66,6 +66,16 @@ Done in the app (launcher icons), README, landing page. Pending:
   curve); no Mix-ups item in Listen; heatmap columns fill the width. Retake
   `hear_char_detail.png`, `hear_progress2.png`, `echo_progress.png` (DE+EN).
 
+- Branch `feature/exam-simulation` (issue #42): new Learn-hub card and exam
+  screens; retake `res_hub.png` (DE+EN) and add shots of the exam setup,
+  receive result, send ready/keying/result pages (not taken yet).
+
+## Exam simulation (issue #42, branch `feature/exam-simulation`)
+Receive and send part, six country families and the custom profile done, unit and overflow tests green; debug build on the
+test phone, the send part not yet tried by hand (keying phase layout on a
+small phone to check). Next: KA/SK, feed weak characters into the statistics, check the ARRL steps (13 WPM?) and the Indian/UK/NZ details against the official sources. Decisions:
+`docs/DECISIONS.md` "Exam simulation".
+
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual

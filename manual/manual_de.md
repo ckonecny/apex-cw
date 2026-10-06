@@ -70,7 +70,7 @@ Die Startseite hat vier Gruppen:
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
 | **Frei** | **Freie Modi** | Öffnet fünf Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) |
 | **Spielen** | **Spiele** | Verstehen (Sätze, Q-Gruppen, Mini-QSO), Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
-| **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Links zu Kursen und Übungsseiten |
+| **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Prüfungssimulation, Links zu Kursen und Übungsseiten |
 
 Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
 Übungsminuten von heute, deine Serie und die Woche von Montag bis Sonntag als
@@ -2367,6 +2367,92 @@ Die Tonhöhe stellst du unter Einstellungen → Allgemein ein.
 ::: {.shots .one}
 ![Zeichentabelle: ein Zeichen leuchtet beim Abspielen](img/de/chart.png)
 :::
+
+## Prüfungssimulation {#pruefungssimulation}
+
+In manchen Ländern gibt es eine freiwillige Morseprüfung. Unter **Lernen →
+Lernressourcen → Prüfungssimulation** übst du den Hör-Teil im Format der
+Prüfung und siehst, ob du bestehen würdest. Die App ersetzt die offizielle
+Prüfung nicht: Die Werte stammen aus öffentlichen Quellen, die echte Prüfung
+kann abweichen.
+
+Du wählst zuerst das **Land**, dann das **Tempo**:
+
+| Auswahl | Varianten und Regeln |
+|---|---|
+| **Österreich** | 12 WPM, 3 Minuten, höchstens 3 Fehler (die offizielle Grenze ist nicht veröffentlicht) |
+| **Deutschland** | 5 WPM Farnsworth (Zeichen mit 9 WPM, lange Pausen), 5 WPM oder 12 WPM, 3 Minuten, höchstens 4 Fehler, mit `. , ? = /` und AR (als `+` tippen) |
+| **UK** | 5, 10, 12, 15, 20, 25 oder 30 WPM; Klartext 3 Minuten (höchstens 4 Fehler) oder **Ziffern**: Fünfergruppen aus Ziffern 1 Minute (höchstens 3 Fehler) |
+| **Neuseeland** | 5 WPM, 3 Minuten, höchstens 4 Fehler, bis zu 5 Versuche |
+| **Indien** | 5 oder 8 WPM, 1 Minute fehlerfrei |
+| **USA** | ARRL Code Proficiency: 10 bis 40 WPM, 1 Minute fehlerfrei, nur Hören |
+| **Eigenes Profil** | dein eigenes Profil, siehe unten |
+
+Die Karte unter der Auswahl zeigt die Regeln der gewählten Prüfung für beide
+Teile (Hören und Geben), die Quelle dafür und die Textart. Der Klartext ist deutscher Amateurfunk-Text ohne Umlaute
+mit Ziffern. Der Text ist in Morse so lang, wie der Prüfungsteil dauert (ein
+Text aus „WPM × 5 Zeichen“ wäre kürzer, weil Leerzeichen und kurze Zeichen
+schnell gehen). Ziffern- und Buchstabengruppen sind Fünfergruppen.
+
+### Eigenes Profil {#pruefung-eigenes-profil}
+
+Unter **Eigenes Profil** legst du eine Prüfung selbst fest, für Hören und Geben
+gleichermaßen: **Tempo gesamt** (5 bis 40 WPM), **Zeichentempo** (vom
+Gesamttempo bis 40 WPM; ein höherer Wert ergibt beim Hören Farnsworth-Pausen),
+**Minuten** (1 bis 10), die erlaubten **Fehler** (0 bis 10), die **Wiederholungen** eines nicht
+bestandenen Teils (0 bis 5, siehe *Wiederholung* oben) und die **Textart**:
+Klartext (mit Schaltern für Satzzeichen und AR am Ende), Ziffern- oder
+Buchstaben-und-Ziffern-Gruppen. Die Einstellungen bleiben gespeichert. Deine
+Läufe werden je Kombination der Einstellungen gelistet, „bereit“ bezieht sich
+also genau auf diese Prüfung.
+
+**Hören starten** beginnt nach 3 Sekunden Countdown. Der Text läuft einmal, ohne
+Pause und ohne Wiederholung, und du schreibst ihn im Textfeld mit. Danach hast
+du noch 30 Sekunden zum Korrigieren (oder tippst auf **Fertig**). Leerzeichen
+und Groß-/Kleinschreibung spielen keine Rolle. Jedes falsche, fehlende oder
+überzählige Zeichen zählt als ein Fehler.
+
+Die Ergebnisseite zeigt bestanden oder nicht bestanden, die Fehlerzahl gegen
+die Grenze, die falsch aufgenommenen Zeichen, den gesendeten Text (falsche
+Zeichen rot) und deine Mitschrift. **Letzte Läufe** listet die letzten fünf
+Läufe je Prüfung. Nach drei bestandenen Läufen in Folge sagt dir die App, dass
+du für den Hör-Teil bereit wirkst.
+
+Tempo und Pausen der Prüfung legt das Profil fest; deine übrigen Einstellungen
+(etwa die Tonhöhe) gelten weiter.
+
+### Geben
+
+**Geben starten** auf der Prüfungsseite (oder **Weiter zum Geben** nach einem
+Hör-Lauf) öffnet den Geben-Teil. Zuerst siehst du den Text und die Regeln.
+**Geben starten** beginnt einen Countdown von 3 Sekunden, dann läuft die Zeit
+der Prüfung (drei Minuten) und du tastest den gezeigten Text mit dem
+Touch-Paddle oder einer Morsetaste, im Keyer-Modus aus **Einstellungen →
+Keyer**. Mit dem Paddle stellt ein **WPM**-Regler das Keyer-Tempo ein: Er
+beginnt beim Prüfungstempo (bei 5 WPM Farnsworth beim Zeichentempo 9 WPM), du
+darfst schneller geben, bis 40 WPM, aber nicht langsamer; die Einstellung wird
+je Prüfung gemerkt. Mit der Handtaste gibt es keinen Regler. Was du schon getastet hast, wird
+im Text hervorgehoben, darunter siehst du, was die App dekodiert hat. Eine
+Korrektur (acht Punkte) löscht das letzte Zeichen, wie eine Korrektur auf
+Papier. **Fertig** beendet den Lauf früher.
+
+Die Ergebnisseite zeigt drei Prüfungen: die **Fehler** (falsche, fehlende oder
+überzählige Zeichen, gegen die Grenze), wie viel vom Text du **erreicht** hast
+(mindestens 80 %) und dein **Tempo**, geschätzt aus der Zeit zwischen dem ersten
+und dem letzten getasteten Element (mindestens 85 % des Prüfungstempos, gemessen in echter Morse-Länge, Ziffern­gruppen zählen also, wie sie klingen). Alle
+drei müssen passen. Tempo und Textmenge sind Schätzungen der App und nicht Teil
+der offiziellen Regeln; ein Prüfer beurteilt auch Rhythmus und Lesbarkeit.
+Falsche Zeichen stehen rot im Text, darunter das Dekodierte. Die Läufe beider
+Teile stehen unter **Letzte Läufe**.
+
+**Wiederholung.** Wo die Prüfung eine Wiederholung eines nicht bestandenen
+Teils erlaubt (Deutschland: eine je Teil, Neuseeland: bis zu fünf Versuche
+insgesamt), zeigt die Ergebnisseite **Versuch 1 von 2**, und die Taste heißt
+**Wiederholen**. Jeder Versuch bekommt einen neuen Text. Sind die Wiederholungen
+aufgebraucht und der Teil nicht bestanden, gilt er wie in der Prüfung als nicht
+bestanden, und die Taste heißt **Neue Prüfung**. Ein bestandener Teil beginnt
+wieder mit Versuch 1. Hören und Geben zählen ihre Versuche getrennt, und die
+Zählung beginnt neu, wenn du den Bildschirm verlässt.
 
 ## Links
 
