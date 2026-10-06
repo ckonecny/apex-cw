@@ -34,6 +34,19 @@ repo Settings -> Pages -> Source "GitHub Actions". Then replace the disabled
 "Google Play: coming soon" button with the store link once the app is live,
 and set the Play listing's website to the Pages URL (decision in DECISIONS.md).
 
+## New logo (2026-10-06, branch `feature/new-logo`): still to do
+Done in the app (launcher icons), README, landing page. Pending:
+- **Play Store**: rebuild `store/out` with `python3 store/make_graphics.py`
+  after changing its palette (`TOP`/`BOTTOM` gradient is still the old blue
+  panel; use the new navy `#122241`/teal/orange accents) and re-check
+  `feature_{de,en}.png`; upload new `icon_512.png` + feature graphic in the
+  Play Console (store listing, app icon). `docs/PLAY-LISTING.md` unchanged.
+- **GitHub**: upload `android/tool/icon/social_preview.png` (repo Settings →
+  Social preview; no API).
+- **Manual** (at release): the built HTML/PDF carry no icon, but check the
+  cover/info for the old look; screenshots with the launcher icon, if any.
+- On-device install of the new icon still to verify (rule 4).
+
 ## Manual: pending for next release
 - Retaken 2026-10-05 (DE+EN): `hear_start`, `hear_result`, `hear_weak`,
   `hear_sheet2`, `echo_start`, `echo_result`, `echo_result2` (the last one

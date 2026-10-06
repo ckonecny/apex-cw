@@ -967,6 +967,15 @@ artifact): https://claude.ai/artifact/72w1sXjGBDmTx6TG4a4qVa.
   opaque foreground with the logo at 56 % of the 108 dp layer, background
   colour `#5874A8`; legacy `ic_launcher.png`: rounded square, logo at 78 %.
   Re-run the script after changing the source.
+- **New app logo (2026-10-06)**: Sia, OE1LMR, redesigned the logo (teal "C"
+  ring around a purple-to-orange "W", flat navy panel). Same pipeline: new
+  `icon_source.jpg` (1280 px), `make_icon.py` adapted (panel bounds, corner
+  radius, alpha threshold; legacy icon logo at 70 %, was 78 %, the larger
+  "C" touched the edge), adaptive background colour `#122241`. Also
+  replaced: README icon (`icon_rounded.png`), landing page
+  `site/img/icon.png`. `android/tool/icon/social_preview.png` (1280x640) is
+  for GitHub's social preview (Settings, manual upload; no API). Play
+  graphics and manual still carry the old look: see "pending" in STATUS.md.
 - **Games order (2026-09-28, user request)**: Morse Invaders, Text-Adventure,
   Morsel, Memory Chain — on the games page and in the home tile subtitle.
 - **Manual file names carry the version (2026-09-28, user request)**:
