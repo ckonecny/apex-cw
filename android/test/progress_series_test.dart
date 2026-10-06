@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/content/char_stats.dart';
+import 'package:next_cw_trainer/content/practice_log.dart';
 import 'package:next_cw_trainer/content/progress_series.dart';
 
 DayStat day(int a, int e, {int wpm = 20, Map<String, List<int>>? chars}) {
@@ -13,6 +14,7 @@ DayStat day(int a, int e, {int wpm = 20, Map<String, List<int>>? chars}) {
 }
 
 void main() {
+  timeTests();
   final now = DateTime(2026, 10, 1); // a Thursday
 
   test('4 weeks: 28 day buckets, practice days counted', () {
@@ -81,5 +83,36 @@ void main() {
     expect(heatmapRows(s, ['m', 'k']), ['m', 'k', 'x']);
     expect(heatmapRows(s, ['m', 'k'], weakestFirst: true), ['m', 'k', 'x']);
     expect(heatmapRows(s, ['k', 'm'], weakestFirst: true), ['m', 'k', 'x']);
+  });
+}
+
+void timeTests() {
+  final now = DateTime(2026, 10, 1);
+
+  test('practice time: the track and the total, per bucket', () {
+    final s = buildSeries({
+      '2026-10-01': day(10, 1),
+    }, ProgressRange.weeks12, now, track: 'echo', practice: {
+      '2026-09-28': PracticeDay()
+        ..seconds = 600
+        ..modes.addAll({'echo': 400, 'hear': 200}),
+      '2026-10-01': PracticeDay()
+        ..seconds = 3000
+        ..modes.addAll({'hear': 3000}),
+      '2026-09-29': PracticeDay()..seconds = 60, // from before the split
+      '2026-06-01': PracticeDay()..seconds = 999, // outside the range
+    });
+    expect(s.buckets.last.seconds, 400);
+    expect(s.buckets.last.totalSeconds, 3660);
+    expect(s.seconds, 400);
+    expect(s.totalSeconds, 3660);
+    expect(s.unsplitDays, 1);
+  });
+
+  test('formatDuration', () {
+    expect(formatDuration(42 * 60), '42 min');
+    expect(formatDuration(3 * 3600 + 25 * 60), '3 h 25 min');
+    expect(formatDuration(51 * 3600 + 5 * 60, days: true), '2 d 3 h 5 min');
+    expect(formatDuration(51 * 3600 + 5 * 60), '51 h 5 min');
   });
 }

@@ -3,6 +3,7 @@
 // derived from CharStatsStore.days via buildSeries (content/progress_series.dart).
 import 'package:flutter/material.dart';
 import '../content/char_stats.dart';
+import '../content/practice_log.dart' show PracticeDay;
 import '../content/progress_series.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
@@ -13,12 +14,18 @@ class ProgressView extends StatefulWidget {
   final List<String> order; // heatmap row order (Koch sequence)
   final int outputCase;
   final void Function(String ch) onChar;
+  /// Practice log days (all trainings), for the practice time.
+  final Map<String, PracticeDay> practice;
+  /// 'hear' or 'echo': whose practice time is shown beside the total.
+  final String track;
   const ProgressView({
     super.key,
     required this.days,
     required this.order,
     required this.outputCase,
     required this.onChar,
+    this.practice = const {},
+    this.track = 'hear',
   });
 
   @override
@@ -58,6 +65,9 @@ class _ProgressViewState extends State<ProgressView> {
 
   static TextStyle _chipLabel(AppColors c, bool on) =>
       TextStyle(fontFamily: 'CwMono', fontSize: 13, color: on ? c.accent : c.textMuted);
+
+  static String _time(int seconds, ProgressRange r) =>
+      seconds == 0 ? '–' : formatDuration(seconds, days: r == ProgressRange.all);
 
   String _display(String ch) => widget.outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase();
 
@@ -105,7 +115,7 @@ class _ProgressViewState extends State<ProgressView> {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final now = DateTime.now();
-    final s = buildSeries(widget.days, _range, now);
+    final s = buildSeries(widget.days, _range, now, practice: widget.practice, track: widget.track);
     final g = s.granularity;
     final unit = unitName(g);
     final mono12 = TextStyle(fontFamily: 'CwMono', fontSize: 12, color: c.textFaint);
@@ -149,6 +159,11 @@ class _ProgressViewState extends State<ProgressView> {
     final wpms = [for (final b in s.buckets) b.avgWpm];
     final wpmPresent = wpms.whereType<double>().toList();
 
+    // Practice time exists from the first day of the practice log on.
+    final sinceKey = widget.practice.keys.map(DateTime.tryParse).whereType<DateTime>().fold<DateTime?>(
+        null, (a, b) => a == null || b.isBefore(a) ? b : a);
+    final since = sinceKey == null ? null : DateTime.utc(sinceKey.year, sinceKey.month, sinceKey.day);
+
     final spanKey = const {
       ProgressRange.weeks4: 'pr_span_4',
       ProgressRange.weeks12: 'pr_span_12',
@@ -167,6 +182,23 @@ class _ProgressViewState extends State<ProgressView> {
         const SizedBox(width: 8),
         _kpi(c, '${s.daysPracticed}/${s.daysTotal}', Strings.t('pr_kpi_days')),
       ]),
+      const SizedBox(height: 8),
+      Text(Strings.t('pr_time_head').replaceFirst('{r}', Strings.t(spanKey)), style: mono12),
+      const SizedBox(height: 4),
+      Row(children: [
+        _kpi(c, _time(s.seconds, _range), Strings.t(widget.track == 'echo' ? 'block_give' : 'block_hear')),
+        const SizedBox(width: 8),
+        _kpi(c, _time(s.totalSeconds, _range), Strings.t('pr_time_total')),
+      ]),
+      if (s.unsplitDays > 0) ...[
+        const SizedBox(height: 4),
+        Text(Strings.t('pr_time_unsplit').replaceFirst('{n}', '${s.unsplitDays}'), style: mono12),
+      ],
+      if (since != null && since.isAfter(s.buckets.first.start)) ...[
+        const SizedBox(height: 4),
+        Text(Strings.t('pr_time_since').replaceFirst('{d}', bucketLabel(since, Granularity.day)),
+            style: mono12),
+      ],
       const SizedBox(height: 4),
       Text(Strings.t('pr_note_${g.name}'), style: mono12),
       const SizedBox(height: 12),
@@ -214,6 +246,20 @@ class _ProgressViewState extends State<ProgressView> {
               firstLabel: labels.first,
               lastLabel: labels.last,
               height: g == Granularity.day ? 18 : 56,
+              detail: (i) {
+                final b = s.buckets[i];
+                final title = bucketTitle(b.start, g);
+                final time = b.totalSeconds == 0
+                    ? ''
+                    : ' · ${Strings.t('pr_days_time').replaceFirst('{tr}', Strings.t(widget.track == 'echo' ? 'block_give' : 'block_hear')).replaceFirst('{t}', formatDuration(b.seconds)).replaceFirst('{a}', formatDuration(b.totalSeconds))}';
+                if (b.daysPracticed == 0) {
+                  return Strings.t('pr_days_detail_none').replaceFirst('{d}', title) + time;
+                }
+                return Strings.t(g == Granularity.day ? 'pr_days_detail_day' : 'pr_days_detail')
+                        .replaceFirst('{d}', title)
+                        .replaceFirst('{n}', '${b.daysPracticed}') +
+                    time;
+              },
             ),
             const SizedBox(height: 6),
             Text(

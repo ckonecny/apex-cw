@@ -21,6 +21,7 @@ import 'widgets/char_playback_overlay.dart';
 import 'progress_view.dart';
 import 'widgets/char_stat_sheet.dart';
 import '../util/char_color.dart';
+import '../util/practice_clock.dart';
 
 class CharStatsScreen extends StatefulWidget {
   // `track`: CharStatsStore.hear or .echo — each training shows its own.
@@ -188,6 +189,8 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
                         order: _active,
                         outputCase: _outputCase,
                         onChar: _openChar,
+                        practice: PracticeClock.instance.log.days,
+                        track: widget.track,
                       ),
               ),
             ]),

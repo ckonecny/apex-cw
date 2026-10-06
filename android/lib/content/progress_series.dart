@@ -2,6 +2,7 @@
 // progress view draws (issue #16, docs/DECISIONS.md "Progress view over time").
 // Pure Dart: range → buckets (day / week / month), KPIs, per-character cells.
 import 'char_stats.dart';
+import 'practice_log.dart' show PracticeDay;
 
 enum ProgressRange { weeks4, weeks12, all }
 
@@ -24,6 +25,9 @@ class ProgressBucket {
   int ws = 0; // wpm sum over all attempts, see DayStat
   int wpmAttempts = 0; // attempts that carry a wpm
   int daysPracticed = 0;
+  int seconds = 0; // active practice time of the track ('hear' / 'echo'), practice log
+  int totalSeconds = 0; // all trainings together
+  int unsplitDays = 0; // days with time but no split per mode (from before it existed)
   final Map<String, List<int>> chars = {};
 
   ProgressBucket(this.start);
@@ -46,6 +50,11 @@ class ProgressSeries {
   final List<ProgressBucket> buckets; // oldest first, empty ones included
   final int daysTotal; // days from the start of the range to today
   final int daysPracticed;
+
+  /// Active practice time of the whole range: of the track, and of all trainings.
+  int get seconds => buckets.fold(0, (a, b) => a + b.seconds);
+  int get totalSeconds => buckets.fold(0, (a, b) => a + b.totalSeconds);
+  int get unsplitDays => buckets.fold(0, (a, b) => a + b.unsplitDays);
 
   const ProgressSeries(this.granularity, this.buckets, this.daysTotal, this.daysPracticed);
 
@@ -82,7 +91,9 @@ DateTime _mondayOf(DateTime d) => d.subtract(Duration(days: d.weekday - 1));
 /// (4 weeks) is cut into 7-day blocks instead — the heatmap needs enough
 /// attempts per cell.
 ProgressSeries buildSeries(Map<String, DayStat> days, ProgressRange range, DateTime now,
-    {bool weekly = false}) {
+    {bool weekly = false,
+    Map<String, PracticeDay> practice = const {},
+    String track = 'hear'}) {
   final today = _date(now);
   final entries = <DateTime, DayStat>{};
   days.forEach((k, v) {
@@ -151,6 +162,21 @@ ProgressSeries buildSeries(Map<String, DayStat> days, ProgressRange range, DateT
       c[1] += v[1];
     });
   });
+  // Time comes from the practice log (the daily goal's clock): the track's own
+  // and all trainings; days roll over at 04:00 — its key is read as a plain date.
+  practice.forEach((k, v) {
+    final d = DateTime.tryParse(k);
+    if (d == null || v.seconds == 0) return;
+    final day = _date(d);
+    if (day.isBefore(start) || day.isAfter(today)) return;
+    final b = buckets[index(day)];
+    b.totalSeconds += v.seconds;
+    if (v.modes.isEmpty) {
+      b.unsplitDays++;
+    } else {
+      b.seconds += v.modes[track] ?? 0;
+    }
+  });
   return ProgressSeries(gran, buckets, today.difference(countFrom).inDays + 1, practiced);
 }
 
@@ -181,4 +207,13 @@ List<String> heatmapRows(ProgressSeries s, List<String> order, {bool weakestFirs
       if (y == null) return -1;
       return x.compareTo(y);
     });
+}
+
+/// "42 min", "3 h 25 min"; with [days] from 24 h on "2 d 3 h 25 min".
+String formatDuration(int seconds, {bool days = false}) {
+  final m = (seconds / 60).round();
+  if (m < 60) return '$m min';
+  final h = m ~/ 60, rest = m % 60;
+  if (days && h >= 24) return '${h ~/ 24} d ${h % 24} h $rest min';
+  return '$h h $rest min';
 }
