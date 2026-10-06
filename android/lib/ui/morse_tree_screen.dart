@@ -157,7 +157,24 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
         label: Text(Strings.t('tree_digits')),
         selected: _deep,
         onSelected: (v) {
-          setState(() => _deep = v);
+          setState(() {
+            _deep = v;
+            // Leaving the deep tree: a level-5 character is no longer shown,
+            // so the path falls back to its level-4 ancestor (the node that
+            // lights up) and the code row follows; no ancestor, no path.
+            if (!v && _path.length > 4) {
+              final parent = _path.substring(0, 4);
+              _genChannel.invokeMethod('stopOne').catchError((_) {});
+              if (MorseDecoder.table.containsKey(parent)) {
+                _path = parent;
+                _lit = 4;
+              } else {
+                _path = '';
+                _lit = 0;
+              }
+              _sounding = false;
+            }
+          });
           // A wider tree scrolls: centre it on the root.
           if (v) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -194,6 +211,14 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
             : MorseElementRow(pattern: _path, lit: _lit, sounding: _sounding),
       );
 
+  // Footnote while the obsolete ---- (CH) is selected; no space otherwise.
+  Widget _chNote(AppColors c) => _path == '----'
+      ? Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Text(Strings.t('tree_ch_note'), style: TextStyle(
+              fontFamily: 'CwMono', fontSize: 11, color: c.textMuted)))
+      : const SizedBox.shrink();
+
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
@@ -226,6 +251,7 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
                     _speed(c),
                   ]),
                   Expanded(child: _treeArea(height: null, landscape: true)),
+                  _chNote(c),
                 ]),
               )
             : ListView(
@@ -238,6 +264,7 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
                       height: 52.0 * (maxDepth + 1) + 30, landscape: false),
                   const SizedBox(height: 8),
                   Center(child: _code()),
+                  _chNote(c),
                   const SizedBox(height: 16),
                   Wrap(
                     alignment: WrapAlignment.spaceBetween,

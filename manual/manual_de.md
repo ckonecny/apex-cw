@@ -2320,6 +2320,13 @@ Während das Zeichen klingt, leuchtet der Weg von oben Element für Element auf:
 Punkt oder Strich ist genau dann hervorgehoben, wenn du ihn hörst. Unter dem
 Baum steht der Code noch einmal als Punkte und Striche.
 
+**Hinweis zu CH (– – – –):** Das Zeichen ganz rechts unten (vier Striche) ist
+ein historisches nationales Zusatzzeichen, früher im deutschen und
+skandinavischen Sprachraum üblich. Im heutigen internationalen Funkverkehr ist
+es obsolet. Sende CH immer als zwei getrennte Buchstaben: C (– · – ·) und
+H (· · · ·). Die App zeigt diesen Hinweis unter dem Baum, sobald du das Zeichen
+antippst. Auch Ä, Ö und Ü lassen sich hier anhören.
+
 ::: {.shots}
 ![Morse-Baum: Weg zum Q leuchtet auf](img/de/tree_letters.png)
 

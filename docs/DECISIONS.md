@@ -1077,6 +1077,12 @@ built like the games hub (the tile widget is now the shared `HubCard` in
   Listen profile, ±1 on the screen is local and not saved. Path lighting is
   driven by the generator's elementOn/elementOff events, like the tap tile.
   Prosigns are played as `<XX>` (rule 3).
+- **Ä Ö Ü and CH are playable** (2026-10-06, found by Sia): the generator's
+  `morseTable` got `Ä Ö Ü` and `CH` (`----`, only as `<CH>`); before, the tree
+  played nothing for umlauts and CH as C+H (8 elements, wrong lighting). Own
+  Text still flattens ä→AE before the generator. Selecting CH shows a footnote:
+  `----` is obsolete, send CH as C + H. Leaving "Ziffern und Zeichen" shortens
+  a level-5 path to its level-4 ancestor (or clears it).
 - **Dit/dah edges look different** (user request 2026-09-29): a dit edge is
   a row of dots, a dah edge one thick solid line; lit ones in the accent
   colour, unlit ones in `textFaint`.
