@@ -351,6 +351,7 @@ class Strings {
     'tree_hint': ['Hören, wie der Weg zum Zeichen klingt', 'Hear the path to a character'],
     'tree_digits': ['Ziffern und Zeichen', 'Digits and signs'],
     'tree_intro': ['Tippe auf ein Zeichen: Es klingt mit deiner Tonhöhe, und der Weg von der Wurzel leuchtet Element für Element auf. Links ist ein Punkt, rechts ein Strich.', 'Tap a character: it sounds at your pitch, and the path from the root lights up element by element. Left is a dit, right is a dah.'],
+    'tree_ch_note': ['Hinweis zu CH (– – – –): Das Zeichen ist ein historisches nationales Zusatzzeichen, früher im deutschen und skandinavischen Sprachraum üblich. Im heutigen internationalen Funkverkehr ist es obsolet. Sende CH immer als zwei getrennte Buchstaben: C (– · – ·) und H (· · · ·).', 'Note on CH (– – – –): this is a historic national extra character, once common in German- and Scandinavian-speaking countries. It is obsolete in international radio today. Always send CH as two separate letters: C (– · – ·) and H (· · · ·).'],
     'tree_speed': ['Tempo', 'Speed'],
     'chart_title': ['Zeichentabelle', 'Character chart'],
     'chart_subtitle': ['Alle Zeichen mit Punkten und Strichen – antippen', 'All characters as dots and dashes – tap one'],

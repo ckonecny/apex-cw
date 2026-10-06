@@ -2238,6 +2238,13 @@ change applies only to this screen. While the character sounds, the path from
 the top lights up element by element: dit or dah is highlighted exactly when
 you hear it. Below the tree the code is shown once more as dits and dahs.
 
+**Note on CH (– – – –):** the character at the bottom right (four dahs) is a
+historic national extra character, once common in German- and
+Scandinavian-speaking countries. It is obsolete in international radio today.
+Always send CH as two separate letters: C (– · – ·) and H (· · · ·). The app
+shows this note below the tree as soon as you tap the character. Ä, Ö and Ü can
+be played here too.
+
 ::: {.shots}
 ![Morse tree: the path to Q lights up](img/en/tree_letters.png)
 
