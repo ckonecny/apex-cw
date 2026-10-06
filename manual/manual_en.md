@@ -2304,8 +2304,10 @@ You first choose a **country**, then the **speed**:
 | **Custom** | your own profile, see below |
 
 The card below the choice shows the rules of the chosen exam for both parts
-(receiving and sending), the source they come from and the kind of text. The plain text is German amateur-radio text
-without umlauts with figures. The text is as long in Morse as the exam part
+(receiving and sending), the source they come from and the kind of text. The plain text is amateur-radio text with figures: **German** (without umlauts)
+for Austria and Germany, **English** for the UK, New Zealand, India and the USA,
+with call signs and towns of the country in the generated QSO lines. In the
+custom profile you choose the language. The text is as long in Morse as the exam part
 lasts (a text of "WPM × 5 characters" would be shorter, because spaces and
 short characters go quickly). Figure and letter groups are groups of five
 characters.

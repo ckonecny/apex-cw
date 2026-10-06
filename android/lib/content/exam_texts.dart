@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'exam_grading.dart' show morseUnits;
 import 'exam_profile.dart';
+import 'exam_texts_en.dart';
 
 const _sentences = [
   'Heute ist das Wetter gut und die Bedingungen auf dem Zwanzig Meter Band sind ausgezeichnet',
@@ -223,7 +224,8 @@ String examText(ExamProfile p, [Random? rng]) {
 /// [ExamProfile.prosigns] the text ends with `+` (AR). Without
 /// [ExamProfile.punctuation] all punctuation is dropped.
 String _plainText(ExamProfile p, Random r) {
-  final fixed = [..._sentences]..shuffle(r);
+  final en = p.lang == 'en';
+  final fixed = [...(en ? examSentencesEn : _sentences)]..shuffle(r);
   final used = <String>[];
   final out = StringBuffer();
   final target = p.targetUnits;
@@ -234,7 +236,7 @@ String _plainText(ExamProfile p, Random r) {
     // fit the length that is still missing, so a 5 WPM text is one or two
     // short sentences instead of one long one.
     String? s;
-    if (r.nextInt(3) == 0) s = _pick(r, _templates)(r);
+    if (r.nextInt(3) == 0) s = en ? examTemplateEn(p.family, r) : _pick(r, _templates)(r);
     s ??= fixed.firstWhere(
       (c) =>
           !used.contains(c) && !_lastRun.contains(c) && c.length <= left + 12,
@@ -267,5 +269,5 @@ String _plainText(ExamProfile p, Random r) {
   return text;
 }
 
-/// The fixed sentence pool (for tests).
+/// The fixed German sentence pool (for tests).
 List<String> get examSentencePool => _sentences;
