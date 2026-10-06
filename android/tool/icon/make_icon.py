@@ -17,12 +17,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 RES = os.path.join(HERE, '..', '..', 'android', 'app', 'src', 'main', 'res')
 src = np.asarray(Image.open(os.path.join(HERE, 'icon_source.jpg')).convert('RGB')).astype(float)
 H, W, _ = src.shape
-IN = (55, 725)                     # inside the panel's bevel, both axes
+IN = (150, 1130)                   # inside the panel's edge, both axes
 
 # 1. Fit colour = a + b*x + c*y per channel on panel pixels (logo excluded).
 ys, xs = np.mgrid[0:H, 0:W]
 rr = Image.new('L', (W, H), 0)     # inner area with the panel's round corners
-ImageDraw.Draw(rr).rounded_rectangle([IN[0], IN[0], IN[1], IN[1]], radius=120, fill=1)
+ImageDraw.Draw(rr).rounded_rectangle([IN[0], IN[0], IN[1], IN[1]], radius=260, fill=1)
 inner = np.asarray(rr).astype(bool)
 rough = np.abs(src - np.median(src[inner], axis=0)).sum(axis=2) < 90
 A = np.stack([np.ones(H * W), xs.ravel(), ys.ravel()], 1)
@@ -37,7 +37,7 @@ for _ in range(3):                 # refit, dropping pixels far from the plane
 # The panel darkens slightly towards its bevel; fade the lift out near the
 # edge of the inner area so that shading doesn't come along as a frame.
 edge = np.minimum(np.minimum(xs - IN[0], IN[1] - xs), np.minimum(ys - IN[0], IN[1] - ys))
-alpha = np.clip((diff - 22) / 30, 0, 1) * np.clip(edge / 14, 0, 1) * inner
+alpha = np.clip((diff - 18) / 24, 0, 1) * np.clip(edge / 14, 0, 1) * inner
 a_img = Image.fromarray((alpha * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2))
 a = np.asarray(a_img).astype(float) / 255
 yy, xx = np.where(a > 0.5)
@@ -69,7 +69,7 @@ for d, k in DENS.items():
         os.path.join(RES, f'mipmap-{d}', 'ic_launcher_foreground.png'), optimize=True)
 
 # Legacy icon (below API 26): 48 dp rounded square.
-leg = master(1024, 0.78)
+leg = master(1024, 0.70)
 m = Image.new('L', (4096, 4096), 0)
 ImageDraw.Draw(m).rounded_rectangle([64, 64, 4031, 4031], radius=900, fill=255)
 leg.putalpha(m.resize((1024, 1024), Image.LANCZOS))
