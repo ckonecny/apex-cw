@@ -114,6 +114,10 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
     controls go in `Expanded`/`Flexible`, never bare `Text` + `Spacer`; add
     every new screen to `android/test/screen_overflow_test.dart` (DE+EN,
     scale 1.3, small phone). Details: `docs/DECISIONS.md`.
+16. **Preparing any version (beta or release): check the project docs for
+    consistency first, and fix what drifted in the same change.** Checklist:
+    `docs/PROJECT.md` "Release consistency check". Report the result to the
+    user (what was checked, what was fixed, what stays open).
 
 ## Build / run
 

@@ -1,15 +1,15 @@
 #!/bin/sh
-# Builds a tester APK (tools/build_release.sh, "-test" mode) and publishes it
+# Builds a beta APK (tools/build_release.sh, "-beta" mode) and publishes it
 # as a GitHub pre-release with release notes since the previous tag (last
-# release OR last test build reachable from the ref, whichever is newer).
+# release OR last beta build reachable from the ref, whichever is newer).
 # Notes: commit subjects + bodies since that tag + referenced issues + GitHub's
 # generated PR list. The ref must already be pushed (gh creates the tag there).
-#   tools/publish_test.sh v1.5.1-test1 [ref]     (ref default: HEAD)
-#   DRY_RUN=1 tools/publish_test.sh ...          (print notes only, no build,
+#   tools/publish_beta.sh v1.6.1-beta1 [ref]     (ref default: HEAD)
+#   DRY_RUN=1 tools/publish_beta.sh ...          (print notes only, no build,
 #                                                 no publish)
 set -e
 tag="$1"
-case "$tag" in v*-test*) ;; *) echo "usage: $0 vX.Y.Z-testN [ref]" >&2; exit 1 ;; esac
+case "$tag" in v*-beta*) ;; *) echo "usage: $0 vX.Y.Z-betaN [ref]" >&2; exit 1 ;; esac
 repo="$(git rev-parse --show-toplevel)"
 cd "$repo"
 sha="$(git rev-parse "${2:-HEAD}")"
@@ -22,7 +22,7 @@ prev="$(git describe --tags --abbrev=0 "$sha")"
 
 notes="$(mktemp)"
 {
-  echo "Tester build \`$tag\` (pre-release) — changes since \`$prev\`:"
+  echo "Beta build \`$tag\` (pre-release) — changes since \`$prev\`:"
   echo
   # subject + message body per commit; bookkeeping commits left out
   git log --no-merges --reverse --format='%x01%s%n%b' "$prev..$sha" | awk '

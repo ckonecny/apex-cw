@@ -1616,20 +1616,21 @@ new ones, so the guard is now general:
   Start below it); Echo idle hint scrolls; decoder status bar and goals rows
   use `Expanded`/`Flexible`. All screens are now in the overflow test.
 
-## Tester builds without a full release (2026-10-04)
+## Beta builds without a full release (2026-10-04, renamed from "test" 2026-10-06)
 
-`tools/build_release.sh vX.Y.Z-testN [ref]`: a tag containing `-test` builds
+`tools/build_release.sh vX.Y.Z-betaN [ref]`: a tag containing `-beta` builds
 **APK only** (no AAB) from any committed ref (default `HEAD`; the tag need not
 exist), with the same clean-clone build, upload-key signing and
-local-identifier scan as a release. `versionName` becomes `<pubspec>-testN`
+local-identifier scan as a release. `versionName` becomes `<pubspec>-betaN`
 (visible in Settings → Info for bug reports); `versionCode` is left as in
 `pubspec.yaml`, so a tester can install over any build and later update to the
-real release. Distribution: GitHub pre-release with the APK attached; no
+real release. Renamed from "test" to "beta" (pre-release of the coming version); the older
+tag `v1.5.1-test1` stays as is. Distribution: GitHub pre-release with the APK attached; no
 manual/HTML/screenshot work (rule 10 still applies to the Markdown text).
 
-`tools/publish_test.sh vX.Y.Z-testN [ref]` wraps this: builds the tester APK
+`tools/publish_beta.sh vX.Y.Z-betaN [ref]` wraps this: builds the beta APK
 and creates a GitHub pre-release at the (pushed) ref. Notes = commit subjects
-and issue numbers since the nearest earlier tag (release or test, via
+and issue numbers since the nearest earlier tag (release or beta, via
 `git describe`) plus GitHub's generated PR list. `DRY_RUN=1` prints the notes
 only. Requested through Claude Code chat; publishing is outward-facing, so
 confirm the tag and ref with the user before running it for real.

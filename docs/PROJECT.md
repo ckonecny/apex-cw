@@ -36,3 +36,25 @@ scope/hardware-distinction, and the paddle-adapter note (vband etc.).
 Verify against `reference/`, not memory or the firmware's own docs/manuals —
 those can lag the source. This project's whole value is fidelity to the
 actual firmware behavior.
+
+## Release consistency check
+Run before every beta or release (CLAUDE.md rule 16); fix drift right away.
+- `docs/STATUS.md`: latest tag/version line, "Manual: pending" list, open
+  steps all still true; finished items moved to `STATUS-ARCHIVE.md`; no item
+  duplicated in a GitHub issue (rule 12); well under 150 lines.
+- `docs/DECISIONS.md`: every architecture change since the last tag is
+  recorded (compare `git log <last tag>..HEAD`); tool/script names current.
+- `docs/PORTING-MAP.md`, `docs/PLAY-LISTING.md`, `docs/ADAPTIVE-COPY.md`:
+  features, names, counts and screens match the code.
+- `manual/manual_de.md` vs `manual/manual_en.md`: same structure and facts,
+  and both match the app (rule 10).
+- `README.md`, `site/index.html`, `PRIVACY.md`: feature list, version/manual
+  links, screenshots, licence section current.
+- Licences (rule 11): `android/lib/licenses.dart`, README, manual Info
+  cover everything new; `flutter test` incl. `license_compat_test.dart` green.
+- `CLAUDE.md`, `manual/README.md`, `tools/` comments: script names, tag
+  patterns (`vX.Y.Z`, `vX.Y.Z-betaN`) and paths still exist and are correct.
+- `flutter analyze` zero issues, `flutter test` green.
+Not part of a beta (only at a release, or at store launch): retaking
+screenshots, building manual HTML/PDF, Play Store graphics and listing. Their
+pending lists in `docs/STATUS.md` must be complete, though.

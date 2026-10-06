@@ -8,16 +8,16 @@
 # (gitignored; copied into the clone, never committed).
 #   tools/build_release.sh v1.3.0  ->  releases/next-cw-trainer-v1.3.0.apk
 #                                      releases/next-cw-trainer-v1.3.0.aab
-# Tester build (name contains "-test"): APK only, built from any committed ref
+# Beta build (name contains "-beta"): APK only, built from any committed ref
 # (default HEAD, the tag needn't exist), versionName gets the suffix
-# (1.5.0 -> 1.5.0-test1), versionCode stays as in pubspec so testers can still
+# (1.5.0 -> 1.5.0-beta1), versionCode stays as in pubspec so testers can still
 # update to the real release afterwards. Upload as a GitHub pre-release.
-#   tools/build_release.sh v1.5.1-test1 [ref]
-#                               ->  releases/next-cw-trainer-v1.5.1-test1.apk
+#   tools/build_release.sh v1.6.1-beta1 [ref]
+#                               ->  releases/next-cw-trainer-v1.6.1-beta1.apk
 set -e
 tag="$1"
-[ -n "$tag" ] || { echo "usage: $0 vX.Y.Z | vX.Y.Z-testN [ref]" >&2; exit 1; }
-case "$tag" in *-test*) test_build=1; ref="${2:-HEAD}" ;; *) test_build=; ref="$tag" ;; esac
+[ -n "$tag" ] || { echo "usage: $0 vX.Y.Z | vX.Y.Z-betaN [ref]" >&2; exit 1; }
+case "$tag" in *-beta*) test_build=1; ref="${2:-HEAD}" ;; *) test_build=; ref="$tag" ;; esac
 repo="$(git rev-parse --show-toplevel)"
 list="$(git -C "$repo" rev-parse --git-common-dir)"
 case "$list" in /*) ;; *) list="$repo/$list" ;; esac
@@ -61,7 +61,7 @@ cp "$apk" "$repo/releases/next-cw-trainer-$tag.apk"
 [ -n "$test_build" ] || cp "$aab" "$repo/releases/next-cw-trainer-$tag.aab"
 rm -rf "$work"
 if [ -n "$test_build" ]; then
-  echo "OK: releases/next-cw-trainer-$tag.apk (tester build, no local paths inside)"
+  echo "OK: releases/next-cw-trainer-$tag.apk (beta build, no local paths inside)"
 else
   echo "OK: releases/next-cw-trainer-$tag.{apk,aab} (no local paths inside)"
 fi

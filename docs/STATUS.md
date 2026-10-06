@@ -28,15 +28,13 @@ Straight-mode shots only if wanted. Adventure map shots show the default zoom
 shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
-## Landing page (branch `feature/landing-page`, not committed yet)
-`site/` + `.github/workflows/pages.yml` ready. To go live: merge to main, then
-repo Settings -> Pages -> Source "GitHub Actions". Then replace the disabled
-"Google Play: coming soon" button with the store link once the app is live,
-and set the Play listing's website to the Pages URL (decision in DECISIONS.md).
+## Landing page (live, Pages source "GitHub Actions" set)
+Open: replace the disabled "Google Play: coming soon" button with the store
+link once the app is live, and set the Play listing's website to the Pages URL.
 
-## New logo (2026-10-06, branch `feature/new-logo`): still to do
-Done in the app (launcher icons), README, landing page. Pending:
-- **Play Store**: rebuild `store/out` with `python3 store/make_graphics.py`
+## New logo (2026-10-06, on main): still to do
+Done and checked on the test phone: launcher icons, README, landing page. Pending:
+- **Play Store** (deliberately postponed until the store launch; no work per beta): rebuild `store/out` with `python3 store/make_graphics.py`
   after changing its palette (`TOP`/`BOTTOM` gradient is still the old blue
   panel; use the new navy `#122241`/teal/orange accents) and re-check
   `feature_{de,en}.png`; upload new `icon_512.png` + feature graphic in the
@@ -45,7 +43,6 @@ Done in the app (launcher icons), README, landing page. Pending:
   Social preview; no API).
 - **Manual** (at release): the built HTML/PDF carry no icon, but check the
   cover/info for the old look; screenshots with the launcher icon, if any.
-- On-device install of the new icon still to verify (rule 4).
 
 ## Manual: pending for next release
 - Retaken 2026-10-05 (DE+EN): `hear_start`, `hear_result`, `hear_weak`,
@@ -55,13 +52,13 @@ Done in the app (launcher icons), README, landing page. Pending:
   on a debug build with the phone's prefs backed up and restored afterwards;
   `tools/echo_loop.py` knows "Gruppe n /" and "Geben …", needs Echo Prompt =
   Both (`echoDisplayMode` 3).
-- Branch `feature/swap-touch-paddles`: new Keyer setting "Swap on-screen
+- Swap touch paddles (on main): new Keyer setting "Swap on-screen
   paddles"; retake the Keyer settings shot (`settings1.png`, DE+EN) and
   `keyer.png` if wanted (the touch paddles themselves look the same by default).
-- Issue #37 (branch `fix/keyer-unknown-and-umlauts`, not yet installed): keyer
+- Issue #37 (on main): keyer
   text now shows `*`/`ERR`/umlauts; retake `keyer.png` only if it shows a `?`.
 
-- Branch `feature/char-curve-legend`: weekly curve note + current-week line in
+- Char detail curves (on main): weekly curve note + current-week line in
   the character detail; tap detail on the curves/bars (also the Verlauf rate
   curve); no Mix-ups item in Listen; heatmap columns fill the width. Retake
   `hear_char_detail.png`, `hear_progress2.png`, `echo_progress.png` (DE+EN).
@@ -69,10 +66,8 @@ Done in the app (launcher icons), README, landing page. Pending:
 - Exam simulation (issue #42, merged): new Learn-hub card and exam screens; retake `home.png` (the Learn card subtitle changed), `res_hub.png` (DE+EN) and add shots of the exam setup,
   receive result, send ready/keying/result pages (not taken yet).
 
-## Exam simulation (issue #42, merged to main; English texts on branch `fix/exam-english-texts`)
-Receive and send part, six country families and the custom profile done, unit and overflow tests green; debug build on the
-test phone, the send part not yet tried by hand (keying phase layout on a
-small phone to check). Next: KA/SK, feed weak characters into the statistics, check the ARRL steps (13 WPM?) and the Indian/UK/NZ details against the official sources. Decisions:
+## Exam simulation (issue #42, on main incl. English texts)
+Receive and send part, six country families and the custom profile done, unit and overflow tests green; checked on the test phone. Next: KA/SK, feed weak characters into the statistics, check the ARRL steps (13 WPM?) and the Indian/UK/NZ details against the official sources. Decisions:
 `docs/DECISIONS.md` "Exam simulation".
 
 ## Hints for the next session
