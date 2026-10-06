@@ -2,8 +2,10 @@
 // training mode of their own (interactive Morse tree, character chart, links).
 import 'package:flutter/material.dart';
 
+import '../l10n/exam_strings.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
+import 'exam_screen.dart';
 import 'links_screen.dart';
 import 'morse_chart_screen.dart';
 import 'morse_tree_screen.dart';
@@ -48,6 +50,16 @@ class LearnScreen extends StatelessWidget {
               color: c.accentPurple,
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const MorseChartScreen())),
+            ),
+            const SizedBox(height: 12),
+            HubCard(
+              icon: Icons.assignment_turned_in_outlined,
+              title: ExamStrings.t('ex_title'),
+              subtitle: ExamStrings.t('ex_subtitle'),
+              hint: ExamStrings.t('ex_hint'),
+              color: c.warning,
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const ExamScreen())),
             ),
             const SizedBox(height: 12),
             HubCard(

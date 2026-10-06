@@ -6,6 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/l10n/strings.dart';
 import 'package:next_cw_trainer/ui/decoder_screen.dart';
 import 'package:next_cw_trainer/ui/echo_trainer_screen.dart';
+import 'package:next_cw_trainer/content/exam_profile.dart';
+import 'package:next_cw_trainer/ui/exam_picker.dart';
+import 'package:next_cw_trainer/ui/exam_screen.dart';
+import 'package:next_cw_trainer/ui/exam_send_screen.dart';
 import 'package:next_cw_trainer/ui/generator_screen.dart';
 import 'package:next_cw_trainer/ui/goals_screen.dart';
 import 'package:next_cw_trainer/ui/adventure_select_screen.dart';
@@ -53,6 +57,24 @@ void main() {
     'radio_cave': () => const RadioCaveScreen(),
     'invaders': () => const InvadersScreen(),
     'learn': () => const LearnScreen(),
+    'exam': () => const ExamScreen(),
+    'exam_send': () => const ExamSendScreen(),
+    'exam_picker_custom': () => Scaffold(
+          body: ListView(padding: const EdgeInsets.all(16), children: [
+            ExamPicker(
+                selected: ExamProfile.custom(wpm: 8, charWpm: 12),
+                custom: ExamProfile.custom(),
+                onSelect: (_) {}, onCustomChanged: (_) {}),
+          ]),
+        ),
+    'exam_picker_uk': () => Scaffold(
+          body: ListView(padding: const EdgeInsets.all(16), children: [
+            ExamPicker(
+                selected: examProfileById('uk12f'),
+                custom: ExamProfile.custom(),
+                onSelect: (_) {}, onCustomChanged: (_) {}),
+          ]),
+        ),
     'games': () => const GamesScreen(),
     'morse_chart': () => const MorseChartScreen(),
     'keyer': () => const KeyerScreen(),

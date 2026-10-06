@@ -1706,3 +1706,76 @@ does not touch the learned hardware keys: anyone who taught dit/dah to their
 adapter did so on purpose for that device, and a second reversal from this
 setting would undo it. The buttons keep their meaning (the DIT button still
 sends dit); only their position changes. Hidden for Straight (one button).
+
+## Exam simulation — receive part (issue #42, 2026-10-06)
+- Own files only (`content/exam_*.dart`, `l10n/exam_strings.dart`,
+  `ui/exam_screen.dart`); the only change to existing code is the menu card in
+  the Learn hub. Texts live in `exam_strings.dart`, not `strings.dart`.
+- Profiles are data (`exam_profile.dart`): AT 12 WPM, DE 5 WPM Farnsworth
+  (characters 9 WPM), DE 5, DE 12. Sources: Fernmeldebüro (AT: 3 min each,
+  at least 12 WPM; error limit unpublished, ÖVSV course says 2–3 → 3 used),
+  DK5KE description of the BNetzA exam (DE: 3 min, at most 4 errors, one retry
+  per part). Not verified against the BNetzA publication itself.
+- Farnsworth: the 19 gap units of PARIS are stretched so a word takes 60/wpm s
+  with characters at charWpm (5/9 → inter-char 9, inter-word 22 dits).
+- Prosigns: only AR, typed as `+` (a bracketed `<KA>` is ambiguous to type);
+  KA/SK left out for now.
+- Errors = Levenshtein distance on the text without whitespace (substitution,
+  omission, extra character each 1), like an examiner. Per-character marks reuse
+  `gradeTyped`. Played text is generated from a pool of German sentences
+  (`exam_texts.dart`: 100+ fixed sentences incl. short ones for 5 WPM, plus
+  generated QSO lines with random call signs, names, towns, reports,
+  frequencies; every third sentence is generated), cut at a word boundary near
+  wpm×5×minutes characters. No sentence twice in a run and none of the run
+  before (in-memory, per app start).
+- Flow: 3 s lead-in, one playback via `playOne` (no pause/replay), 30 s
+  correction, result. Results in prefs `exam.results` (last 200); "ready" = the
+  last three runs of a profile passed. The user's interference settings are not
+  overridden.
+- Send part (`ui/exam_send_screen.dart`, part `tx`): the shown text is keyed
+  with the shared native keyer (mode/CurtisB/ACS from the prefs, keyer speed =
+  chosen with a WPM slider on the ready view (paddle modes only; min = exam
+  speed, max 40, default = character speed so Farnsworth 5/9 starts at 9, saved
+  per profile as `exam.sendWpm.<id>`; the pass check still uses the exam's
+  overall speed), word gap 7, pushed on entry — rule 2). Decoded with
+  `MorseDecoder`; `ERR` deletes the last character. The text is compared with
+  the best-fitting beginning (`gradeExamSend`), so stopping early is allowed.
+  Pass = errors <= limit AND at least 80 % of the text reached AND estimated
+  speed >= 85 % of the exam speed. The 80 %/85 % are this project's own
+  assumptions (no official measurement is known; `kExamSendMinText`,
+  `kExamSendMinSpeed`); the speed comes from the time between the first and
+  last element (symbol event arrival), so it is an estimate. The verdict is
+  stored in the result (`k`), plus the estimated WPM (`m`).
+- Open: KA/SK, weak characters into the character statistics, UK/NZ profiles,
+  
+
+### Exam simulation: more countries and a custom profile (issue #42, 2026-10-06)
+- Profiles are grouped by family (`at de uk nz in us`) plus `custom`; the picker
+  is country chips → speed chips (→ text/figures for UK). Sources (public,
+  not verified at the authorities): UK RSGB Certificate of Competency (5–30 WPM;
+  plain text 3 min ≤4 errors, five-figure groups 1 min ≤3 errors), NZART (5 WPM,
+  3 min, ≤4 errors, up to 5 attempts, sending only has to be readable), India
+  WPC (5 or 8 WPM, receive 1 min without a mistake, same speed for sending;
+  sources disagree, flagged in the app), ARRL Code Proficiency (1 min solid
+  copy, receive only; the 10–40 WPM steps are from memory of the W1AW schedule,
+  W1AW also has 13 WPM). Ukraine class 1, Belarus class A, Estonia class A and
+  Monaco still require Morse but no exam format was found → use the custom
+  profile.
+- Text length is measured in dit units (`ExamProfile.targetUnits` = wpm × 50 ×
+  minutes), not characters: "wpm × 5 characters" is only ~5/6 of the time
+  (spaces and E/T are quick; a PARIS word is 5 letters plus a gap). Figure
+  groups: ~89 units each, letter/figure groups ~71, so groups = wpm × minutes ×
+  50 / units.
+- The send speed estimate also uses dit units (`morseUnits`), so a perfectly
+  keyed text at the exam speed measures the exam speed for every text kind.
+  The pass threshold is now a decimal (85 % of the exam WPM).
+- Custom profile: stored as JSON in prefs `exam.custom`; its id encodes all
+  settings (`custom:w/c/m/e/retries/kind/flags`), so history, forecast and the send
+  speed are per configuration. Clamped: 5–40 WPM, 1–10 min, 0–20 errors.
+- Retries (2026-10-06): `ExamProfile.retries` is modelled per screen session and
+  part: result shows "attempt n of retries+1"; after a fail with attempts left
+  the button is "Retry" (new text, attempt+1); with none left the part counts as
+  failed ("New exam" resets to attempt 1). Passing restarts at 1. Not persisted;
+  every attempt is still stored as its own result. The rules card in the setup
+  now lists receive and send rules (send: minutes, errors, speed, 80 % text).
+- Custom profile also has retries (0–5, JSON `r`), same attempt logic as the presets.
