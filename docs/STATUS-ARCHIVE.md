@@ -7,6 +7,7 @@ ideas and deferred bugs are GitHub issues (rule 12), not listed here.
 
 ## Done
 
+- README update, 2026-10-07 (PR #45, on `main`): new features described (exam simulation, single-character practice, practice time, swapped paddles, Learn section, feature table rows); README already showed Sia's new app icon.
 - Morse tree fixes, 2026-10-06 (merged into `main`): plays Ä Ö Ü and CH, CH footnote (`----` obsolete), path falls back to level 4 when leaving "Ziffern und Zeichen"; manual DE+EN updated. Retake `tree_letters.png` at release only if CH/umlauts should show. Details in DECISIONS.md.
 - **v1.6.0 release (2026-10-05).** Version 1.6.0+6, tag `v1.6.0` (45fe7e4), APK + AAB via `tools/build_release.sh`, installed on the test phone. Since v1.5.0: Head copy (Sentences, #7), Q-groups (#41), Mini QSO (#40), break hint, manual beginner chapter. Manual screenshots retaken DE+EN (home, games, understand, headcopy_*, qgroups_*, miniqso_*, settings1-3, achievements), HTML/PDF built, landing page text and screenshots refreshed.
 - Mini-QSO stage (#40, closed), 2026-10-05: two-station on-air dialogue (two pitches), 3 levels, questions in order of appearance, callsigns from the QSO-bot generator; the three listening modes now sit behind one games card "Verstehen" and the games list has a visible scroll bar. Concept in DECISIONS.md; screenshots are on the pending list in `STATUS.md`.
