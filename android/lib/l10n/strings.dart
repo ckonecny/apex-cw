@@ -202,7 +202,7 @@ class Strings {
     'home_free_subtitle': ['CW Keyer · CW-Decoder · WiFi Trx · QSO Bot', 'CW Keyer · CW Decoder · WiFi Trx · QSO Bot'],
     'free_keyer_hint': ['Frei tasten, Mitschrift als Text', 'Key freely, text decoded on screen'],
     'free_decoder_hint': ['Fremdes CW über das Mikrofon lesen', 'Read other CW through the microphone'],
-    'free_wifi_hint': ['Mit anderen Morserinos und Apps funken', 'Talk to other Morserinos and apps'],
+    'free_wifi_hint': ['Mit anderen OMs und YLs übers Internet morsen', 'Send Morse to other OMs and YLs over the internet'],
     'free_qso_hint': ['Mit einem simulierten Partner üben', 'Practise with a simulated partner'],
     'free_ot_hint': ['Eigene Texte aus der Zwischenablage hören', 'Listen to your own texts from the clipboard'],
 
