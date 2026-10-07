@@ -32,6 +32,10 @@ By Christian Konecny, OE1CKO.
   QRM ... and pick the meaning, with a cheat sheet) and a **mini QSO**
   (a short on-air exchange between two stations on two pitches, in real
   radio style).
+- **Exam simulation:** rehearse the voluntary Morse exams of Austria,
+  Germany, the UK, New Zealand, India and the USA (ARRL), or define your own
+  profile — receiving *and* sending, with the exam's speed, duration, error
+  limit, retries and text type, and a result page that says passed or not.
 - **Your own material and more games:** share any text from another app
   into Own texts and let the app play it, plus games from arcade to a CW
   text adventure.
@@ -109,16 +113,39 @@ as immediate as it does on the device.
   tones and an attempt indicator. "Gebe-Tempo" caps the expected answer
   speed like the firmware's Echo Speed Max.
 
+- **Practice a single character:** long-press any Koch character (locked
+  ones too) in Listen or Send to hear it over and over and key it back, with
+  separate Hear and Send speed sliders. Nothing is counted — pure drilling.
+
 ### Statistics
 
 Per-character statistics, kept separately for listening and sending
 (📊 in each training), with the lifetime accuracy that drives weak
-characters, boosts and Koch unlocks.
+characters, boosts and Koch unlocks. Progress shows your **practice time**
+(this training and total, tap a bar for the day's detail), and the
+character detail has weekly curves with tap-for-attempts.
+
+### Learn: resources and exam simulation
+
+- **Morse tree and character chart** for looking things up (incl. Ä Ö Ü, CH).
+- **Exam simulation** — practise the receive and send part of a Morse exam in
+  its own format: Austria (12 WPM), Germany (5 or 12 WPM, Farnsworth at 5),
+  UK (5–30 WPM, plain text or figure groups), New Zealand, India, USA (ARRL
+  Code Proficiency, 10–40 WPM), or a **custom profile** (speed, character
+  speed, 1–10 minutes, error limit, retries, text kind, language).
+  - *Receive:* 3 s countdown, the text plays once without replay while you
+    copy it, then 30 s to correct; errors are counted against the limit.
+  - *Send:* you key the shown text with touch paddles or a Morse key; the
+    result checks errors, amount of text reached and speed.
+  - Retries where the exam allows them, recent runs per exam, and a hint
+    when you look ready for the real thing. The values come from public
+    sources; the app does not replace the official exam.
 
 ### Free keying and on-air practice
 
 - **CW Keyer** — Iambic A/B, Ultimatic, Non-Squeeze and Straight Key,
-  CurtisB timing, AutoChar Spacing, live decode to text. Input from on-screen
+  CurtisB timing, AutoChar Spacing, optional swapped touch paddles, live
+  decode to text. Input from on-screen
   touch keyer or a real Morse key/straight key (see below).
 - **CW Decoder** — decode CW through the phone's microphone: a port of the
   firmware's Goertzel detector and adaptive decoder, with level meter,
@@ -222,7 +249,9 @@ Module-by-module details: `docs/PORTING-MAP.md`.
 | CW Keyer (Iambic A/B, Ultimatic, Non‑Squeeze, Straight Key) | ✅ Supported | Live decode, CurtisB, AutoChar Spacing, touch or USB Morse key |
 | Listen: CW Generator / Koch Trainer | ✅ Supported | All content modes, Koch sequences incl. LICW Carousel, block flow with adaptive suggestions |
 | Send: Echo Trainer | ✅ Supported | Separate profile, block flow, adaptive suggestions, confusion pairs, error sign |
-| Per-character statistics (listen / send separately) | ✅ Supported | App-specific, replaces the firmware's Practice Stats |
+| Per-character statistics (listen / send separately) | ✅ Supported | App-specific, replaces the firmware's Practice Stats; practice time per training |
+| Practice a single character (long press) | ✅ Supported | Hear/Send speed sliders; corresponds to Learn New Chr / Preview Char |
+| Exam simulation (AT, DE, UK, NZ, IN, US, custom) | 🆕 New | App-only; receive and send part, retries, result history |
 | CW Decoder (microphone → text) | ✅ Supported | Goertzel + firmware decoder port |
 | WiFi Trx (MOPP over UDP, e.g. cq.morserino.info) | ✅ Supported | Foreground only; no background service yet |
 | QSO Bot (SOTA/POTA, Standard, Contest) | ✅ Supported | |
