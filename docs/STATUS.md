@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (public since 2026-09-28, GPL-3.0).
-Latest tagged build: v1.6.0 (2026-10-05, tag `v1.6.0` = commit 45fe7e4, Head copy / Verstehen with Sentences, Q-groups and Mini QSO, break hint, beginner chapter in the manual). Previous: v1.5.0 (2026-10-03); older versions in `docs/STATUS-ARCHIVE.md`.
+Latest tagged build: v1.6.0 (2026-10-05, tag `v1.6.0` = commit 45fe7e4, Head copy / Verstehen with Sentences, Q-groups and Mini QSO, break hint, beginner chapter in the manual). Latest pre-release: `v1.6.1-beta1` (2026-10-06, commit 6d08a30). Previous: v1.5.0 (2026-10-03); older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/next_cw_trainer (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -78,6 +78,7 @@ Receive and send part, six country families and the custom profile done, unit an
   `echo_progress.png` (DE+EN).
 
 ## Hints for the next session
+- README describes the features since v1.6.0 (exam simulation, single-character practice, practice time, swapped paddles; PR #45, 2026-10-07). Its manual links still point to the v1.6.0 PDFs: update them at the next release.
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual
   sources changed after the tag.
