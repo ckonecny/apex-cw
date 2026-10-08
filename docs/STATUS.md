@@ -34,18 +34,14 @@ link once the app is live, and set the Play listing's website to the Pages URL.
 
 ## New logo (2026-10-06, on main): still to do
 Done and checked on the test phone: launcher icons, README, landing page. Pending:
-- **Play Store** (deliberately postponed until the store launch; no work per beta): rebuild `store/out` with `python3 store/make_graphics.py`
-  after changing its palette (`TOP`/`BOTTOM` gradient is still the old blue
-  panel; use the new navy `#122241`/teal/orange accents) and re-check
-  `feature_{de,en}.png`; upload new `icon_512.png` + feature graphic in the
-  Play Console (store listing, app icon). `docs/PLAY-LISTING.md` unchanged.
+- **Play Store**: graphics, screenshots and texts rebuilt 2026-10-08 (palette now navy, 8 shots per language, `docs/PLAY-LISTING.md` updated). Still to do in the Play Console: upload `store/out/*` (icon_512, feature graphic, shots in order) and paste the texts, for DE and EN.
 - **GitHub**: upload `android/tool/icon/social_preview.png` (repo Settings →
   Social preview; no API).
 - **Manual** (at release): the built HTML/PDF carry no icon, but check the
   cover/info for the old look; screenshots with the launcher icon, if any.
 
 ## Manual: pending for next release
-- Rename to "APEX CW" (feature/rename-apex-cw): app bar title on Home and the About dialog show the new name; retake `home*` and any shot with the title bar (DE+EN) at release. Also: store raw shots + graphics (`store/make_graphics.py`) and the Play Console app name/listing. (Site images were retaken 2026-10-08, see archive.)
+- Rename to "APEX CW" (feature/rename-apex-cw): app bar title on Home and the About dialog show the new name; retake `home*` and any shot with the title bar (DE+EN) at release. Also: the Play Console app name/listing (store raw shots + graphics were rebuilt 2026-10-08, see archive). (Site images were retaken 2026-10-08, see archive.)
 - Home: Listen tile now also shows the trend (fix/home-hear-trend); retake `home.png` (DE+EN).
 - Listen start page: slim "On the way to X" card (Koch lesson) below the weak characters; retake `hear_start` (DE+EN).
 - Break hint sensitivity (#48, on main): new row in Settings → General; retake `settings1.png` (DE+EN) if the row shows there. Defaults still to be tuned on real sessions (being tried by testers).
