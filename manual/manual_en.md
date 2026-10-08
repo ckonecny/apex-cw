@@ -74,8 +74,9 @@ At the very top sits the **daily goal card**: a ring with your active
 practice minutes today, your streak, and the week Monday to Sunday as dots.
 Tap it to open the [Achievements page](#daily-goal).
 
-The **Listen** and **Send** tiles show your current Koch lesson and speed.
-**Send** also shows the trend of your last blocks (see [Trend](#trend)).
+The **Listen** and **Send** tiles show your current Koch lesson and speed,
+and – from the sixth block on – the trend of your last blocks (see
+[Trend](#trend)).
 
 The gear icon at the top right opens the **global settings** (chapter
 [Settings](#settings)). Anything that concerns only one training is set up

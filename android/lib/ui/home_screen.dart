@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // current language when Strings.lang changes.
   TrainingProfile? _hear;
   TrainingProfile? _echo;
+  BlockTrend? _hearTrend;
   BlockTrend? _trend;
   DailyGoalSettings _goal = DailyGoalSettings();
 
@@ -52,12 +53,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final p = await SharedPreferences.getInstance();
     final hear = await TrainingProfile.open(TrainingProfile.hear);
     final echo = await TrainingProfile.open(TrainingProfile.echo);
+    final hearTrend = trendOf(await const BlockHistory('hear').load(p));
     final trend = trendOf(await const BlockHistory('echo').load(p));
     final goal = await DailyGoalSettings.load(p);
     if (!mounted) return;
     setState(() {
       _hear = hear;
       _echo = echo;
+      _hearTrend = hearTrend;
       _trend = trend;
       _goal = goal;
     });
@@ -76,7 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
       builder: (context, _, _) {
-        final hearInfo = _hear == null ? '' : _profileInfo(_hear!);
+        final hearInfo = _hear == null ? '' : _profileInfo(_hear!) +
+            (_hearTrend != null ? ' · ${_hearTrend!.percent} % ${_hearTrend!.arrow}' : '');
         final giveInfo = _echo == null ? '' : _profileInfo(_echo!) +
             (_trend != null ? ' · ${_trend!.percent} % ${_trend!.arrow}' : '');
         return Scaffold(

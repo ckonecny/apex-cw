@@ -77,7 +77,7 @@ Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
 Punkte. Tippe darauf, um die [Erfolge-Seite](#tagesziel) zu öffnen.
 
 Unter **Hören** und **Geben** zeigt die Kachel deine aktuelle Koch-Lektion und
-dein Tempo, bei **Geben** zusätzlich den Trend der letzten Blöcke (siehe
+dein Tempo und – ab dem sechsten Block – den Trend der letzten Blöcke (siehe
 [Trend](#trend)).
 
 Rechts oben öffnet das Zahnrad die **globalen Einstellungen** (Kapitel
