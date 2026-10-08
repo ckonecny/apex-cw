@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Latest tagged build: v1.6.0 (2026-10-05, tag `v1.6.0` = commit 45fe7e4, Head copy / Verstehen with Sentences, Q-groups and Mini QSO, break hint, beginner chapter in the manual). Latest pre-release: `v1.6.1-beta2` (2026-10-08, commit 1aed102; beta1 = 6d08a30). Previous: v1.5.0 (2026-10-03); older versions in `docs/STATUS-ARCHIVE.md`.
+Latest tagged build: v1.6.0 (2026-10-05, tag `v1.6.0` = commit 45fe7e4, Head copy / Verstehen with Sentences, Q-groups and Mini QSO, break hint, beginner chapter in the manual). Latest pre-release: `v1.6.1-beta3` (2026-10-08, commit 35da2a4; beta2 = 1aed102, beta1 = 6d08a30). Previous: v1.5.0 (2026-10-03); older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
