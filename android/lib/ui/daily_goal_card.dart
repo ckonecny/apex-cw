@@ -40,12 +40,15 @@ class GoalRing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    final color = status.met ? c.accent : c.info;
+    // Light mode: teal ring on a soft teal track; dark keeps blue-in-progress.
+    final light = Theme.of(context).brightness == Brightness.light;
+    final color = status.met || light ? c.accent : c.info;
+    final track = light ? Color.alphaBlend(c.accent.withValues(alpha: 0.22), c.surface) : c.border;
     return SizedBox(
       width: size, height: size,
       child: Stack(alignment: Alignment.center, children: [
         CustomPaint(size: Size.square(size), painter: _RingPainter(
-            status.progress, color, c.border, size * 0.1)),
+            status.progress, color, track, size * (light ? 0.125 : 0.1))),
         if (label)
           MediaQuery.withNoTextScaling(child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -98,7 +101,7 @@ class _WeekDots extends StatelessWidget {
     return Row(children: [
       for (var i = 0; i < 7; i++) ...[
         Column(mainAxisSize: MainAxisSize.min, children: [
-          _dot(c, status.week[i]),
+          _dot(context, c, status.week[i]),
           const SizedBox(height: 2),
           Text(names[i], style: TextStyle(fontSize: 10,
               color: i == status.todayIndex ? c.textPrimary : c.textMuted)),
@@ -108,11 +111,11 @@ class _WeekDots extends StatelessWidget {
     ]);
   }
 
-  Widget _dot(AppColors c, DotState s) {
+  Widget _dot(BuildContext context, AppColors c, DotState s) {
     final filled = s == DotState.met || s == DotState.todayMet;
     final color = switch (s) {
       DotState.met || DotState.todayMet => c.accent,
-      DotState.today => c.info,
+      DotState.today => Theme.of(context).brightness == Brightness.light ? c.accent : c.info,
       DotState.frozen => c.textMuted,
       _ => c.border,
     };
