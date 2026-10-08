@@ -41,7 +41,7 @@ if [ -n "$DRY_RUN" ]; then
 fi
 
 tools/build_release.sh "$tag" "$sha"
-gh release create "$tag" "releases/next-cw-trainer-$tag.apk" \
+gh release create "$tag" "releases/apex-cw-$tag.apk" \
   --prerelease --target "$sha" --title "$tag" \
   --notes-file "$notes" --generate-notes --notes-start-tag "$prev"
 rm -f "$notes"

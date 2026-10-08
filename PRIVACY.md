@@ -56,7 +56,7 @@ persönliche Daten.
 ### Änderungen und Kontakt
 Änderungen dieser Erklärung werden auf dieser Seite veröffentlicht (mit
 neuem Datum). Fragen: oe1ckoapps@gmail.com. Der Quellcode der App ist
-öffentlich: https://github.com/ckonecny/next_cw_trainer
+öffentlich: https://github.com/ckonecny/apex-cw
 
 ---
 
@@ -106,4 +106,4 @@ data from anyone.
 ### Changes and contact
 Changes to this policy are published on this page (with a new date).
 Questions: oe1ckoapps@gmail.com. The app's source code is public:
-https://github.com/ckonecny/next_cw_trainer
+https://github.com/ckonecny/apex-cw

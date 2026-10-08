@@ -1,9 +1,9 @@
 # Status
 
-Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/next_cw_trainer (public since 2026-09-28, GPL-3.0).
+Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
 Latest tagged build: v1.6.0 (2026-10-05, tag `v1.6.0` = commit 45fe7e4, Head copy / Verstehen with Sentences, Q-groups and Mini QSO, break hint, beginner chapter in the manual). Latest pre-release: `v1.6.1-beta1` (2026-10-06, commit 6d08a30). Previous: v1.5.0 (2026-10-03); older versions in `docs/STATUS-ARCHIVE.md`.
 
-Open features and bugs: GitHub issues in ckonecny/next_cw_trainer (CLAUDE.md
+Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
 only the current state, organisational steps and hints for the next session.
 
@@ -11,7 +11,7 @@ only the current state, organisational steps and hints for the next session.
 Done: upload key and signing, privacy policy, store texts and graphics
 (`docs/PLAY-LISTING.md`, `docs/DECISIONS.md` "Play Store preparation"); store
 raw shots home / Hören and Geben statistics retaken for v1.3.0 (2026-10-01,
-dark, DE+EN), graphics rebuilt; AAB `releases/next-cw-trainer-v1.6.0.aab` (store raw shots still from v1.3.0).
+dark, DE+EN), graphics rebuilt; AAB `releases/apex-cw-v1.6.0.aab` (store raw shots still from v1.3.0).
 1. User: developer account (identity check passed).
 2. Upload the AAB; closed test: 12 testers × 14 days.
 3. Production.

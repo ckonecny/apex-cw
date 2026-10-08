@@ -52,7 +52,7 @@ void registerAppLicenses() {
             'abbreviations, call sign prefixes, QSO texts): Copyright (C) '
             '2018-2025 Willi Kraml, OE1WKL.\nBoth under the GNU General '
             'Public License v3.0 or later. Source code: '
-            'https://github.com/ckonecny/next_cw_trainer');
+            'https://github.com/ckonecny/apex-cw');
     yield await file(['Zork I–III'], 'assets/zork/LICENSE',
         preamble: 'Zork I–III by Marc Blank, Dave Lebling, Bruce Daniels '
             'and Tim Anderson (Infocom). Zork is a trademark of its owners; '

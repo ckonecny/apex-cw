@@ -1874,3 +1874,11 @@ Deliberately **not** changed: `applicationId`/namespace `at.oe1cko.nextcwtrainer
 Kotlin package + JNI symbols, Dart package `next_cw_trainer`, channel names,
 GitHub repo name and folder. Older entries (this file, `STATUS-ARCHIVE.md`)
 keep the old name as history.
+Follow-up (same day): GitHub repo renamed `next_cw_trainer` → `apex-cw` (old
+repo/issue/release URLs redirect; the Pages site moved to
+`ckonecny.github.io/apex-cw/`, the old Pages URL does not redirect). Built
+manuals are now `APEXCW_Handbuch_v<version>.*` / `APEXCW_Manual_v<version>.*`
+(supersedes the `NextCWTrainer_…` names mentioned further up), release
+artefacts `releases/apex-cw-<tag>.{apk,aab}`. The text inside the already built
+`manual/APEXCW_*_v1.6.0.html/pdf` still says "Next CW Trainer" until the next
+release rebuild.

@@ -61,7 +61,7 @@ firmware changes aren't automatically reflected here.
 ## Download
 
 Ready-to-install APKs are attached to the
-[GitHub releases](https://github.com/ckonecny/next_cw_trainer/releases)
+[GitHub releases](https://github.com/ckonecny/apex-cw/releases)
 (sideload: allow "install unknown apps"). **Settings → Info** in the app
 shows the version and the commit it was built from.
 
@@ -69,8 +69,8 @@ shows the version and the commit it was built from.
 
 A detailed user manual in German and English — every setting with its range
 and default, and how the adaptive mode decides — is in [`manual/`](manual/):
-[Handbuch (PDF)](manual/NextCWTrainer_Handbuch_v1.6.0.pdf) ·
-[User Manual (PDF)](manual/NextCWTrainer_Manual_v1.6.0.pdf), also as HTML.
+[Handbuch (PDF)](manual/APEXCW_Handbuch_v1.6.0.pdf) ·
+[User Manual (PDF)](manual/APEXCW_Manual_v1.6.0.pdf), also as HTML.
 
 ## What the app covers
 

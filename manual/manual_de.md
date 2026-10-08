@@ -2727,7 +2727,7 @@ Wenn du einen Fehler meldest, gib bitte Version, Commit und Build-Zeit mit an.
 v3.0 (oder später). Sie übernimmt Algorithmen und Daten (Wortlisten,
 Abkürzungen, Rufzeichen-Präfixe, QSO-Texte) aus der Morserino-32-Firmware von
 Willi Kraml, OE1WKL, die ebenfalls unter der GPL-3.0 steht. Den Quellcode
-findest du auf [GitHub](https://github.com/ckonecny/next_cw_trainer). Die
+findest du auf [GitHub](https://github.com/ckonecny/apex-cw). Die
 Lizenzseite zeigt außerdem die MIT-Lizenz von Zork I–III, die SIL Open Font
 License der Schriften Anonymous Pro und DM Sans, die zlib-Lizenz der
 Audio-Engine SoLoud und die Lizenzen der verwendeten Flutter-Pakete. Zork ist eine Marke der jeweiligen Rechteinhaber;

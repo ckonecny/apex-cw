@@ -86,7 +86,7 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
 12. **Feature ideas and deferred bugs live in GitHub issues, not in local
     files.** Every potential feature, and every bug reported by others or
     deferred instead of fixed at once, is a GitHub issue in
-    `ckonecny/next_cw_trainer`, written in English, using the templates in
+    `ckonecny/apex-cw`, written in English, using the templates in
     `.github/ISSUE_TEMPLATE/` (feature: "What would you like? / What is it
     for?"; bug: what happened, how to reproduce, app version/phone/Android).
     End each issue Claude writes with

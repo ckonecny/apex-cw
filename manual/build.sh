@@ -16,7 +16,7 @@
 # The app version on the title page comes from android/pubspec.yaml
 # (versionName) plus the current git commit, so a rebuild always states which
 # app state the manual describes. The version is also in the file names
-# (NextCWTrainer_Handbuch_v1.2.0.pdf, ...), so a copy handed out on its own
+# (APEXCW_Handbuch_v1.2.0.pdf, ...), so a copy handed out on its own
 # still shows which release it belongs to. Built files of other versions are
 # removed, and the links in README.md and ../README.md are pointed at the new
 # names.
@@ -88,7 +88,7 @@ HTML
   fi
 }
 
-stem() { [ "$1" = de ] && echo NextCWTrainer_Handbuch || echo NextCWTrainer_Manual; }
+stem() { [ "$1" = de ] && echo APEXCW_Handbuch || echo APEXCW_Manual; }
 
 build() {   # $1 = lang
   local lang=$1 base title toc f
@@ -145,6 +145,6 @@ PY
   [ $? -eq 0 ] || exit 1
 done
 # Point the links in the READMEs at the versioned file names.
-sed -E -i '' "s/(NextCWTrainer_(Handbuch|Manual))(_v[0-9]+\.[0-9]+\.[0-9]+)?\.(pdf|html)/\1_v$VERSION.\4/g" \
+sed -E -i '' "s/(APEXCW_(Handbuch|Manual))(_v[0-9]+\.[0-9]+\.[0-9]+)?\.(pdf|html)/\1_v$VERSION.\4/g" \
   README.md ../README.md
 echo "Done: version $VERSION, $COMMIT"

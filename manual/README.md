@@ -2,8 +2,8 @@
 
 | | Deutsch | English |
 |---|---|---|
-| PDF | [NextCWTrainer_Handbuch_v1.6.0.pdf](NextCWTrainer_Handbuch_v1.6.0.pdf) | [NextCWTrainer_Manual_v1.6.0.pdf](NextCWTrainer_Manual_v1.6.0.pdf) |
-| HTML | [NextCWTrainer_Handbuch_v1.6.0.html](NextCWTrainer_Handbuch_v1.6.0.html) | [NextCWTrainer_Manual_v1.6.0.html](NextCWTrainer_Manual_v1.6.0.html) |
+| PDF | [APEXCW_Handbuch_v1.6.0.pdf](APEXCW_Handbuch_v1.6.0.pdf) | [APEXCW_Manual_v1.6.0.pdf](APEXCW_Manual_v1.6.0.pdf) |
+| HTML | [APEXCW_Handbuch_v1.6.0.html](APEXCW_Handbuch_v1.6.0.html) | [APEXCW_Manual_v1.6.0.html](APEXCW_Manual_v1.6.0.html) |
 | Source (Markdown) | [manual_de.md](manual_de.md) | [manual_en.md](manual_en.md) |
 
 The title page states the app version and source commit the manual was built
@@ -14,7 +14,7 @@ from; compare it with **Settings → Info** in the app.
 | File | What it is |
 |---|---|
 | `manual_de.md`, `manual_en.md` | the sources — this is what gets edited, always both together |
-| `NextCWTrainer_Handbuch_vX.Y.Z.*`, `NextCWTrainer_Manual_vX.Y.Z.*` | the built manuals (HTML + PDF) of the last release, version in the file name; committed so they can be handed out |
+| `APEXCW_Handbuch_vX.Y.Z.*`, `APEXCW_Manual_vX.Y.Z.*` | the built manuals (HTML + PDF) of the last release, version in the file name; committed so they can be handed out |
 | `build.sh` | builds both, via pandoc + weasyprint; also checks internal links |
 | `style.css` | stylesheet for HTML (screen, light/dark) and PDF (print) |
 | `img/de/`, `img/en/` | screenshots per language (same file names), light theme, 540 px wide |
@@ -61,7 +61,7 @@ release"* in `docs/STATUS.md`.
    If the manual sources changed after the tag (e.g. screenshot blocks), run
    `MANUAL_COMMIT=<tagged hash> ./build.sh` so the title page names the release
    commit, not `-dirty`. The version is taken from `android/pubspec.yaml` and goes into the file
-   names (`NextCWTrainer_Handbuch_v1.6.0.pdf`, …); the previous release's
+   names (`APEXCW_Handbuch_v1.6.0.pdf`, …); the previous release's
    files are deleted and the links in both READMEs are updated. Attach the
    PDFs to the GitHub release under these versioned names.
 5. Clear the list in `docs/STATUS.md` and commit screenshots, built manual

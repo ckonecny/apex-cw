@@ -14,10 +14,10 @@ short description 80, full description 4000 characters.
   language without a translation; translation: Deutsch (de-DE)
 - **App or game:** App · **Category:** Education · **Free**
 - **Contact e-mail:** oe1ckoapps@gmail.com
-- **Website:** https://ckonecny.github.io/next_cw_trainer/ (landing page,
-  `site/`; source code stays at https://github.com/ckonecny/next_cw_trainer)
+- **Website:** https://ckonecny.github.io/apex-cw/ (landing page,
+  `site/`; source code stays at https://github.com/ckonecny/apex-cw)
 - **Privacy policy URL:**
-  https://github.com/ckonecny/next_cw_trainer/blob/main/PRIVACY.md
+  https://github.com/ckonecny/apex-cw/blob/main/PRIVACY.md
 
 ## Short description
 

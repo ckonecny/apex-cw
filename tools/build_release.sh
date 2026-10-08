@@ -6,14 +6,14 @@
 # the home path, the user name or any string from .git/info/forbidden-strings.
 # Signed with the Play upload key from android/android/key.properties
 # (gitignored; copied into the clone, never committed).
-#   tools/build_release.sh v1.3.0  ->  releases/next-cw-trainer-v1.3.0.apk
-#                                      releases/next-cw-trainer-v1.3.0.aab
+#   tools/build_release.sh v1.3.0  ->  releases/apex-cw-v1.3.0.apk
+#                                      releases/apex-cw-v1.3.0.aab
 # Beta build (name contains "-beta"): APK only, built from any committed ref
 # (default HEAD, the tag needn't exist), versionName gets the suffix
 # (1.5.0 -> 1.5.0-beta1), versionCode stays as in pubspec so testers can still
 # update to the real release afterwards. Upload as a GitHub pre-release.
 #   tools/build_release.sh v1.6.1-beta1 [ref]
-#                               ->  releases/next-cw-trainer-v1.6.1-beta1.apk
+#                               ->  releases/apex-cw-v1.6.1-beta1.apk
 set -e
 tag="$1"
 [ -n "$tag" ] || { echo "usage: $0 vX.Y.Z | vX.Y.Z-betaN [ref]" >&2; exit 1; }
@@ -57,11 +57,11 @@ for f in $artifacts; do
 done
 
 mkdir -p "$repo/releases"
-cp "$apk" "$repo/releases/next-cw-trainer-$tag.apk"
-[ -n "$test_build" ] || cp "$aab" "$repo/releases/next-cw-trainer-$tag.aab"
+cp "$apk" "$repo/releases/apex-cw-$tag.apk"
+[ -n "$test_build" ] || cp "$aab" "$repo/releases/apex-cw-$tag.aab"
 rm -rf "$work"
 if [ -n "$test_build" ]; then
-  echo "OK: releases/next-cw-trainer-$tag.apk (beta build, no local paths inside)"
+  echo "OK: releases/apex-cw-$tag.apk (beta build, no local paths inside)"
 else
-  echo "OK: releases/next-cw-trainer-$tag.{apk,aab} (no local paths inside)"
+  echo "OK: releases/apex-cw-$tag.{apk,aab} (no local paths inside)"
 fi

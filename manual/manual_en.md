@@ -2635,7 +2635,7 @@ When you report a problem, please include the version, commit and build time.
 v3.0 (or later). It takes algorithms and data (word lists, abbreviations, call
 sign prefixes, QSO texts) from the Morserino-32 firmware by Willi Kraml,
 OE1WKL, which is also under the GPL-3.0. The source code is on
-[GitHub](https://github.com/ckonecny/next_cw_trainer). The licence page also
+[GitHub](https://github.com/ckonecny/apex-cw). The licence page also
 shows the MIT License of Zork I–III, the SIL Open Font License of the fonts
 Anonymous Pro and DM Sans, the zlib licence of the SoLoud audio engine,
 and the licences of the Flutter packages the app uses. Zork is a trademark of its owners; the app is not affiliated with
