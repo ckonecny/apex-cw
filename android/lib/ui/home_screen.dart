@@ -10,6 +10,7 @@ import 'goals_screen.dart';
 import '../content/training_profile.dart';
 import 'generator_screen.dart';
 import 'echo_trainer_screen.dart';
+import 'understand_screen.dart';
 import 'settings_screen.dart';
 import 'free_screen.dart';
 import 'games_screen.dart';
@@ -99,12 +100,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         body: LayoutBuilder(builder: (context, box) {
-          // The five cards share the screen height; when that gets too
+          // The six cards share the screen height; when that gets too
           // tight for their text (large system font, small screen), they
           // switch to a fixed minimum height and the page scrolls instead.
           final f = textScaleOf(context);
-          final minCard = 76 * f;
-          final base = 5 * minCard + 1 * 8 + 3 * 16 + 4 * 23 * f + 8 + 24;
+          final minCard = 58 * f;
+          final base = 6 * minCard + 2 * 8 + 3 * 16 + 4 * 23 * f + 8 + 24;
           // The goal card comes first: full while everything still fits,
           // then the one-line variant, then the page scrolls.
           final showGoal = PracticeClock.instance.log.enabled;
@@ -145,6 +146,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? Strings.t('home_give_subtitle') : giveInfo,
               color: c.accent,
               onTap: () => _open(const EchoTrainerScreen()),
+            )),
+            const SizedBox(height: 8),
+            card(_ModeCard(
+              icon: Icons.hearing_rounded,
+              title: Strings.t('und_title'),
+              subtitle: Strings.t('und_subtitle'),
+              color: c.accent,
+              onTap: () => _open(const UnderstandScreen()),
             )),
             const SizedBox(height: 16),
             _SectionLabel(Strings.t('home_section_free')),
@@ -240,7 +249,7 @@ class _ModeCard extends StatelessWidget {
                   Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(
                       fontSize: 20, color: c.textPrimary)),
                   const SizedBox(height: 4),
-                  Text(subtitle, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(
+                  Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(
                       fontSize: 12, color: c.textMuted)),
                 ],
               )),

@@ -1885,3 +1885,15 @@ release rebuild.
 
 ## 2026-10-08: Weak characters follow the upper success threshold
 User report (a learner at 95 % upper threshold): one slip drops a char to 80 %, and 7 correct hits of that char are needed to get back to 95 % — about 84 characters at 12 active chars, because the unlock needs *all* chars above the threshold at once. The automatic boost only started below 88 % (fixed 12 % error), so chars between 88 % and 95 % blocked the unlock without being drilled. Now `weakCharErrorThreshold(high)` = 1 − high, clamped 2–12 % (`char_stats.dart`): a weak char is exactly one that blocks the unlock; never laxer than the old 12 %, and 99 % does not make every imperfect char weak. Used by Adaptive Copy (`AdaptiveCopyBody._weakCharsNow`) and the Echo suggestions. Boost level stays Moderate (3 draws, ≈2.7× for one char at 12 active) — Strong was too extreme (2026-09-23). Min. 8 attempts and max. 5 shown unchanged. No new setting. Manual DE+EN "Schwache Zeichen"/"Weak characters" updated.
+
+## 2026-10-08: Head copy lives under Practice, not Games
+
+Head copy (Verstehen) is a trainer, not a game, so it moved from the Games hub
+to a third tile under Practice on Home. The home layout formula in
+`home_screen.dart` now counts six cards and two gaps; on small phones or with a
+large system font the page scrolls earlier (the existing fallback).
+
+Home tile subtitles are limited to one line (`maxLines: 1`, min card height
+58 × text scale) so six cards plus the goal card fit without scrolling on
+common phones; the Free, Games and Learn subtitles were shortened to ≤ ~32
+characters in both languages.
