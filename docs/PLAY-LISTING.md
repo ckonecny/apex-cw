@@ -8,7 +8,7 @@ short description 80, full description 4000 characters.
 
 ## App details
 
-- **App name:** Next CW Trainer
+- **App name:** APEX CW
 - **Package name:** at.oe1cko.nextcwtrainer (permanent)
 - **Default language:** English (en-US) — the fallback for every device
   language without a translation; translation: Deutsch (de-DE)
@@ -27,7 +27,7 @@ short description 80, full description 4000 characters.
 ## Full description — DE
 
 ```
-Next CW Trainer ist ein umfassender Morse-Trainer (CW) fürs Android-Handy: hören, geben und üben – unterwegs, ohne zusätzliche Hardware.
+APEX CW ist ein umfassender Morse-Trainer (CW) fürs Android-Handy: hören, geben und üben – unterwegs, ohne zusätzliche Hardware.
 
 HÖREN
 • Zufallszeichen, Gruppen, häufige Wörter, Abkürzungen, Rufzeichen, gemischte Inhalte
@@ -56,13 +56,13 @@ AUSSERDEM
 
 Keine Werbung, keine Konten, keine Datensammlung. Freie Software (GPL-3.0), Quellcode auf GitHub.
 
-Viele Ideen und ein Großteil der Trainingslogik stammen aus der Open-Source-Firmware des Morserino-32 von Willi Kraml, OE1WKL – herzlichen Dank dafür. Next CW Trainer ist ein unabhängiges Projekt und steht in keiner Verbindung zum Morserino-32-Team. Zork ist eine Marke ihrer Inhaber; die App steht mit ihnen in keiner Verbindung.
+Viele Ideen und ein Großteil der Trainingslogik stammen aus der Open-Source-Firmware des Morserino-32 von Willi Kraml, OE1WKL – herzlichen Dank dafür. APEX CW ist ein unabhängiges Projekt und steht in keiner Verbindung zum Morserino-32-Team. Zork ist eine Marke ihrer Inhaber; die App steht mit ihnen in keiner Verbindung.
 ```
 
 ## Full description — EN
 
 ```
-Next CW Trainer is a comprehensive Morse code (CW) trainer for your Android phone: copy, send and practise on the go, with no extra hardware.
+APEX CW is a comprehensive Morse code (CW) trainer for your Android phone: copy, send and practise on the go, with no extra hardware.
 
 LISTEN
 • Random characters, groups, common words, abbreviations, call signs, mixed content
@@ -91,7 +91,7 @@ ALSO
 
 No ads, no accounts, no data collection. Free software (GPL-3.0), source code on GitHub.
 
-Many ideas and much of the training logic come from the open-source Morserino-32 firmware by Willi Kraml, OE1WKL – many thanks for that. Next CW Trainer is an independent project, not affiliated with the Morserino-32 team. Zork is a trademark of its owners; this app is not affiliated with them.
+Many ideas and much of the training logic come from the open-source Morserino-32 firmware by Willi Kraml, OE1WKL – many thanks for that. APEX CW is an independent project, not affiliated with the Morserino-32 team. Zork is a trademark of its owners; this app is not affiliated with them.
 ```
 
 ## Graphics

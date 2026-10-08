@@ -1,4 +1,4 @@
-# Next CW Trainer — User Manual / Benutzerhandbuch
+# APEX CW — User Manual / Benutzerhandbuch
 
 | | Deutsch | English |
 |---|---|---|

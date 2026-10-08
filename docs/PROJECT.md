@@ -1,6 +1,6 @@
 # Project
 
-Next CW Trainer: an Android app (Flutter + native Kotlin/C++), a CW trainer
+APEX CW: an Android app (Flutter + native Kotlin/C++), a CW trainer
 in its own right. It ports the Morserino-32's CW training modes (keyer,
 generator/Koch trainer, echo trainer, decoder, WiFi Trx, QSO bot, games) to a
 phone and adds app-only features (e.g. typing mode, text adventure, character

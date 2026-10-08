@@ -1,4 +1,4 @@
-# Next CW Trainer
+# APEX CW
 
 <img src="android/tool/icon/icon_rounded.png" alt="App icon" width="96" align="right">
 
@@ -278,7 +278,7 @@ Module-by-module details: `docs/PORTING-MAP.md`.
 
 ## License
 
-Next CW Trainer is free software under the **GNU General Public License
+APEX CW is free software under the **GNU General Public License
 v3.0 or later** (see [`LICENSE`](LICENSE)). It ports algorithms and data
 tables (word lists, abbreviations, call sign prefixes, QSO texts) from the
 Morserino-32 firmware, Copyright (C) 2018-2025 Willi Kraml, OE1WKL, which is

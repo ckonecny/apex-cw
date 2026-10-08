@@ -65,7 +65,7 @@ class NextCwTrainerApp extends StatelessWidget {
         valueListenable: ThemeController.mode,
         builder: (context, mode, _) => MaterialApp(
           navigatorKey: ShareIntake.navigatorKey,
-          title: 'Next CW Trainer',
+          title: 'APEX CW',
           debugShowCheckedModeBanner: false,
           themeMode: mode,
           theme: _theme(AppColors.light, Brightness.light),

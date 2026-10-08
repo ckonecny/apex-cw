@@ -47,7 +47,7 @@ const _assetLicences = <String, String>{
   'assets/fonts/OFL-AnonymousPro.txt': 'Anonymous Pro (font)',
   'assets/fonts/DMSans': 'DM Sans (font)',
   'assets/fonts/OFL-DMSans.txt': 'DM Sans (font)',
-  'assets/licenses/GPL-3.0.txt': 'Next CW Trainer',
+  'assets/licenses/GPL-3.0.txt': 'APEX CW',
 };
 
 // Gradle libraries (implementation/api/...) that have been licence-checked.

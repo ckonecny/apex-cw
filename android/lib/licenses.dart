@@ -45,9 +45,9 @@ void registerAppLicenses() {
           await rootBundle.loadString(asset),
         ].join('\n\n'));
 
-    yield await file(['Next CW Trainer', 'Morserino-32'],
+    yield await file(['APEX CW', 'Morserino-32'],
         'assets/licenses/GPL-3.0.txt',
-        preamble: 'Next CW Trainer: Copyright (C) 2026 Christian Konecny, '
+        preamble: 'APEX CW: Copyright (C) 2026 Christian Konecny, '
             'OE1CKO.\nMorserino-32 firmware (algorithms, word lists, '
             'abbreviations, call sign prefixes, QSO texts): Copyright (C) '
             '2018-2025 Willi Kraml, OE1WKL.\nBoth under the GNU General '

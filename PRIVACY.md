@@ -1,4 +1,4 @@
-# Datenschutzerklärung / Privacy Policy — Next CW Trainer
+# Datenschutzerklärung / Privacy Policy — APEX CW
 
 [Deutsch](#deutsch) · [English](#english)
 
@@ -8,7 +8,7 @@ Stand / Last updated: 2026-09-28
 
 ## Deutsch
 
-**Kurz:** Next CW Trainer sammelt keine persönlichen Daten, hat keine
+**Kurz:** APEX CW sammelt keine persönlichen Daten, hat keine
 Werbung, keine Analyse- oder Tracking-Dienste und kein Benutzerkonto. Alles,
 was die App speichert, bleibt auf deinem Gerät.
 
@@ -62,7 +62,7 @@ neuem Datum). Fragen: oe1ckoapps@gmail.com. Der Quellcode der App ist
 
 ## English
 
-**In short:** Next CW Trainer does not collect any personal data. It has no
+**In short:** APEX CW does not collect any personal data. It has no
 ads, no analytics or tracking services and no user account. Everything the
 app stores stays on your device.
 
