@@ -2628,6 +2628,7 @@ See [Learning the dit and dah keys](#learning-the-dit-and-dah-keys) and
 | Version | Version number and build number, for example "1.0.0 (Build 42)" |
 | Commit | The exact source code state the app was built from |
 | Built | Date and time of the build |
+| Online manual | Tap to open this manual online in your browser (German or English, following the app language) |
 | Licences | Tap to open the licence texts (see below) |
 
 When you report a problem, please include the version, commit and build time.
