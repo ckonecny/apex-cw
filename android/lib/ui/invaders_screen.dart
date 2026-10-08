@@ -601,7 +601,7 @@ class _InvadersScreenState extends State<InvadersScreen>
             _keyerMode != 4 && _wpm > 5 ? () => _changeWpm(-1) : null,
             _keyerMode != 4 && _wpm < 60 ? () => _changeWpm(1) : null),
         const SizedBox(height: 24),
-        AppButton(label: Strings.t('inv_start'), color: c.accent, onTap: _startGame),
+        AppButton(label: Strings.t('inv_start'), icon: Icons.play_arrow_rounded, color: c.accent, onTap: _startGame),
         const SizedBox(height: 24),
         AppCaption(Strings.t('inv_hiscores')),
         const SizedBox(height: 8),

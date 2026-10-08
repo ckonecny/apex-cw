@@ -45,6 +45,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
   cover/info for the old look; screenshots with the launcher icon, if any.
 
 ## Manual: pending for next release
+- Light theme "navy mist" + blue light filter: every light screenshot changes; Settings → Appearance has three new rows (retake `settings1.png` DE+EN). Start/Stop buttons now carry play/stop icons (Geben, games, Decoder, QSO bot): retake those shots too.
 - Practice a character (#44): new Hear/Send sliders above the keyer; retake `char_practice.png` (DE+EN).
 - UI font DM Sans (on main): every screenshot
   changes its look (titles/labels no longer monospace); retake all at release.

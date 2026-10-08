@@ -20,6 +20,8 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   await ThemeController.load();
+  await BlueLightFilter.load();
+  await StatusBarMode.load();
   await Strings.load();
   await PaddleLayout.load();
   registerAppLicenses();
@@ -76,16 +78,30 @@ class NextCwTrainerApp extends StatelessWidget {
           // keyboards). Keep all routes clear of the system bars at the
           // bottom and sides once, here, instead of per screen; the strip
           // behind the nav bar gets the page background.
-          builder: (context, child) => ColoredBox(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: SafeArea(
-              top: false,
-              child: MediaQuery.withClampedTextScaling(
-                maxScaleFactor: kMaxTextScale,
-                child: child!,
+          //
+          // The blue light filter wraps everything (dialogs and sheets live
+          // inside the Navigator, so they are covered); off = no extra layer.
+          builder: (context, child) {
+            final app = ColoredBox(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: SafeArea(
+                top: false,
+                child: MediaQuery.withClampedTextScaling(
+                  maxScaleFactor: kMaxTextScale,
+                  child: child!,
+                ),
               ),
-            ),
-          ),
+            );
+            return ValueListenableBuilder<bool>(
+              valueListenable: BlueLightFilter.enabled,
+              builder: (context, on, _) => !on ? app
+                  : ValueListenableBuilder<int>(
+                      valueListenable: BlueLightFilter.strength,
+                      builder: (context, s, _) => ColorFiltered(
+                          colorFilter: BlueLightFilter.filter(s), child: app),
+                    ),
+            );
+          },
           home: const HomeScreen(),
         ),
       ),

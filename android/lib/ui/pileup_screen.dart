@@ -462,7 +462,7 @@ class _PileupScreenState extends State<PileupScreen> with WidgetsBindingObserver
           ]),
         ),
         const SizedBox(height: 24),
-        AppButton(label: Strings.t('msl_start'), color: c.accent, onTap: _start),
+        AppButton(label: Strings.t('msl_start'), icon: Icons.play_arrow_rounded, color: c.accent, onTap: _start),
       ],
     );
   }

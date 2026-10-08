@@ -113,7 +113,9 @@ Jedes Feld merkt sich seine eigene Größe.
 ## Hell, dunkel, Sprache
 
 Unter **Einstellungen → Darstellung** wählst du das **Farbschema** (System / Hell /
-Dunkel) und die **Sprache** der App (Deutsch / English). Beides wirkt sofort.
+Dunkel) und die **Sprache** der App (Deutsch / English). Dazu gibt es einen
+zuschaltbaren **Blaulichtfilter**, der die ganze App warm einfärbt (in Hell und
+Dunkel) und dessen Stärke du einstellst. Alles wirkt sofort.
 
 Die **Schriftgröße** übernimmt die App aus den Android-Einstellungen, aber
 nur bis zum **1,3-Fachen** der Standardgröße (beim Pixel die 4. von 7
@@ -2546,6 +2548,9 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Farbschema | Helles oder dunkles Erscheinungsbild | **System** / Hell / Dunkel |
+| Blaulichtfilter | Warmer Farbfilter über der ganzen App (hell und dunkel), schont abends die Augen | **Aus** / An |
+| Filterstärke | Wie stark das Blau gedämpft wird (nur bei aktivem Filter sichtbar) | 10–100 % (**50 %**) |
+| Statusleiste ausblenden | Blendet die Android-Statusleiste (Uhr, Akku) aus, damit sie nicht gegen den Blaulichtfilter absticht; ein Wisch von oben zeigt sie kurz | **Aus** / An |
 | Sprache | Sprache der App | **Deutsch** / English |
 
 ## Allgemein

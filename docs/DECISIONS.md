@@ -1818,3 +1818,24 @@ Per-file helpers (`_mono`) now give the UI font; the Morse variant is `_morse`
 (or an explicit `fontFamily: 'CwMono'`). Canvas text (`TextPainter`) does not
 inherit the theme font, so such styles must set `fontFamily: 'DMSans'` themselves
 (`progress_charts.dart`).
+
+## 2026-10-08: Light theme "navy mist", optional blue light filter
+
+The old light theme (pure white cards on near-white) glared and clashed with the
+navy dark theme. `AppColors.light` is now a cool blue-grey family derived from
+the dark hues (bg `#DCE1EE`, cards `#EEF1F8`); dark is unchanged. In light mode
+the daily-goal ring and week dots are teal (soft teal track, thicker stroke);
+dark keeps the blue ring.
+
+Blue light filter (Settings → Appearance, off by default, 10–100 %): a
+`ColorFiltered` colour matrix (blue ×(1−0.69t), green ×(1−0.265t); 0.75/0.25 looked yellow-green and too strong at 100 %, 0.5/0.28 too pink, 0.62/0.28 still in between) wrapped around
+the whole app in `MaterialApp.builder`, so dialogs and sheets are covered and
+both themes use it. The matrix also dims overall brightness by up to 20 % (all channels × (1−0.2t)): the brightest text (stat values, quotas) glared in the warm tone. Chosen over an alpha overlay because a multiply-style
+matrix keeps dark backgrounds dark. Off = no extra layer (no cost for the games).
+Not covered: Android status/navigation bars. Stored in prefs `blueLightOn`,
+`blueLightStrength` (`BlueLightFilter` in `theme_controller.dart`).
+
+Status bar: optional "hide status bar" (Settings → Appearance, off by default,
+pref `hideStatusBar`): `SystemUiMode.manual` with only the bottom overlay, so
+the 3-button navigation stays; re-applied on app resume (`StatusBarMode`). It
+exists because the blue light filter cannot tint the system bars.

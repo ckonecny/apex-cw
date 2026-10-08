@@ -266,7 +266,7 @@ class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
                 padding: const EdgeInsets.all(12),
                 child: OutlinedButton.icon(
                   onPressed: _toggleTry,
-                  icon: Icon(_trying ? Icons.stop : Icons.play_arrow, size: 18),
+                  icon: Icon(_trying ? Icons.stop_rounded : Icons.play_arrow_rounded, size: 18),
                   label: Text(
                     Strings.t(_trying ? 'interf_try_stop' : 'interf_try'),
                   ),

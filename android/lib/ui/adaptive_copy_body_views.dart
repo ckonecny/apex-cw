@@ -98,7 +98,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
         child: Text('${widget.interCharSpace}/${widget.interWordSpace}',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 15 * scale,
-                fontWeight: FontWeight.bold, color: c.textPrimary)),
+                fontWeight: FontWeight.bold, color: c.accent)),
       ),
       _TapTarget(onTap: () => _adjustSpacing(1),
           child: Icon(Icons.add, size: 20, color: c.accent)),

@@ -623,7 +623,7 @@ class _MorselScreenState extends State<MorselScreen> {
           ),
         ],
         const SizedBox(height: 24),
-        AppButton(label: Strings.t('msl_start'), color: c.accent, onTap: _startGame),
+        AppButton(label: Strings.t('msl_start'), icon: Icons.play_arrow_rounded, color: c.accent, onTap: _startGame),
         const SizedBox(height: 10),
         AppButton(label: Strings.t('msl_hiscores'), color: c.accent, primary: false,
             onTap: () => setState(() { _lastRank = -1; _phase = _Phase.hiscores; })),

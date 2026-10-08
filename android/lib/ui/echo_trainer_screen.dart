@@ -1116,9 +1116,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               width: double.infinity, height: 56,
               child: AppButton(
                 height: 56,
+                // Material icons, not ▶/■ glyphs: Android renders ▶ as an
+                // orange emoji.
+                icon: (_state == _State.idle) ? Icons.play_arrow_rounded : Icons.stop_rounded,
                 label: (_state == _State.idle)
-                    ? '▶  ${Strings.t('start').toUpperCase()}'
-                    : '■  ${Strings.t('stop').toUpperCase()}',
+                    ? Strings.t('start').toUpperCase()
+                    : Strings.t('stop').toUpperCase(),
                 color: (_state != _State.idle) ? c.warning : c.accent,
                 onTap: (_state == _State.idle) ? _startSession : _stopSession,
               ),
