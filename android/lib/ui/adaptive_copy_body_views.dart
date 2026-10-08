@@ -20,6 +20,10 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                 const SizedBox(height: 16),
                 _buildWeakCharsSection(context, scale: 1.2),
               ],
+              if (_buildUnlockOutlook(context, compact: true) case final outlook?) ...[
+                const SizedBox(height: 12),
+                outlook,
+              ],
             ]),
           ),
         ),
@@ -549,14 +553,15 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   // Motivation: what is still missing before the next Koch character
   // unlocks (mirrors AdaptiveCopyEngine.shouldUnlockNextChar: every active
   // char needs enough attempts AND accuracy >= high threshold).
-  Widget? _buildUnlockOutlook(BuildContext context) {
+  Widget? _buildUnlockOutlook(BuildContext context, {bool compact = false}) {
     if (!widget.kochLesson ||
         widget.kochLevel >= widget.activeKochChars.length ||
         _unlockedThisBlock) {
       return null;
     }
     final c = AppColors.of(context);
-    final th = _engine!.thresholds;
+    final th = _engine?.thresholds ?? _startThresholds;
+    if (th == null) return null;
     final chars = kochActiveChars(widget.kochLevel, widget.activeKochChars);
     if (chars.isEmpty) return null;
     final needAttempts = <String, int>{};
@@ -619,11 +624,12 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
     return SizedBox(
       width: double.infinity,
       child: AppCard(
+        padding: compact ? const EdgeInsets.symmetric(horizontal: 14, vertical: 10) : const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(Strings.t('ac_outlook_title').replaceFirst('{ch}', next),
               style: TextStyle(fontSize: 14,
                   fontWeight: FontWeight.bold, color: c.textPrimary)),
-          const SizedBox(height: 10),
+          SizedBox(height: compact ? 8 : 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
@@ -633,7 +639,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
               valueColor: AlwaysStoppedAnimation(c.accent),
             ),
           ),
-          for (final (label, items) in sections) ...[
+          if (!compact) for (final (label, items) in sections) ...[
             const SizedBox(height: 10),
             Text(label, style: mono),
             const SizedBox(height: 6),
