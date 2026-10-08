@@ -1195,24 +1195,43 @@ stores the last 20 blocks for it.
 
 ## Break hint
 
-If your hit rate in **Listen** or **Send** drops clearly during a session, the
-app suggests a short break on the result page. Fatigue and fading concentration
-show up this way early; a break often helps more than carrying on.
+If errors pile up in **Listen** or **Send**, or your hit rate drops clearly
+during a session, the app suggests a short break on the result page. Fatigue
+and fading concentration show up this way early; a break often helps more than
+carrying on.
 
-- The **first 3** blocks are compared with the **last 3** under the same
-  conditions. A hint comes after 6 blocks at the earliest, and only if the rate
-  has fallen by at least **15 percentage points**.
+- It counts **characters**, not blocks – it makes no difference whether your
+  block is 5 groups of 3 characters or 10 groups of 5. The check runs at the
+  end of each block, with two rules:
+  - **Cluster:** too many wrong characters within 20 consecutive ones (also
+    across a block boundary). One missed group alone is never enough.
+  - **Drift:** the hit rate of the latest characters is clearly below that of
+    the first characters of the practice run (first against last 40, 60 or
+    80 characters). This only works once twice that many characters have been
+    practised.
+- You set the **sensitivity** in three steps:
+
+  | Step | Cluster (wrong in 20 characters) | Drift (first against last … characters) |
+  |---|---|---|
+  | Early | from 7 | 40, drop of 12 percentage points |
+  | **Normal** | from 9 | 60, drop of 15 percentage points |
+  | Late | from 11 | 80, drop of 20 percentage points |
+
+  "Early" warns sooner but gives more false alarms; "Late" only warns on clear
+  signs.
 - Anything that makes the task harder is not counted as fatigue: a new
   character, higher speed, tighter spacing, other content, the interference (on/off and any
   change of its levels) or
-  the input method restarts the observation. Only blocks under the same
+  the input method restarts the observation. Only characters under the same
   conditions are compared.
 - The hint appears **at most once per session**. A session ends after 10
   minutes without a block. Listen and Send are watched separately.
+- In **Send**, a word that was not right on the first try counts as wrong from
+  its first wrong character on.
 - It is never forced. **Break** returns to the start page, **Continue** closes
   the card, **Don't show again** switches the hint off.
-- To turn it back on: **Settings → General → Break hint when the error rate
-  rises**.
+- Settings: **Settings → General → Break hint when the error rate rises**
+  (on/off) and below it **Break hint: sensitivity**.
 
 ## Adaptive mode settings
 
@@ -2474,7 +2493,8 @@ that training's ⚙ sheet.
 | Pitch (Hz) | Frequency of the sidetone and of the played characters | 300–900 Hz in 50 Hz steps (**600 Hz**) |
 | Tone softness | Rise and fall time of the tone. Larger values sound softer and click less, especially on short dits | 1–9 ms (**5 ms**) |
 | Letter case | Show characters in lower or UPPER case. Display only | **lower** / UPPER |
-| Break hint when the error rate rises | Suggests a break in Listen and Send when the hit rate drops clearly under the same conditions (see [Break hint](#break-hint)) | **On** / Off |
+| Break hint when the error rate rises | Suggests a break in Listen and Send when errors pile up or the hit rate drops clearly under the same conditions (see [Break hint](#break-hint)) | **On** / Off |
+| Break hint: sensitivity | How early the hint comes (only shown while the hint is on) | Early / **Normal** / Late |
 | Show daily goal and achievements | Shows or hides the card on the home screen, and switches the recording of practice time on or off. Stored data is kept | **On** / Off |
 
 ## Interference {#interference}

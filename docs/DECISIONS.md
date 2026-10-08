@@ -1455,23 +1455,43 @@ tested), UI in `lib/ui/radio_cave_screen.dart`.
 ## 2026-10-03: Share text into Own texts, issue #24
 `MainActivity` has an `ACTION_SEND` / `text/plain` intent filter. `captureShared` keeps `EXTRA_TEXT` in `pendingShared` (from `onCreate` and `onNewIntent`; an intent replayed from the recents list, `FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY`, is ignored). Dart takes it over the channel `…/share` (`take`): once after the first frame (cold start) and whenever native sends `shared` (app already running). `ShareIntake` (`util/share_intake.dart`, global `navigatorKey`) then goes back to Home (`pushAndRemoveUntil`, so no training screen keeps the engine busy) and opens `OwnTextsScreen(sharedText:)`, which runs the same `_import` as the clipboard button: same limit, same "nothing to send" check, same title dialog. Nothing is stored before the user confirms. Only plain text is accepted; no file shares (same as #8: no storage permission).
 
-## 2026-10-03: Break reminder (issue #5)
+## 2026-10-03: Break reminder (issue #5), reworked 2026-10-08 (issue #48)
 
-- **Trigger:** only the trend of the hit rate, no session-length criterion
-  (long concentration is normal for some). Average of the first 3 vs the last 3
-  blocks of a run; fires at >= 6 blocks and a drop >= 15 pp (`content/break_hint.dart`).
-- **Run = same difficulty:** a block's signature (speed, answer-speed cap,
-  character/word spacing, Koch level, charset/content, input mode, interference on/off and all its levels)
-  must be equal; any change starts the run over, so a harder task is never read
-  as fatigue. Deliberately strict: adaptive steps also restart it. Cost: the
-  hint rarely fires directly after an adaptive change; tolerable, as a false
-  alarm is worse than a missed one.
+- **Unit = answered characters, not blocks (#48).** Block size is the user's
+  choice (5 groups of 3 vs 10 of 5 characters), so "6 blocks" meant 90 to 300
+  characters and the old rule (first 3 vs last 3 blocks, >= 6 blocks, drop
+  >= 15 pp) fired far too late for long blocks and on noise for short ones.
+  `BreakWatch.add` now takes one right/wrong entry per character. Hören knows
+  the errors only after the user marked them, so both rules run at block end.
+  Geben: one entry per target character of a word, right up to the first wrong
+  one of the first attempt, a word without a first try fully wrong.
+- **Two rules, whichever fires first (`BreakSensitivity`).** *Cluster:* >= k
+  wrong within any 20 consecutive characters (windows may span blocks, only
+  windows ending in the new block are checked). *Drift:* wrong share of the
+  last L characters of the run exceeds that of the first L by >= d points,
+  needs 2L characters (integer maths: `(last - first) * 100 >= d * L`).
+  A "wrong N in a row" rule was dropped: one passed or lost group (5 wrong in a
+  row) would fire it alone.
+- **Three steps instead of free thresholds:** early k=7, L=40, d=12; normal
+  k=9, L=60, d=15 (default); late k=11, L=80, d=20 (setting `breakHintLevel`).
+  Free sliders were rejected as too complex for users. Chosen by simulation
+  (random errors, 8x5 blocks, 6 blocks): false alarm at a constant 10 % error
+  rate: early 24 %, normal 2 %, late 0 %; after one fully missed group of five
+  at 10 %: 84 / 24 / 1 %. The values are a first set, to be tuned on real
+  sessions. The fatigue example of the issue (errors 2, 3, 4, 7, 10, 13 of 40)
+  fires after block 4 / 5 / 6 (old: 6); pinned in `break_hint_test.dart`.
+- **Run = same difficulty (unchanged):** a block's signature (speed,
+  answer-speed cap, character/word spacing, Koch level, charset/content, input
+  mode, interference on/off and all its levels) must be equal; any change
+  starts the run over, so a harder task is never read as fatigue. Deliberately
+  strict: adaptive steps also restart it.
 - **Once per session** (gap of 10 min without a block = new session, in-memory,
   separate from `PracticeClock`'s 5-minute session which counts time, not
   blocks). Hören and Geben have separate runs, one shared "shown" flag.
 - **Never forced, can be turned off:** card on the block result page with
   Break / Continue / Don't show again; setting `breakHint` (default on), back
-  on in Settings → General. Not in games, adventure or other modes.
+  on in Settings → General, sensitivity row below it while on. Not in games,
+  adventure or other modes.
 
 ## Decoder: unknown patterns as "*", firmware's extra characters (issue #37)
 

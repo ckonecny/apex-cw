@@ -46,6 +46,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 
 ## Manual: pending for next release
 - Listen start page: slim "On the way to X" card (Koch lesson) below the weak characters; retake `hear_start` (DE+EN).
+- Break hint sensitivity (#48, on main): new row in Settings → General; retake `settings1.png` (DE+EN) if the row shows there. Defaults still to be tuned on real sessions (being tried by testers).
 - Light theme "navy mist" + blue light filter: every light screenshot changes; Settings → Appearance has three new rows (retake `settings1.png` DE+EN). Start/Stop buttons now carry play/stop icons (Geben, games, Decoder, QSO bot): retake those shots too.
 - Practice a character (#44): new Hear/Send sliders above the keyer; retake `char_practice.png` (DE+EN).
 - UI font DM Sans (on main): every screenshot

@@ -10,6 +10,7 @@ import '../licenses.dart';
 import 'widgets/setting_rows.dart';
 import 'interference_settings_card.dart';
 import '../util/bluetooth_hint.dart';
+import '../content/break_hint.dart';
 import '../util/break_reminder.dart';
 import '../util/paddle_layout.dart';
 import '../util/practice_clock.dart';
@@ -435,6 +436,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 value: on,
                 onChanged: BreakReminder.setEnabled,
               ),
+            ),
+            ValueListenableBuilder<bool>(
+              valueListenable: BreakReminder.enabled,
+              builder: (context, on, _) => !on
+                  ? const SizedBox.shrink()
+                  : ValueListenableBuilder<BreakSensitivity>(
+                      valueListenable: BreakReminder.level,
+                      builder: (context, lvl, _) => SegmentRow(
+                        label: Strings.t('settings_break_level'),
+                        options: [
+                          Strings.t('opt_break_early'),
+                          Strings.t('opt_break_normal'),
+                          Strings.t('opt_break_late'),
+                        ],
+                        selected: lvl.index,
+                        onChanged: (i) => BreakReminder.setLevel(BreakSensitivity.values[i]),
+                      ),
+                    ),
             ),
             const SettingsDivider(),
             // Also in the goal settings; this is the way back once hidden.

@@ -882,7 +882,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       final interf = await InterferenceProfile.load();
       PracticeClock.instance.block('hear', correct / total, interference: interf.enabled);
       // Everything that sets the difficulty of this block (issue #5).
-      BreakReminder.onBlock('hear', correct / total,
+      BreakReminder.onBlock('hear', results,
           '$_activeWpm|$_activeInterChar|$_activeInterWord|${widget.kochLesson ? widget.kochLevel : 0}'
           '|${widget.kochLesson}|${widget.contentModeIndex}|$typing|${interf.difficultySignature}');
     }
