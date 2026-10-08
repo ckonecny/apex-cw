@@ -118,6 +118,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
         );
     showModalBottomSheet<void>(
       context: context,
+      clipBehavior: Clip.antiAlias,
       backgroundColor: c.surface,
       isScrollControlled: true,
       builder: (_) => SafeArea(child: SingleChildScrollView(child: Padding(

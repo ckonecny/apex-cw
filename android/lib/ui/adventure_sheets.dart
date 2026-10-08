@@ -79,6 +79,7 @@ Future<void> showAdventureTempoSheet(BuildContext context, AdventureSettings s,
   final c = AppColors.of(context);
   return showModalBottomSheet(
     context: context,
+    clipBehavior: Clip.antiAlias,
     backgroundColor: c.surface,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -107,6 +108,7 @@ Future<void> showAdventureSettingsSheet(BuildContext context, AdventureSettings 
   final c = AppColors.of(context);
   return showModalBottomSheet(
     context: context,
+    clipBehavior: Clip.antiAlias,
     backgroundColor: c.surface,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -175,6 +177,7 @@ Future<void> showAdventureCommandsSheet(BuildContext context, int part) {
       ]));
   return showModalBottomSheet(
     context: context,
+    clipBehavior: Clip.antiAlias,
     backgroundColor: c.surface,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),

@@ -181,6 +181,7 @@ extension _OwnTextPlayerViews on _OwnTextPlayerScreenState {
     final c = AppColors.of(context);
     return showModalBottomSheet(
       context: context,
+      clipBehavior: Clip.antiAlias,
       backgroundColor: c.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),

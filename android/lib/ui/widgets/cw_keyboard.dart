@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/nav_strip.dart';
 import 'app_ui.dart';
 
 const kKeyboardPunct = ['.', ',', ':', '-', '/', '=', '?', '@', '+'];
@@ -92,7 +93,7 @@ class CwKeyboard extends StatelessWidget {
 
     // Fixed key geometry: the labels are already sized for the keys, so the
     // system font size is ignored here (DECISIONS.md "System font size").
-    return NoTextScale(child: Container(
+    return NavStripColor(color: c.surfaceDark, child: NoTextScale(child: Container(
       color: c.surfaceDark,
       // Clear of the gesture/navigation bar.
       padding: EdgeInsets.fromLTRB(3, 6, 3, 6 + MediaQuery.of(context).padding.bottom),
@@ -103,7 +104,7 @@ class CwKeyboard extends StatelessWidget {
             child: Row(children: r),
           ),
       ]),
-    ));
+    )));
   }
 }
 
