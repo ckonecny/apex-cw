@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>APEX CW</title>
-<meta name="description" content="Learn Morse code on Android: Koch method, copy and send training, keyer, decoder, realistic interference, games. Free and open source.">
+<meta name="description" content="Learn Morse code on Android: Koch method, copy and send training, keyer, decoder, realistic interference, exam simulation, games. Free and open source.">
 <meta name="theme-color" content="#0e1422">
 <link rel="canonical" href="https://ckonecny.github.io/apex-cw/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="APEX CW">
 <meta property="og:title" content="APEX CW">
-<meta property="og:description" content="Learn Morse code on Android: Koch method, copy and send training, keyer, decoder, realistic interference, games. Free and open source.">
+<meta property="og:description" content="Learn Morse code on Android: Koch method, copy and send training, keyer, decoder, realistic interference, exam simulation, games. Free and open source.">
 <meta property="og:url" content="https://ckonecny.github.io/apex-cw/">
 <meta property="og:image" content="https://ckonecny.github.io/apex-cw/img/social_preview.png">
 <meta property="og:image:width" content="1280">
@@ -93,7 +93,7 @@ section.alt{background:var(--bg2);border-block:1px solid var(--line)}
 .shots .phone:nth-child(2){margin-top:44px}
 @media(max-width:820px){
   .row{grid-template-columns:1fr;gap:32px}.row.rev .txt{order:0}
-  section{padding:52px 0}.shots .phone{max-width:170px}
+  section{padding:52px 0}.shots .phone{width:auto;flex:1 1 0;min-width:0;max-width:170px}
 }
 
 /* badges, stack, build-by */
@@ -142,6 +142,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
     <a class="l" href="#key"><span data-l="en">Key</span><span data-l="de">Taste</span></a>
     <a class="l" href="#learn"><span data-l="en">Learn</span><span data-l="de">Lernen</span></a>
     <a class="l" href="#qrm"><span data-l="en">Interference</span><span data-l="de">Störungen</span></a>
+    <a class="l" href="#exam"><span data-l="en">Exam</span><span data-l="de">Prüfung</span></a>
     <a class="l" href="#open"><span data-l="en">Open source</span><span data-l="de">Open Source</span></a>
     <div class="lang" role="group" aria-label="Language">
       <button data-set="en" type="button">EN</button><button data-set="de" type="button">DE</button>
@@ -156,8 +157,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
       <h1><span data-l="en">Learn Morse code the way it sounds <em>on the band.</em></span>
           <span data-l="de">Morsen lernen, so wie es <em>auf dem Band</em> klingt.</span></h1>
       <p class="lead">
-        <span data-l="en">Koch method, copy and send training, a keyer for your real Morse key, realistic interference and games. Free, ad-free and open source.</span>
-        <span data-l="de">Koch-Methode, Hör- und Gebetraining, Keyer für deine echte Morsetaste, realistische Störungen und Spiele. Kostenlos, werbefrei und Open Source.</span>
+        <span data-l="en">Koch method, copy and send training, a keyer for your real Morse key, realistic interference, exam simulation and games. Free, ad-free and open source.</span>
+        <span data-l="de">Koch-Methode, Hör- und Gebetraining, Keyer für deine echte Morsetaste, realistische Störungen, Prüfungssimulation und Spiele. Kostenlos, werbefrei und Open Source.</span>
       </p>
       <div class="cta">
         <a class="btn p" href="https://github.com/ckonecny/apex-cw/releases/latest">
@@ -171,13 +172,13 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
       </div>
       <div class="chips">
         <span class="chip">Koch</span><span class="chip">Iambic A/B</span><span class="chip">QRM / QSB</span>
-        <span class="chip">QSO-Bot</span><span class="chip">GPL-3.0</span>
+        <span class="chip">QSO-Bot</span><span class="chip"><span data-l="en">Exam</span><span data-l="de">Prüfung</span></span><span class="chip">GPL-3.0</span>
         <span class="chip">DE · EN</span>
       </div>
     </div>
     <div class="phone">
-      <img data-l="en" src="img/en_home.webp" alt="Home screen of APEX CW" width="720" height="1497">
-      <img data-l="de" src="img/de_home.webp" alt="Startbildschirm von APEX CW" width="720" height="1497">
+      <img data-l="en" src="img/en_home.webp" alt="Home screen of APEX CW" width="720" height="1493">
+      <img data-l="de" src="img/de_home.webp" alt="Startbildschirm von APEX CW" width="720" height="1493">
     </div>
   </div>
 </header>
@@ -242,14 +243,15 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
       <ul>
         <li><b><span data-l="en">Listen</span><span data-l="de">Hören</span></b> – <span data-l="en">Koch lessons with five sequences (M32, LCWO, CW Academy, LICW or your own), random characters, groups, words, call signs</span><span data-l="de">Koch-Lektionen mit fünf Reihenfolgen (M32, LCWO, CW Academy, LICW oder eigene), Zufallszeichen, Gruppen, Wörter, Rufzeichen</span></li>
         <li><b><span data-l="en">Send</span><span data-l="de">Geben</span></b> – <span data-l="en">Echo Trainer: hear a word, send it back, get instant feedback</span><span data-l="de">Echo-Trainer: Wort hören, zurückgeben, sofort bewertet</span></li>
+        <li><b><span data-l="en">One character</span><span data-l="de">Ein Zeichen</span></b> – <span data-l="en">long-press any Koch character to hear it again and again and key it back, with separate speeds for hearing and sending</span><span data-l="de">Zeichen gedrückt halten, um es immer wieder zu hören und zurückzugeben, mit getrennten Tempi für Hören und Geben</span></li>
         <li><b>CW Keyer &amp; Decoder</b> – <span data-l="en">live decoding from your key or through the microphone</span><span data-l="de">Live-Dekodierung von deiner Taste oder über das Mikrofon</span></li>
         <li><b>QSO Bot</b> – <span data-l="en">a simulated partner for standard, SOTA/POTA and contest QSOs</span><span data-l="de">ein simulierter Funkpartner für Standard-, SOTA/POTA- und Contest-QSOs</span></li>
         <li><b>WiFi Trx</b> – <span data-l="en">CW over the internet with other hams</span><span data-l="de">CW übers Internet mit anderen Funkamateuren</span></li>
       </ul>
     </div>
     <div class="single"><div class="phone">
-        <img data-l="en" src="img/en_hear.webp" alt="Listen training" loading="lazy" width="720" height="1497">
-        <img data-l="de" src="img/de_hear.webp" alt="Hörtraining" loading="lazy" width="720" height="1497">
+        <img data-l="en" src="img/en_hear.webp" alt="Listen training" loading="lazy" width="720" height="1493">
+        <img data-l="de" src="img/de_hear.webp" alt="Hörtraining" loading="lazy" width="720" height="1493">
       </div></div>
     </div>
   </section>
@@ -273,8 +275,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
     </div>
     <div class="shots">
       <div class="phone">
-        <img data-l="en" src="img/en_qrm.webp" alt="Interference settings" loading="lazy" width="720" height="1497">
-        <img data-l="de" src="img/de_qrm.webp" alt="Störungseinstellungen" loading="lazy" width="720" height="1497">
+        <img data-l="en" src="img/en_qrm.webp" alt="Interference settings" loading="lazy" width="720" height="1493">
+        <img data-l="de" src="img/de_qrm.webp" alt="Störungseinstellungen" loading="lazy" width="720" height="1493">
       </div>
       <div class="stack" style="align-self:center;max-width:300px">
       <div class="diagram">
@@ -305,8 +307,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
       </ul>
     </div>
     <div class="single"><div class="phone">
-        <img data-l="en" src="img/en_stats.webp" alt="Listening statistics" loading="lazy" width="720" height="1497">
-        <img data-l="de" src="img/de_stats.webp" alt="Statistik Hören" loading="lazy" width="720" height="1497">
+        <img data-l="en" src="img/en_stats.webp" alt="Listening statistics" loading="lazy" width="720" height="1493">
+        <img data-l="de" src="img/de_stats.webp" alt="Statistik Hören" loading="lazy" width="720" height="1493">
       </div></div>
     </div>
   </section>
@@ -315,8 +317,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
 <section id="streak">
   <div class="wrap row">
     <div class="single"><div class="phone">
-        <img data-l="en" src="img/en_streak.webp" alt="Achievements: daily goal, streak and awards" loading="lazy" width="720" height="1497">
-        <img data-l="de" src="img/de_streak.webp" alt="Erfolge: Tagesziel, Serie und Auszeichnungen" loading="lazy" width="720" height="1497">
+        <img data-l="en" src="img/en_streak.webp" alt="Achievements: daily goal, streak and awards" loading="lazy" width="720" height="1493">
+        <img data-l="de" src="img/de_streak.webp" alt="Erfolge: Tagesziel, Serie und Auszeichnungen" loading="lazy" width="720" height="1493">
     </div></div>
     <div class="txt">
       <div class="tag mono"><span data-l="en">Stay on track</span><span data-l="de">Dranbleiben</span></div>
@@ -334,8 +336,39 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
   </div>
 </section>
 
+<!-- exam simulation -->
+<section id="exam" class="alt">
+  <div class="wrap row">
+    <div class="txt">
+      <div class="tag mono"><span data-l="en">Exam simulation</span><span data-l="de">Prüfungssimulation</span></div>
+      <h2><span data-l="en">Rehearse the real thing.</span><span data-l="de">Übe die echte Prüfung.</span><span class="badge"><span data-l="en">new</span><span data-l="de">neu</span></span></h2>
+      <p>
+        <span data-l="en">Some countries offer a voluntary Morse exam. Practise its receive and send parts in the exam's own format and see whether you would pass. The text plays once, without a pause and without a replay, just like on the day.</span>
+        <span data-l="de">Einige Länder bieten eine freiwillige Morseprüfung an. Übe den Hör- und den Gebeteil im Format der Prüfung und sieh, ob du bestehen würdest. Der Text läuft einmal, ohne Pause und ohne Wiederholung, wie am Prüfungstag.</span>
+      </p>
+      <ul>
+        <li><span data-l="en">Austria, Germany, UK, New Zealand, India and the USA (ARRL Code Proficiency), each with its own speed, duration and error limit</span><span data-l="de">Österreich, Deutschland, UK, Neuseeland, Indien und USA (ARRL Code Proficiency), jeweils mit eigenem Tempo, eigener Dauer und eigenem Fehlerlimit</span></li>
+        <li><span data-l="en"><b>Receive:</b> copy into a text field, then 30 seconds to correct. <b>Send:</b> key the shown text and get checked for errors, amount of text and speed</span><span data-l="de"><b>Hören:</b> in ein Textfeld mitschreiben, danach 30 Sekunden zum Korrigieren. <b>Geben:</b> den gezeigten Text tasten, bewertet nach Fehlern, Textmenge und Tempo</span></li>
+        <li><span data-l="en">Retries where the exam allows them, your recent runs per exam, and a hint when you look ready</span><span data-l="de">Wiederholungen, wo die Prüfung sie erlaubt, deine letzten Läufe pro Prüfung und ein Hinweis, wenn du bereit wirkst</span></li>
+        <li><span data-l="en"><b>Custom profile:</b> your own speed, Farnsworth spacing, 1 to 10 minutes, error limit and kind of text</span><span data-l="de"><b>Eigenes Profil:</b> dein eigenes Tempo, Farnsworth-Pausen, 1 bis 10 Minuten, Fehlerlimit und Textart</span></li>
+      </ul>
+      <p class="small" style="margin-top:16px"><span data-l="en">The values come from public sources. The app does not replace the official exam.</span><span data-l="de">Die Werte stammen aus öffentlichen Quellen. Die App ersetzt nicht die offizielle Prüfung.</span></p>
+    </div>
+    <div class="shots">
+      <div class="phone">
+        <img data-l="en" src="img/en_exam.webp" alt="Exam simulation: choose a country and speed" loading="lazy" width="720" height="1493">
+        <img data-l="de" src="img/de_exam.webp" alt="Prüfungssimulation: Land und Tempo wählen" loading="lazy" width="720" height="1493">
+      </div>
+      <div class="phone">
+        <img data-l="en" src="img/en_examcustom.webp" alt="Exam simulation: custom profile" loading="lazy" width="720" height="1493">
+        <img data-l="de" src="img/de_examcustom.webp" alt="Prüfungssimulation: eigenes Profil" loading="lazy" width="720" height="1493">
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- games -->
-<section id="games" class="alt">
+<section id="games">
   <div class="wrap">
     <h2 class="c"><span data-l="en">And when you need a break</span><span data-l="de">Und wenn du eine Pause brauchst</span></h2>
     <p class="c"><span data-l="en">Games that train real skills, and some that are simply fun.</span><span data-l="de">Spiele, die echte Fähigkeiten trainieren, und manche, die einfach Spaß machen.</span></p>
@@ -346,8 +379,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
         <p><span data-l="en">Real conversations are not copied letter by letter, they are understood. You hear Morse, write nothing down, and then answer questions. Three modes, each with three levels: <b>Sentences</b> (who, what, where, when), <b>Q-groups</b> (hear QTH or QRZ and pick what it means, with a cheat sheet) and <b>Mini QSO</b> (a short exchange between two stations: call signs, names, place, report). The text stays hidden until the result.</span><span data-l="de">Echte Gespräche schreibt man nicht Buchstabe für Buchstabe mit, man versteht sie. Du hörst Morse, schreibst nichts auf und beantwortest dann Fragen. Drei Modi mit je drei Stufen: <b>Sätze</b> (wer, was, wo, wann), <b>Q-Gruppen</b> (QTH oder QRZ hören und die Bedeutung wählen, mit Spickzettel) und <b>Mini-QSO</b> (ein kurzer Funkdialog zweier Stationen: Rufzeichen, Namen, Ort, Rapport). Der Text bleibt bis zum Ergebnis verborgen.</span></p>
       </div>
       <div class="single"><div class="phone">
-        <img data-l="en" src="img/en_verstehen.webp" alt="Head copy: Sentences, Q-groups and Mini QSO" loading="lazy" width="720" height="1497">
-        <img data-l="de" src="img/de_verstehen.webp" alt="Verstehen: Sätze, Q-Gruppen und Mini-QSO" loading="lazy" width="720" height="1497">
+        <img data-l="en" src="img/en_verstehen.webp" alt="Head copy: Sentences, Q-groups and Mini QSO" loading="lazy" width="720" height="1493">
+        <img data-l="de" src="img/de_verstehen.webp" alt="Verstehen: Sätze, Q-Gruppen und Mini-QSO" loading="lazy" width="720" height="1493">
       </div></div>
     </div>
     <div class="row rev" style="margin-top:72px">
@@ -357,8 +390,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
         <p><span data-l="en">Zork I, II and III, the legendary text adventures, played entirely in CW. You hear what happens, key your command and explore the Great Underground Empire. It uses the full alphabet, digits and punctuation, so it trains all of it.</span><span data-l="de">Zork I, II und III, die legendären Textadventures, komplett in CW gespielt. Du hörst, was passiert, gibst deinen Befehl und erkundest das Große Unterirdische Imperium. Es nutzt das volle Alphabet samt Ziffern und Satzzeichen und trainiert damit alles.</span></p>
       </div>
       <div class="single"><div class="phone">
-        <img data-l="en" src="img/en_zork.webp" alt="Zork: choose one of the three adventures" loading="lazy" width="720" height="1497">
-        <img data-l="de" src="img/de_zork.webp" alt="Zork: Auswahl der drei Abenteuer" loading="lazy" width="720" height="1497">
+        <img data-l="en" src="img/en_zork.webp" alt="Zork: choose one of the three adventures" loading="lazy" width="720" height="1493">
+        <img data-l="de" src="img/de_zork.webp" alt="Zork: Auswahl der drei Abenteuer" loading="lazy" width="720" height="1493">
       </div></div>
     </div>
     <div class="grid" style="margin-top:72px">
@@ -367,13 +400,13 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
       <div class="card"><i style="background:var(--amber)"></i><h3>Memory Chain</h3><p><span data-l="en">One more character each round. How long is your chain?</span><span data-l="de">Jede Runde ein Zeichen mehr. Wie lang wird deine Kette?</span></p></div>
       <div class="card"><i style="background:var(--violet)"></i><h3>Trailblazer · Fox Hunt</h3><p><span data-l="en">Follow a hidden path through a grid of characters: key the highlighted letter, or in Fox Hunt the direction you hear.</span><span data-l="de">Einem verborgenen Pfad durch ein Zeichen-Raster folgen: das markierte Zeichen geben, bei Fox Hunt die Richtung, die du hörst.</span></p></div>
       <div class="card"><i style="background:var(--teal)"></i><h3>Fight the Pileup · Radio Cave</h3><p><span data-l="en">Copy a queue of calling stations and answer them before they give up. Radio Cave: a keyed text adventure in an abandoned radio station.</span><span data-l="de">Eine Schlange rufender Stationen mitlesen und beantworten, bevor sie aufgeben. Radio Cave: ein Textadventure in einer verlassenen Funkstation, jeder Befehl wird getastet.</span></p></div>
-      <div class="card"><i style="background:var(--amber)"></i><h3><span data-l="en">Learning resources</span><span data-l="de">Lernhilfen</span></h3><p><span data-l="en">Morse tree, character chart, exam simulation and links to courses.</span><span data-l="de">Morsebaum, Zeichentabelle, Prüfungssimulation und Links zu Kursen.</span></p></div>
+      <div class="card"><i style="background:var(--amber)"></i><h3><span data-l="en">Learning resources</span><span data-l="de">Lernhilfen</span></h3><p><span data-l="en">Morse tree, character chart and links to courses.</span><span data-l="de">Morsebaum, Zeichentabelle und Links zu Kursen.</span></p></div>
     </div>
   </div>
 </section>
 
 <!-- built by enthusiasts -->
-<section id="by" class="by">
+<section id="by" class="by alt">
   <div class="wrap">
     <div class="tag mono"><span data-l="en">Made by hams</span><span data-l="de">Von Funkamateuren</span></div>
     <h2><span data-l="en">Built by CW enthusiasts, <em>for CW enthusiasts.</em></span><span data-l="de">Von CW-Enthusiasten, <em>für CW-Enthusiasten.</em></span></h2>
@@ -382,13 +415,13 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
     <div class="levels">
       <div class="card"><i style="background:var(--teal)"></i><h3><span data-l="en">Just starting</span><span data-l="de">Gerade angefangen</span></h3><p><span data-l="en">Koch lessons, slow character speed with generous spacing, copy by typing on a keyboard that offers only the characters you know.</span><span data-l="de">Koch-Lektionen, langsames Zeichentempo mit großzügigen Abständen, Mitschreiben auf einer Tastatur, die nur die Zeichen anbietet, die du kennst.</span></p></div>
       <div class="card"><i style="background:var(--amber)"></i><h3><span data-l="en">Getting fluent</span><span data-l="de">Auf dem Weg zur Routine</span></h3><p><span data-l="en">Words, abbreviations and call signs, the Echo Trainer, a bot for your first QSOs, and Head copy to understand instead of decode.</span><span data-l="de">Wörter, Abkürzungen und Rufzeichen, der Echo-Trainer, ein Bot für deine ersten QSOs und Verstehen, um nicht mehr zu entschlüsseln.</span></p></div>
-      <div class="card"><i style="background:var(--violet)"></i><h3><span data-l="en">Chasing speed</span><span data-l="de">Auf Tempo aus</span></h3><p><span data-l="en">Contest QSOs, pile-ups, noise, fading and a neighbouring station, and your own key at your own speed.</span><span data-l="de">Contest-QSOs, Pile-ups, Rauschen, Fading und eine Nachbarstation, dazu deine eigene Taste in deinem Tempo.</span></p></div>
+      <div class="card"><i style="background:var(--violet)"></i><h3><span data-l="en">Chasing speed</span><span data-l="de">Auf Tempo aus</span></h3><p><span data-l="en">Contest QSOs, pile-ups, noise, fading and a neighbouring station, exam simulation, and your own key at your own speed.</span><span data-l="de">Contest-QSOs, Pile-ups, Rauschen, Fading und eine Nachbarstation, Prüfungssimulation, dazu deine eigene Taste in deinem Tempo.</span></p></div>
     </div>
   </div>
 </section>
 
 <!-- open source -->
-<section id="open" class="alt os">
+<section id="open" class="os">
   <div class="wrap">
     <div class="tag mono"><span data-l="en">Free software</span><span data-l="de">Freie Software</span></div>
     <h2 class="c"><span data-l="en">Open source. No account, no ads, no tracking.</span><span data-l="de">Open Source. Kein Konto, keine Werbung, kein Tracking.</span></h2>

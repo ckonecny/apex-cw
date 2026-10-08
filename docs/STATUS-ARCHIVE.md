@@ -876,3 +876,10 @@ Engine (tagged blocks DE+EN, question chain, levels 1-3), screen in the Games
 hub (own spacing, effective WPM, speed 10-60), hit-rate log, manual DE+EN.
 Details: DECISIONS.md "Head copy / comprehension". Follow-ups: #40 (mini-QSO),
 #41 (Q-groups).
+
+- **Landing page refreshed (2026-10-08, feature/update-site):** new name, all
+  `site/img/{de,en}_*.webp` retaken on the test phone (dark, no blue-light
+  filter, status bar cropped; app prefs backed up and restored afterwards),
+  new "Exam simulation" section with two shots (`*_exam.webp`,
+  `*_examcustom.webp`), single-character practice in the Learn list, exam
+  moved out of the resources card, mobile overflow of two-phone rows fixed.
