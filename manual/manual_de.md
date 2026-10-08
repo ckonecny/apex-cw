@@ -2719,6 +2719,7 @@ Siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen) und
 | Version | Versionsnummer und Build-Nummer, z. B. „1.0.0 (Build 42)“ |
 | Commit | Der genaue Quellcode-Stand, aus dem die App gebaut wurde |
 | Gebaut | Datum und Uhrzeit des Builds |
+| Online-Handbuch | Tippen öffnet dieses Handbuch online im Browser (Deutsch oder Englisch, passend zur App-Sprache) |
 | Lizenzen | Tippen öffnet die Lizenztexte (siehe unten) |
 
 Wenn du einen Fehler meldest, gib bitte Version, Commit und Build-Zeit mit an.

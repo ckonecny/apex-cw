@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import '../theme/theme_controller.dart';
@@ -322,6 +323,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   // ── Build ─────────────────────────────────────────────────────────────────
+
+  Future<void> _openOnlineManual() async {
+    final page = Strings.lang.value == 0 ? 'manual-de.html' : 'manual-en.html';
+    var ok = false;
+    try {
+      ok = await launchUrl(Uri.parse('https://ckonecny.github.io/apex-cw/$page'),
+          mode: LaunchMode.externalApplication);
+    } catch (_) {}
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(Strings.t('link_open_failed'))));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -648,6 +662,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _InfoRow(label: 'Commit', value: _build),
             const SettingsDivider(),
             _InfoRow(label: Strings.t('settings_build_time'), value: _buildTime),
+            const SettingsDivider(),
+            InkWell(
+              onTap: _openOnlineManual,
+              child: _InfoRow(label: Strings.t('settings_online_manual'),
+                  value: Strings.t('settings_online_manual_value')),
+            ),
             const SettingsDivider(),
             InkWell(
               onTap: () => showLicensePage(

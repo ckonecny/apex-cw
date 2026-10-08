@@ -560,6 +560,8 @@ class Strings {
     'settings_build_time': ['Gebaut', 'Built'],
     'settings_developer': ['Entwickelt von', 'Developed by'],
     'settings_thanks': ['Danke', 'Thanks'],
+    'settings_online_manual': ['Online-Handbuch', 'Online manual'],
+    'settings_online_manual_value': ['Im Browser öffnen ›', 'Open in browser ›'],
     'settings_licenses': ['Lizenzen', 'Licences'],
     'settings_thanks_value': ['Morserino-32: OE1WKL\nIcon, Tests & Ideen: Sia, OE1LMR\nZork: Infocom', 'Morserino-32: OE1WKL\nIcon, testing & ideas: Sia, OE1LMR\nZork: Infocom'],
     'settings_analyze_key_events_desc': ['Adapter einstecken, Analyse starten, dann Tasten drücken.', 'Plug in adapter, start analyzer, then press keys.'],
