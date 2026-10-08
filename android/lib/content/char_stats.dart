@@ -270,6 +270,13 @@ class CharStatsStore {
   }
 }
 
+// Error rate above which a character counts as weak, tied to the upper
+// success threshold: a character below it blocks the unlock, so it should
+// also be boosted (issue: weak chars follow the threshold). Clamped to
+// [2 %, 12 %]: never laxer than the old fixed 12 %, and a 99 % threshold
+// must not make every imperfect character weak.
+double weakCharErrorThreshold(double highThreshold) => (1 - highThreshold).clamp(0.02, 0.12);
+
 // Lifetime-EMA weak characters among `activeChars`, worst first — shared
 // between Adaptive Copy's result screen and the Koch Trainer's start screen
 // (both let the user tap a char to include/exclude it from a boosted draw).

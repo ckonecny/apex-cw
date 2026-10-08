@@ -1882,3 +1882,6 @@ manuals are now `APEXCW_Handbuch_v<version>.*` / `APEXCW_Manual_v<version>.*`
 artefacts `releases/apex-cw-<tag>.{apk,aab}`. The text inside the already built
 `manual/APEXCW_*_v1.6.0.html/pdf` still says "Next CW Trainer" until the next
 release rebuild.
+
+## 2026-10-08: Weak characters follow the upper success threshold
+User report (a learner at 95 % upper threshold): one slip drops a char to 80 %, and 7 correct hits of that char are needed to get back to 95 % — about 84 characters at 12 active chars, because the unlock needs *all* chars above the threshold at once. The automatic boost only started below 88 % (fixed 12 % error), so chars between 88 % and 95 % blocked the unlock without being drilled. Now `weakCharErrorThreshold(high)` = 1 − high, clamped 2–12 % (`char_stats.dart`): a weak char is exactly one that blocks the unlock; never laxer than the old 12 %, and 99 % does not make every imperfect char weak. Used by Adaptive Copy (`AdaptiveCopyBody._weakCharsNow`) and the Echo suggestions. Boost level stays Moderate (3 draws, ≈2.7× for one char at 12 active) — Strong was too extreme (2026-09-23). Min. 8 attempts and max. 5 shown unchanged. No new setting. Manual DE+EN "Schwache Zeichen"/"Weak characters" updated.

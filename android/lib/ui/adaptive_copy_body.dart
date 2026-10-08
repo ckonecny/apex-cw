@@ -157,7 +157,6 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // CharStat.emaErrorRate — the same lifetime-persistent per-character store
   // Echo Trainer's "Adapt. Rand." already uses (docs/ADAPTIVE-COPY.md).
   static const _weakCharMinAttempts = 8;
-  static const _weakCharThreshold = 0.12;
   static const _weakCharMaxShown = 5;
 
   // outputCase: 0=lower, 1=UPPER — display only, matches GeneratorScreen's
@@ -308,7 +307,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         ? kochActiveChars(widget.kochLevel, widget.activeKochChars)
         : _charStats.stats.keys.toList();
     return weakCharsLifetime(_charStats, chars,
-        minAttempts: _weakCharMinAttempts, threshold: _weakCharThreshold, maxShown: _weakCharMaxShown);
+        minAttempts: _weakCharMinAttempts,
+        threshold: weakCharErrorThreshold(
+            (_engine?.thresholds ?? _startThresholds)?.highThreshold ?? const AdaptiveCopyThresholds().highThreshold),
+        maxShown: _weakCharMaxShown);
   }
 
   Future<void> _loadInitialWeakChars() async {

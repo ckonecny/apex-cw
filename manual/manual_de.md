@@ -1159,7 +1159,13 @@ oder **Beenden**.
 Als **schwach** gilt ein Zeichen, das
 
 - mindestens **8 Versuche** hat und
-- eine gleitende Fehlerquote von mindestens **12 %** hat.
+- eine gleitende Fehlerquote hat, die die **obere Schwelle** blockiert: mindestens
+  *100 % minus obere Schwelle*, aber höchstens **12 %** und mindestens **2 %**.
+  Bei der Standard-Schwelle von 90 % sind das **10 %**, bei 95 % sind es **5 %**.
+
+Ein schwaches Zeichen ist also genau eines, das die Freischaltung des nächsten
+Zeichens gerade bremst. Je höher die obere Schwelle, desto früher wird ein
+Zeichen nach einem Fehler verstärkt.
 
 Angezeigt werden höchstens die **5** schwächsten, das schlechteste zuerst, mit
 ihrer Fehlerquote. Weil die Quote auf Dauer mitgezählt wird, bleibt ein Zeichen

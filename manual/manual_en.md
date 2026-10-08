@@ -1126,7 +1126,13 @@ Nothing is applied until you leave the result page with **Next block** or
 A character counts as **weak** if both of these are true:
 
 - it has at least **8 attempts**, and
-- its moving error rate is at least **12 %**.
+- its moving error rate blocks the **upper threshold**: at least *100 % minus
+  the upper threshold*, but at most **12 %** and at least **2 %**. With the
+  default threshold of 90 % that is **10 %**, with 95 % it is **5 %**.
+
+So a weak character is exactly one that is currently holding back the unlock
+of the next character. The higher the upper threshold, the sooner a character
+is boosted after a mistake.
 
 At most the **5** weakest are shown, worst first, with their error rate.
 Because the rate is tracked over time, a character stays weak until you get it

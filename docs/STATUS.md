@@ -87,3 +87,6 @@ Receive and send part, six country families and the custom profile done, unit an
 - Seeding statistics for screenshots needs a debug build (`run-as`); the
   release build isn't debuggable. Back up and restore the prefs
   (`shared_prefs/FlutterSharedPreferences.xml`) and `files/owntexts/`.
+
+## Branch `feature/weak-chars-follow-threshold` (issue #51, 2026-10-08)
+Weak chars now follow the upper success threshold (`weakCharErrorThreshold`, DECISIONS 2026-10-08). Code, tests (678 green), manual DE+EN done; debug build installed on the test phone, **not yet tried by hand**. Not committed/merged — waiting for your OK. No screenshot changes.
