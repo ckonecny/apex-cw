@@ -1228,25 +1228,44 @@ Geben. Die App speichert dafür die letzten 20 Blöcke.
 
 ## Pausenhinweis
 
-Sinkt in **Hören** oder **Geben** die Trefferquote im Lauf einer Sitzung
-deutlich, schlägt die App auf der Ergebnis-Seite eine kurze Pause vor.
-Ermüdung und nachlassende Konzentration lassen sich so früh erkennen; oft
-bringt eine Pause mehr als Weitermachen.
+Häufen sich in **Hören** oder **Geben** die Fehler oder sinkt die Trefferquote im
+Lauf einer Sitzung deutlich, schlägt die App auf der Ergebnis-Seite eine kurze
+Pause vor. Ermüdung und nachlassende Konzentration lassen sich so früh
+erkennen; oft bringt eine Pause mehr als Weitermachen.
 
-- Verglichen werden die **ersten 3** mit den **letzten 3 Blöcken** unter
-  denselben Bedingungen. Ein Hinweis kommt frühestens nach 6 Blöcken und nur,
-  wenn die Quote um mindestens **15 Prozentpunkte** gefallen ist.
+- Gezählt wird in **Zeichen**, nicht in Blöcken – ob dein Block aus 5 Gruppen
+  zu 3 Zeichen oder aus 10 Gruppen zu 5 Zeichen besteht, spielt keine Rolle.
+  Geprüft wird am Ende jedes Blocks, zwei Regeln gelten:
+  - **Häufung:** zu viele falsche Zeichen innerhalb von 20 aufeinanderfolgenden
+    (auch über die Blockgrenze hinweg). Eine einzelne verpasste Gruppe reicht
+    dafür nie aus.
+  - **Abdriften:** die Trefferquote der letzten Zeichen liegt deutlich unter
+    der der ersten Zeichen der Übungsphase (erste gegen letzte 40, 60 oder
+    80 Zeichen). Das geht erst, wenn schon doppelt so viele Zeichen geübt
+    sind.
+- Die **Empfindlichkeit** stellst du in drei Stufen ein:
+
+  | Stufe | Häufung (falsch in 20 Zeichen) | Abdriften (erste gegen letzte … Zeichen) |
+  |---|---|---|
+  | Früh | ab 7 | 40, Abfall ab 12 Prozentpunkten |
+  | **Normal** | ab 9 | 60, Abfall ab 15 Prozentpunkten |
+  | Spät | ab 11 | 80, Abfall ab 20 Prozentpunkten |
+
+  „Früh“ warnt eher, dafür öfter grundlos; „Spät“ warnt nur bei deutlichen
+  Anzeichen.
 - Was die Aufgabe schwerer macht, zählt nicht als Müdigkeit: Ein neues Zeichen,
   ein höheres Tempo, engere Abstände, ein anderer Inhalt, die Störungen (An/Aus und jede
   Änderung ihrer Stärke) oder die
-  Eingabeart beginnen die Beobachtung neu. Nur Blöcke mit gleichen
+  Eingabeart beginnen die Beobachtung neu. Nur Zeichen mit gleichen
   Bedingungen werden verglichen.
 - Der Hinweis erscheint **höchstens einmal pro Sitzung**. Eine Sitzung endet
   nach 10 Minuten ohne Block. Hören und Geben werden getrennt beobachtet.
+- In **Geben** zählt ein Wort, das nicht im ersten Versuch richtig war, ab dem
+  ersten falschen Zeichen als falsch.
 - Er ist nie zwingend. **Pause** führt zur Startseite, **Weiter** schließt die
   Karte, **Nicht mehr anzeigen** schaltet den Hinweis aus.
-- Wieder einschalten: **Einstellungen → Allgemein → Pausenhinweis bei
-  steigender Fehlerquote**.
+- Einstellungen: **Einstellungen → Allgemein → Pausenhinweis bei steigender
+  Fehlerquote** (An/Aus) und darunter **Pausenhinweis: Empfindlichkeit**.
 
 ## Einstellungen des adaptiven Modus
 
@@ -2560,7 +2579,8 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 | Tonhöhe (Hz) | Frequenz des Mithörtons und der gespielten Zeichen | 300–900 Hz in 50-Hz-Schritten (**600 Hz**) |
 | Tonweichheit | Anstiegs- und Abfallzeit des Tons. Größere Werte klingen weicher und klicken weniger, besonders bei kurzen Dits | 1–9 ms (**5 ms**) |
 | Schreibweise | Zeichen in Klein- oder Großbuchstaben anzeigen. Betrifft nur die Anzeige | **klein** / GROSS |
-| Pausenhinweis bei steigender Fehlerquote | Schlägt in Hören und Geben eine Pause vor, wenn die Trefferquote unter gleichen Bedingungen deutlich fällt (siehe [Pausenhinweis](#pausenhinweis)) | **An** / Aus |
+| Pausenhinweis bei steigender Fehlerquote | Schlägt in Hören und Geben eine Pause vor, wenn sich die Fehler häufen oder die Trefferquote unter gleichen Bedingungen deutlich fällt (siehe [Pausenhinweis](#pausenhinweis)) | **An** / Aus |
+| Pausenhinweis: Empfindlichkeit | Wie früh der Hinweis kommt (nur sichtbar, wenn der Hinweis an ist) | Früh / **Normal** / Spät |
 | Tagesziel und Erfolge anzeigen | Blendet die Karte auf der Startseite ein oder aus und schaltet die Aufzeichnung der Übungszeit an oder aus. Gespeicherte Daten bleiben erhalten | **An** / Aus |
 
 ## Störungen {#stoerungen}

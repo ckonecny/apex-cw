@@ -403,7 +403,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (n > 0) {
       PracticeClock.instance.block('echo', echoRate, interference: interf.enabled);
       // Everything that sets the difficulty of this block (issue #5).
-      BreakReminder.onBlock('echo', echoRate,
+      // One entry per target character: right up to the first wrong one of the
+      // first attempt; a word without a first try counts fully wrong.
+      final chars = <bool>[
+        for (final r in _blockResults)
+          for (var i = 0; i < r.target.length; i++)
+            r.outcome == WordOutcome.first || (r.firstWrongIndex >= 0 && i < r.firstWrongIndex),
+      ];
+      BreakReminder.onBlock('echo', chars,
           '$_wpm|$_answerWpmMax|$_interCharSpace|$_interWordSpace|${_koch ? _kochLevel : 0}'
           '|${_choice.set.name}|${_choice.content.name}|$_keyerMode|${interf.difficultySignature}');
     }
