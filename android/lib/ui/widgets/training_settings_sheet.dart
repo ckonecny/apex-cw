@@ -22,6 +22,7 @@ Future<void> showTrainingSettingsSheet(BuildContext context,
   final c = AppColors.of(context);
   return showModalBottomSheet<void>(
     context: context,
+    clipBehavior: Clip.antiAlias,
     isScrollControlled: true,
     backgroundColor: c.background,
     builder: (_) => DraggableScrollableSheet(

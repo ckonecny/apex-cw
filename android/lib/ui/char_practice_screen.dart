@@ -288,6 +288,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
     final c = AppColors.of(context);
     return showModalBottomSheet<void>(
       context: context,
+      clipBehavior: Clip.antiAlias,
       backgroundColor: c.background,
       builder: (_) => StatefulBuilder(
         builder: (ctx, setSheet) => SafeArea(

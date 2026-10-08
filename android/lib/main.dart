@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'theme/app_colors.dart';
+import 'theme/nav_strip.dart';
 import 'theme/theme_controller.dart';
 import 'l10n/strings.dart';
 import 'licenses.dart';
@@ -82,8 +83,12 @@ class NextCwTrainerApp extends StatelessWidget {
           // The blue light filter wraps everything (dialogs and sheets live
           // inside the Navigator, so they are covered); off = no extra layer.
           builder: (context, child) {
-            final app = ColoredBox(
-              color: Theme.of(context).scaffoldBackgroundColor,
+            final app = ValueListenableBuilder<Color?>(
+              valueListenable: NavStrip.color,
+              builder: (context, strip, child) => ColoredBox(
+                color: strip ?? Theme.of(context).scaffoldBackgroundColor,
+                child: child,
+              ),
               child: SafeArea(
                 top: false,
                 child: MediaQuery.withClampedTextScaling(

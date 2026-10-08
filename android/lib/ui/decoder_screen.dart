@@ -340,6 +340,7 @@ class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserv
   void _openSettings(AppColors c) {
     showModalBottomSheet(
       context: context,
+      clipBehavior: Clip.antiAlias,
       backgroundColor: c.surface,
       isScrollControlled: true,
       builder: (ctx) => StatefulBuilder(builder: (ctx, setSheet) {

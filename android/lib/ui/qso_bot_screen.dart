@@ -431,6 +431,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
     final callCtl = TextEditingController(text: _myCall);
     await showModalBottomSheet<void>(
       context: context,
+      clipBehavior: Clip.antiAlias,
       isScrollControlled: true,
       backgroundColor: c.background,
       builder: (ctx) => StatefulBuilder(builder: (ctx, setSheet) {
