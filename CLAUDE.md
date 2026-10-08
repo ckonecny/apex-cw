@@ -1,4 +1,4 @@
-# CLAUDE.md — Next CW Trainer
+# CLAUDE.md — APEX CW
 
 Read automatically at session start. Keep this short — depth lives in
 `docs/`, loaded on demand, not here.

@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: c.background,
         appBar: AppBar(
           backgroundColor: c.background,
-          title: Text('Next CW Trainer',
+          title: Text('APEX CW',
               style: TextStyle(fontFamily: 'DMSans', fontSize: 22,
                   letterSpacing: 0.3, color: c.textPrimary,
                   fontVariations: const [FontVariation('wght', 600)])),

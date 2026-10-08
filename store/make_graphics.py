@@ -82,7 +82,7 @@ def feature(lang):
     im.paste(icon, (64, 100), icon)
     d = ImageDraw.Draw(im)
     x = 420
-    d.text((x, 118), 'Next CW Trainer', font=font(64, 'Bold'), fill='white')
+    d.text((x, 118), 'APEX CW', font=font(64, 'Bold'), fill='white')
     d.text((x, 204), title_sub, font=font(36, 'Medium'), fill=(255, 214, 102))
     d.text((x, 256), line, font=font(24, 'Regular'), fill=(225, 234, 250))
     morse(d, x, 330, '-.-. .--', (94, 214, 214))

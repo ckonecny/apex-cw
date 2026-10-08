@@ -1859,3 +1859,18 @@ Status bar: optional "hide status bar" (Settings → Appearance, off by default,
 pref `hideStatusBar`): `SystemUiMode.manual` with only the bottom overlay, so
 the 3-button navigation stays; re-applied on app resume (`StatusBarMode`). It
 exists because the blue light filter cannot tint the system bars.
+
+## Display name changed to "APEX CW"; internal identifiers stay
+User request: new app name "APEX CW". Checked beforehand (TMview over EUIPO,
+ÖPA, DPMA, USPTO; Play Store, App Store AT/DE/US, GitHub, domains, 2026-10-08):
+no "APEX CW"/"APEXCW" mark or app, none of the 737 live/pending "APEX" marks in
+classes 9/41/42 relates to CW/radio. "APEX" alone is a crowded word mark — no
+exclusivity claim on it. Not a legal clearance.
+Changed: everything a user sees — manifest label, `MaterialApp` title, home
+app bar, About dialog, licence page, manual DE+EN, README, PRIVACY, Play
+listing, site, store graphics script, pubspec description.
+Deliberately **not** changed: `applicationId`/namespace `at.oe1cko.nextcwtrainer`
+(changing it makes a new app: no update, no data migration, no Play continuity),
+Kotlin package + JNI symbols, Dart package `next_cw_trainer`, channel names,
+GitHub repo name and folder. Older entries (this file, `STATUS-ARCHIVE.md`)
+keep the old name as history.

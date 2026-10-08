@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Builds the Next CW Trainer user manual from the Markdown sources
+# Builds the APEX CW user manual from the Markdown sources
 # (manual_de.md, manual_en.md) into HTML and PDF, the way the Morserino-32
 # manual is built: pandoc -> HTML -> weasyprint -> PDF.
 #
@@ -51,17 +51,17 @@ trap 'rm -rf "$TMP"' EXIT
 title_block() {   # $1 = lang
   if [ "$1" = de ]; then
     cat <<HTML
-<div class="title-page" data-title="Next CW Trainer – Handbuch">
-<p class="t-name">Next CW Trainer</p>
+<div class="title-page" data-title="APEX CW – Handbuch">
+<p class="t-name">APEX CW</p>
 <p class="t-sub">Benutzerhandbuch</p>
 <p class="t-author">Christian Konecny, OE1CKO</p>
 <p class="t-ver">App-Version $VERSION · Stand $MONTH_DE $YEAR · $COMMIT</p>
 </div>
 <div class="edition">
-<p><strong>Next CW Trainer – Benutzerhandbuch</strong>, für App-Version $VERSION
+<p><strong>APEX CW – Benutzerhandbuch</strong>, für App-Version $VERSION
 (Quellstand $COMMIT), $MONTH_DE $YEAR. Autor: Christian Konecny, OE1CKO.
 App-Icon: Sia, OE1LMR.</p>
-<p>Next CW Trainer ist ein unabhängiges Projekt. Trainingskonzept und Algorithmen
+<p>APEX CW ist ein unabhängiges Projekt. Trainingskonzept und Algorithmen
 stammen aus der Firmware des Morserino-32 von Willi Kraml, OE1WKL, und dem
 Morserino-32-Team; es besteht keine weitere Verbindung zu ihnen.</p>
 <p>Dieses Handbuch gibt es auch auf Englisch.</p>
@@ -69,17 +69,17 @@ Morserino-32-Team; es besteht keine weitere Verbindung zu ihnen.</p>
 HTML
   else
     cat <<HTML
-<div class="title-page" data-title="Next CW Trainer – User Manual">
-<p class="t-name">Next CW Trainer</p>
+<div class="title-page" data-title="APEX CW – User Manual">
+<p class="t-name">APEX CW</p>
 <p class="t-sub">User Manual</p>
 <p class="t-author">Christian Konecny, OE1CKO</p>
 <p class="t-ver">App version $VERSION · $MONTH_EN $YEAR · $COMMIT</p>
 </div>
 <div class="edition">
-<p><strong>Next CW Trainer – User Manual</strong>, for app version $VERSION
+<p><strong>APEX CW – User Manual</strong>, for app version $VERSION
 (source $COMMIT), $MONTH_EN $YEAR. Author: Christian Konecny, OE1CKO.
 App icon: Sia, OE1LMR.</p>
-<p>Next CW Trainer is an independent project. Its training concept and
+<p>APEX CW is an independent project. Its training concept and
 algorithms come from the Morserino-32 firmware by Willi Kraml, OE1WKL, and the
 Morserino-32 team; there is no other connection to them.</p>
 <p>This manual is also available in German.</p>
@@ -94,9 +94,9 @@ build() {   # $1 = lang
   local lang=$1 base title toc f
   base="$(stem "$lang")_v$VERSION"
   if [ "$lang" = de ]; then
-    title="Next CW Trainer – Handbuch"; toc=Inhalt
+    title="APEX CW – Handbuch"; toc=Inhalt
   else
-    title="Next CW Trainer – User Manual"; toc=Contents
+    title="APEX CW – User Manual"; toc=Contents
   fi
   # Only the current version's build is kept here; older ones are attached
   # to their GitHub releases.

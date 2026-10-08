@@ -652,7 +652,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             InkWell(
               onTap: () => showLicensePage(
                 context: context,
-                applicationName: 'Next CW Trainer',
+                applicationName: 'APEX CW',
                 applicationVersion: _version,
                 applicationLegalese: appLegalese,
               ),

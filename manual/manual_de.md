@@ -1,6 +1,6 @@
 # Einleitung
 
-**Next CW Trainer** ist eine Android-App zum Lernen und Üben von Morsetelegrafie
+**APEX CW** ist eine Android-App zum Lernen und Üben von Morsetelegrafie
 (CW): Hörtraining mit der Koch-Methode, Gebetraining mit dem Echo Trainer, ein
 CW Keyer, ein CW-Decoder über das Mikrofon, CW übers Internet (WiFi Trx), ein
 QSO Bot und einige Spiele. Ein **adaptiver Blockablauf** zählt deine Fehler
@@ -9,7 +9,7 @@ Tempo oder kürzere Pausen dran sind.
 
 ## Woher die App kommt {-}
 
-Next CW Trainer ist ein unabhängiges Hobbyprojekt von Christian Konecny,
+APEX CW ist ein unabhängiges Hobbyprojekt von Christian Konecny,
 OE1CKO. Viele Ideen und ein Großteil der Trainingslogik stammen aus der
 Open-Source-Firmware des [Morserino-32](https://github.com/oe1wkl/Morserino-32)
 von Willi Kraml, OE1WKL. Das Trainingskonzept – Koch-Reihenfolgen, Echo
@@ -1532,7 +1532,7 @@ einem anderen Morserino.
 
 Beim ersten Start fragt Android nach der Erlaubnis für das Mikrofon. Ohne sie
 kann der Decoder nicht arbeiten. Hast du abgelehnt, erlaube das Mikrofon in den
-Android-Einstellungen unter **Apps → Next CW Trainer → Berechtigungen**.
+Android-Einstellungen unter **Apps → APEX CW → Berechtigungen**.
 
 ## Bedienung
 
@@ -1706,7 +1706,7 @@ den Modus unter **Freie Modi**.
    tippe auf **Hinzufügen**.
 
 Noch schneller: Markiere den Text in einer beliebigen App (Browser, Mail,
-Notizen, E-Book-Reader), tippe auf **Teilen** und wähle **Next CW Trainer**.
+Notizen, E-Book-Reader), tippe auf **Teilen** und wähle **APEX CW**.
 Die App öffnet **Eigene Texte** mit demselben Dialog für den Titel. Es gelten
 dieselbe Längengrenze und dieselbe Zeichenbehandlung wie beim Einfügen.
 

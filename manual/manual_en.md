@@ -1,6 +1,6 @@
 # Introduction
 
-**Next CW Trainer** is an Android app for learning and practicing Morse code
+**APEX CW** is an Android app for learning and practicing Morse code
 (CW): copy training with the Koch method, sending practice with the Echo
 Trainer, a CW Keyer, a CW Decoder using the microphone, CW over the internet
 (WiFi Trx), a QSO Bot and several games. An **adaptive block flow** tracks
@@ -9,7 +9,7 @@ new character, more speed or shorter pauses.
 
 ## Where the app comes from {-}
 
-Next CW Trainer is an independent hobby project by Christian Konecny,
+APEX CW is an independent hobby project by Christian Konecny,
 OE1CKO. Many ideas and much of the training logic come from the open-source
 firmware of the [Morserino-32](https://github.com/oe1wkl/Morserino-32) by
 Willi Kraml, OE1WKL. Its training concept, with the Koch sequences, the Echo
@@ -1481,7 +1481,7 @@ program or another Morserino.
 
 On first start Android asks for microphone permission. Without it the decoder
 can't work. If you declined, allow the microphone in the Android settings
-under **Apps → Next CW Trainer → Permissions**.
+under **Apps → APEX CW → Permissions**.
 
 ## Operation
 
@@ -1650,7 +1650,7 @@ newspaper article, a book chapter or a list of call signs. You find it under
 3. Give the text a title (the first words are suggested) and tap **Add**.
 
 Even quicker: select the text in any app (browser, mail, notes, e-reader), tap
-**Share** and choose **Next CW Trainer**. The app opens **Own texts** with the
+**Share** and choose **APEX CW**. The app opens **Own texts** with the
 same dialog for the title. The same size limit and character handling apply as
 for pasting.
 
