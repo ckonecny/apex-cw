@@ -168,6 +168,20 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
 
   final CharStatsStore _charStats = CharStatsStore();
   AdaptiveCopyEngine? _engine;
+  // Thresholds for the unlock outlook on the start screen, before the first
+  // block has created the engine.
+  AdaptiveCopyThresholds? _startThresholds;
+
+  static AdaptiveCopyThresholds _thresholdsFrom(SharedPreferences p) =>
+      AdaptiveCopyThresholds(
+        // Clamped to 99 even though Settings now caps the slider there too —
+        // guards a value already persisted as 100 before that cap existed
+        // (100% is an unreachable trap, see ADAPTIVE-COPY.md).
+        highThreshold: ((p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99)) / 100,
+        lowThreshold: (p.getInt('adaptiveLowThresholdPct') ?? 70) / 100,
+        blockEmaAlpha: (p.getInt('adaptiveEmaAlphaPct') ?? 30) / 100,
+        unlockOccurrences: p.getInt('adaptiveUnlockOccurrences') ?? 20,
+      );
   // Floor for the spacing "step down" direction — never make spacing wider
   // (slower/easier) than what the screen started with (docs/ADAPTIVE-COPY.md
   // "Success-rate high/low thresholds": "not below the configured start
@@ -303,6 +317,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     if (!mounted) return;
     setState(() {
       _outputCase = (p.getInt('outputCase') ?? 0).clamp(0, 1);
+      _startThresholds = _thresholdsFrom(p);
       _weakChars = _weakCharsNow();
       _excludedBoostChars.removeWhere((ch) => !_weakChars.containsKey(ch));
     });
@@ -851,15 +866,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // independent per-character unlock decision — both can fire on the same
     // block (docs/ADAPTIVE-COPY.md "Decisions: weighting/recency questions").
     _engine ??= AdaptiveCopyEngine(
-      thresholds: AdaptiveCopyThresholds(
-        // Clamped to 99 even though Settings now caps the slider there too —
-        // guards a value already persisted as 100 before that cap existed
-        // (100% is an unreachable trap, see ADAPTIVE-COPY.md).
-        highThreshold: ((p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99)) / 100,
-        lowThreshold: (p.getInt('adaptiveLowThresholdPct') ?? 70) / 100,
-        blockEmaAlpha: (p.getInt('adaptiveEmaAlphaPct') ?? 30) / 100,
-        unlockOccurrences: p.getInt('adaptiveUnlockOccurrences') ?? 20,
-      ),
+      thresholds: _thresholdsFrom(p),
       initialBlockEma: p.getDouble('adaptiveBlockEma') ?? 1.0,
     );
     // Typing mode: only the char gap matters (DECISIONS.md "Hören: typing

@@ -1213,6 +1213,9 @@ bis zum nächsten Zeichen noch fehlt:
 
 Pro Liste werden höchstens 10 Zeichen gezeigt, der Rest als „+N weitere“.
 
+Auf der **Startseite** von Hören (vor dem ersten Block) steht eine schmale
+Fassung der Karte: nur Titel und Balken, ohne die Zeichenlisten.
+
 ## Trend
 
 Ab dem **sechsten** Block zeigt die Statuszeile einen Trend, z. B.
