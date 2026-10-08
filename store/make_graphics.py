@@ -20,20 +20,21 @@ FONT = os.path.join(ROOT, 'android', 'assets', 'fonts', 'DMSans.ttf')
 OUT = os.path.join(ROOT, 'store', 'out')
 
 FEATURE = {
-    'de': ('Morsen lernen, überall', 'Hören · Geben · Keyer · Decoder · Spiele'),
-    'en': ('Learn Morse code anywhere', 'Copy · Send · Keyer · Decoder · Games'),
+    'de': ('Morsen lernen, überall', 'Hören · Geben · Prüfung · Keyer · Spiele'),
+    'en': ('Learn Morse code anywhere', 'Copy · Send · Exam · Keyer · Games'),
 }
 SHOTS = [  # (raw file, DE caption, EN caption), in store order
     ('home', 'Alles fürs CW-Training', 'Everything for CW practice'),
     ('hear', 'Hören mit der Koch-Methode', 'Copy with the Koch method'),
     ('hear_stats', 'Statistik für jedes Zeichen', 'Statistics for every character'),
-    ('echo_stats', 'Geben üben: was du verwechselst', 'Sending: see what you mix up'),
+    ('verstehen', 'Verstehen ohne Mitschreiben', 'Head copy without writing'),
+    ('exam', 'Prüfungssimulation', 'Exam simulation'),
+    ('send', 'Geben üben mit Bewertung', 'Sending practice with grading'),
     ('qso', 'QSO-Bot als Übungspartner', 'QSO Bot as a practice partner'),
     ('games', 'Spielend morsen lernen', 'Learn Morse through games'),
-    ('adventure', 'Klassische Text-Adventures in CW', 'Classic text adventures in CW'),
 ]
 RAW = os.path.join(ROOT, 'store', 'raw')
-TOP, BOTTOM = (116, 153, 212), (45, 70, 125)      # the icon's panel gradient
+TOP, BOTTOM = (30, 52, 96), (18, 33, 64)           # the new icon's navy (#122140)
 DOT, DASH = 18, 54                                  # "CW" in Morse as a motif
 
 
