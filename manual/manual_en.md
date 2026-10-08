@@ -110,8 +110,9 @@ the result page, among others. Each area remembers its own size.
 ## Light, dark, language
 
 Under **Settings → Appearance** you choose the **Theme** (System, Light or
-Dark) and the app **Language** (Deutsch or English). Both take effect
-immediately.
+Dark) and the app **Language** (Deutsch or English). There is also a **Blue light
+filter** you can switch on: it tints the whole app warm (in light and dark) at
+a strength you set. All of it takes effect immediately.
 
 The app follows the Android **font size** setting, but only up to **1.3×**
 the default size (step 4 of 7 on a Pixel). Larger steps look the same as
@@ -2458,6 +2459,9 @@ that training's ⚙ sheet.
 | Setting | Meaning | Values |
 |---|---|---|
 | Theme | Light or dark look | **System** / Light / Dark |
+| Blue light filter | Warm colour filter over the whole app (light and dark), easier on the eyes in the evening | **Off** / On |
+| Filter strength | How strongly blue is reduced (only shown while the filter is on) | 10–100 % (**50 %**) |
+| Hide status bar | Hides the Android status bar (clock, battery) so it does not clash with the blue light filter; swiping down from the top shows it briefly | **Off** / On |
 | Language | App language | **Deutsch** / English |
 
 ## General

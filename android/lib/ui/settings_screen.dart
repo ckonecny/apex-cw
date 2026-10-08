@@ -365,6 +365,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const SettingsDivider(),
+            ValueListenableBuilder<bool>(
+              valueListenable: BlueLightFilter.enabled,
+              builder: (context, on, _) => ToggleRow(
+                label: Strings.t('settings_bluelight'),
+                value: on,
+                onChanged: BlueLightFilter.setEnabled,
+              ),
+            ),
+            ValueListenableBuilder<bool>(
+              valueListenable: BlueLightFilter.enabled,
+              builder: (context, on, _) => !on ? const SizedBox.shrink()
+                  : ValueListenableBuilder<int>(
+                      valueListenable: BlueLightFilter.strength,
+                      builder: (context, v, _) => LabeledSlider(
+                        label: Strings.t('settings_bluelight_strength'),
+                        value: v.toDouble(), min: 10, max: 100, divisions: 9,
+                        display: '$v %',
+                        onChanged: (x) => BlueLightFilter.setStrength(x.round()),
+                      ),
+                    ),
+            ),
+            const SettingsDivider(),
+            ValueListenableBuilder<bool>(
+              valueListenable: StatusBarMode.hidden,
+              builder: (context, on, _) => ToggleRow(
+                label: Strings.t('settings_hide_statusbar'),
+                value: on,
+                onChanged: StatusBarMode.set,
+              ),
+            ),
+            const SettingsDivider(),
             ValueListenableBuilder<int>(
               valueListenable: Strings.lang,
               builder: (context, lang, _) => SegmentRow(
@@ -557,7 +588,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 12),
           _ActionButton(
             label: _keyDiagActive ? Strings.t('settings_stop_analyzer') : Strings.t('settings_start_analyzer'),
-            icon: _keyDiagActive ? Icons.stop_circle_outlined : Icons.search,
+            icon: _keyDiagActive ? Icons.stop_rounded : Icons.play_arrow_rounded,
             color: _keyDiagActive ? c.danger : c.info,
             onTap: _toggleKeyDiag,
           ),
