@@ -258,6 +258,7 @@ class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserv
             const SizedBox(height: 12),
             AppButton(
               label: Strings.t(_running ? 'dec_stop' : 'dec_start'),
+              icon: _running ? Icons.stop_rounded : Icons.play_arrow_rounded,
               color: _running ? c.danger : c.accent,
               onTap: () {
                 if (_running) {

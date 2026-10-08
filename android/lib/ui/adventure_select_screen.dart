@@ -112,6 +112,7 @@ class _AdventureSelectScreenState extends State<AdventureSelectScreen> {
         Row(children: [
           Expanded(flex: 3, child: AppButton(
               label: Strings.t(a == null ? 'adv_start' : 'adv_continue'),
+              icon: a == null ? Icons.play_arrow_rounded : null,
               color: c.accent, height: 44,
               onTap: () => a == null ? _open(g, newGame: true) : _open(g))),
           if (a != null || slots > 0) ...[

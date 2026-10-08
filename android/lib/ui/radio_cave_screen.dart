@@ -350,7 +350,7 @@ class _RadioCaveScreenState extends State<RadioCaveScreen> with WidgetsBindingOb
           AppButton(label: Strings.t('rc_new_game'), color: c.accent, primary: false,
               onTap: _newGameFromLobby),
         ] else
-          AppButton(label: Strings.t('rc_start'), color: c.accent,
+          AppButton(label: Strings.t('rc_start'), icon: Icons.play_arrow_rounded, color: c.accent,
               onTap: () => _start(resume: false)),
       ],
     );

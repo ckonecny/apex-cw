@@ -422,7 +422,7 @@ class _MazeGameScreenState extends State<MazeGameScreen> with WidgetsBindingObse
           ]),
         ),
         const SizedBox(height: 24),
-        AppButton(label: Strings.t('msl_start'), color: c.accent, onTap: _startMaze),
+        AppButton(label: Strings.t('msl_start'), icon: Icons.play_arrow_rounded, color: c.accent, onTap: _startMaze),
         const SizedBox(height: 10),
         AppButton(label: Strings.t('msl_hiscores'), color: c.accent, primary: false,
             onTap: () => setState(() { _lastRank = -1; _phase = _Phase.hiscores; })),
