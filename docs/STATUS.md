@@ -45,7 +45,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
   cover/info for the old look; screenshots with the launcher icon, if any.
 
 ## Manual: pending for next release
-- Rename to "APEX CW" (feature/rename-apex-cw): app bar title on Home and the About dialog show the new name; retake `home*` and any shot with the title bar (DE+EN) at release. Also: store raw shots + graphics (`store/make_graphics.py`), site images (`site/img/*_home.webp`) and the Play Console app name/listing.
+- Rename to "APEX CW" (feature/rename-apex-cw): app bar title on Home and the About dialog show the new name; retake `home*` and any shot with the title bar (DE+EN) at release. Also: store raw shots + graphics (`store/make_graphics.py`) and the Play Console app name/listing. (Site images were retaken 2026-10-08, see archive.)
 - Listen start page: slim "On the way to X" card (Koch lesson) below the weak characters; retake `hear_start` (DE+EN).
 - Break hint sensitivity (#48, on main): new row in Settings → General; retake `settings1.png` (DE+EN) if the row shows there. Defaults still to be tuned on real sessions (being tried by testers).
 - Light theme "navy mist" + blue light filter: every light screenshot changes; Settings → Appearance has three new rows (retake `settings1.png` DE+EN). Start/Stop buttons now carry play/stop icons (Geben, games, Decoder, QSO bot): retake those shots too.
