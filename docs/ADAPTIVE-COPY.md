@@ -381,7 +381,7 @@ estimated, just captured so they aren't lost:
   reads `CharStat.emaErrorRate`/`attempts` from the same lifetime-persistent
   `CharStatsStore` the unlock/tempo logic already uses, filtered to the
   active Koch set, requiring `attempts >= 8` (so one unlucky group can't put
-  a character on the list) and `emaErrorRate >= 0.12`, sorted worst-first,
+  a character on the list) and `emaErrorRate >= 0.12` (since 2026-10-08: `weakCharErrorThreshold(highThreshold)` = 1 - high, clamped 2-12 %), sorted worst-first,
   capped at 5 shown. Chips now show the lifetime error-rate percentage
   instead of a raw this-block miss count.
 - **User override on which characters get drilled more — DONE (2026-09-21,

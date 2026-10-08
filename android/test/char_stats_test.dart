@@ -152,4 +152,21 @@ void main() {
     expect([d.attempts, d.errors], [2, 1]); // C right, A wrong, T not counted
     expect(d.avgWpm, isNull);
   });
+
+  test('weak-char threshold follows the upper success threshold, clamped 2-12 %', () {
+    expect(weakCharErrorThreshold(0.90), closeTo(0.10, 1e-9));
+    expect(weakCharErrorThreshold(0.95), closeTo(0.05, 1e-9));
+    expect(weakCharErrorThreshold(0.99), 0.02); // not every imperfect char
+    expect(weakCharErrorThreshold(0.70), 0.12); // never laxer than before
+  });
+
+  test('a char between 5 % and 12 % errors is weak at 95 %, not at the old 12 %', () {
+    final store = CharStatsStore();
+    store.stats['f'] = CharStat()
+      ..attempts = 30
+      ..emaErrorRate = 0.08;
+    expect(weakCharsLifetime(store, ['f']), isEmpty);
+    expect(weakCharsLifetime(store, ['f'], threshold: weakCharErrorThreshold(0.95)).keys, ['f']);
+    expect(weakCharsLifetime(store, ['f'], threshold: weakCharErrorThreshold(0.90)), isEmpty);
+  });
 }

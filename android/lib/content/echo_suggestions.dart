@@ -114,7 +114,8 @@ EchoSuggestions evaluateEchoBlock(AdaptiveCopyEngine engine, EchoSuggestionInput
 
   final weak = i.activeChars.isEmpty
       ? const <String, double>{}
-      : weakCharsLifetime(i.stats, i.activeChars);
+      : weakCharsLifetime(i.stats, i.activeChars,
+          threshold: weakCharErrorThreshold(engine.thresholds.highThreshold));
 
   return EchoSuggestions(
     blockRate: rate,
