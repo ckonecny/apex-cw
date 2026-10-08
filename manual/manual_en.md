@@ -66,8 +66,9 @@ The home screen has four groups:
 |---|---|---|
 | **Practice** | **Listen** | Practice copying: CW Generator and Koch Trainer in the block flow |
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
+| | **Head copy** | Listening without writing: sentences, Q-groups, Mini QSO (see [Head copy](#head-copy)) |
 | **Free** | **Free modes** | Opens five tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) and **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) |
-| **Play** | **Games** | Head copy (sentences, Q-groups, Mini QSO), Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
+| **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, exam simulation, links to courses and practice sites |
 
 At the very top sits the **daily goal card**: a ring with your active
@@ -328,7 +329,7 @@ than letter by letter, you are on the right track.
 
 After that, move towards sentences and texts:
 
-- **[Head copy](#head-copy)** (under **Games**): three listening games where you
+- **[Head copy](#head-copy)** (on the home screen under **Practice**): three listening games where you
   **write nothing down** but answer questions. This trains understanding Morse,
   not just decoding it. You don't need a key for them:
   - **[Sentences](#head-copy)**: you hear one to three short sentences and
@@ -1728,9 +1729,7 @@ a text.
 
 # Games
 
-Under **Play → Games** there are nine entries. **Head copy** holds the three
-listening games [Sentences](#head-copy), [Q-groups](#q-groups) and
-[Mini QSO](#mini-qso); they need no key. The list is longer than the screen; a
+Under **Play → Games** there are eight entries. The list is longer than the screen; a
 scroll bar at the edge shows that it goes on. You play Morsel, Morse Invaders,
 Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup and Radio Cave with the
 touch keyer or the adapter. They use the keyer settings. Morsel, Morse
@@ -1747,7 +1746,7 @@ settings.
 
 ## Head copy {#head-copy}
 
-Under **Play → Games → Head copy** you pick one of three listening modes:
+Under **Practice → Head copy** you pick one of three listening modes:
 **Sentences**, [Q-groups](#q-groups) or [Mini QSO](#mini-qso). This section
 describes **Sentences**.
 

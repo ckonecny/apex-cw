@@ -11,7 +11,6 @@ import 'memory_chain_screen.dart';
 import 'morsel_screen.dart';
 import 'pileup_screen.dart';
 import 'radio_cave_screen.dart';
-import 'understand_screen.dart';
 import 'widgets/app_ui.dart';
 
 class GamesScreen extends StatefulWidget {
@@ -53,18 +52,6 @@ class _GamesScreenState extends State<GamesScreen> {
             controller: _scroll,
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             children: [
-              HubCard(
-                icon: Icons.hearing_rounded,
-                title: Strings.t('und_title'),
-                subtitle: Strings.t('und_subtitle'),
-                hint: Strings.t('und_hint'),
-                color: c.accent,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const UnderstandScreen()),
-                ),
-              ),
-              const SizedBox(height: 12),
               HubCard(
                 icon: Icons.rocket_launch_outlined,
                 title: 'Morse Invaders',

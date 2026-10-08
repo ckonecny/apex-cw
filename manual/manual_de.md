@@ -68,8 +68,9 @@ Die Startseite hat vier Gruppen:
 |---|---|---|
 | **Üben** | **Hören** | Mitschreiben üben: CW Generator und Koch Trainer im Blockablauf |
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
+| | **Verstehen** | Hören ohne Mitschreiben: Sätze, Q-Gruppen, Mini-QSO (siehe [Verstehen](#verstehen)) |
 | **Frei** | **Freie Modi** | Öffnet fünf Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) |
-| **Spielen** | **Spiele** | Verstehen (Sätze, Q-Gruppen, Mini-QSO), Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
+| **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Prüfungssimulation, Links zu Kursen und Übungsseiten |
 
 Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
@@ -340,7 +341,7 @@ erkennst, statt Buchstabe für Buchstabe, bist du auf dem richtigen Weg.
 
 Danach geht es Richtung Sätze und Texte:
 
-- **[Verstehen](#verstehen)** (unter **Spiele**): drei Hörspiele, bei denen du
+- **[Verstehen](#verstehen)** (auf der Startseite unter **Üben**): drei Hörspiele, bei denen du
   **nichts mitschreibst**, sondern Fragen beantwortest. Das übt, Morse zu
   verstehen, nicht nur zu entschlüsseln. Du brauchst dafür keine Taste:
   - **[Sätze](#verstehen)**: Du hörst ein bis drei kurze Sätze und beantwortest
@@ -1785,9 +1786,7 @@ an, solange du in einem Text bist.
 
 # Spiele
 
-Unter **Spielen → Spiele** findest du neun Einträge. Unter **Verstehen** liegen
-die drei Hörspiele [Sätze](#verstehen), [Q-Gruppen](#q-gruppen) und
-[Mini-QSO](#mini-qso); sie brauchen keine Taste. Die Liste ist länger als der
+Unter **Spielen → Spiele** findest du acht Einträge. Die Liste ist länger als der
 Bildschirm; ein Balken am Rand zeigt, dass es nach unten weitergeht. Morsel, Morse Invaders,
 Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup und Radio Cave spielst du
 mit dem Touch-Keyer bzw. dem Adapter. Sie verwenden die Keyer-Einstellungen.
@@ -1804,7 +1803,7 @@ Eingabe; den Keyer-Modus nimmt es ebenfalls aus den Keyer-Einstellungen.
 
 ## Verstehen {#verstehen}
 
-Unter **Spiele → Verstehen** wählst du einen von drei Hörmodi: **Sätze**,
+Unter **Üben → Verstehen** wählst du einen von drei Hörmodi: **Sätze**,
 [Q-Gruppen](#q-gruppen) oder [Mini-QSO](#mini-qso). Dieser Abschnitt beschreibt
 **Sätze**.
 
