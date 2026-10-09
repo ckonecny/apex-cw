@@ -64,5 +64,7 @@ void registerAppLicenses() {
         'assets/fonts/OFL-AnonymousPro.txt');
     yield await file(['DM Sans (font)'],
         'assets/fonts/OFL-DMSans.txt');
+    yield await file(['FrequencyWords (word lists)'],
+        'assets/words/CC-BY-SA-4.0.txt');
   });
 }

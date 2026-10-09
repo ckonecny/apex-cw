@@ -74,6 +74,7 @@ class AdaptiveCopyBody extends StatefulWidget {
   final int randomOption;
   final int wordLengthMax;
   final int wordLengthMin;
+  final int wordLanguage;
   final int abbrevLengthMin;
   final int groupLengthMax;
   // Firmware "Stop<Next>Rep": nach jeder Gruppe warten, Dit = Wiederholen, Dah = Weiter.
@@ -116,6 +117,7 @@ class AdaptiveCopyBody extends StatefulWidget {
     this.randomOption = 0,
     this.wordLengthMax = 0,
     this.wordLengthMin = 0,
+    this.wordLanguage = 0,
     this.abbrevLengthMin = 0,
     this.groupLengthMax = 0,
     this.stopEachGroup = false,
@@ -442,6 +444,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       if (ordinal == 0 || ordinal == 3 || ordinal == 4) 'groupLength': widget.groupLength,
       if (ordinal == 0 || ordinal == 3 || ordinal == 4) 'groupLengthMax': widget.groupLengthMax,
       if (ordinal == 1 || ordinal == 3) 'wordLengthMin': widget.wordLengthMin,
+      if (ordinal == 1 || ordinal == 3) 'wordLanguage': widget.wordLanguage,
       if (ordinal != 0 && ordinal != 4) 'abbrevLengthMin': widget.abbrevLengthMin,
       if (ordinal == 0 && !widget.kochLesson) 'randomOption': widget.randomOption,
       if (ordinal == 1 || ordinal == 3) 'wordLengthMax': widget.wordLengthMax,

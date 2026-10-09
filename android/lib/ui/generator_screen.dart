@@ -39,6 +39,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   int  _outputCase = 0;   // 0=lower, 1=UPPER — display only, content stays uppercase internally
   int  _wordLengthMax  = 0;
   int  _wordLengthMin  = 0;
+  int  _wordLanguage   = 0;
   int  _abbrevLengthMin = 0;
   int  _groupLengthMax = 5;
   bool _stopEach       = false;
@@ -91,6 +92,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
       _groupLength    = pf.getInt('groupLength')    ?? 5;
       _groupLengthMax = (pf.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMin  = (pf.getInt('wordLengthMin') ?? 0).clamp(0, 8);
+      _wordLanguage   = (pf.getInt('wordLanguage') ?? 0).clamp(0, 1);
       _abbrevLengthMin = (pf.getInt('abbrevLengthMin') ?? 0).clamp(0, 6);
       _randomOption   = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
       _abbrevLengthMax = (pf.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
@@ -117,8 +119,9 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   // Per-training settings (docs/archive/training/P3). The sheet only saves; reloading
   // re-reads the profile and pushes practice set/boost to the shared native
   // generator (rule 2). Spacing, wpm etc. are pushed when a block starts.
-  Future<void> _openSettingsSheet() async {
+  Future<void> _openSettingsSheet({TrainingSection? jumpTo}) async {
     await showTrainingSettingsSheet(context,
+        jumpTo: jumpTo,
         profile: TrainingProfile.hear,
         sections: [
           // Koch-specific and global: lives only in the Koch Trainer's sheet.
@@ -130,6 +133,14 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           TrainingSection.adaptive,
         ]);
     if (mounted) await _loadPrefs();
+  }
+
+  // Long press on a chip: select it (as a tap would), then open the settings
+  // sheet scrolled to its section.
+  Future<void> _selectAndOpenSettings(CharsetChoice c, TrainingSection s) async {
+    setState(() => _choice = c);
+    await _savePrefs();
+    if (mounted) await _openSettingsSheet(jumpTo: s);
   }
 
   Future<void> _savePrefs() async {
@@ -242,6 +253,13 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                   setState(() => _choice = v);
                   _savePrefs();
                 },
+                onKochLongPress: () => _selectAndOpenSettings(
+                    _choice.withSet(CharSet.koch), TrainingSection.kochSequence),
+                onWordsLongPress: () => _selectAndOpenSettings(
+                    _choice.withContent(ContentKind.words), TrainingSection.wordSelection),
+                wordLanguage: _wordLanguage,
+                wordLengthMin: _wordLengthMin,
+                wordLengthMax: _wordLengthMax,
                 kochLevel: _kochLevel,
                 kochSequence: _activeKochChars,
                 onKochLevelChanged: (v) { setState(() => _kochLevel = v); _savePrefs(); },
@@ -275,6 +293,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               groupLength: _groupLength,
               groupLengthMax: _groupLengthMax,
               wordLengthMin: _wordLengthMin,
+              wordLanguage: _wordLanguage,
               abbrevLengthMin: _abbrevLengthMin,
               maxWords: _maxWords,
               abbrevLengthMax: _abbrevLengthMax,

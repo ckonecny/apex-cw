@@ -98,6 +98,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _abbrevLengthMax = 0;
   int  _wordLengthMax = 0;
   int  _wordLengthMin = 0;
+  int  _wordLanguage = 0;
   int  _abbrevLengthMin = 0;
   int  _groupLengthMax = 5;
   int  _callLengthOpt   = 0;
@@ -250,8 +251,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Per-training settings (docs/archive/training/P3). The sheet only saves; reloading
   // picks the values up. Prompt/answer config is pushed at every session and
   // word start (_applyPromptConfig/_applyAnswerConfig), so nothing else to do.
-  Future<void> _openSettingsSheet() async {
+  Future<void> _openSettingsSheet({TrainingSection? jumpTo}) async {
     await showTrainingSettingsSheet(context,
+        jumpTo: jumpTo,
         profile: TrainingProfile.echo,
         sections: [
           // Koch sequence is global; only shown with the Koch lesson.
@@ -305,6 +307,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _groupLength     = pf.getInt('groupLength')    ?? 5;
       _groupLengthMax  = (pf.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMin   = (pf.getInt('wordLengthMin') ?? 0).clamp(0, 8);
+      _wordLanguage    = (pf.getInt('wordLanguage') ?? 0).clamp(0, 1);
       _abbrevLengthMin = (pf.getInt('abbrevLengthMin') ?? 0).clamp(0, 6);
       _randomOption    = (pf.getInt('randomOption')  ?? 0).clamp(0, 9);
       _maxWords        = pf.getInt('maxWords')        ?? 0;
@@ -315,6 +318,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _genChannel.invokeMethod('setKochChars', _activeKochChars);
     await _charStats.load(p);
     if (mounted) setState(() {});
+  }
+
+  // Long press on a chip: select it (as a tap would), then open the settings
+  // sheet scrolled to its section.
+  Future<void> _selectAndOpenSettings(CharsetChoice c, TrainingSection s) async {
+    setState(() => _choice = c);
+    await _savePrefs();
+    if (mounted) await _openSettingsSheet(jumpTo: s);
   }
 
   Future<void> _savePrefs() async {
@@ -973,6 +984,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       'groupLength': _groupLength,
       'groupLengthMax': _groupLengthMax,
       'wordLengthMin': _wordLengthMin,
+      'wordLanguage': _wordLanguage,
       'abbrevLengthMin': _abbrevLengthMin,
       if (e.usesRandomOption) 'randomOption': _randomOption,
       'wordLengthMax': _wordLengthMax,
@@ -1036,6 +1048,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               child: CharsetHeader(
                 choice: _choice,
                 onChanged: (v) { setState(() => _choice = v); _savePrefs(); },
+                onKochLongPress: () => _selectAndOpenSettings(
+                    _choice.withSet(CharSet.koch), TrainingSection.kochSequence),
+                onWordsLongPress: () => _selectAndOpenSettings(
+                    _choice.withContent(ContentKind.words), TrainingSection.wordSelection),
+                wordLanguage: _wordLanguage,
+                wordLengthMin: _wordLengthMin,
+                wordLengthMax: _wordLengthMax,
                 kochLevel: _kochLevel,
                 kochSequence: _activeKochChars,
                 onKochLevelChanged: (v) { setState(() => _kochLevel = v); _savePrefs(); },

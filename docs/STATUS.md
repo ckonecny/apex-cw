@@ -28,6 +28,9 @@ Straight-mode shots only if wanted. Adventure map shots show the default zoom
 shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
 
+## In progress: weighted word lists (#53, branch feature/weighted-word-list)
+Implemented and built (analyze + tests green), not yet installed or committed: the test phone was not connected. Also done: long press on the Koch / Words chip jumps to its settings; old 373-word list removed; Words chip shows the approximate pool size ("ca. 190") for Generator/Hören and Echo. To do: install, try Generator/Koch/Hören with English and German words; then commit and merge when the user says so.
+
 ## Landing page (live, Pages source "GitHub Actions" set)
 Open: replace the disabled "Google Play: coming soon" button with the store
 link once the app is live, and set the Play listing's website to the Pages URL.
@@ -41,6 +44,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
   cover/info for the old look; screenshots with the launcher icon, if any.
 
 ## Manual: pending for next release
+- Word language (#53, feature/weighted-word-list): new row "Wortsprache / Word language" in the training settings sheet for Words/Mixed; retake the settings-sheet shot if it shows that content (DE+EN). The Words chip now carries "ca. N": retake the Hören/Geben start shots that show it (DE+EN).
 - Rename to "APEX CW" (feature/rename-apex-cw): app bar title on Home and the About dialog show the new name; retake `home*` and any shot with the title bar (DE+EN) at release. Also: the Play Console app name/listing (store raw shots + graphics were rebuilt 2026-10-08, see archive). (Site images were retaken 2026-10-08, see archive.)
 - Head copy / Verstehen moved from the Games hub to its own tile under Practice on Home (feature/understand-in-practice): retake `home.png` and `games.png` (DE+EN).
 - Home: Listen tile now also shows the trend (fix/home-hear-trend); retake `home.png` (DE+EN).
