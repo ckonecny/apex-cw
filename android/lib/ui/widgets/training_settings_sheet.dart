@@ -84,6 +84,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   bool _stopEach = false;
   // Hören typing mode (hear profile).
   int _typeAttempts = 2;
+  bool _typeLearn = false;
   bool _typeHaptic = true;
   // Echo flow prefs (global keys, as in Settings before).
   int _echoThinkTime = 8;
@@ -140,6 +141,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _maxWords = (prof.getInt('maxWords') ?? 0).clamp(0, 250);
       _stopEach = (prof.getInt('stopEach') ?? 0) == 1;
       _typeAttempts = (prof.getInt('typeAttempts') ?? 2).clamp(1, 3);
+      _typeLearn = (prof.getInt('typeOnWrong') ?? 0) == 1;
       _typeHaptic = (prof.getInt('typeHaptic') ?? 1) == 1;
       _echoThinkTime = p.getInt('echoThinkTime') ?? 8;
       _echoRepeats = (p.getInt('echoRepeats') ?? 3).clamp(0, 7);
@@ -338,15 +340,33 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       ]),
       const SizedBox(height: 16),
       _hint(Strings.t('settings_type_desc')),
+      _hint(Strings.t('settings_type_onwrong_desc')),
       SettingsCard(children: [
         SegmentRow(
-          label: Strings.t('settings_type_attempts'),
-          options: const ['1', '2', '3'],
-          selected: _typeAttempts - 1,
+          label: Strings.t('settings_type_onwrong'),
+          options: [Strings.t('settings_type_onwrong_repeat'),
+              Strings.t('settings_type_onwrong_learn')],
+          selected: _typeLearn ? 1 : 0,
           onChanged: (v) {
-            setState(() => _typeAttempts = v + 1);
-            _setInt('typeAttempts', _typeAttempts);
+            setState(() => _typeLearn = v == 1);
+            _setInt('typeOnWrong', v);
           },
+        ),
+        const SettingsDivider(),
+        Opacity(
+          opacity: _typeLearn ? 0.4 : 1,
+          child: IgnorePointer(
+            ignoring: _typeLearn,
+            child: SegmentRow(
+              label: Strings.t('settings_type_attempts'),
+              options: const ['1', '2', '3'],
+              selected: _typeAttempts - 1,
+              onChanged: (v) {
+                setState(() => _typeAttempts = v + 1);
+                _setInt('typeAttempts', _typeAttempts);
+              },
+            ),
+          ),
         ),
         const SettingsDivider(),
         ToggleRow(

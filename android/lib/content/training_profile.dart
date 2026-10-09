@@ -32,7 +32,7 @@ class TrainingProfile {
     'blockFlow', 'charset', 'content', 'stopEach',
     // Hören typing mode: last used start (0 paper, 1 typing), attempts per
     // word, key vibration.
-    'copyMode', 'typeAttempts', 'typeHaptic',
+    'copyMode', 'typeAttempts', 'typeOnWrong', 'typeHaptic',
   ];
   static const _stringFields = ['practiceChars'];
   static const _versionKey = 'profileVersion';

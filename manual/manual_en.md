@@ -625,7 +625,11 @@ is hidden to make room for the keyboard.
 5. **✗ Wrong**: the word is played again at once, with an empty field. Your
    previous attempt is shown small and struck through above it, without a
    hint where the error was. "Attempt *n* of *max*" shows which attempt this
-   is.
+   is. With the setting **After a wrong answer → Learn** (see below) there is
+   no second attempt: the word sounds once more, each character is shown
+   below as dots and dashes (the one sounding lights up), then the next word
+   follows. Only the first attempt is still graded; a **Pass** also
+   shows the lesson (with the error tone, all characters red).
 6. **Pass**: at any time, also while the word plays. After the last wrong
    attempt or a pass, the app shows the solution for 2 seconds (the
    characters wrong in the first attempt in red) with your attempts below
@@ -771,7 +775,8 @@ to: …" tells you which combination you are setting up.
 | Setting | Meaning | Values |
 |---|---|---|
 | Stop after each group / Stop after each word | **Paper** only: wait after each one, dit = repeat, dah = next | **Off** / On |
-| Attempts per word | **Type** only: how often you may try a word; 1 = no second attempt | 1 / **2** / 3 |
+| After a wrong answer | **Type** only: **Repeat** = the same word comes again (attempts per word); **Learn** = no second attempt; instead the word sounds once more and shows each character as dots and dashes with the letter above it, then the next word follows | **Repeat** / Learn |
+| Attempts per word | **Type** and **Repeat** only: how often you may try a word; 1 = no second attempt | 1 / **2** / 3 |
 | Vibrate on key press | **Type** only: short vibration on every active key | Off / **On** |
 
 ### Adaptive mode

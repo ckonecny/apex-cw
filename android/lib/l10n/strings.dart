@@ -632,6 +632,13 @@ class Strings {
       'Beim Mitschreiben mit der Tastatur (Start mit „Tippen“).',
       'When copying on the keyboard (start with "Type").'],
     'settings_type_attempts': ['Versuche pro Wort', 'Attempts per word'],
+    'settings_type_onwrong': ['Nach falscher Antwort', 'After a wrong answer'],
+    'settings_type_onwrong_repeat': ['Wiederholen', 'Repeat'],
+    'settings_type_onwrong_learn': ['Lernen', 'Learn'],
+    'settings_type_onwrong_desc': [
+      'Wiederholen: dasselbe Wort kommt nochmal (Versuche pro Wort). Lernen: kein zweiter Versuch; das Wort klingt noch einmal, jedes Zeichen steht als Punkte und Striche darunter, dann geht es mit dem nächsten Wort weiter.',
+      'Repeat: the same word comes again (attempts per word). Learn: no second attempt; the word sounds once more with each character shown as dots and dashes, then the next word follows.'],
+    'ac_type_learn': ['Hör, wie es klingt', 'Hear how it sounds'],
     'settings_type_haptic': ['Vibration bei Tastendruck', 'Vibrate on key press'],
     'ac_listening': ['Zuhören', 'Listening'],
     'ac_group_of': ['Gruppe {n} von {total}', 'Group {n} of {total}'],

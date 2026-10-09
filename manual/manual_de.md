@@ -648,6 +648,11 @@ Platz hat.
    Dein voriger Versuch steht klein und durchgestrichen darüber, ohne Hinweis,
    wo der Fehler war. „Versuch *n* von *max*“ zeigt, der wievielte Versuch das
    ist.
+   Mit der Einstellung **Nach falscher Antwort → Lernen** (siehe unten) gibt
+   es keinen zweiten Versuch: Das Wort klingt noch einmal, jedes Zeichen steht
+   als Punkte und Striche darunter (das gerade klingende leuchtet auf), danach
+   kommt das nächste Wort. Gewertet wird weiterhin nur der erste Versuch; auch
+   **Passen** zeigt die Lernanzeige (mit Fehlerton, alle Zeichen rot).
 6. **Passen** – jederzeit, auch während das Wort spielt. Nach dem letzten
    falschen Versuch oder nach Passen zeigt die App 2 Sekunden lang die Lösung
    (die im ersten Versuch falschen Zeichen rot) und darunter deine Versuche,
@@ -794,7 +799,8 @@ Zeile „Gilt für: …“ zeigt, für welche Kombination du gerade einstellst.
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Nach jeder Gruppe anhalten / Nach jedem Wort anhalten | Nur bei **Papier**: danach warten, Dit = wiederholen, Dah = weiter | **Aus** / Ein |
-| Versuche pro Wort | Nur bei **Tippen**: wie oft du ein Wort versuchen darfst; 1 = kein zweiter Versuch | 1 / **2** / 3 |
+| Nach falscher Antwort | Nur bei **Tippen**: **Wiederholen** = dasselbe Wort kommt nochmal (Versuche pro Wort); **Lernen** = kein zweiter Versuch, stattdessen klingt das Wort noch einmal und zeigt jedes Zeichen als Punkte und Striche mit dem Buchstaben darüber, dann geht es mit dem nächsten Wort weiter | **Wiederholen** / Lernen |
+| Versuche pro Wort | Nur bei **Tippen** und **Wiederholen**: wie oft du ein Wort versuchen darfst; 1 = kein zweiter Versuch | 1 / **2** / 3 |
 | Vibration bei Tastendruck | Nur bei **Tippen**: kurze Vibration bei jeder aktiven Taste | Aus / **Ein** |
 
 ### Adaptiver Modus

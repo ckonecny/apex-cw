@@ -22,6 +22,7 @@ import '../content/adaptive_copy_engine.dart';
 import '../content/copy_grading.dart';
 import 'widgets/cw_keyboard.dart';
 import 'widgets/char_playback_overlay.dart';
+import 'widgets/mistake_lesson.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import '../util/char_color.dart';
@@ -40,7 +41,7 @@ enum _Phase { idle, sending, revealed, result }
 // Typing mode, per word: input = typing/waiting for the answer, wrong =
 // short pause after a wrong attempt before the replay, correct = ✓ shown,
 // solution = word shown after the last attempt or a pass.
-enum _TypeState { input, wrong, correct, solution }
+enum _TypeState { input, wrong, correct, solution, learn }
 
 // Characters the generator can draw for "all characters" random groups, as
 // CwGenerator.kt randomCharsAlphabet (prosigns arrive as their two letters,
@@ -271,6 +272,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // ── Typing mode ──
   bool _typing = false;          // this session copies on the keyboard
   int _typeAttempts = 2;         // ⚙ "attempts per word", 1–3
+  bool _learnFromMistake = false; // ⚙ after a wrong answer: replay + dits/dahs, no retry (#50)
+  int _learnActive = -1;         // character sounding in the lesson
+  Set<int> _learnWrong = {};     // positions wrong in the first attempt
+  int _learnElement = 0;         // elements of the lesson heard so far
   bool _typeHaptic = true;
   bool _confirmTone = true;      // global, set in Geben's ⚙ sheet
   _TypeState _typeState = _TypeState.input;
@@ -464,6 +469,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _doneCompleter!.complete();
     }
     if (ev['type'] == 'paddle') _choose(ev['value'] == 'dit');
+    if (ev['type'] == 'elementOn' && _typeState == _TypeState.learn) _advanceLesson();
   }
 
   Future<void> _waitIfPaused() async {
@@ -594,6 +600,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       final pf = await TrainingProfile.open(TrainingProfile.hear);
       _typeAttempts = (pf.getInt('typeAttempts') ?? 2).clamp(1, 3);
       _typeHaptic = (pf.getInt('typeHaptic') ?? 1) == 1;
+      _learnFromMistake = (pf.getInt('typeOnWrong') ?? 0) == 1;
       _confirmTone = p.getBool('confirmTone') ?? true;
       await _runTypingBlock();
       return;
@@ -684,7 +691,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       carry = '';
       String? first;
       var outcome = 2;
-      for (var a = 1; a <= _typeAttempts; a++) {
+      var learned = false;
+      final attemptsAllowed = _learnFromMistake ? 1 : _typeAttempts;
+      for (var a = 1; a <= attemptsAllowed; a++) {
         if (a > 1) {
           setState(() { _attemptNo = a; _input = ''; _typeState = _TypeState.input; });
         }
@@ -692,11 +701,21 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         if (!_sessionActive || !mounted) return;
         setState(() => _typedAttempts[i].add(typed));
         if (a == 1) first = typed ?? '';
-        if (typed == null) break; // passed
+        if (typed == null) { // passed: same lesson as after a mistake
+          if (_learnFromMistake) {
+            learned = true;
+            if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', false);
+          }
+          break;
+        }
         final ok = typed == group;
         if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', ok);
         if (ok) {
           outcome = a == 1 ? 0 : 1;
+          break;
+        }
+        if (_learnFromMistake) {
+          learned = true;
           break;
         }
         if (a < _typeAttempts) {
@@ -706,6 +725,15 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         }
       }
       final flags = gradeTyped(group, first ?? '');
+      if (learned) {
+        setState(() {
+          _shownWord = group;
+          _input = '';
+          _learnWrong = {for (var k = 0; k < flags.length; k++) if (!flags[k]) k};
+        });
+        await _playLesson(group);
+        if (!_sessionActive || !mounted) return;
+      }
       setState(() {
         _outcomes.add(outcome);
         for (var k = 0; k < flags.length; k++) {
@@ -715,12 +743,41 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         _input = '';
         _typeState = outcome == 2 ? _TypeState.solution : _TypeState.correct;
       });
-      await Future.delayed(Duration(milliseconds: outcome == 2 ? 2000 : 1000));
+      await Future.delayed(Duration(milliseconds: learned ? 0 : outcome == 2 ? 2000 : 1000));
       if (!_sessionActive || !mounted) return;
       if (outcome != 2) carry = _input;
     }
     if (!_sessionActive || !mounted) return;
     _revealBlock();
+  }
+
+  // Learn from the mistake (#50): the word again as sound, its characters
+  // as dits/dahs with the letter above; the one sounding is highlighted.
+  Future<void> _playLesson(String word) async {
+    setState(() { _typeState = _TypeState.learn; _learnActive = -1; _learnElement = 0; });
+    // Let the error tone ring out first.
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted || !_sessionActive) return;
+    final done = Completer<void>();
+    _doneCompleter = done;
+    await _genChannel.invokeMethod('playOne', word);
+    await done.future;
+    if (!mounted) return;
+    await Future.delayed(const Duration(milliseconds: 1800));
+    if (mounted) setState(() => _learnActive = -1);
+  }
+
+  // One more element sounded: map the running count to a character.
+  void _advanceLesson() {
+    var n = _learnElement++;
+    for (var k = 0; k < _shownWord.length; k++) {
+      final len = morsePattern(_shownWord[k]).length;
+      if (n < len) {
+        if (_learnActive != k) setState(() => _learnActive = k);
+        return;
+      }
+      n -= len;
+    }
   }
 
   // Plays the word and resolves with the answer (null = passed). The answer
