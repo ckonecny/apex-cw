@@ -213,6 +213,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       final solution = _typeState == _TypeState.solution;
       final correct = _typeState == _TypeState.correct;
       final wrong = _typeState == _TypeState.wrong;
+      final learn = _typeState == _TypeState.learn;
       // Answer line: the typed text with a cursor; the word itself once
       // it is right (green) or given up (wrong chars of attempt 1 in red).
       Widget answer;
@@ -241,6 +242,8 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       if (correct) {
         badge = Strings.t('echo_status_correct');
         badgeColor = c.accent;
+      } else if (learn) {
+        badge = Strings.t('ac_type_learn');
       } else if (solution) {
         badge = Strings.t('ac_type_solution');
       } else if (wrong) {
@@ -249,6 +252,8 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
         badge = '✗ ${Strings.t('echo_attempt')
             .replaceFirst('{n}', '$_attemptNo').replaceFirst('{max}', '$_typeAttempts')}';
       }
+      final lesson = learn ? Padding(padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: MistakeLesson(word: _shownWord, active: _learnActive, wrong: _learnWrong, display: _displayChar)) : null;
       center = Column(mainAxisSize: MainAxisSize.min, children: [
         Row(mainAxisSize: MainAxisSize.min, children: List.generate(_blockSize, (k) {
           final done = k < _outcomes.length;
@@ -277,6 +282,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           child: Text(badge, style: TextStyle(fontSize: 13, color: badgeColor)),
         )),
         const SizedBox(height: 6),
+        if (lesson != null) lesson else ...[
         // Earlier attempts of this word, struck through — no hint where the
         // error was. In the solution state: every attempt, numbered.
         // Fixed height in every state, sized for the solution's numbered
@@ -301,6 +307,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             child: FittedBox(fit: BoxFit.scaleDown, child: answer))),
         Container(width: 200, height: 2, color: correct ? c.accent
             : (wrong || solution) ? c.danger : c.border),
+        ],
         const SizedBox(height: 10),
         SizedBox(height: 18 * f, child: _playing
             ? Row(mainAxisSize: MainAxisSize.min, children: [

@@ -25,6 +25,7 @@ import 'package:next_cw_trainer/ui/home_screen.dart';
 import 'package:next_cw_trainer/ui/invaders_screen.dart';
 import 'package:next_cw_trainer/ui/keyer_screen.dart';
 import 'package:next_cw_trainer/ui/widgets/decoder_chars_setting.dart';
+import 'package:next_cw_trainer/ui/widgets/mistake_lesson.dart';
 import 'package:next_cw_trainer/ui/learn_screen.dart';
 import 'package:next_cw_trainer/ui/links_screen.dart';
 import 'package:next_cw_trainer/ui/memory_chain_screen.dart';
@@ -84,6 +85,10 @@ void main() {
     // Setting inside the CW Keyer / CW Decoder settings sheets (issue #52).
     'decoder_chars_setting': () => const Scaffold(
         body: SingleChildScrollView(child: DecoderCharsSetting())),
+    // "Learn from the mistake" view in Hören → Tippen (issue #50).
+    'mistake_lesson': () => Scaffold(
+        body: SingleChildScrollView(child: MistakeLesson(
+            word: 'quarantine7?', active: 3, display: (c) => c.toUpperCase()))),
     'memory_chain': () => const MemoryChainScreen(),
     'morsel': () => const MorselScreen(),
     'qso_bot': () => const QsoBotScreen(),
