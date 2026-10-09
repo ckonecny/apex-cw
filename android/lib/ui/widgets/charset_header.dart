@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../content/charset_content.dart';
 import '../../content/cw_content.dart';
+import '../../content/word_pool.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import '../../util/char_color.dart';
@@ -37,6 +38,14 @@ class CharsetHeader extends StatelessWidget {
   // Practice Set characters, editable right on the start screen.
   final String practiceChars;
   final ValueChanged<String>? onPracticeCharsChanged;
+  // Word chip shows roughly how many different words the practice can draw
+  // from (language, length range, and for Koch the unlocked characters).
+  // Long press on the Koch / Words chip: jump to their settings.
+  final VoidCallback? onKochLongPress;
+  final VoidCallback? onWordsLongPress;
+  final int wordLanguage;
+  final int wordLengthMin;
+  final int wordLengthMax;
 
   const CharsetHeader({
     super.key,
@@ -50,6 +59,11 @@ class CharsetHeader extends StatelessWidget {
     this.onCharLongPress,
     this.practiceChars = '',
     this.onPracticeCharsChanged,
+    this.onKochLongPress,
+    this.onWordsLongPress,
+    this.wordLanguage = 0,
+    this.wordLengthMin = 0,
+    this.wordLengthMax = 0,
   });
 
   @override
@@ -60,22 +74,48 @@ class CharsetHeader extends StatelessWidget {
     // (issue #39); the screens below it keep their share of the height.
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.4),
-      child: SingleChildScrollView(child: _content(context, c, koch)),
+      child: SingleChildScrollView(
+        child: FutureBuilder<WordPool>(
+          future: WordPool.load(wordLanguage),
+          initialData: WordPool.peek(wordLanguage),
+          builder: (context, snap) => _content(context, c, koch, snap.data),
+        ),
+      ),
     );
   }
 
-  Widget _content(BuildContext context, AppColors c, bool koch) {
+  // "Words · ca. 190": unobtrusive size of the pool, only for the Words chip.
+  String _contentChipLabel(ContentKind k, WordPool? pool) {
+    final label = contentLabel(k);
+    if (k != ContentKind.words || pool == null || pool.words.isEmpty) return label;
+    final n = pool.count(
+      minLen: wordLengthMin,
+      maxLen: wordLengthMax,
+      allowedChars: choice.set == CharSet.koch
+          ? {for (final ch in kochSequence.take(kochLevel)) ch.toLowerCase()}
+          : null,
+    );
+    return '$label · ${Strings.t('words_pool_approx').replaceFirst('{n}', '${WordPool.roughly(n)}')}';
+  }
+
+  Widget _content(BuildContext context, AppColors c, bool koch, WordPool? pool) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       _Chips(
         labels: [for (final s in CharSet.values) charSetLabel(s)],
         selected: choice.set.index,
         onChanged: (i) => onChanged(choice.withSet(CharSet.values[i])),
+        onLongPress: (i) {
+          if (CharSet.values[i] == CharSet.koch) onKochLongPress?.call();
+        },
       ),
       if (allowedContents(choice.set).length > 1)
         _Chips(
-          labels: [for (final k in allowedContents(choice.set)) contentLabel(k)],
+          labels: [for (final k in allowedContents(choice.set)) _contentChipLabel(k, pool)],
           selected: allowedContents(choice.set).indexOf(choice.content),
           onChanged: (i) => onChanged(choice.withContent(allowedContents(choice.set)[i])),
+          onLongPress: (i) {
+            if (allowedContents(choice.set)[i] == ContentKind.words) onWordsLongPress?.call();
+          },
         ),
       if (koch) ...[
         Row(children: [
@@ -159,7 +199,8 @@ class _Chips extends StatelessWidget {
   final List<String> labels;
   final int selected;
   final ValueChanged<int> onChanged;
-  const _Chips({required this.labels, required this.selected, required this.onChanged});
+  final ValueChanged<int>? onLongPress;
+  const _Chips({required this.labels, required this.selected, required this.onChanged, this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +211,7 @@ class _Chips extends StatelessWidget {
         for (var i = 0; i < labels.length; i++)
           GestureDetector(
             onTap: () => onChanged(i),
+            onLongPress: onLongPress == null ? null : () => onLongPress!(i),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               decoration: BoxDecoration(

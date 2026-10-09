@@ -113,7 +113,11 @@ class MainActivity : FlutterActivity() {
             MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CwTonePlugin.CHANNEL)
         )
         keyer     = CwKeyer(tonePlugin)
-        generator = CwGenerator(tonePlugin)
+        generator = CwGenerator(tonePlugin) { path ->
+            try {
+                assets.open("flutter_assets/$path").bufferedReader().use { it.readText() }
+            } catch (_: Exception) { null }
+        }
 
         // Reopens the sidetone stream on whichever output device matches the
         // user's preference whenever USB/Bluetooth audio hardware is (un)plugged.
@@ -245,6 +249,7 @@ class MainActivity : FlutterActivity() {
                         generator.abbrevLengthMin = (args?.get("abbrevLengthMin") as? Number)?.toInt() ?: 0
                         generator.randomOption   = (args?.get("randomOption")   as? Number)?.toInt() ?: 0
                         generator.wordLengthMax  = (args?.get("wordLengthMax")  as? Number)?.toInt() ?: 0
+                        generator.wordLanguage   = (args?.get("wordLanguage")   as? Number)?.toInt() ?: 0
                         generator.stopAfterItem  = args?.get("stopAfterItem") as? Boolean ?: false
                         generator.abbrevLengthMax = (args?.get("abbrevLengthMax") as? Number)?.toInt() ?: 0
                         generator.maxWords        = (args?.get("maxWords")        as? Number)?.toInt() ?: 0
@@ -317,6 +322,7 @@ class MainActivity : FlutterActivity() {
                             .getOrElse((args?.get("mode") as? Number)?.toInt() ?: 0) { CwGenerator.Mode.RANDOM_CHARS }
                         generator.kochLevel     = (args?.get("kochLevel")     as? Number)?.toInt() ?: 5
                         generator.wordLengthMax = (args?.get("wordLengthMax") as? Number)?.toInt() ?: 0
+                        generator.wordLanguage = (args?.get("wordLanguage") as? Number)?.toInt() ?: 0
                         generator.groupLength   = (args?.get("groupLength")   as? Number)?.toInt() ?: 5
                         generator.groupLengthMax = (args?.get("groupLengthMax") as? Number)?.toInt() ?: 0
                         generator.wordLengthMin  = (args?.get("wordLengthMin")  as? Number)?.toInt() ?: 0

@@ -18,7 +18,11 @@ enum TrainingSection { content, spacing, wordSpacing, wordSelection, echoFlow, h
 /// must reload its values and push them to the native engine once the returned
 /// future completes (CLAUDE.md rule 2).
 Future<void> showTrainingSettingsSheet(BuildContext context,
-    {required String profile, required List<TrainingSection> sections}) {
+    {required String profile,
+    required List<TrainingSection> sections,
+    // Scrolls straight to this section when it is part of [sections] (long
+    // press on a chip of the training screen).
+    TrainingSection? jumpTo}) {
   final c = AppColors.of(context);
   return showModalBottomSheet<void>(
     context: context,
@@ -30,7 +34,8 @@ Future<void> showTrainingSettingsSheet(BuildContext context,
       initialChildSize: 0.85,
       maxChildSize: 0.95,
       builder: (ctx, scroll) =>
-          _TrainingSettingsBody(profile: profile, sections: sections, scroll: scroll),
+          _TrainingSettingsBody(
+              profile: profile, sections: sections, scroll: scroll, jumpTo: jumpTo),
     ),
   );
 }
@@ -39,8 +44,9 @@ class _TrainingSettingsBody extends StatefulWidget {
   final String profile;
   final List<TrainingSection> sections;
   final ScrollController scroll;
+  final TrainingSection? jumpTo;
   const _TrainingSettingsBody(
-      {required this.profile, required this.sections, required this.scroll});
+      {required this.profile, required this.sections, required this.scroll, this.jumpTo});
 
   @override
   State<_TrainingSettingsBody> createState() => _TrainingSettingsBodyState();
@@ -54,6 +60,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   ];
 
   TrainingProfile? _prof;
+  final _sectionKeys = {for (final s in TrainingSection.values) s: GlobalKey()};
+  bool _jumped = false;
   CharsetChoice _choice = const CharsetChoice(CharSet.koch, ContentKind.random);
   SharedPreferences? _p;
 
@@ -68,6 +76,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _groupLengthMax = 5;
   int _wordLengthMax = 0;
   int _wordLengthMin = 0;
+  int _wordLanguage = 0;
   int _abbrevLengthMin = 0;
   int _abbrevLengthMax = 0;
   int _maxWords = 0;
@@ -124,6 +133,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _groupLengthMax = (prof.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);
       _wordLengthMin = (prof.getInt('wordLengthMin') ?? 0).clamp(0, 8);
+      _wordLanguage = (prof.getInt('wordLanguage') ?? 0).clamp(0, 1);
       _abbrevLengthMin = (prof.getInt('abbrevLengthMin') ?? 0).clamp(0, 6);
       _abbrevLengthMax = (prof.getInt('abbrevLengthMax') ?? 0).clamp(0, 5);
       _maxWords = (prof.getInt('maxWords') ?? 0).clamp(0, 250);
@@ -433,6 +443,16 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               _setInt('groupLength', _groupLength);
               _setInt('groupLengthMax', _groupLengthMax);
             }),
+      if (k == ContentKind.words || k == ContentKind.mixed)
+        SegmentRow(
+          label: Strings.t('settings_word_language'),
+          options: [Strings.t('settings_word_language_en'), Strings.t('settings_word_language_de')],
+          selected: _wordLanguage,
+          onChanged: (v) {
+            setState(() => _wordLanguage = v);
+            _setInt('wordLanguage', v);
+          },
+        ),
       // Words: stored 0 = no limit on either side (slider ends 1 and 9).
       if (k == ContentKind.words || k == ContentKind.mixed)
         LabeledRangeSlider(
@@ -581,32 +601,51 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
     final title = widget.profile == TrainingProfile.echo
         ? Strings.t('settings_profile_echo')
         : Strings.t('settings_profile_hear');
-    return ListView(
+    final jump = widget.jumpTo;
+    if (jump != null && !_jumped && widget.sections.contains(jump)) {
+      _jumped = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = _sectionKeys[jump]?.currentContext;
+        if (ctx != null && ctx.mounted) {
+          Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 250));
+        }
+      });
+    }
+    // A plain scroll view (not a lazy ListView) so every section is built and
+    // can be scrolled to by key.
+    return SingleChildScrollView(
       controller: widget.scroll,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-      children: [
-        Center(
-          child: Container(
-            width: 40, height: 4,
-            decoration: BoxDecoration(color: c.border, borderRadius: BorderRadius.circular(2)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Center(
+            child: Container(
+              width: 40, height: 4,
+              decoration: BoxDecoration(color: c.border, borderRadius: BorderRadius.circular(2)),
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        Text(title,
-            style: TextStyle(fontSize: 16, color: c.textPrimary)),
-        const SizedBox(height: 16),
-        for (final s in widget.sections)
-          ...switch (s) {
-            TrainingSection.content => _content(),
-            TrainingSection.spacing => _spacing(),
-            TrainingSection.wordSpacing => _wordSpacing(),
-            TrainingSection.wordSelection => _wordSelection(),
-            TrainingSection.echoFlow => _echoFlow(),
-            TrainingSection.hearFlow => _hearFlow(),
-            TrainingSection.adaptive => _adaptive(),
-            TrainingSection.kochSequence => _kochSequence(),
-          },
-      ],
+          const SizedBox(height: 12),
+          Text(title,
+              style: TextStyle(fontSize: 16, color: c.textPrimary)),
+          const SizedBox(height: 16),
+          for (final s in widget.sections)
+            Column(
+              key: _sectionKeys[s],
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: switch (s) {
+                TrainingSection.content => _content(),
+                TrainingSection.spacing => _spacing(),
+                TrainingSection.wordSpacing => _wordSpacing(),
+                TrainingSection.wordSelection => _wordSelection(),
+                TrainingSection.echoFlow => _echoFlow(),
+                TrainingSection.hearFlow => _hearFlow(),
+                TrainingSection.adaptive => _adaptive(),
+                TrainingSection.kochSequence => _kochSequence(),
+              },
+            ),
+        ],
+      ),
     );
   }
 }

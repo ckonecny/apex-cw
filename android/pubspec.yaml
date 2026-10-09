@@ -73,6 +73,9 @@ flutter:
     - assets/licenses/GPL-3.0.txt
     - assets/fonts/OFL-AnonymousPro.txt
     - assets/fonts/OFL-DMSans.txt
+    - assets/words/en.txt
+    - assets/words/de.txt
+    - assets/words/CC-BY-SA-4.0.txt
 
   # To add assets to your application, add an assets section, like this:
   # assets:

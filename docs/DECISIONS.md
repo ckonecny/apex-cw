@@ -1897,3 +1897,37 @@ Home tile subtitles are limited to one line (`maxLines: 1`, min card height
 58 × text scale) so six cards plus the goal card fit without scrolling on
 common phones; the Free, Games and Learn subtitles were shortened to ≤ ~32
 characters in both languages.
+
+## 2026-10-09: Frequency-weighted word lists (EN + DE), own build, not the firmware's (#53)
+
+The firmware now draws words from a larger Oxford-5000-based list, weighted by
+frequency. We do not copy it: the Oxford list has no licence we can reuse (rule
+11), and the firmware list is English only. Instead `android/assets/words/{en,de}.txt`
+("word weight" per line) are built from hermitdave/FrequencyWords (content
+CC-BY-SA-4.0, OpenSubtitles, one-way compatible with GPL-3.0-or-later; the word
+files stay CC-BY-SA, text in `assets/words/CC-BY-SA-4.0.txt`, registered in
+`licenses.dart` and `license_compat_test.dart`). Filters (`tools/wordlists/`):
+a-z only (German: no umlauts/ß, words with them are left out), no names,
+interjections, subtitle artifacts, violence, crime, drugs, sex, swearing;
+English in US spelling. English 3500 words (length 2-10), German 2500 (2-12).
+`CwGenerator.randomWord()` picks weighted (cumulative sum + binary search) and
+keeps the Koch filter, min/max length and the single-character fallback. New
+profile setting `wordLanguage` (0 English default, 1 German), sent with the
+generator config like `wordLengthMin`. The old 373-word list was removed from
+`CwGenerator.kt` (an unreadable asset gives an empty list, the generator then
+draws single characters); Morsel's `getWordLists` always returns English.
+The Words chip in `CharsetHeader` shows roughly how many different words the
+practice can draw from ("Words · ca. 190", `lib/content/word_pool.dart`):
+language list filtered by the min/max word length and, for a Koch lesson, by the
+unlocked characters (same rule as `CwGenerator.kochQualifies`); rounded to
+exact < 10, steps of 5 < 100, 10 < 1000, else 100.
+
+## 2026-10-09: Long press on the Koch / Words chip opens the settings at its section
+
+`showTrainingSettingsSheet(jumpTo:)` scrolls the (unchanged, complete) sheet to
+a section via per-section `GlobalKey` + `Scrollable.ensureVisible`; the body is
+now a `SingleChildScrollView` + `Column` instead of a lazy `ListView`, so every
+section is built and can be found by key. `CharsetHeader` has `onKochLongPress` /
+`onWordsLongPress`; Generator and Echo select the chip first (like a tap, saved)
+and then open the sheet at `kochSequence` / `wordSelection`. The Koch section
+exists only in the Koch Trainer's sheet; elsewhere the sheet opens at the top.

@@ -96,7 +96,9 @@ betrifft, stellst du dagegen direkt in diesem Training ein.
 In jedem Training findest du oben rechts:
 
 - **⚙ Einstellungen des Trainings** – ein Blatt, das von unten hereinfährt.
-  Jede Änderung gilt sofort und wird gespeichert.
+  Jede Änderung gilt sofort und wird gespeichert. Abkürzung: **lang drücken**
+  auf den Chip **Koch** oder **Wörter** wählt ihn aus und öffnet das Blatt
+  gleich bei den passenden Einstellungen (Koch-Reihenfolge bzw. Wortauswahl).
 - **📊 Statistik** (nur bei **Hören** und **Geben**) – dein Übungsstand je
   Zeichen (siehe [Zeichenstatistik](#zeichenstatistik)).
 
@@ -509,7 +511,7 @@ Oben auf der Startansicht wählst du zwei Dinge:
 | Inhalt | Bedeutung | Verfügbar bei |
 |---|---|---|
 | **Zufall** | Gruppen aus zufälligen Zeichen | allen |
-| **Wörter** | Häufige englische Wörter | Koch, Alle |
+| **Wörter** | Häufige Wörter (Englisch oder Deutsch, nach Häufigkeit gewichtet). Auf dem Chip steht grob, wie viele verschiedene Wörter zur Auswahl stehen (z. B. „ca. 190“): abhängig von Sprache, Wortlänge und bei Koch von den freigeschalteten Zeichen | Koch, Alle |
 | **Abkürzungen** | Übliche CW-Abkürzungen | Koch, Alle |
 | **Rufzeichen** | Zufällige, realistische Rufzeichen | Alle |
 | **Gemischt** | Wörter, Abkürzungen und Gruppen gemischt | Koch, Alle |
@@ -782,6 +784,7 @@ Zeile „Gilt für: …“ zeigt, für welche Kombination du gerade einstellst.
 |---|---|---|
 | Zeichen für Gruppen | Nur bei **Alle Zeichen · Zufall**: aus welchen Zeichenklassen gezogen wird | **Alle** / Buchstaben / Ziffern / Satzzeichen / Prosigns / Buchst.+Ziff. / Ziff.+Satzz. / Satzz.+Prosigns / Buchst.+Ziff.+Satzz. / Ziff.+Satzz.+Prosigns |
 | Gruppenlänge (min–max) | Zeichen pro Zufallsgruppe (bei **Zufall** und **Gemischt**). Bereichsregler: bei min = max (z. B. 5–5) sind alle Gruppen gleich lang; bei min < max (z. B. 2–7) bekommt jede Gruppe eine zufällige Länge, du weißt beim Hören also nicht, ob die Gruppe schon zu Ende ist | 2–8 (**5–5**) |
+| Wortsprache | Aus welcher Wortliste gezogen wird (bei **Wörter** und **Gemischt**): Englisch oder Deutsch. Beide Listen sind nach Häufigkeit gewichtet: häufige Wörter kommen öfter vor als seltene. Die deutsche Liste enthält keine Umlaute und kein ß | **Englisch** / Deutsch |
 | Wortlänge (min–max) | Nur Wörter in diesem Längenbereich (bei **Wörter** und **Gemischt**); die offenen Enden bedeuten keine Grenze | 1–**alle** (1–8, **alle**) |
 | Abkürzungslänge (min–max) | Nur Abkürzungen in diesem Längenbereich (bei **Abkürzungen** und **Gemischt**); die offenen Enden bedeuten keine Grenze | 2–**alle** (2–6, **alle**) |
 | Gruppen pro Block / Wörter pro Block | Anzahl der Gruppen (bei **Zufall**) bzw. Wörter in einem Block | 1–50 (**10**) |
@@ -2736,7 +2739,7 @@ Willi Kraml, OE1WKL, die ebenfalls unter der GPL-3.0 steht. Den Quellcode
 findest du auf [GitHub](https://github.com/ckonecny/apex-cw). Die
 Lizenzseite zeigt außerdem die MIT-Lizenz von Zork I–III, die SIL Open Font
 License der Schriften Anonymous Pro und DM Sans, die zlib-Lizenz der
-Audio-Engine SoLoud und die Lizenzen der verwendeten Flutter-Pakete. Zork ist eine Marke der jeweiligen Rechteinhaber;
+Audio-Engine SoLoud, die CC-BY-SA-4.0-Lizenz der Wortlisten (abgeleitet aus dem Projekt FrequencyWords) und die Lizenzen der verwendeten Flutter-Pakete. Zork ist eine Marke der jeweiligen Rechteinhaber;
 die App ist mit ihnen, Infocom, Activision oder Microsoft nicht verbunden.
 
 ## Koch-Reihenfolge {#koch-reihenfolge}

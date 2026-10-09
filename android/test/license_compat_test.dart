@@ -48,6 +48,7 @@ const _assetLicences = <String, String>{
   'assets/fonts/DMSans': 'DM Sans (font)',
   'assets/fonts/OFL-DMSans.txt': 'DM Sans (font)',
   'assets/licenses/GPL-3.0.txt': 'APEX CW',
+  'assets/words/': 'FrequencyWords (word lists)',
 };
 
 // Gradle libraries (implementation/api/...) that have been licence-checked.

@@ -8,7 +8,11 @@ import kotlin.random.Random
  * Converts text → timed dit/dah sequences, drives CwAudioNative directly.
  * No MethodChannel in the playback hot path.
  */
-class CwGenerator(private val tone: CwTonePlugin) {
+class CwGenerator(
+    private val tone: CwTonePlugin,
+    // Reads a bundled Flutter asset ("assets/words/en.txt") as text, null if missing.
+    private val readAsset: (String) -> String? = { null },
+) {
 
     // ── Content modes ─────────────────────────────────────────────────────────
     enum class Mode {
@@ -43,6 +47,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
     @Volatile var randomOption: Int = 0
     @Volatile var wordLengthMax: Int = 0      // 0 = no filter
     @Volatile var wordLengthMin: Int = 0      // 0 = no filter
+    @Volatile var wordLanguage: Int = 0       // 0 = English, 1 = German (bundled frequency lists)
     @Volatile var abbrevLengthMin: Int = 0    // real length, 0 = no filter
     @Volatile var stopAfterItem: Boolean = false  // Morserino "Stop<>Next": false=continue, true=stop after one item
     @Volatile var abbrevLengthMax: Int = 0    // 0 = no filter (M32 "Length Abbrev")
@@ -121,51 +126,6 @@ class CwGenerator(private val tone: CwTonePlugin) {
     )
 
     // ── Word lists ─────────────────────────────────────────────────────────────
-    // Real M32 word list (373 entries, up to 13 chars) — ported from english_words.h's
-    // default (non-CONFIG_ENGLISH_OXFORD) words[] array, not hand-typed.
-    private val words = listOf(
-        "INTERNATIONAL", "UNIVERSITY", "GOVERNMENT", "INCLUDING", "FOLLOWING", "NATIONAL", 
-        "AMERICAN", "RELEASED", "ALTHOUGH", "DISTRICT", "SENTENCE", "TOGETHER", 
-        "CHILDREN", "MOUNTAIN", "BETWEEN", "HOWEVER", "THROUGH", "SEVERAL", "HISTORY", 
-        "AGAINST", "BECAUSE", "LOCATED", "COMPANY", "GENERAL", "ANOTHER", "CENTURY", 
-        "STATION", "BRITISH", "COLLEGE", "MEMBERS", "PICTURE", "COUNTRY", "THOUGHT", 
-        "EXAMPLE", "DURING", "SCHOOL", "UNITED", "STATES", "BECAME", "BEFORE", "PEOPLE", 
-        "SECOND", "CALLED", "SERIES", "NUMBER", "FAMILY", "COUNTY", "SYSTEM", "SEASON", 
-        "PLAYED", "AROUND", "PUBLIC", "FORMER", "CAREER", "LITTLE", "DIFFER", "FOLLOW", 
-        "CHANGE", "ANIMAL", "MOTHER", "FATHER", "SHOULD", "ANSWER", "ALWAYS", "LETTER", 
-        "FRIEND", "WHICH", "FIRST", "THEIR", "AFTER", "OTHER", "THERE", "YEARS", "WOULD", 
-        "WHERE", "LATER", "THESE", "ABOUT", "UNDER", "WORLD", "KNOWN", "WHILE", "STATE", 
-        "THREE", "BEING", "EARLY", "SINCE", "UNTIL", "SOUTH", "NORTH", "MUSIC", "ALBUM", 
-        "GROUP", "OFTEN", "THOSE", "HOUSE", "BEGAN", "COULD", "FOUND", "MAJOR", "RIVER", 
-        "NAMED", "STILL", "PLACE", "LOCAL", "PARTY", "LARGE", "SMALL", "ALONG", "BASED", 
-        "WRITE", "THING", "SOUND", "WATER", "ROUND", "EVERY", "GREAT", "THINK", "CAUSE", 
-        "RIGHT", "SPELL", "LIGHT", "AGAIN", "POINT", "BUILD", "EARTH", "STAND", "STUDY", 
-        "LEARN", "PLANT", "COVER", "NEVER", "CROSS", "START", "MIGHT", "STORY", "PRESS", 
-        "CLOSE", "NIGHT", "WHITE", "BEGIN", "PAPER", "CARRY", "WATCH", "WITH", "THAT", 
-        "FROM", "WERE", "THIS", "ALSO", "HAVE", "THEY", "BEEN", "WHEN", "INTO", "MORE", 
-        "TIME", "MOST", "SOME", "ONLY", "OVER", "MANY", "SUCH", "USED", "CITY", "THEN", 
-        "THAN", "MADE", "PART", "YEAR", "BOTH", "THEM", "NAME", "AREA", "WELL", "WILL", 
-        "HIGH", "BORN", "WORK", "TOWN", "FILM", "TEAM", "EACH", "LIFE", "SAME", "GAME", 
-        "FOUR", "WEST", "LINE", "LIKE", "VERY", "JOHN", "HOME", "BACK", "BAND", "SHOW", 
-        "YORK", "EVEN", "MUCH", "EAST", "WHAT", "YOUR", "WORD", "SAID", "LONG", "MAKE", 
-        "LOOK", "COME", "KNOW", "CALL", "DOWN", "SIDE", "FIND", "TAKE", "LIVE", "CAME", 
-        "GOOD", "GIVE", "JUST", "FORM", "HELP", "TURN", "MEAN", "MOVE", "DOES", "TELL", 
-        "WANT", "PLAY", "READ", "HAND", "PORT", "LAND", "HERE", "MUST", "WENT", "KIND", 
-        "NEED", "NEAR", "SELF", "HEAD", "PAGE", "GROW", "FOOD", "KEEP", "LAST", "DOOR", 
-        "TREE", "HARD", "DRAW", "LEFT", "LATE", "REAL", "STOP", "OPEN", "SEEM", "NEXT", 
-        "WALK", "EASE", "MARK", "BOOK", "MILE", "FEET", "CARE", "TOOK", "RAIN", "ROOM", 
-        "IDEA", "FISH", "ONCE", "BASE", "HEAR", "SURE", "FACE", "WOOD", "MAIN", "THE", 
-        "AND", "WAS", "FOR", "HIS", "ARE", "HAS", "HAD", "ONE", "NOT", "BUT", "ITS", 
-        "NEW", "WHO", "HER", "TWO", "SHE", "ALL", "CAN", "MAY", "OUT", "HIM", "WAR", 
-        "AGE", "NOW", "USE", "ANY", "END", "DAY", "DID", "OWN", "DUE", "WON", "SUM", 
-        "USA", "YOU", "HOT", "HOW", "WAY", "SEE", "MAN", "OUR", "SAY", "LOW", "BOY", 
-        "OLD", "TOO", "SET", "AIR", "PUT", "ADD", "BIG", "ACT", "WHY", "ASK", "MEN", 
-        "OFF", "TRY", "SUN", "LET", "EYE", "SAW", "FAR", "SEA", "RUN", "FEW", "GOT", 
-        "CAR", "EAT", "CUT", "OF", "KM", "MR", "US", "IN", "TO", "IS", "AS", "ON", "BY", 
-        "HE", "AT", "IT", "AN", "OR", "BE", "UP", "NO", "SO", "IF", "WE", "DO", "GO", 
-        "MY", "ME", "A", "I", "M"
-    )
-
     // Real CW abbreviation list (244 entries) — ported from abbrev.h, not hand-typed.
     private val abbreviations = listOf(
         "CONGRATS", "OUTPUT", "AWARD", "CONDS", "CONDX", "CUAGN", "ELBUG", "EXCUS", 
@@ -239,7 +199,7 @@ class CwGenerator(private val tone: CwTonePlugin) {
 
     /** The full word and abbreviation lists, for Morsel's own Koch/length pool. */
     fun wordLists(): Map<String, List<String>> =
-        mapOf("words" to words, "abbrevs" to abbreviations)
+        mapOf("words" to weightedWords(0).words, "abbrevs" to abbreviations)
 
     /**
      * Plays raw dit/dah patterns (e.g. ".-", "-...") one per character, with
@@ -478,17 +438,53 @@ class CwGenerator(private val tone: CwTonePlugin) {
         return text.all { it.toString() in active }
     }
 
+    // Frequency-weighted word lists (assets/words/{en,de}.txt, "word weight" per
+    // line), loaded once per language. An unreadable asset gives an empty list
+    // (the callers then draw single characters).
+    private class WeightedWords(val words: List<String>, val weights: IntArray)
+
+    private val weightedCache = HashMap<Int, WeightedWords>()
+
+    private fun weightedWords(lang: Int = wordLanguage): WeightedWords = synchronized(weightedCache) {
+        weightedCache.getOrPut(lang) {
+            val name = if (lang == 1) "de" else "en"
+            val ws = ArrayList<String>()
+            val wt = ArrayList<Int>()
+            readAsset("assets/words/$name.txt")?.lineSequence()?.forEach { line ->
+                val parts = line.trim().split(' ')
+                val w = parts.getOrNull(0).orEmpty()
+                val c = parts.getOrNull(1)?.toIntOrNull()
+                if (w.isNotEmpty() && c != null && c > 0) { ws.add(w.uppercase()); wt.add(c) }
+            }
+            WeightedWords(ws, wt.toIntArray())
+        }
+    }
+
+    /** Weighted draw from [indices] of [list] (cumulative sum + binary search). */
+    private fun pickWeighted(list: WeightedWords, indices: List<Int>): String {
+        val cum = LongArray(indices.size)
+        var total = 0L
+        for ((k, i) in indices.withIndex()) { total += list.weights[i]; cum[k] = total }
+        val r = Random.nextLong(total)
+        var lo = 0; var hi = cum.size - 1
+        while (lo < hi) { val mid = (lo + hi) ushr 1; if (cum[mid] > r) hi = mid else lo = mid + 1 }
+        return list.words[indices[lo]]
+    }
+
     private fun randomWord(): String {
-        var pool = words.filter {
-            (wordLengthMax <= 0 || it.length <= wordLengthMax) && it.length >= wordLengthMin
+        val list = weightedWords()
+        if (list.words.isEmpty()) return randomKochChars(1)
+        var pool = list.words.indices.filter {
+            val len = list.words[it].length
+            (wordLengthMax <= 0 || len <= wordLengthMax) && len >= wordLengthMin
         }
         if (kochActive) {
-            pool = pool.filter { kochQualifies(it) }
+            pool = pool.filter { kochQualifies(list.words[it]) }
             // No qualifying word at this (early) Koch level: fall back to a single
             // character drill, exactly like Koch::getRandomWord() does.
             if (pool.isEmpty()) return randomKochChars(1)
         }
-        return (if (pool.isEmpty()) words else pool).random()
+        return pickWeighted(list, if (pool.isEmpty()) list.words.indices.toList() else pool)
     }
 
     // abbrevLengthMax uses the same option encoding as the M32 "Length Abbrev" preference
