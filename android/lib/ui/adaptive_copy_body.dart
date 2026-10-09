@@ -10,6 +10,7 @@
 // on*Changed callbacks, since wpm/kochLevel/spacing are GeneratorScreen's
 // state, shared with the Classic flow) and persisting the blockquote EMA.
 import 'dart:async';
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'widgets/setting_rows.dart';
 import 'package:flutter/services.dart';
@@ -298,6 +299,23 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     widget.controller?._resetToIdle = _resetToIdle;
     widget.controller?._start = (typing) => _startBlock(typing: typing);
     _loadInitialWeakChars();
+  }
+
+  // The parent loads kochLevel/sequence/content mode asynchronously, so the
+  // first build carries defaults (level 5). The idle weak-char list computed
+  // in initState would then stay limited to those first characters.
+  @override
+  void didUpdateWidget(AdaptiveCopyBody old) {
+    super.didUpdateWidget(old);
+    if (_phase != _Phase.idle) return;
+    if (old.kochLevel == widget.kochLevel &&
+        old.kochLesson == widget.kochLesson &&
+        old.contentModeIndex == widget.contentModeIndex &&
+        listEquals(old.activeKochChars, widget.activeKochChars)) {
+      return;
+    }
+    _weakChars = _weakCharsNow();
+    _excludedBoostChars.removeWhere((ch) => !_weakChars.containsKey(ch));
   }
 
   // Populates _weakChars from lifetime stats right away, so the idle/start
