@@ -7,6 +7,9 @@ ideas and deferred bugs are GitHub issues (rule 12), not listed here.
 
 ## Done
 
+- Weighted word lists (#53, closed), 2026-10-09: EN 3500 / DE 2500 frequency-ranked words, word language and pool size, long press on the Koch / Words chip opens its settings; merged into `main`. Details in DECISIONS.md.
+- Weak characters follow the upper threshold (#51, closed), 2026-10-08: merged, in beta3.
+- Decoder Chars (#52) and Learn from the mistake (#50), 2026-10-09: merged, closed, in beta4. Screenshots are on the pending list in `STATUS.md`.
 - README update, 2026-10-07 (PR #45, on `main`): new features described (exam simulation, single-character practice, practice time, swapped paddles, Learn section, feature table rows); README already showed Sia's new app icon.
 - Morse tree fixes, 2026-10-06 (merged into `main`): plays Ä Ö Ü and CH, CH footnote (`----` obsolete), path falls back to level 4 when leaving "Ziffern und Zeichen"; manual DE+EN updated. Retake `tree_letters.png` at release only if CH/umlauts should show. Details in DECISIONS.md.
 - **v1.6.0 release (2026-10-05).** Version 1.6.0+6, tag `v1.6.0` (45fe7e4), APK + AAB via `tools/build_release.sh`, installed on the test phone. Since v1.5.0: Head copy (Sentences, #7), Q-groups (#41), Mini QSO (#40), break hint, manual beginner chapter. Manual screenshots retaken DE+EN (home, games, understand, headcopy_*, qgroups_*, miniqso_*, settings1-3, achievements), HTML/PDF built, landing page text and screenshots refreshed.

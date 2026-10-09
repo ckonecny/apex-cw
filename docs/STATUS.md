@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Latest tagged build: v1.6.0 (2026-10-05, tag `v1.6.0` = commit 45fe7e4, Head copy / Verstehen with Sentences, Q-groups and Mini QSO, break hint, beginner chapter in the manual). Latest pre-release: `v1.6.1-beta3` (2026-10-08, commit 35da2a4; beta2 = 1aed102, beta1 = 6d08a30). Previous: v1.5.0 (2026-10-03); older versions in `docs/STATUS-ARCHIVE.md`.
+Latest tagged build: v1.6.0 (2026-10-05, tag `v1.6.0` = commit 45fe7e4, Head copy / Verstehen with Sentences, Q-groups and Mini QSO, break hint, beginner chapter in the manual). Latest pre-release: `v1.6.1-beta4` (2026-10-09; beta3 = 35da2a4, beta2 = 1aed102, beta1 = 6d08a30). Previous: v1.5.0 (2026-10-03); older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -27,9 +27,6 @@ Straight-mode shots only if wanted. Adventure map shots show the default zoom
 (pinch can't be injected over adb). The manual's progress and character-detail
 shots were taken with seeded example data (12 weeks) on the test phone; the
 phone's own data was restored afterwards.
-
-## In progress: weighted word lists (#53, branch feature/weighted-word-list)
-Implemented and built (analyze + tests green), not yet installed or committed: the test phone was not connected. Also done: long press on the Koch / Words chip jumps to its settings; old 373-word list removed; Words chip shows the approximate pool size ("ca. 190") for Generator/Hören and Echo. To do: install, try Generator/Koch/Hören with English and German words; then commit and merge when the user says so.
 
 ## Landing page (live, Pages source "GitHub Actions" set)
 Open: replace the disabled "Google Play: coming soon" button with the store
@@ -94,6 +91,3 @@ Receive and send part, six country families and the custom profile done, unit an
 - Seeding statistics for screenshots needs a debug build (`run-as`); the
   release build isn't debuggable. Back up and restore the prefs
   (`shared_prefs/FlutterSharedPreferences.xml`) and `files/owntexts/`.
-
-## Branch `feature/weak-chars-follow-threshold` (issue #51, 2026-10-08)
-Weak chars now follow the upper success threshold (`weakCharErrorThreshold`, DECISIONS 2026-10-08). Code, tests (678 green), manual DE+EN done; debug build installed on the test phone, **not yet tried by hand**. Not committed/merged — waiting for your OK. No screenshot changes.
