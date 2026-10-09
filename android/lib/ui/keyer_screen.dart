@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../content/training_profile.dart';
+import '../keyer/decoder_chars.dart';
 import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
@@ -76,6 +77,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
       _wpm        = prefs.getInt('wpm')        ?? 20;
       _keyerMode  = prefs.getInt('keyerMode')  ?? 0;
       _outputCase = (prefs.getInt('outputCase') ?? 0).clamp(0, 1);
+      _decoder.chars = DecoderChars.values[(prefs.getInt(decoderCharsKey) ?? 0).clamp(0, DecoderChars.values.length - 1)];
     });
     }
     final pitch = prefs.getInt('pitch') ?? 600;
@@ -139,7 +141,8 @@ class _KeyerScreenState extends State<KeyerScreen> {
             onPressed: () async {
               await showTrainingSettingsSheet(context,
                   profile: TrainingProfile.keyer,
-                  sections: const [TrainingSection.wordSpacing]);
+                  sections: const [TrainingSection.wordSpacing, TrainingSection.decoderChars]);
+              _decoder.chars = await loadDecoderChars();
               final p = await SharedPreferences.getInstance();
               await _keyerChannel.invokeMethod('setInterWordSpace',
                   (p.getInt('profile.keyer.interWordSpace') ?? 7).clamp(6, 105));

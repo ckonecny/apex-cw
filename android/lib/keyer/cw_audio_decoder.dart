@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'decoder_chars.dart';
+
 // CW decoder from audio — port of the firmware's goertzel.cpp (tone
 // detection) and the Decoder class of MorseDecoder.cpp (timing state machine,
 // adaptive dit/dah averages, decoding tree). Pure Dart and driven by sample
@@ -175,6 +177,9 @@ class AudioCwDecoder {
   /// Decoded speed changed.
   final void Function(int wpm)? onWpm;
 
+  /// National letters / ITU brackets (issue #52), changeable while listening.
+  DecoderChars chars = DecoderChars.standard;
+
   AudioCwDecoder({required this.onSymbol, this.onTone, this.onWpm});
 
   bool _filteredState = false, _filteredStateBefore = false;
@@ -185,6 +190,7 @@ class AudioCwDecoder {
   int _ditAvg = 60, _dahAvg = 180;
   int _wpm = 15;
   int _treeptr = 0;
+  String _pattern = '';   // dits/dahs of the current character, for [chars]
 
   int get wpm => _wpm;
 
@@ -197,6 +203,7 @@ class AudioCwDecoder {
     _wpm = 15;
     _nbtime = 1;
     _treeptr = 0;
+    _pattern = '';
   }
 
   // checkInput(): noise blanker; true when the filtered state changed.
@@ -286,9 +293,11 @@ class AudioCwDecoder {
     if (highDuration > _ditAvg * 0.5 && highDuration < _dahAvg * 2.5) {   // filter out VERY short and VERY long highs
       if (highDuration < threshold) {
         _treeptr = _cwTree[_treeptr].$2;
+        _pattern += '.';
         _recalculateDit(highDuration);
       } else {
         _treeptr = _cwTree[_treeptr].$3;
+        _pattern += '-';
         _recalculateDah(highDuration);
       }
     }
@@ -311,8 +320,9 @@ class AudioCwDecoder {
 
   String _retrieveSymbol() {
     if (_treeptr == 0) return ' ';
-    final s = _cwTree[_treeptr].$1;
+    final s = decoderCharsSymbol(_pattern, chars) ?? _cwTree[_treeptr].$1;
     _treeptr = 0;
+    _pattern = '';
     return s;
   }
 }

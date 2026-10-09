@@ -17,6 +17,8 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../keyer/cw_audio_decoder.dart';
+import '../keyer/decoder_chars.dart';
+import 'widgets/decoder_chars_setting.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
@@ -76,6 +78,7 @@ class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserv
     _floorDb = p.getDouble('decFloorDb') ?? -40;
     _monitor = p.getBool('decMonitor') ?? false;
     _pitch   = p.getInt('pitch') ?? 600;
+    _decoder.chars = await loadDecoderChars();
     // Shared native engine: the paddles would key the sidetone into the
     // microphone; the monitor tone uses the pitch setting (keyOut with posPitch).
     await _keyerChannel.invokeMethod('stop');
@@ -385,6 +388,8 @@ class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserv
                   if (!v) _toneChannel.invokeMethod('setPlaying', false);
                 }),
               ),
+              const Divider(height: 24),
+              DecoderCharsSetting(onChanged: (v) => _decoder.chars = v),
             ],
           ),
         ));

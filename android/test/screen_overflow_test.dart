@@ -24,6 +24,7 @@ import 'package:next_cw_trainer/ui/q_groups_sheet_screen.dart';
 import 'package:next_cw_trainer/ui/home_screen.dart';
 import 'package:next_cw_trainer/ui/invaders_screen.dart';
 import 'package:next_cw_trainer/ui/keyer_screen.dart';
+import 'package:next_cw_trainer/ui/widgets/decoder_chars_setting.dart';
 import 'package:next_cw_trainer/ui/learn_screen.dart';
 import 'package:next_cw_trainer/ui/links_screen.dart';
 import 'package:next_cw_trainer/ui/memory_chain_screen.dart';
@@ -80,6 +81,9 @@ void main() {
     'games': () => const GamesScreen(),
     'morse_chart': () => const MorseChartScreen(),
     'keyer': () => const KeyerScreen(),
+    // Setting inside the CW Keyer / CW Decoder settings sheets (issue #52).
+    'decoder_chars_setting': () => const Scaffold(
+        body: SingleChildScrollView(child: DecoderCharsSetting())),
     'memory_chain': () => const MemoryChainScreen(),
     'morsel': () => const MorselScreen(),
     'qso_bot': () => const QsoBotScreen(),

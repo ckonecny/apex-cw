@@ -6,6 +6,8 @@
 // letters of the same word, so the visible word-gap needs its own signal
 // rather than turning into a space after every single letter.
 
+import 'decoder_chars.dart';
+
 class MorseDecoder {
   static const table = {
     '.-':    'A', '-...': 'B', '-.-.': 'C', '-..':  'D',
@@ -44,9 +46,13 @@ class MorseDecoder {
   /// (issue #37).
   final String unknown;
 
+  /// National letters / ITU brackets (issue #52). Only the CW Keyer sets
+  /// this; everything else keeps Standard.
+  DecoderChars chars;
+
   String _buf = '';
 
-  MorseDecoder({required this.onChar, this.unknown = '*'});
+  MorseDecoder({required this.onChar, this.unknown = '*', this.chars = DecoderChars.standard});
 
   void add(String symbol) {
     switch (symbol) {
@@ -69,7 +75,9 @@ class MorseDecoder {
     if (_buf.isEmpty) return;
     // Seven or more dits are the <err> prosign, as in the firmware's
     // decoder tree (MorseDecoder.h nodes 65/66 loop on further dits).
-    final ch = RegExp(r'^\.{7,}$').hasMatch(_buf) ? err : (table[_buf] ?? unknown);
+    final ch = RegExp(r'^\.{7,}$').hasMatch(_buf)
+        ? err
+        : (decoderCharsSymbol(_buf, chars)?.toUpperCase() ?? table[_buf] ?? unknown);
     onChar(ch);
     _buf = '';
   }

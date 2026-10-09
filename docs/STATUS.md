@@ -44,6 +44,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
   cover/info for the old look; screenshots with the launcher icon, if any.
 
 ## Manual: pending for next release
+- Decoder Chars (#52, feature/decoder-chars): new row "Sonderzeichen beim Dekodieren / Special characters when decoding" in the CW Decoder sheet and the CW Keyer sheet; retake `decoder_sheet.png` and the Keyer settings shot if it exists (DE+EN).
 - Word language (#53, feature/weighted-word-list): new row "Wortsprache / Word language" in the training settings sheet for Words/Mixed; retake the settings-sheet shot if it shows that content (DE+EN). The Words chip now carries "ca. N": retake the Hören/Geben start shots that show it (DE+EN).
 - Rename to "APEX CW" (feature/rename-apex-cw): app bar title on Home and the About dialog show the new name; retake `home*` and any shot with the title bar (DE+EN) at release. Also: the Play Console app name/listing (store raw shots + graphics were rebuilt 2026-10-08, see archive). (Site images were retaken 2026-10-08, see archive.)
 - Head copy / Verstehen moved from the Games hub to its own tile under Practice on Home (feature/understand-in-practice): retake `home.png` and `games.png` (DE+EN).

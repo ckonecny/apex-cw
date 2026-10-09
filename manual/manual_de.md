@@ -1525,6 +1525,8 @@ angezeigt.
   **?**. Sieben oder mehr Dits hintereinander sind das Fehlerzeichen und
   erscheinen als **ERR**. Außer den Buchstaben, Ziffern und Prosigns erkennt
   der Keyer auch Ä, Ö, Ü, CH sowie `;` `!` `"` `'`.
+- Im ⚙-Blatt stellst du außerdem die **Sonderzeichen beim Dekodieren** ein
+  (siehe [Sonderzeichen beim Dekodieren](#sonderzeichen-beim-dekodieren)).
 
 Den Keyer-Modus und seine Feinheiten stellst du in den globalen Einstellungen
 unter **Keyer** ein (siehe [Keyer](#keyer)). Sie gelten überall, wo du
@@ -1573,6 +1575,7 @@ aktuelle Dit- und Dah-Länge.
 | Tonhöhe | Die Frequenz des CW-Tons, auf den der Decoder hört | 300–1200 Hz (**698 Hz**) |
 | Schwelle | Mindestlautstärke, ab der ein Ton zählt. Stelle sie knapp **über** die graue Rauschmarke | −65 bis −10 dBFS (**−40 dBFS**) |
 | Mithörton | Spielt den erkannten Ton sauber in der eingestellten Tonhöhe nach | **Aus** / Ein |
+| Sonderzeichen beim Dekodieren | Wie Codes dekodiert werden, die je nach Sprache etwas anderes bedeuten, siehe [unten](#sonderzeichen-beim-dekodieren) | **Standard** / ITU / Fr/Es/Pt / Sv/Fi / Da/No |
 
 **Tipps**
 
@@ -1583,6 +1586,34 @@ aktuelle Dit- und Dah-Länge.
   niedrig.
 - Den **Mithörton** nur mit Kopfhörer verwenden. Sonst hört das Mikrofon den
   eigenen Ton und der Decoder gerät durcheinander.
+
+## Sonderzeichen beim Dekodieren
+
+Einige Morsecodes bedeuten je nach Sprache Verschiedenes, und die Klammern gibt
+es nur in der ITU-Empfehlung (ITU-R M.1677-1). Mit dieser Einstellung (im ⚙-Blatt
+des **CW-Decoders** und des **CW Keyers**) wählst du, wie sie dekodiert werden.
+Sie gilt für beide gemeinsam und bleibt gespeichert.
+
+**Gilt für:** CW-Decoder und CW Keyer.
+**Gilt nicht für:** Geben, Hören, Spiele und QSO Bot. Sie dekodieren immer mit
+**Standard**, weil sie das Getastete mit ihrem eigenen Text vergleichen (z. B.
+`<KN>` oder AE).
+
+| Code | Standard | ITU | Fr/Es/Pt | Sv/Fi | Da/No |
+|---|---|---|---|---|---|
+| `.--.-` | \* | \* | À | Å | Å |
+| `.-.-` | Ä | Ä | Ä | Ä | Æ |
+| `---.` | Ö | Ö | Ö | Ö | Ø |
+| `-.--.` | KN | ( | KN | KN | KN |
+| `-.--.-` | \* | ) | \* | \* | \* |
+| `..-..` | \* | É | É | \* | \* |
+| `.-..-` | \* | \* | È | \* | \* |
+| `-.-..` | \* | \* | Ç | \* | \* |
+| `--.--` | \* | \* | Ñ | \* | \* |
+
+**Standard** dekodiert wie bisher. Alle anderen Codes, auch Ü (`..--`), sind in
+jedem Satz gleich. Gesendet werden diese Buchstaben noch nicht; die Einstellung
+betrifft nur das Dekodieren.
 
 # WiFi Trx
 
