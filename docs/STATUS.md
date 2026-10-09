@@ -7,13 +7,6 @@ Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
 only the current state, organisational steps and hints for the next session.
 
-## Branch `fix/weak-chars-start-level` (not merged, not committed)
-Listen start page showed only the weak characters within the first 5 Koch
-chars (list computed once in `initState`, before the parent had loaded the
-real level). Fixed with `didUpdateWidget` in `adaptive_copy_body.dart`, test
-`test/weak_chars_start_test.dart`. Installed on the test phone; check there,
-then commit/merge.
-
 ## Next steps — Play Store (user, 2026-09-28)
 Done: upload key and signing, privacy policy, store texts and graphics
 (`docs/PLAY-LISTING.md`, `docs/DECISIONS.md` "Play Store preparation"); store
