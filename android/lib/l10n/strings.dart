@@ -468,6 +468,12 @@ class Strings {
     'dec_floor': ['Schwelle', 'Threshold'],
     'dec_floor_hint': ['Über das Grundrauschen stellen: die graue Marke rechts vom Pegel in den Pausen.', 'Set it above the background noise: the grey mark right of the level during pauses.'],
     'dec_monitor': ['Mithörton', 'Monitor tone'],
+    'dec_chars': ['Sonderzeichen beim Dekodieren', 'Special characters when decoding'],
+    'dec_chars_header': ['Dekodieren', 'Decoding'],
+    'dec_chars_standard': ['Standard', 'Standard'],
+    'dec_chars_desc': [
+      'Gilt für: CW-Decoder, CW-Keyer.\nGilt nicht für: Trainer, Spiele, QSO-Bot – sie bleiben auf Standard, weil sie Getastetes mit ihrem eigenen Text vergleichen.\nStandard dekodiert wie bisher. Die anderen Sätze belegen À/Å/Æ, Ø, É, È, Ç, Ñ und bei ITU die Klammern ( ) neu, je nach Sprache.',
+      'Applies to: CW Decoder, CW Keyer.\nDoes not apply to: trainers, games, QSO bot – they stay on Standard because they compare what you key with their own text.\nStandard decodes as before. The other sets re-assign À/Å/Æ, Ø, É, È, Ç, Ñ and, for ITU, the brackets ( ), depending on the language.'],
     'dec_monitor_hint': ['Nur mit Kopfhörer – sonst hört das Mikrofon den eigenen Ton', 'Headphones only – otherwise the microphone hears its own tone'],
     'home_qso_subtitle': ['Simuliertes QSO · SOTA/POTA · Standard · Contest', 'Simulated QSO · SOTA/POTA · Standard · Contest'],
     'qso_idle': ['Bereit – Start drücken', 'Ready – press Start'],

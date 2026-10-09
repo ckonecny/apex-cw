@@ -1475,6 +1475,8 @@ For free keying. What you key is heard and shown as decoded text.
   stays **?**. Seven or more dits in a row are the error sign and show as
   **ERR**. Besides letters, digits and prosigns the keyer also recognises
   Ä, Ö, Ü, CH and `;` `!` `"` `'`.
+- The ⚙ sheet also holds **Special characters when decoding** (see
+  [Special characters when decoding](#special-characters-when-decoding)).
 
 You set the keyer mode and its details in the global settings under
 **Keyer** (see [Keyer](#keyer)). They apply everywhere you key: CW Keyer,
@@ -1523,6 +1525,7 @@ dah length as it goes.
 | Tone pitch | The frequency of the CW tone the decoder listens for | 300–1200 Hz (**698 Hz**) |
 | Threshold | Minimum loudness for a tone to count. Set it just **above** the grey noise mark | −65 to −10 dBFS (**−40 dBFS**) |
 | Monitor tone | Plays back the detected tone cleanly at the set pitch | **Off** / On |
+| Special characters when decoding | How codes that mean different things in different languages are decoded, see [below](#special-characters-when-decoding) | **Standard** / ITU / Fr/Es/Pt / Sv/Fi / Da/No |
 
 **Tips**
 
@@ -1533,6 +1536,34 @@ dah length as it goes.
   low.
 - Only use the **monitor tone** with headphones. Otherwise the microphone
   hears the tone itself and confuses the decoder.
+
+## Special characters when decoding
+
+Some Morse codes mean different letters in different languages, and the
+brackets exist only in the ITU recommendation (ITU-R M.1677-1). This setting
+(in the ⚙ sheet of the **CW Decoder** and the **CW Keyer**) chooses how they
+are decoded. It is shared by both and stays saved.
+
+**Applies to:** CW Decoder and CW Keyer.
+**Does not apply to:** Send, Listen, the games and the QSO Bot. They always
+decode with **Standard**, because they compare what you key with their own text
+(e.g. `<KN>` or AE).
+
+| Code | Standard | ITU | Fr/Es/Pt | Sv/Fi | Da/No |
+|---|---|---|---|---|---|
+| `.--.-` | \* | \* | À | Å | Å |
+| `.-.-` | Ä | Ä | Ä | Ä | Æ |
+| `---.` | Ö | Ö | Ö | Ö | Ø |
+| `-.--.` | KN | ( | KN | KN | KN |
+| `-.--.-` | \* | ) | \* | \* | \* |
+| `..-..` | \* | É | É | \* | \* |
+| `.-..-` | \* | \* | È | \* | \* |
+| `-.-..` | \* | \* | Ç | \* | \* |
+| `--.--` | \* | \* | Ñ | \* | \* |
+
+**Standard** decodes as before. All other codes, Ü (`..--`) included, are the
+same in every set. These letters cannot be sent yet; the setting only affects
+decoding.
 
 # WiFi Trx
 

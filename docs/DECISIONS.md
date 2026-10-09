@@ -1931,3 +1931,18 @@ section is built and can be found by key. `CharsetHeader` has `onKochLongPress` 
 `onWordsLongPress`; Generator and Echo select the chip first (like a tap, saved)
 and then open the sheet at `kochSequence` / `wordSelection`. The Koch section
 exists only in the Koch Trainer's sheet; elsewhere the sheet opens at the top.
+
+## 2026-10-09: Decoder Chars (#52)
+
+Port of the firmware's post-V9.0 "Decoder Chars" (commit 1013025). The firmware
+adds tree nodes 69-72 and a `decodedSymbol()` table keyed by node; here the
+table (`lib/keyer/decoder_chars.dart`) is keyed by the dit/dah pattern instead,
+so the existing tree in `cw_audio_decoder.dart` is unchanged (the audio decoder
+just records the pattern of the current character) and `MorseDecoder` looks the
+pattern up before its fixed table. Same result as the firmware, one table for
+both decoders. Global pref `decoderChars` (0 Standard, 1 ITU, 2 Fr/Es/Pt,
+3 Sv/Fi, 4 Da/No), not part of a training profile or snapshot. Only the CW
+Decoder and the CW Keyer set `chars`; `MorseDecoder` defaults to Standard, so
+trainers, games and the QSO bot are untouched (they compare keyed text with
+their own). The settings text says explicitly where it applies and where not.
+Part B (sending these letters) stays out of scope.

@@ -5,13 +5,14 @@ import '../../content/echo_suggestions.dart';
 import '../../content/training_profile.dart';
 import '../../content/charset_content.dart';
 import 'charset_header.dart';
+import 'decoder_chars_setting.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import 'setting_rows.dart';
 
 /// Parts of the per-training settings a screen can show, see
 /// docs/archive/training/P3-einstellungen-in-screens.md.
-enum TrainingSection { content, spacing, wordSpacing, wordSelection, echoFlow, hearFlow, adaptive, kochSequence }
+enum TrainingSection { content, spacing, wordSpacing, wordSelection, echoFlow, hearFlow, adaptive, kochSequence, decoderChars }
 
 /// Opens the settings sheet for one training profile ([TrainingProfile.hear]
 /// or [TrainingProfile.echo]). Every change is saved immediately; the screen
@@ -261,6 +262,14 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       const SizedBox(height: 24),
     ];
   }
+
+  // CW Keyer only (the CW Decoder has its own sheet): national letters / ITU
+  // brackets when decoding, a global operator setting, not a profile value.
+  List<Widget> _decoderChars() => [
+        SettingsSectionHeader(Strings.t('dec_chars_header')),
+        const SettingsCard(children: [DecoderCharsSetting()]),
+        const SizedBox(height: 24),
+      ];
 
   List<Widget> _kochSequence() {
     final c = AppColors.of(context);
@@ -642,6 +651,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
                 TrainingSection.hearFlow => _hearFlow(),
                 TrainingSection.adaptive => _adaptive(),
                 TrainingSection.kochSequence => _kochSequence(),
+                TrainingSection.decoderChars => _decoderChars(),
               },
             ),
         ],
