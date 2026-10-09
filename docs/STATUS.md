@@ -75,14 +75,6 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - Exam simulation (issue #42, merged): new Learn-hub card and exam screens; retake `home.png` (the Learn card subtitle changed), `res_hub.png` (DE+EN) and add shots of the exam setup,
   receive result, send ready/keying/result pages (not taken yet).
 
-## Exam simulation (issue #42, on main incl. English texts)
-Receive and send part, six country families and the custom profile done, unit and overflow tests green; checked on the test phone. Next: KA/SK, feed weak characters into the statistics, check the ARRL steps (13 WPM?) and the Indian/UK/NZ details against the official sources. Decisions:
-`docs/DECISIONS.md` "Exam simulation".
-
-- Practice time (on main): practice time (this training + total) at the top of Progress, tap
-  detail on the days-practised bars; retake `hear_progress.png`,
-  `echo_progress.png` (DE+EN).
-
 ## Hints for the next session
 - README describes the features since v1.6.0 (exam simulation, single-character practice, practice time, swapped paddles; PR #45, 2026-10-07). Its manual links still point to the v1.6.0 PDFs: update them at the next release.
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

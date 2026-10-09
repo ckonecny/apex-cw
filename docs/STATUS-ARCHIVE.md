@@ -7,6 +7,7 @@ ideas and deferred bugs are GitHub issues (rule 12), not listed here.
 
 ## Done
 
+- Exam simulation (#42, closed 2026-10-09): receive + send, AT/DE/UK/NZ/IN/US profiles, custom profile, retries, pass forecast. Not done: KA/SK, weak chars into statistics, source verification of UK/NZ/IN/ARRL. Details in DECISIONS.md "Exam simulation".
 - Weighted word lists (#53, closed), 2026-10-09: EN 3500 / DE 2500 frequency-ranked words, word language and pool size, long press on the Koch / Words chip opens its settings; merged into `main`. Details in DECISIONS.md.
 - Weak characters follow the upper threshold (#51, closed), 2026-10-08: merged, in beta3.
 - Decoder Chars (#52) and Learn from the mistake (#50), 2026-10-09: merged, closed, in beta4. Screenshots are on the pending list in `STATUS.md`.
