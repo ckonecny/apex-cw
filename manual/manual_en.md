@@ -795,7 +795,9 @@ These are the thresholds the app bases its suggestions on. They apply to
 **Send** is the Echo Trainer. The app plays a word or group, and you key it
 back with the Morse key. That can be the touch keyer or a real Morse key (see
 [Morse key](#morse-key)). If you get it right, the next
-word comes. If not, it is repeated.
+word comes. If not, it is repeated. Keying with a real Morse key on an
+adapter feels much better than with the touch keys; the first time you open
+Send, a short tip says so (close it with the ✕, it does not come back).
 
 Send has its **own profile**, independent of Listen. It keeps its own Koch
 lesson, speed, spacing, practice set and character statistics. What you mix

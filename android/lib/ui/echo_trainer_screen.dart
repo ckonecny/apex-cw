@@ -21,6 +21,7 @@ import 'widgets/charset_header.dart';
 import 'widgets/char_playback_overlay.dart';
 
 import 'widgets/paddle_widgets.dart';
+import 'widgets/key_adapter_hint.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';

@@ -78,6 +78,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - Focus mode (#55, feature/focus-dnd): new row "Beim Üben nicht stören / Do not disturb while practising" with grant/DND-settings buttons in Settings → General; retake `settings1.png` (DE+EN).
 
 - Adapter links (#59, feature/adapter-links): a short hint with two links in Settings → vband Morse Key; retake `settings1.png`/the vband section shot if one exists (DE+EN).
+- One-time key tip in Send (#58, feature/key-adapter-hint): lightbulb line on the Send start page for new users; retake `echo_start` (DE+EN) — shows only on a fresh install.
 
 ## Hints for the next session
 - README describes the features since v1.6.0 (exam simulation, single-character practice, practice time, swapped paddles; PR #45, 2026-10-07). Its manual links still point to the v1.6.0 PDFs: update them at the next release.

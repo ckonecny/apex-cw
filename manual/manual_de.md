@@ -821,7 +821,10 @@ beschrieben.
 **Geben** ist der Echo Trainer: Die App spielt ein Wort oder eine Gruppe, du
 gibst es mit der Morsetaste (Touch oder echte Morsetaste, siehe
 [Morsetaste](#morsetaste)) zurück. Stimmt es, kommt das
-nächste Wort. Stimmt es nicht, wird es wiederholt.
+nächste Wort. Stimmt es nicht, wird es wiederholt. Mit einer echten
+Morsetaste am Adapter fühlt sich das Geben deutlich besser an als mit den
+Touch-Tasten; beim ersten Öffnen von Geben weist dich ein kurzer Tipp darauf
+hin (mit dem ✕ schließen, er kommt nicht wieder).
 
 Geben hat ein **eigenes Profil**, unabhängig von Hören: eigene Koch-Lektion,
 eigenes Tempo, eigene Abstände, eigenes Übungsset und eine eigene
