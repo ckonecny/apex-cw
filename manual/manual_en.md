@@ -2489,6 +2489,10 @@ key contacts into **key presses**:
 
 Older phones with micro-USB need a USB OTG adapter.
 
+**Settings → vband Morse Key** has a short hint with two links that open both of
+the above in your browser: the ready-made vband adapter and the instructions
+for the homemade one.
+
 ### Learning the dit and dah keys
 
 This tells the app which key your adapter sends for dit and which for dah:

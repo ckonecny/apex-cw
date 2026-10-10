@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -325,17 +326,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // ── Build ─────────────────────────────────────────────────────────────────
 
-  Future<void> _openOnlineManual() async {
-    final page = Strings.lang.value == 0 ? 'manual-de.html' : 'manual-en.html';
+  Future<void> _openUrl(String url) async {
     var ok = false;
     try {
-      ok = await launchUrl(Uri.parse('https://ckonecny.github.io/apex-cw/$page'),
-          mode: LaunchMode.externalApplication);
+      ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     } catch (_) {}
     if (!ok && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(Strings.t('link_open_failed'))));
     }
+  }
+
+  Future<void> _openOnlineManual() {
+    final page = Strings.lang.value == 0 ? 'manual-de.html' : 'manual-en.html';
+    return _openUrl('https://ckonecny.github.io/apex-cw/$page');
   }
 
   @override
@@ -660,6 +664,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 icon: Icons.settings_remote, color: c.info, onTap: _startLearn)
           else
             _LearnCard(state: _learnState, message: _learnMessage, onCancel: _cancelLearn),
+          // Where to get an adapter (#59): a quiet hint, not a button.
+          const SizedBox(height: 10),
+          _AdapterHint(onOpen: _openUrl),
 
           const SizedBox(height: 24),
 
@@ -756,6 +763,43 @@ class _InfoRow extends StatelessWidget {
           style: TextStyle(fontSize: 13, color: c.textPrimary))),
     ]),
   );
+  }
+}
+
+class _AdapterHint extends StatefulWidget {
+  final void Function(String url) onOpen;
+  const _AdapterHint({required this.onOpen});
+  @override
+  State<_AdapterHint> createState() => _AdapterHintState();
+}
+
+class _AdapterHintState extends State<_AdapterHint> {
+  late final _vband = TapGestureRecognizer()
+    ..onTap = () => widget.onOpen('https://hamradio.solutions/vband/');
+  late final _diy = TapGestureRecognizer()
+    ..onTap = () => widget.onOpen('https://github.com/ckonecny/xiao-vband-adapter');
+
+  @override
+  void dispose() {
+    _vband.dispose();
+    _diy.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final link = TextStyle(color: c.info, decoration: TextDecoration.underline,
+        decorationColor: c.info);
+    return Text.rich(
+      TextSpan(style: TextStyle(fontSize: 11, color: c.textFaint), children: [
+        TextSpan(text: Strings.t('settings_adapter_pre')),
+        TextSpan(text: Strings.t('settings_adapter_vband'), style: link, recognizer: _vband),
+        TextSpan(text: Strings.t('settings_adapter_or')),
+        TextSpan(text: Strings.t('settings_adapter_diy'), style: link, recognizer: _diy),
+        const TextSpan(text: '.'),
+      ]),
+    );
   }
 }
 
