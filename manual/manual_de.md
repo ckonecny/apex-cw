@@ -99,6 +99,8 @@ In jedem Training findest du oben rechts:
   Jede Änderung gilt sofort und wird gespeichert. Abkürzung: **lang drücken**
   auf den Chip **Koch** oder **Wörter** wählt ihn aus und öffnet das Blatt
   gleich bei den passenden Einstellungen (Koch-Reihenfolge bzw. Wortauswahl).
+  Eine kurze Vibration bestätigt das lange Drücken, ein Zurück-Pfeil oben im
+  Blatt bringt dich direkt zurück.
 - **📊 Statistik** (nur bei **Hören** und **Geben**) – dein Übungsstand je
   Zeichen (siehe [Zeichenstatistik](#zeichenstatistik)).
 

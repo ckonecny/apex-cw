@@ -96,7 +96,8 @@ Each training has these icons at the top right:
 - **⚙ Training settings** opens a sheet that slides up from the bottom. Every
   change takes effect immediately and is saved. Shortcut: a **long press** on
   the **Koch** or **Words** chip selects it and opens the sheet right at its
-  settings (Koch sequence, or word selection).
+  settings (Koch sequence, or word selection). A short vibration confirms the
+  long press, and a back arrow at the top of the sheet takes you straight back.
 - **📊 Statistics** (only in **Listen** and **Send**) shows your progress per
   character (see [Character statistics](#character-statistics)).
 
