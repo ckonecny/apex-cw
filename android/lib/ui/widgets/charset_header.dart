@@ -6,6 +6,7 @@ import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import '../../util/char_color.dart';
 import 'app_ui.dart';
+import 'cw_keyboard.dart' show keyHaptic;
 import 'setting_rows.dart';
 
 String charSetLabel(CharSet s) => Strings.t(const {
@@ -105,7 +106,10 @@ class CharsetHeader extends StatelessWidget {
         selected: choice.set.index,
         onChanged: (i) => onChanged(choice.withSet(CharSet.values[i])),
         onLongPress: (i) {
-          if (CharSet.values[i] == CharSet.koch) onKochLongPress?.call();
+          if (CharSet.values[i] == CharSet.koch && onKochLongPress != null) {
+            keyHaptic();   // confirms the hidden gesture (#60)
+            onKochLongPress!();
+          }
         },
       ),
       if (allowedContents(choice.set).length > 1)
@@ -114,7 +118,10 @@ class CharsetHeader extends StatelessWidget {
           selected: allowedContents(choice.set).indexOf(choice.content),
           onChanged: (i) => onChanged(choice.withContent(allowedContents(choice.set)[i])),
           onLongPress: (i) {
-            if (allowedContents(choice.set)[i] == ContentKind.words) onWordsLongPress?.call();
+            if (allowedContents(choice.set)[i] == ContentKind.words && onWordsLongPress != null) {
+              keyHaptic();   // confirms the hidden gesture (#60)
+              onWordsLongPress!();
+            }
           },
         ),
       if (koch) ...[

@@ -655,8 +655,21 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             ),
           ),
           const SizedBox(height: 12),
-          Text(title,
-              style: TextStyle(fontSize: 16, color: c.textPrimary)),
+          // Opened by a long press on a chip (jumpTo): a visible way back (#61).
+          if (jump != null)
+            Row(children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                color: c.textPrimary,
+                tooltip: Strings.t('ac_back'),
+                onPressed: () => Navigator.of(context).maybePop(),
+              ),
+              Expanded(child: Text(title,
+                  style: TextStyle(fontSize: 16, color: c.textPrimary))),
+            ])
+          else
+            Text(title,
+                style: TextStyle(fontSize: 16, color: c.textPrimary)),
           const SizedBox(height: 16),
           for (final s in widget.sections)
             Column(
