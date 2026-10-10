@@ -35,6 +35,7 @@ class MainActivity : FlutterActivity() {
         else    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
+    private lateinit var focusMode:   FocusMode
     private lateinit var tonePlugin:  CwTonePlugin
     private lateinit var keyer:       CwKeyer
     private lateinit var generator:   CwGenerator
@@ -106,6 +107,8 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
+        // Repairs a filter left engaged by a crash or kill (issue #55).
+        focusMode = FocusMode(this).also { it.restore() }
         loadPaddlePrefs()
 
         // ── Audio & Keyer ──────────────────────────────────────────────────────
@@ -381,6 +384,11 @@ class MainActivity : FlutterActivity() {
                         setKeepScreenOn(call.arguments as? Boolean ?: false)
                         result.success(null)
                     }
+                    "focusHasAccess"   -> result.success(focusMode.hasAccess())
+                    "focusOpenAccess"  -> { focusMode.openAccessSettings(); result.success(null) }
+                    "focusOpenDnd"     -> { focusMode.openDndSettings();    result.success(null) }
+                    "focusEngage"      -> result.success(focusMode.engage())
+                    "focusRestore"     -> { focusMode.restore();            result.success(null) }
                     "getAppVersion" -> result.success(mapOf(
                         "versionName" to BuildConfig.VERSION_NAME,
                         "versionCode" to BuildConfig.VERSION_CODE,
@@ -605,6 +613,7 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
+        focusMode.restore()
         keyer.stop()
         generator.stop()
         audioRouteManager.stop()

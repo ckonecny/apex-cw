@@ -2631,6 +2631,7 @@ steht im ⚙-Blatt des jeweiligen Trainings.
 | Schreibweise | Zeichen in Klein- oder Großbuchstaben anzeigen. Betrifft nur die Anzeige | **klein** / GROSS |
 | Pausenhinweis bei steigender Fehlerquote | Schlägt in Hören und Geben eine Pause vor, wenn sich die Fehler häufen oder die Trefferquote unter gleichen Bedingungen deutlich fällt (siehe [Pausenhinweis](#pausenhinweis)) | **An** / Aus |
 | Pausenhinweis: Empfindlichkeit | Wie früh der Hinweis kommt (nur sichtbar, wenn der Hinweis an ist) | Früh / **Normal** / Spät |
+| Beim Üben nicht stören | Schaltet „Nicht stören“ von Android auf „Priorität“, solange ein Trainingsscreen offen ist, und danach wieder zurück, damit andere Apps schweigen. Anrufe und Meldungen, die du in den Android-Einstellungen erlaubt hast, kommen weiter durch. Braucht den Zugriff auf „Nicht stören“ für APEX CW: Die Einstellung zeigt dann einen Knopf dafür und einen, der die Android-Einstellungen „Nicht stören“ öffnet, damit du es selbst einschalten kannst | An / **Aus** |
 | Tagesziel und Erfolge anzeigen | Blendet die Karte auf der Startseite ein oder aus und schaltet die Aufzeichnung der Übungszeit an oder aus. Gespeicherte Daten bleiben erhalten | **An** / Aus |
 
 ## Störungen {#stoerungen}
