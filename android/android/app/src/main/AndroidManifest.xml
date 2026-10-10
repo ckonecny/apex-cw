@@ -3,6 +3,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- Optional "do not disturb while practising" (issue #55): only used once the user grants DND access. -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
     <application
         android:label="APEX CW"
         android:name="${applicationName}"

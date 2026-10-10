@@ -13,6 +13,7 @@ import 'interference_settings_card.dart';
 import '../util/bluetooth_hint.dart';
 import '../content/break_hint.dart';
 import '../util/break_reminder.dart';
+import '../util/focus_mode.dart';
 import '../util/paddle_layout.dart';
 import '../util/practice_clock.dart';
 import '../util/reminder.dart';
@@ -468,6 +469,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         onChanged: (i) => BreakReminder.setLevel(BreakSensitivity.values[i]),
                       ),
                     ),
+            ),
+            const SettingsDivider(),
+            ValueListenableBuilder<bool>(
+              valueListenable: FocusMode.enabled,
+              builder: (context, on, _) => Column(children: [
+                ToggleRow(
+                  label: Strings.t('settings_focus'),
+                  value: on,
+                  onChanged: FocusMode.setEnabled,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(Strings.t('settings_focus_desc'),
+                        style: TextStyle(fontSize: 11, color: c.textMuted)),
+                  ),
+                ),
+                if (on)
+                  ValueListenableBuilder<bool>(
+                    valueListenable: FocusMode.hasAccess,
+                    builder: (context, granted, _) => granted
+                        ? const SizedBox.shrink()
+                        : Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                            child: Column(children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(Strings.t('settings_focus_nogrant'),
+                                    style: TextStyle(fontSize: 12, color: c.textPrimary)),
+                              ),
+                              const SizedBox(height: 8),
+                              _ActionButton(
+                                label: Strings.t('settings_focus_grant'),
+                                icon: Icons.do_not_disturb_on_outlined,
+                                color: c.accent,
+                                onTap: FocusMode.openAccessSettings,
+                              ),
+                              const SizedBox(height: 8),
+                              _ActionButton(
+                                label: Strings.t('settings_focus_open'),
+                                icon: Icons.settings_outlined,
+                                color: c.accent,
+                                onTap: FocusMode.openDndSettings,
+                              ),
+                            ]),
+                          ),
+                  ),
+              ]),
             ),
             const SettingsDivider(),
             // Also in the goal settings; this is the way back once hidden.

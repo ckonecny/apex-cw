@@ -42,6 +42,10 @@ class PracticeClock with WidgetsBindingObserver {
   /// background); the reminder re-plans from the then-current goal state.
   VoidCallback? onIdle;
 
+  /// Counterpart of [onIdle]: practice (re)starts — first training screen
+  /// opened, or the app returned to the foreground inside one.
+  VoidCallback? onActive;
+
   /// Loads the log and starts listening for touches. Call once from main().
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -66,7 +70,9 @@ class PracticeClock with WidgetsBindingObserver {
   bool get inTraining => _modes.isNotEmpty;
 
   void enter(String mode) {
+    final first = _modes.isEmpty;
     _modes.add(mode);
+    if (first && _foreground) onActive?.call();
     _lastTick = _now();
     touch();
     if (autoTick) _timer ??= Timer.periodic(const Duration(seconds: 1), (_) => tick());
@@ -96,6 +102,8 @@ class PracticeClock with WidgetsBindingObserver {
     if (!fg) {
       _flush();
       onIdle?.call();
+    } else if (_modes.isNotEmpty) {
+      onActive?.call();
     }
   }
 

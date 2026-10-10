@@ -14,17 +14,22 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: constraints.maxHeight),
           child: Center(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              _buildSpacingControl(context, scale: 1.2),
-              if (_weakChars.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                _buildWeakCharsSection(context, scale: 1.2),
-              ],
-              if (_buildUnlockOutlook(context, compact: true) case final outlook?) ...[
-                const SizedBox(height: 12),
-                outlook,
-              ],
-            ]),
+            // Full "on the way to" card when the screen has room for it,
+            // compact (bar only) just when the full one would need scrolling.
+            child: _FitOrCompact(
+              availableHeight: constraints.maxHeight - 32,
+              builder: (compact) => Column(mainAxisSize: MainAxisSize.min, children: [
+                _buildSpacingControl(context, scale: 1.2),
+                if (_weakChars.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  _buildWeakCharsSection(context, scale: 1.2),
+                ],
+                if (_buildUnlockOutlook(context, compact: compact) case final outlook?) ...[
+                  const SizedBox(height: 12),
+                  outlook,
+                ],
+              ]),
+            ),
           ),
         ),
       );
@@ -714,5 +719,39 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       ));
     }
     return rows;
+  }
+}
+
+// Shows builder(false) while it fits into [availableHeight], else
+// builder(true). The full variant is laid out offstage to measure it, so the
+// choice adapts to font scale, orientation and content without a guess.
+class _FitOrCompact extends StatefulWidget {
+  final double availableHeight;
+  final Widget Function(bool compact) builder;
+  const _FitOrCompact({required this.availableHeight, required this.builder});
+
+  @override
+  State<_FitOrCompact> createState() => _FitOrCompactState();
+}
+
+class _FitOrCompactState extends State<_FitOrCompact> {
+  final _fullKey = GlobalKey();
+  bool _compact = false;
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final h = _fullKey.currentContext?.size?.height;
+      if (!mounted || h == null) return;
+      final compact = h > widget.availableHeight;
+      if (compact != _compact) setState(() => _compact = compact);
+    });
+    return Stack(children: [
+      Positioned(
+        left: 0, right: 0, top: 0,
+        child: Offstage(child: KeyedSubtree(key: _fullKey, child: widget.builder(false))),
+      ),
+      widget.builder(_compact),
+    ]);
   }
 }

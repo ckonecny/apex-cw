@@ -7,6 +7,7 @@ import 'l10n/strings.dart';
 import 'licenses.dart';
 import 'util/bluetooth_hint.dart';
 import 'util/break_reminder.dart';
+import 'util/focus_mode.dart';
 import 'util/interference_profile.dart';
 import 'util/paddle_layout.dart';
 import 'util/practice_clock.dart';
@@ -28,7 +29,12 @@ void main() async {
   registerAppLicenses();
   InterferenceProfile.pushSaved();
   await PracticeClock.instance.init();
-  PracticeClock.instance.onIdle = Reminder.refresh;
+  await FocusMode.init();
+  PracticeClock.instance.onIdle = () {
+    Reminder.refresh();
+    FocusMode.release();
+  };
+  PracticeClock.instance.onActive = FocusMode.engage;
   Reminder.refresh();
   runApp(const NextCwTrainerApp());
   ShareIntake.init();

@@ -75,6 +75,8 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - Exam simulation (issue #42, merged): new Learn-hub card and exam screens; retake `home.png` (the Learn card subtitle changed), `res_hub.png` (DE+EN) and add shots of the exam setup,
   receive result, send ready/keying/result pages (not taken yet).
 
+- Focus mode (#55, feature/focus-dnd): new row "Beim Üben nicht stören / Do not disturb while practising" with grant/DND-settings buttons in Settings → General; retake `settings1.png` (DE+EN).
+
 ## Hints for the next session
 - README describes the features since v1.6.0 (exam simulation, single-character practice, practice time, swapped paddles; PR #45, 2026-10-07). Its manual links still point to the v1.6.0 PDFs: update them at the next release.
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
