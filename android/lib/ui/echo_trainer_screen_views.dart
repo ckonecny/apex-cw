@@ -146,7 +146,9 @@ extension _EchoViews on _EchoTrainerScreenState {
 
   // Idle: nothing but empty space, like the Hören start view; the tempo is
   // on the sliders below.
-  Widget _buildIdle(AppColors c) => const SizedBox.shrink();
+  // Empty start area; carries the one-time tip about a real Morse key (#58).
+  Widget _buildIdle(AppColors c) =>
+      const SingleChildScrollView(child: KeyAdapterHint());
 
   // Running: the current word centred — the prompt (if shown), what the
   // operator keyed so far, and the verdict. Same one-thing-at-a-time layout
