@@ -791,6 +791,11 @@ confirmed by the user on 2026-09-27:
   (AS KA KN SK VE BK, one key each, ⌫ deletes as a whole) in the bottom row
   only if the charset has prosigns. No space key. Key preview bubble. No key
   click sound (would clash with the CW tone), short vibration (switchable).
+  The vibration is native (`keyHaptic` in MainActivity: composition
+  primitive CLICK, ~45 ms, usage TOUCH; fallbacks HEAVY_CLICK / 12 ms pulse),
+  not Flutter's `HapticFeedback.selectionClick()`, which became a barely
+  perceptible tick on Android 17. THUD (257 ms) felt like rumbling, a
+  one-shot buzz like shaking; CLICK feels like a knock (tested on the test phone).
   Portrait only for now; landscape maybe later.
 - **No time pressure:** no think-time limit after the word.
 - **Statistics:** same Hören statistics as the paper mode (shared profile,

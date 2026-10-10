@@ -3,7 +3,12 @@ package at.oe1cko.nextcwtrainer
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationAttributes
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.util.DisplayMetrics
@@ -33,6 +38,27 @@ class MainActivity : FlutterActivity() {
     private fun setKeepScreenOn(on: Boolean) {
         if (on) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    // Short knock for the on-screen keyboard. The system's
+    // CLOCK_TICK constant became a barely perceptible tick on Android 17.
+    private fun keyHaptic() {
+        val v = if (Build.VERSION.SDK_INT >= 31)
+            (getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
+        else @Suppress("DEPRECATION") (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator)
+        // A crisp knock rather than a buzz: CLICK primitive where the motor
+        // has it, else the heavy-click effect, else a very short pulse.
+        val effect =
+            if (Build.VERSION.SDK_INT >= 30 &&
+                v.areAllPrimitivesSupported(VibrationEffect.Composition.PRIMITIVE_CLICK))
+                VibrationEffect.startComposition()
+                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_CLICK, 1.0f).compose()
+            else if (Build.VERSION.SDK_INT >= 29)
+                VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+            else VibrationEffect.createOneShot(12, 255)
+        if (Build.VERSION.SDK_INT >= 33)
+            v.vibrate(effect, VibrationAttributes.createForUsage(VibrationAttributes.USAGE_TOUCH))
+        else v.vibrate(effect)
     }
 
     private lateinit var focusMode:   FocusMode
@@ -384,6 +410,7 @@ class MainActivity : FlutterActivity() {
                         setKeepScreenOn(call.arguments as? Boolean ?: false)
                         result.success(null)
                     }
+                    "keyHaptic" -> { keyHaptic(); result.success(null) }
                     "focusHasAccess"   -> result.success(focusMode.hasAccess())
                     "focusOpenAccess"  -> { focusMode.openAccessSettings(); result.success(null) }
                     "focusOpenDnd"     -> { focusMode.openDndSettings();    result.success(null) }
