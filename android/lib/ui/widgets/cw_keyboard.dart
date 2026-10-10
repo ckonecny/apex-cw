@@ -108,6 +108,14 @@ class CwKeyboard extends StatelessWidget {
   }
 }
 
+const _hapticChannel = MethodChannel('at.oe1cko.nextcwtrainer/settings');
+
+/// Key vibration: a short native buzz; Flutter's HapticFeedback is only a
+/// faint tick on Android 17.
+void keyHaptic() {
+  _hapticChannel.invokeMethod<void>('keyHaptic').catchError((_) {});
+}
+
 // One character key. Reacts on pointer down (not on release) so fast
 // two-thumb typing is not lost to the tap gesture arena; while pressed, a
 // bubble above the key shows the character, since the thumb covers it.
@@ -155,7 +163,7 @@ class _CharKeyState extends State<_CharKey> {
     if (!on) return key;
     return Listener(
       onPointerDown: (_) {
-        if (widget.haptic) HapticFeedback.selectionClick();
+        if (widget.haptic) keyHaptic();
         setState(() => _down = true);
         widget.onTap();
       },
@@ -212,7 +220,7 @@ class _ActionKey extends StatelessWidget {
             borderRadius: BorderRadius.circular(7),
             onTap: enabled
                 ? () {
-                    if (haptic) HapticFeedback.selectionClick();
+                    if (haptic) keyHaptic();
                     onTap();
                   }
                 : null,
