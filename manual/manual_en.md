@@ -1193,8 +1193,10 @@ missing before the next character:
 
 Each list shows at most 10 characters; the rest appear as "+N more".
 
-The **start page** of Listen (before the first block) shows a slim version of
-the card: just the title and the bar, without the character lists.
+The **start page** of Listen (before the first block) shows the same card as
+at the end of a block, as long as everything fits on the screen. If space gets
+tight (small display, large font, many weak characters), it shrinks to just
+the title and the bar, without the character lists.
 
 ## Trend
 

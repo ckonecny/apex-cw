@@ -1229,8 +1229,10 @@ bis zum nächsten Zeichen noch fehlt:
 
 Pro Liste werden höchstens 10 Zeichen gezeigt, der Rest als „+N weitere“.
 
-Auf der **Startseite** von Hören (vor dem ersten Block) steht eine schmale
-Fassung der Karte: nur Titel und Balken, ohne die Zeichenlisten.
+Auf der **Startseite** von Hören (vor dem ersten Block) zeigt die Karte
+dasselbe wie am Blockende, solange alles auf den Bildschirm passt. Wird der
+Platz knapp (kleines Display, große Schrift, viele schwache Zeichen), schrumpft
+sie auf Titel und Balken, ohne die Zeichenlisten.
 
 ## Trend
 
