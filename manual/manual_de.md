@@ -2578,6 +2578,10 @@ der die Tastenkontakte in **Tastendrücke** übersetzt:
 
 Ältere Handys mit Micro-USB brauchen einen USB-OTG-Adapter.
 
+**Einstellungen → vband Morse Key** hat einen kurzen Hinweis mit zwei Links, die beides im
+Browser öffnen: den fertigen vband-Adapter und die Bauanleitung für den
+Selbstbau-Adapter.
+
 ### Dit-/Dah-Tasten anlernen
 
 Damit die App weiß, welche Taste dein Adapter für Dit und welche für Dah
