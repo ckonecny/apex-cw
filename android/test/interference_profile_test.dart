@@ -49,4 +49,20 @@ void main() {
     expect([r.enabled, r.preset, r.noise, r.qrm, r.qsb, r.drift, r.jitter, r.filter, r.color, r.ambient],
         [true, 3, 55, 60, 35, 15, 30, 60, 40, true]);
   });
+
+  test('edited preset is kept, reset restores the defaults', () async {
+    final edited = const InterferenceProfile(enabled: true)
+        .withPreset(1)
+        .copyWith(noise: 80);
+    expect(edited.isModified, isTrue);
+    await edited.save();
+    final other = await edited.switchedTo(2);
+    expect(other.noise, InterferenceProfile.presets[2][0]);
+    await other.save();
+    final back = await other.switchedTo(1);
+    expect(back.noise, 80);
+    final reset = await back.resetToDefault();
+    expect(reset.isModified, isFalse);
+    expect((await reset.switchedTo(1)).levels, InterferenceProfile.presets[1]);
+  });
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -80,18 +81,53 @@ class InterferenceProfile {
   );
 
   /// The profile with preset [i]'s levels (keeps the enabled flag).
-  InterferenceProfile withPreset(int i) {
-    final p = presets[i];
-    return copyWith(
-      preset: i,
-      noise: p[0],
-      qrm: p[1],
-      qsb: p[2],
-      drift: p[3],
-      jitter: p[4],
-      filter: p[5],
-      color: p[6],
-    );
+  InterferenceProfile withPreset(int i) => withLevels(presets[i], preset: i);
+
+  /// The seven levels in the order of [presets].
+  List<int> get levels => [noise, qrm, qsb, drift, jitter, filter, color];
+
+  InterferenceProfile withLevels(List<int> p, {int? preset}) => copyWith(
+    preset: preset,
+    noise: p[0],
+    qrm: p[1],
+    qsb: p[2],
+    drift: p[3],
+    jitter: p[4],
+    filter: p[5],
+    color: p[6],
+  );
+
+  /// A ready-made preset whose levels the user has changed (shows the reset
+  /// button). "Custom" has no default, so it is never modified.
+  bool get isModified =>
+      preset != presetCustom && !listEquals(levels, presets[preset]);
+
+  // Every preset (custom too) keeps its own levels: changing a slider edits
+  // the selected preset and the change stays; reset drops the edit.
+  static String _slotKey(int i) => 'interfLv$i';
+
+  /// The profile switched to preset [i] with its saved (edited) levels, or the
+  /// defaults when it was never edited.
+  Future<InterferenceProfile> switchedTo(int i) async {
+    final p = await SharedPreferences.getInstance();
+    final saved = p.getString(_slotKey(i))?.split(',');
+    if (saved != null && saved.length == 7) {
+      final v = saved.map((e) => int.tryParse(e)).toList();
+      if (!v.contains(null)) {
+        return withLevels(
+          v.map((e) => e!.clamp(0, 100)).toList(),
+          preset: i,
+        );
+      }
+    }
+    return withPreset(i);
+  }
+
+  /// Back to the preset's default levels; forgets the edit.
+  Future<InterferenceProfile> resetToDefault() async {
+    final p = await SharedPreferences.getInstance();
+    await p.remove(_slotKey(preset));
+    return withPreset(preset);
   }
 
   static Future<InterferenceProfile> load() async {
@@ -126,6 +162,7 @@ class InterferenceProfile {
     await p.setInt('interfFilter', filter);
     await p.setInt('interfColor', color);
     await p.setBool('interfAmbient', ambient);
+    await p.setString(_slotKey(preset), levels.join(','));
   }
 
   /// Noise as SNR in dB in a 2.4 kHz reference bandwidth (matches the engine).
