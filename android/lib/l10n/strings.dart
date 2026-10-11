@@ -68,6 +68,7 @@ class Strings {
     'interf_enable': ['Störungen simulieren', 'Simulate interference'],
     'interf_enable_desc': ['Wirkt auf die Gegenstation beim Hören und bei Echo-Aufgaben. Dein eigener Seitenton bleibt sauber.', 'Applies to the other station when listening and in echo tasks. Your own sidetone stays clean.'],
     'interf_preset': ['Voreinstellung', 'Preset'],
+    'interf_preset_reset': ['Standard', 'Default'],
     'interf_preset_custom': ['Eigene', 'Custom'],
     'interf_preset_light': ['Leicht', 'Light'],
     'interf_preset_hf': ['KW abends', 'HF evening'],

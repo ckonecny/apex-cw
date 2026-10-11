@@ -2678,7 +2678,7 @@ farbig heißt an. **Kurz antippen** schaltet die Störungen an oder aus,
 |---|---|---|
 | Störungen simulieren | Hauptschalter | **Aus** / Ein |
 | Dauerrauschen | Rauschen und QRM stehen durchgehend an, solange eine Übung, ein Block oder ein Spiel läuft, auch zwischen den Zeichen und unter deinem Tasten (dein Mithörton bleibt sauber). Beim Hören und Geben gilt das für einen ganzen Block, bis das Ergebnis erscheint; in Morsel, Memory Chain, Trailblazer, Fox Hunt und Fight the Pileup für ein Spiel; in QSO Bot und WiFi Trx für die Sitzung bzw. Verbindung; in Eigene Texte nur während der Wiedergabe. Realistischer, aber anstrengender. Aus: Die Störung ist nur zu hören, während die Gegenstation sendet | **Aus** / Ein |
-| Voreinstellung | Fertige Mischungen. Sobald du einen Regler bewegst, steht dort „Eigene“ | Eigene / Leicht / KW abends / Pile-up |
+| Voreinstellung | Fertige Mischungen. Jeden Regler einer Voreinstellung kannst du direkt ändern, die Änderung bleibt für diese Voreinstellung gespeichert. Sobald sie von den Standardwerten abweicht, erscheint ein kleiner Knopf „Standard“ (Kreispfeil), der sie zurücksetzt. „Eigene“ hat eigene Werte und kein Zurücksetzen | Eigene / Leicht / KW abends / Pile-up |
 | Rauschen (SNR) | Abstand zwischen Signal und Rauschen, gemessen in einer festen Bandbreite von 2,4 kHz. Das Rauschen schwillt langsam an und ab und enthält gelegentliches Knacken | 0 % (kein Rauschen) bis 100 % (SNR −10 dB), Anzeige in dB |
 | Rauschfarbe | Wie hell das Rauschen klingt | 0 % dumpf (Höhen ab etwa 800 Hz abgesenkt) bis 100 % hell (etwa 3,2 kHz) |
 | Empfängerfilter | Schmales CW-Filter um deine Tonhöhe. Je enger, desto mehr Rauschen und Nachbarstation fallen weg. Bei sehr enger Einstellung klingt das übrige Rauschen wie ein schwankender Ton | 0 % breit bis 100 % sehr eng (Q 1,5 bis 20) |
@@ -2687,7 +2687,7 @@ farbig heißt an. **Kurz antippen** schaltet die Störungen an oder aus,
 | Tonhöhe (Drift) | Die Tonhöhe wandert langsam, bei 100 % bis etwa ±30 Hz. Mit engem Filter kann der Ton dabei aus dem Durchlass laufen | 0–100 % |
 | Timing (schlechte Hand) | Punkte, Striche und Pausen sind ungleichmäßig, gelegentlich zögert die Station | 0–100 % |
 
-Die Voreinstellungen setzen (Rauschen / QRM / QSB / Tonhöhe / Timing /
+Die Voreinstellungen starten mit (Rauschen / QRM / QSB / Tonhöhe / Timing /
 Empfängerfilter, Rauschfarbe immer 50 %):
 
 | Voreinstellung | Werte |

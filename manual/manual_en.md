@@ -2585,7 +2585,7 @@ these settings.
 |---|---|---|
 | Simulate interference | Main switch | **Off** / On |
 | Constant noise | Noise and QRM stay on for as long as an exercise, block or game is running, also between characters and under your own keying (your sidetone stays clean). When listening and sending this means a whole block, until the result appears; in Morsel, Memory Chain, Trailblazer, Fox Hunt and Fight the Pileup a game; in QSO Bot and WiFi Trx the session or connection; in Own texts only during playback. More realistic, but more tiring. Off: the interference is only heard while the other station is sending | **Off** / On |
-| Preset | Ready-made mixes. As soon as you move a slider it reads "Custom" | Custom / Light / HF evening / Pile-up |
+| Preset | Ready-made mixes. You can change every slider of a preset directly; the change is kept for that preset. A small "Default" button (circular arrow) appears as soon as a preset differs from its defaults and resets it. "Custom" keeps its own values and has no reset | Custom / Light / HF evening / Pile-up |
 | Noise (SNR) | Signal-to-noise ratio, measured in a fixed 2.4 kHz bandwidth. The noise swells and ebbs slowly and contains occasional crackle | 0 % (no noise) to 100 % (SNR −10 dB), shown in dB |
 | Noise colour | How bright the noise sounds | 0 % dull (treble cut from about 800 Hz) to 100 % bright (about 3.2 kHz) |
 | Receiver filter | Narrow CW filter around your pitch. The narrower it is, the more noise and neighbouring station it removes. At a very narrow setting the remaining noise sounds like a wavering tone | 0 % wide to 100 % very narrow (Q 1.5 to 20) |
@@ -2594,7 +2594,7 @@ these settings.
 | Pitch (drift) | The pitch wanders slowly, up to about ±30 Hz at 100 %. With a narrow filter the tone can drift out of the passband | 0–100 % |
 | Timing (bad fist) | Dits, dahs and gaps are uneven, the station sometimes hesitates | 0–100 % |
 
-The presets set (noise / QRM / QSB / pitch / timing / receiver filter, noise
+The presets start with (noise / QRM / QSB / pitch / timing / receiver filter, noise
 colour always 50 %):
 
 | Preset | Values |

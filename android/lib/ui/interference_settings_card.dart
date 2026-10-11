@@ -137,12 +137,32 @@ class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
                 label: Strings.t('interf_preset'),
                 options: labels,
                 selected: _p.preset,
-                onChanged: (i) => _apply(
-                  i == InterferenceProfile.presetCustom
-                      ? _p.copyWith(preset: i)
-                      : _p.withPreset(i),
-                ),
+                onChanged: (i) async {
+                  await _p.save(); // keeps the edits of the one we leave
+                  final next = await _p.switchedTo(i);
+                  if (mounted) _apply(next);
+                },
               ),
+              if (_p.isModified)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: TextButton.icon(
+                      onPressed: () async {
+                        final next = await _p.resetToDefault();
+                        if (mounted) _apply(next);
+                      },
+                      icon: const Icon(Icons.restart_alt_rounded, size: 16),
+                      label: Text(Strings.t('interf_preset_reset')),
+                      style: TextButton.styleFrom(
+                        foregroundColor: c.textMuted,
+                        textStyle: const TextStyle(fontSize: 12),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                  ),
+                ),
               const SettingsDivider(),
               LabeledSlider(
                 label: Strings.t('interf_noise'),
@@ -153,7 +173,6 @@ class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
                 display: 'SNR ${_p.snrDb} dB',
                 onChanged: (v) => _apply(
                   _p.copyWith(
-                    preset: InterferenceProfile.presetCustom,
                     noise: v.round(),
                   ),
                 ),
@@ -168,7 +187,6 @@ class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
                 display: '${_p.color} %',
                 onChanged: (v) => _apply(
                   _p.copyWith(
-                    preset: InterferenceProfile.presetCustom,
                     color: v.round(),
                   ),
                 ),
@@ -183,7 +201,6 @@ class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
                 display: '${_p.filter} %',
                 onChanged: (v) => _apply(
                   _p.copyWith(
-                    preset: InterferenceProfile.presetCustom,
                     filter: v.round(),
                   ),
                 ),
@@ -198,7 +215,6 @@ class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
                 display: '${_p.qsb} %',
                 onChanged: (v) => _apply(
                   _p.copyWith(
-                    preset: InterferenceProfile.presetCustom,
                     qsb: v.round(),
                   ),
                 ),
@@ -213,7 +229,6 @@ class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
                 display: '${_p.qrm} %',
                 onChanged: (v) => _apply(
                   _p.copyWith(
-                    preset: InterferenceProfile.presetCustom,
                     qrm: v.round(),
                   ),
                 ),
@@ -228,7 +243,6 @@ class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
                 display: '${_p.drift} %',
                 onChanged: (v) => _apply(
                   _p.copyWith(
-                    preset: InterferenceProfile.presetCustom,
                     drift: v.round(),
                   ),
                 ),
@@ -243,7 +257,6 @@ class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
                 display: '${_p.jitter} %',
                 onChanged: (v) => _apply(
                   _p.copyWith(
-                    preset: InterferenceProfile.presetCustom,
                     jitter: v.round(),
                   ),
                 ),
