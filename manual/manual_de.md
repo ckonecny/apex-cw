@@ -428,7 +428,7 @@ Zeichentempo (20 WPM). Das ändert sich jetzt, in dieser Reihenfolge:
    sind (oder du mit **Alle Zeichen** übst), schlägt die App nach zwei guten
    Blöcken in Folge kürzere Pausen vor, je einen Dit pro Schritt, bis zu den
    normalen 3 / 7 Dits (siehe [Pausen und Tempo](#pausen-und-tempo)). Du kannst
-   das auch selbst tun: **Abstand anpassen** auf der Startansicht und der
+   das auch selbst tun: **Abstand Zeichen/Wort** auf der Startansicht und der
    Ergebnisseite.
 2. **Erst dann das Tempo erhöhen.** Sind die Pausen bei 3 / 7, schlägt die App
    +1 WPM vor, wenn es gut läuft. Kleine Schritte, keine Sprünge.
@@ -568,7 +568,7 @@ wurden. Beim Übungsset gibt es nur den Inhalt **Zufall**.
 
 Der Regler **WPM** unter der Übungsfläche stellt das Zeichentempo ein (10 bis 60
 WPM). Die Pausen stellst du im ⚙-Blatt unter **Abstände** ein oder direkt auf
-der Start- und Ergebnisseite mit **Abstand anpassen**.
+der Start- und Ergebnisseite mit **Abstand Zeichen/Wort**.
 
 ## Ein Block im Ablauf
 
@@ -709,8 +709,8 @@ Die Ergebnisseite zeigt von oben nach unten:
 - **Trefferquote** in Prozent (Anteil richtig mitgeschriebener Zeichen) –
   grün ab 90 %, gelb ab 70 %, darunter rot – und „*x* von *y* richtig“.
 - Die **Trend**-Zeile, ab dem sechsten Block (siehe [Trend](#trend)). Tempo,
-  effektives Tempo und Abstände stehen im WPM-Regler und bei **Abstand anpassen**.
-- **Abstand anpassen** – mit − und + änderst du Zeichenabstand und Wortabstand
+  effektives Tempo und Abstände stehen im WPM-Regler und bei **Abstand Zeichen/Wort**.
+- **Abstand Zeichen/Wort** – mit − und + änderst du Zeichenabstand und Wortabstand
   gemeinsam um je 1 Dit. Das gilt sofort und unabhängig von den
   Vorschlägen.
 - **Schwache Zeichen** – die Zeichen, die dir auf Dauer die meisten Fehler
@@ -1145,7 +1145,7 @@ ist dagegen immer möglich. Verkürzen und Tempo erhöhen kommen erst, wenn
 Auch in dem Block, in dem ein neues Zeichen dazukommt, gibt es kein
 Verkürzen und keine Tempoerhöhung.
 
-Mit **Abstand anpassen** (Hören) bzw. den Tempo-Reglern (Geben) kannst du
+Mit **Abstand Zeichen/Wort** (Hören) bzw. den Tempo-Reglern (Geben) kannst du
 jederzeit selbst eingreifen, unabhängig von diesen Regeln.
 
 ### Gebetempo bei Geben
@@ -1186,7 +1186,13 @@ Zeichens gerade bremst. Je höher die obere Schwelle, desto früher wird ein
 Zeichen nach einem Fehler verstärkt.
 
 Angezeigt werden höchstens die **5** schwächsten, das schlechteste zuerst, mit
-ihrer Fehlerquote. Weil die Quote auf Dauer mitgezählt wird, bleibt ein Zeichen
+ihrer Fehlerquote.
+
+**Ausnahme Hören mit Koch-Lektion:** Hier gilt ein Zeichen als schwach, sobald es
+mindestens 8 Versuche hat und seine Trefferquote **unter der oberen Schwelle**
+liegt (also genau das, was die Freischaltung bremst). Es werden bis zu **10**
+gezeigt, und zwar in der Karte „Auf dem Weg zu X“ (siehe unten), wenn sie
+sichtbar ist. Weil die Quote auf Dauer mitgezählt wird, bleibt ein Zeichen
 so lange schwach, bis du es wieder zuverlässig richtig hast, auch über
 mehrere Blöcke und Sitzungen.
 
@@ -1232,10 +1238,16 @@ bis zum nächsten Zeichen noch fehlt:
 - **Noch üben (Wiederholungen):** Zeichen, denen noch Versuche fehlen, je
   als kleines Kästchen mit der Zahl der fehlenden Versuche, z. B. `q 7`. Die
   mit den meisten fehlenden Versuchen stehen vorne.
-- **Trefferquote unter 90 %:** Zeichen mit genug Versuchen, aber zu niedriger
-  Trefferquote, z. B. `y 84 %`. Die schwächsten stehen vorne.
+- **Trefferquote unter 90 % · öfter abfragen?:** die schwachen Zeichen mit
+  zu niedriger Trefferquote, z. B. `y 84%`, die schwächsten vorne. Das sind
+  dieselben Zeichen, die im nächsten Block öfter drankommen. **Tippe ein
+  Zeichen an**, um es davon auszunehmen (durchgestrichen). Eine eigene Karte
+  „Schwache Zeichen“ gibt es dann nicht zusätzlich.
 
-Pro Liste werden höchstens 10 Zeichen gezeigt, der Rest als „+N weitere“.
+Die Liste „Noch üben“ zeigt höchstens 10 Zeichen, der Rest steht als „+N weitere“.
+Ist die Karte nicht sichtbar (zusammengeschrumpft, letzte Koch-Stufe, direkt nach
+einer Freischaltung) oder übst du nicht mit der Koch-Lektion, erscheinen die
+schwachen Zeichen wie bisher in einer eigenen Karte.
 
 Auf der **Startseite** von Hören (vor dem ersten Block) zeigt die Karte
 dasselbe wie am Blockende, solange alles auf den Bildschirm passt. Wird der
@@ -2553,7 +2565,8 @@ Zählung beginnt neu, wenn du den Bildschirm verlässt.
 ## Links
 
 Eine Liste externer Seiten zum CW-Lernen: die Videoreihe von Heinz („just me“)
-auf YouTube, LCWO, VBand und die Morserino-32-Homepage. Ein Tipp öffnet die
+auf YouTube, LCWO, VBand, WebSDR (bei echten QSOs über Internet-Empfänger mithören) und
+die Morserino-32-Homepage. Ein Tipp öffnet die
 Seite im Browser. Es sind eigenständige Angebote, die mit dieser App nicht
 verbunden sind; die App verlinkt sie nur und zeigt nichts von deren Inhalt.
 
@@ -2895,7 +2908,7 @@ zuletzt Fehler hatte. Siehe
 
 **Die Pausen werden nie kürzer.**
 Das ist Absicht, solange du die Koch-Reihenfolge durcharbeitest (siehe
-[Pausen und Tempo](#pausen-und-tempo)). Mit **Abstand anpassen** kannst du sie
+[Pausen und Tempo](#pausen-und-tempo)). Mit **Abstand Zeichen/Wort** kannst du sie
 jederzeit selbst verkürzen.
 
 **Der Decoder schreibt nur Unsinn.**

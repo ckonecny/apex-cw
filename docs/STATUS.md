@@ -48,6 +48,8 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - Rename to "APEX CW" (feature/rename-apex-cw): app bar title on Home and the About dialog show the new name; retake `home*` and any shot with the title bar (DE+EN) at release. Also: the Play Console app name/listing (store raw shots + graphics were rebuilt 2026-10-08, see archive). (Site images were retaken 2026-10-08, see archive.)
 - Head copy / Verstehen moved from the Games hub to its own tile under Practice on Home (feature/understand-in-practice): retake `home.png` and `games.png` (DE+EN).
 - Home: Listen tile now also shows the trend (fix/home-hear-trend); retake `home.png` (DE+EN).
+- Weak chars moved into the "On the way to X" card (feature/weak-chars-in-outlook): the separate weak-chars card is gone while the unlock card is visible (Koch); retake `hear_start`, `hear_result`, `hear_weak` (DE+EN). The spacing card is now titled "Abstand Zeichen/Wort" / "Spacing char/word" (shown on the same shots).
+- Links screen: new WebSDR entry (listen in on real QSOs); retake the links shot if one exists (DE+EN).
 - Listen start page: slim "On the way to X" card (Koch lesson) below the weak characters; retake `hear_start` (DE+EN).
 - Settings → Info: new row "Online-Handbuch / Online manual" (feature/online-manual-link); retake the settings Info shot (DE+EN) if one exists.
 - Break hint sensitivity (#48, on main): new row in Settings → General; retake `settings1.png` (DE+EN) if the row shows there. Defaults still to be tuned on real sessions (being tried by testers).

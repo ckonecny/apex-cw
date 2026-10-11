@@ -411,7 +411,7 @@ speed (20 WPM). That changes now, in this order:
    unlocked (or you practice with **All characters**), the app suggests shorter
    pauses after two good blocks in a row, one dit per step, down to the normal
    3 / 7 dits (see [Pauses and speed](#pauses-and-speed)). You can also do this
-   yourself: **Adjust spacing** on the start view and the result page.
+   yourself: **Spacing char/word** on the start view and the result page.
 2. **Only then raise the speed.** Once the pauses are at 3 / 7, the app suggests
    +1 WPM when things go well. Small steps, no jumps.
 3. **If it goes badly, it goes back.** If the block EMA falls below the lower
@@ -546,7 +546,7 @@ only offers the **Random** content.
 
 The **WPM** slider below the practice area sets the character speed (10 to 60
 WPM). You set the pauses in the ⚙ sheet under **Spacing**, or directly on the
-start and result pages with **Adjust spacing**.
+start and result pages with **Spacing char/word**.
 
 ## How a block runs
 
@@ -686,8 +686,8 @@ From top to bottom, the result page shows:
   plus "*x* of *y* correct". It is green from 90 %, yellow from 70 % and red
   below that.
 - The **trend** line, from the sixth block on (see [trend](#trend)). Speed,
-  effective speed and spacing are in the WPM slider and **Adjust spacing**.
-- **Adjust spacing:** − and + change character spacing and word spacing together
+  effective speed and spacing are in the WPM slider and **Spacing char/word**.
+- **Spacing char/word:** − and + change character spacing and word spacing together
   by 1 dit each. This takes effect immediately and doesn't depend on the
   suggestions.
 - **Weak characters:** the characters that cause you the most errors over
@@ -1111,7 +1111,7 @@ The block in which a new character is added also never shortens the pauses or
 raises the speed.
 
 You can step in yourself at any time, independently of these rules. In Listen
-use **Adjust spacing**, and in Send use the speed controls.
+use **Spacing char/word**, and in Send use the speed controls.
 
 ### Sending speed in Send
 
@@ -1150,6 +1150,11 @@ of the next character. The higher the upper threshold, the sooner a character
 is boosted after a mistake.
 
 At most the **5** weakest are shown, worst first, with their error rate.
+
+**Exception, Listen with the Koch lesson:** there a character counts as weak
+as soon as it has at least 8 attempts and its accuracy is **below the upper
+threshold** (exactly what holds back the unlock). Up to **10** are shown, in
+the "On the way to X" card (see below) when it is visible.
 Because the rate is tracked over time, a character stays weak until you get it
 right reliably again. This can take several blocks and sessions.
 
@@ -1194,10 +1199,16 @@ missing before the next character:
 - **Still to practice (repetitions)** lists characters that still lack
   attempts, each as a small chip with the number missing, for example `q 7`.
   Those missing the most come first.
-- **Accuracy below 90 %** lists characters with enough attempts but too low
-  an accuracy, for example `y 84 %`. The weakest come first.
+- **Accuracy below 90 % · practice more?** shows the weak characters with too
+  low an accuracy, for example `y 84%`, the weakest first. These are the same
+  characters that come up more often in the next block. **Tap a character** to
+  exclude it (struck through). There is no separate "Weak characters" card in
+  addition.
 
-Each list shows at most 10 characters; the rest appear as "+N more".
+The "Still to practice" list shows at most 10 characters; the rest appear as
+"+N more". If the card isn't visible (shrunk, last Koch level, right after an
+unlock) or you aren't practicing with the Koch lesson, the weak characters
+appear in their own card as before.
 
 The **start page** of Listen (before the first block) shows the same card as
 at the end of a block, as long as everything fits on the screen. If space gets
@@ -2463,7 +2474,8 @@ separately, and the counting starts again when you leave the screen.
 ## Links
 
 A list of external sites for learning CW: the video course by Heinz ("just me")
-on YouTube, LCWO, VBand and the Morserino-32 homepage. A tap opens the site in
+on YouTube, LCWO, VBand, WebSDR (listen in on real QSOs through online receivers) and
+the Morserino-32 homepage. A tap opens the site in
 your browser. These are independent offers that are not affiliated with this
 app; the app only links to them and shows nothing of their content.
 
@@ -2801,7 +2813,7 @@ See [When the next Koch character comes](#when-the-next-koch-character-comes).
 **The pauses never get shorter.**
 That's intended while you work through the Koch sequence (see
 [Pauses and speed](#pauses-and-speed)). You can shorten them yourself at any
-time with **Adjust spacing**.
+time with **Spacing char/word**.
 
 **The decoder only writes garbage.**
 Check pitch, bandwidth and threshold (see

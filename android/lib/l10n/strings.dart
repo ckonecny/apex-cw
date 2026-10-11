@@ -383,6 +383,7 @@ class Strings {
     'link_open_failed': ['Link konnte nicht geöffnet werden', 'Could not open the link'],
     'link_lcwo_desc': ['Kostenloser Online-Kurs nach Koch mit Hör- und Gebeübungen', 'Free online Koch-method course with listening and keying drills'],
     'link_vband_desc': ['Morsen über das Internet mit der Tastatur oder der Morsetaste', 'Send CW over the internet with a keyboard or a Morse key'],
+    'link_websdr_desc': ['Über Internet-Empfänger weltweit bei echten CW-QSOs mithören', 'Listen in on real CW QSOs through receivers around the world'],
     'link_morserino_desc': ['Der Morserino-32, das Gerät, dessen Trainingsmodi diese App nachbildet', 'The Morserino-32, the device whose training modes this app follows'],
     'link_heinz_desc': ['Video-Lehrreihe von Heinz („just me“) auf YouTube, Deutsch', 'Video course by Heinz ("just me") on YouTube, German'],
     'morsel_subtitle': ['Wort erraten · Hören und Geben', 'Guess the word · Listen and key'],
@@ -684,11 +685,11 @@ class Strings {
     'ac_char_speed_up': ['Zeichentempo erhöht', 'Character speed increased'],
     'ac_outlook_title': ['Auf dem Weg zu "{ch}"', 'On the way to "{ch}"'],
     'ac_outlook_attempts': ['Noch üben (Wiederholungen):', 'Still to practice (repetitions):'],
-    'ac_outlook_accuracy': ['Trefferquote unter {pct} %:', 'Accuracy below {pct} %:'],
+    'ac_outlook_accuracy_boost': ['Trefferquote unter {pct} % · öfter abfragen?', 'Accuracy below {pct} % · practice more?'],
     'ac_outlook_more': ['+{n} weitere', '+{n} more'],
     'ac_char_unlocked': ['Neues Zeichen freigeschaltet', 'New character unlocked'],
     'ac_suggestions_title': ['VORSCHLÄGE · ANTIPPEN ZUM ÄNDERN', 'SUGGESTIONS · TAP TO TOGGLE'],
-    'ac_spacing_control_title': ['Abstand anpassen Zeichen/Wort (Dits)', 'Adjust spacing char/word (dits)'],
+    'ac_spacing_control_title': ['Abstand Zeichen/Wort', 'Spacing char/word'],
 
     // ── Adaptive Mode settings ───────────────────────────────────────────
     'settings_koch_sequence_desc': ['Gilt für alle Trainings, die die Koch-Methode nutzen (auch Geben und der adaptive Modus).', 'Applies to every training that uses the Koch method (Send and the adaptive mode too).'],

@@ -162,6 +162,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // Echo Trainer's "Adapt. Rand." already uses (docs/ADAPTIVE-COPY.md).
   static const _weakCharMinAttempts = 8;
   static const _weakCharMaxShown = 5;
+  // Koch: same cap as the unlock card's chip list.
+  static const _weakCharMaxShownKoch = 10;
 
   // outputCase: 0=lower, 1=UPPER — display only, matches GeneratorScreen's
   // setting (generator_screen.dart); content/comparisons stay uppercase
@@ -331,10 +333,21 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final chars = widget.kochLesson
         ? kochActiveChars(widget.kochLevel, widget.activeKochChars)
         : _charStats.stats.keys.toList();
+    final high = (_engine?.thresholds ?? _startThresholds)?.highThreshold ??
+        const AdaptiveCopyThresholds().highThreshold;
+    if (widget.kochLesson) {
+      // Koch: exactly the chars the "On the way to" card lists under
+      // "Accuracy below X %" (acc < high, which is what blocks the unlock),
+      // so the card can host the include/exclude chips. The epsilon keeps a
+      // char sitting exactly on the threshold (acc == high) out.
+      return weakCharsLifetime(_charStats, chars,
+          minAttempts: _weakCharMinAttempts,
+          threshold: 1 - high + 1e-9,
+          maxShown: _weakCharMaxShownKoch);
+    }
     return weakCharsLifetime(_charStats, chars,
         minAttempts: _weakCharMinAttempts,
-        threshold: weakCharErrorThreshold(
-            (_engine?.thresholds ?? _startThresholds)?.highThreshold ?? const AdaptiveCopyThresholds().highThreshold),
+        threshold: weakCharErrorThreshold(high),
         maxShown: _weakCharMaxShown);
   }
 
