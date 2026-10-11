@@ -7,6 +7,11 @@ Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
 only the current state, organisational steps and hints for the next session.
 
+## Pending: fix/typing-trailing-double-key (issue #62, 2026-10-11)
+Hören typing mode: a doubled last key (`ABCC` for `ABC`) now counts as right
+(DECISIONS.md "Hören: typing mode"). Tests + analyze green; needs a check on
+the test phone, then commit/merge when the user says so. No screenshot changes.
+
 ## Next steps — Play Store (user, 2026-09-28)
 Done: upload key and signing, privacy policy, store texts and graphics
 (`docs/PLAY-LISTING.md`, `docs/DECISIONS.md` "Play Store preparation"); store

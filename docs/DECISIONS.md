@@ -804,6 +804,14 @@ confirmed by the user on 2026-09-27:
   the word wrong. Per-char grading via Levenshtein alignment with backtrace:
   substitution/deletion = that played char wrong; extra typed chars are
   ignored (a char that was not played cannot be wrong).
+- **Trailing double key (issue #62, 2026-10-11):** the live check no longer
+  needs an exact match: the played word followed only by repetitions of its
+  last character (`ABCC` for `ABC`) counts as right (`isTypedRight()` in
+  `copy_grading.dart`) — no ✗, no repeat, green dot. Before, the group was
+  repeated (yellow/red dot) while the per-char statistics ignored the extra
+  key (0 errors): the two disagreed. Every other extra character (`ABCE`,
+  `AABC`) stays wrong. Side effect: for a group ending in a doubled char
+  (`ABB`), `ABBB` is accepted too.
 - **Spacing suggestions:** in the typing mode the adaptive mode only
   suggests changes to the **inter-character** spacing (inter-word spacing has
   no effect there).

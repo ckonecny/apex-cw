@@ -33,4 +33,30 @@ void main() {
   test('wholly different text marks all wrong', () {
     expect(gradeTyped('ABC', 'XYZ'), [false, false, false]);
   });
+
+  group('isTypedRight', () {
+    test('exact copy, case-insensitive', () {
+      expect(isTypedRight('ABC', 'abc'), isTrue);
+    });
+
+    test('last key pressed twice or more is a slip, not an error', () {
+      expect(isTypedRight('ABC', 'ABCC'), isTrue);
+      expect(isTypedRight('ABC', 'ABCCC'), isTrue);
+      expect(isTypedRight('ABB', 'ABBB'), isTrue);
+    });
+
+    test('other extra characters stay wrong', () {
+      expect(isTypedRight('ABC', 'ABCE'), isFalse);
+      expect(isTypedRight('ABC', 'ABBC'), isFalse);
+      expect(isTypedRight('ABC', 'AABC'), isFalse);
+      expect(isTypedRight('ABC', 'ABCCE'), isFalse);
+    });
+
+    test('missing or wrong characters stay wrong', () {
+      expect(isTypedRight('ABC', 'AB'), isFalse);
+      expect(isTypedRight('ABC', 'ABD'), isFalse);
+      expect(isTypedRight('ABC', ''), isFalse);
+      expect(isTypedRight('', 'A'), isFalse);
+    });
+  });
 }

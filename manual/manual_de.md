@@ -690,6 +690,9 @@ und Markierungen ändern, etwa wenn du dich nur vertippt hast. **Fertig ·
   danach. Beispiel: gespielt `tqr5u`, getippt `tq5u` → nur `r` falsch.
   Ein falsch gehörtes Zeichen ist falsch (`cd9al` als `cb9al` → `d` falsch).
   Ein zusätzlich getipptes Zeichen macht kein gespieltes Zeichen falsch.
+- Eine am Ende doppelt gedrückte Taste (`ABCC` statt `ABC`) gilt als
+  Vertipper: Das Wort ist ✓ richtig und wird nicht wiederholt. Jedes andere
+  zusätzliche Zeichen (`ABCE`, `AABC`) bleibt falsch, das Wort wird wiederholt.
 - **Passen** im ersten Versuch heißt: alle Zeichen dieses Wortes falsch, wie
   eine leere Stelle auf dem Papier.
 - Beim Tippen spielen die Pausen zwischen den Wörtern keine Rolle. Die App
