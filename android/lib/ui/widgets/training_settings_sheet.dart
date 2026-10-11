@@ -642,7 +642,11 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
     }
     // A plain scroll view (not a lazy ListView) so every section is built and
     // can be scrolled to by key.
-    return SingleChildScrollView(
+    // Own Scaffold: the undo snackbar of the setting rows would otherwise sit
+    // behind the modal sheet.
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: SingleChildScrollView(
       controller: widget.scroll,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
       child: Column(
@@ -688,6 +692,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               },
             ),
         ],
+      ),
       ),
     );
   }

@@ -2616,6 +2616,14 @@ Die globalen Einstellungen öffnest du mit dem Zahnrad rechts oben auf der
 Startseite. Sie gelten für die ganze App. Alles, was nur ein Training betrifft,
 steht im ⚙-Blatt des jeweiligen Trainings.
 
+Änderungen gelten sofort. Direkt nachdem du einen Schalter, eine Auswahl oder
+einen Regler verändert hast (in den Einstellungen und in den ⚙-Blättern),
+erscheint für einige Sekunden unten eine Leiste „Geändert: …" mit
+**Rückgängig**. Ein Tipp darauf stellt den vorherigen Wert wieder her, etwa
+wenn du beim Scrollen versehentlich ein Bedienelement berührt hast. Eine neuere
+Änderung ersetzt die Leiste, „Rückgängig" gilt also immer für die letzte
+Änderung.
+
 ::: {.shots .three}
 ![Einstellungen: Darstellung, Allgemein, Keyer](img/de/settings1.png)
 

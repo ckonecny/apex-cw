@@ -2,6 +2,22 @@ import 'package:flutter/material.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 
+/// Shows "Changed: [label]" with an Undo action right after a setting was
+/// changed (issue #63): changes still apply immediately, but an accidental
+/// touch while scrolling can be taken back. A newer change replaces the
+/// previous snackbar, so Undo always refers to the last change.
+void showSettingUndo(BuildContext context, String label, VoidCallback undo) {
+  final m = ScaffoldMessenger.maybeOf(context);
+  if (m == null) return;
+  m.clearSnackBars();
+  m.showSnackBar(SnackBar(
+    content: Text(Strings.t('setting_changed').replaceFirst('{name}', label)),
+    duration: const Duration(seconds: 4),
+    persist: false,
+    action: SnackBarAction(label: Strings.t('setting_undo'), onPressed: undo),
+  ));
+}
+
 class SettingsDivider extends StatelessWidget {
   const SettingsDivider({super.key});
   @override
@@ -69,7 +85,7 @@ class _SliderHead extends StatelessWidget {
   }
 }
 
-class LabeledSlider extends StatelessWidget {
+class LabeledSlider extends StatefulWidget {
   final String label, display;
   final double value, min, max;
   final int divisions;
@@ -79,7 +95,15 @@ class LabeledSlider extends StatelessWidget {
       required this.onChanged});
 
   @override
+  State<LabeledSlider> createState() => _LabeledSliderState();
+}
+
+class _LabeledSliderState extends State<LabeledSlider> {
+  double? _start;   // value when the drag began, for Undo
+
+  @override
   Widget build(BuildContext context) {
+    final label = widget.label, display = widget.display;
     final c = AppColors.of(context);
     return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -93,7 +117,15 @@ class LabeledSlider extends StatelessWidget {
           overlayColor: c.accent.withValues(alpha: 0.1),
           trackHeight: 3,
         ),
-        child: Slider(value: value, min: min, max: max, divisions: divisions, onChanged: onChanged),
+        child: Slider(value: widget.value, min: widget.min, max: widget.max,
+            divisions: widget.divisions, onChanged: widget.onChanged,
+            onChangeStart: (_) => _start = widget.value,
+            onChangeEnd: (_) {
+              final start = _start;
+              _start = null;
+              if (start == null || start == widget.value) return;
+              showSettingUndo(context, label, () => widget.onChanged(start));
+            }),
       ),
     ]),
   );
@@ -103,7 +135,7 @@ class LabeledSlider extends StatelessWidget {
 // Two-thumb variant of LabeledSlider for a low/high pair that must never
 // cross (e.g. Adaptive Mode's success thresholds) — one control instead of
 // two independent sliders that could be set inconsistently.
-class LabeledRangeSlider extends StatelessWidget {
+class LabeledRangeSlider extends StatefulWidget {
   final String label, display;
   final RangeValues values;
   final double min, max;
@@ -114,7 +146,15 @@ class LabeledRangeSlider extends StatelessWidget {
       required this.onChanged});
 
   @override
+  State<LabeledRangeSlider> createState() => _LabeledRangeSliderState();
+}
+
+class _LabeledRangeSliderState extends State<LabeledRangeSlider> {
+  RangeValues? _start;   // values when the drag began, for Undo
+
+  @override
   Widget build(BuildContext context) {
+    final label = widget.label, display = widget.display;
     final c = AppColors.of(context);
     return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -128,7 +168,15 @@ class LabeledRangeSlider extends StatelessWidget {
           overlayColor: c.accent.withValues(alpha: 0.1),
           trackHeight: 3,
         ),
-        child: RangeSlider(values: values, min: min, max: max, divisions: divisions, onChanged: onChanged),
+        child: RangeSlider(values: widget.values, min: widget.min, max: widget.max,
+            divisions: widget.divisions, onChanged: widget.onChanged,
+            onChangeStart: (_) => _start = widget.values,
+            onChangeEnd: (_) {
+              final start = _start;
+              _start = null;
+              if (start == null || start == widget.values) return;
+              showSettingUndo(context, label, () => widget.onChanged(start));
+            }),
       ),
     ]),
   );
@@ -154,7 +202,10 @@ class ToggleRow extends StatelessWidget {
       const SizedBox(width: 12),
       Switch(
         value: value,
-        onChanged: onChanged,
+        onChanged: (v) {
+          onChanged(v);
+          showSettingUndo(context, label, () => onChanged(!v));
+        },
         activeThumbColor: c.accent,
         inactiveTrackColor: c.border,
         // Default Material off-thumb is near-white — glares against the dark
@@ -242,7 +293,12 @@ class SegmentRow extends StatelessWidget {
           children: List.generate(options.length, (i) {
             final active = i == selected;
             return SizedBox(width: itemWidth, child: GestureDetector(
-              onTap: () => onChanged(i),
+              onTap: () {
+                if (i == selected) return;
+                final old = selected;
+                onChanged(i);
+                showSettingUndo(context, label, () => onChanged(old));
+              },
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
