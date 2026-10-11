@@ -589,6 +589,8 @@ class Strings {
     'settings_start_analyzer': ['Analyse starten', 'Start analyzer'],
     'settings_press_dit_key': ['Dit-Taste drücken …', 'Press dit key …'],
     'settings_press_dah_key': ['Dah-Taste drücken …', 'Press dah key …'],
+    'setting_changed': ['Geändert: {name}', 'Changed: {name}'],
+    'setting_undo': ['Rückgängig', 'Undo'],
     'settings_saved': ['Gespeichert: {val}', 'Saved: {val}'],
     'settings_char_hint_default': ['z. B. KMRSUAPTLO …', 'e.g. KMRSUAPTLO …'],
 

@@ -2525,6 +2525,13 @@ Open the global settings with the gear at the top right of the home screen.
 They apply to the whole app. Anything that concerns only one training is in
 that training's ⚙ sheet.
 
+Changes apply immediately. Right after you change a switch, a choice or a
+slider (in the settings and in the ⚙ sheets), a bar at the bottom shows
+"Changed: …" with **Undo** for a few seconds. One tap on Undo restores the
+previous value, for example after touching a control by accident while
+scrolling. A newer change replaces the bar, so Undo always refers to the last
+change.
+
 ::: {.shots .three}
 ![Settings: Appearance, General, Keyer](img/en/settings1.png)
 
