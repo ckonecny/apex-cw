@@ -20,7 +20,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
               availableHeight: constraints.maxHeight - 32,
               builder: (compact) => Column(mainAxisSize: MainAxisSize.min, children: [
                 _buildSpacingControl(context, scale: 1.2),
-                if (_weakChars.isNotEmpty) ...[
+                if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact)) ...[
                   const SizedBox(height: 16),
                   _buildWeakCharsSection(context, scale: 1.2),
                 ],
@@ -36,6 +36,47 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
     });
   }
 
+  // The tappable include/exclude chips, hosted either by the weak-characters
+  // card or (Koch, when it fits) by the unlock card's accuracy row.
+  Widget _buildWeakChips(BuildContext context,
+      {double scale = 1,
+      WrapAlignment alignment = WrapAlignment.center,
+      bool showAccuracy = false,
+      bool small = false}) {
+    final c = AppColors.of(context);
+    final radius = small ? 12.0 : 20.0;
+    return Wrap(spacing: small ? 6 : 8, runSpacing: small ? 6 : 8, alignment: alignment,
+        children: _weakChars.entries.map((e) {
+          final included = !_excludedBoostChars.contains(e.key);
+          return InkWell(
+            onTap: () => _update(() {
+              if (included) {
+                _excludedBoostChars.add(e.key);
+              } else {
+                _excludedBoostChars.remove(e.key);
+              }
+            }),
+            borderRadius: BorderRadius.circular(radius),
+            child: Container(
+              padding: small
+                  ? const EdgeInsets.symmetric(horizontal: 8, vertical: 3)
+                  : const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: included ? c.warning.withValues(alpha: 0.15) : c.surfaceAlt,
+                borderRadius: BorderRadius.circular(radius),
+                border: Border.all(
+                    color: included ? c.warning.withValues(alpha: 0.5) : c.border),
+              ),
+              child: Text('${_displayChar(e.key)}  ${((showAccuracy ? 1 - e.value : e.value) * 100).round()}%',
+                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13 * scale,
+                      color: included ? c.warning : c.textMuted,
+                      decoration: included ? null : TextDecoration.lineThrough)),
+            ),
+          );
+        }).toList(),
+      );
+  }
+
   // Weak-character chips, tappable to include/exclude from the boosted
   // draw — shared between the idle/start screen (boosts the next block
   // about to start) and the result screen (boosts the block after that
@@ -49,34 +90,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
           style: TextStyle(fontSize: 11 * scale, color: c.textMuted)),
       const SizedBox(height: 8),
-      Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
-        children: _weakChars.entries.map((e) {
-          final included = !_excludedBoostChars.contains(e.key);
-          return InkWell(
-            onTap: () => _update(() {
-              if (included) {
-                _excludedBoostChars.add(e.key);
-              } else {
-                _excludedBoostChars.remove(e.key);
-              }
-            }),
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: included ? c.warning.withValues(alpha: 0.15) : c.surfaceAlt,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                    color: included ? c.warning.withValues(alpha: 0.5) : c.border),
-              ),
-              child: Text('${_displayChar(e.key)}  ${(e.value * 100).round()}%',
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13 * scale,
-                      color: included ? c.warning : c.textMuted,
-                      decoration: included ? null : TextDecoration.lineThrough)),
-            ),
-          );
-        }).toList(),
-      ),
+      _buildWeakChips(context, scale: scale),
     ])));
   }
 
@@ -533,7 +547,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             ],
             const SizedBox(height: 20),
             _buildSpacingControl(context, scale: 1.2),
-            if (weak.isNotEmpty) ...[
+            if (weak.isNotEmpty && !_outlookHostsWeakChars(false)) ...[
               const SizedBox(height: 20),
               _buildWeakCharsSection(context, scale: 1.2),
             ],
@@ -565,17 +579,25 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   // Motivation: what is still missing before the next Koch character
   // unlocks (mirrors AdaptiveCopyEngine.shouldUnlockNextChar: every active
   // char needs enough attempts AND accuracy >= high threshold).
+  bool get _outlookAvailable =>
+      widget.kochLesson &&
+      widget.kochLevel < widget.activeKochChars.length &&
+      !_unlockedThisBlock &&
+      (_engine?.thresholds ?? _startThresholds) != null &&
+      kochActiveChars(widget.kochLevel, widget.activeKochChars).isNotEmpty;
+
+  // True when the unlock card shows the weak characters itself (as the
+  // tappable chips of its "Accuracy below X %" row), so the separate weak
+  // characters card is left out. Not in the compact card (no lists there)
+  // nor when the card isn't shown at all.
+  bool _outlookHostsWeakChars(bool compact) =>
+      !compact && _weakChars.isNotEmpty && _outlookAvailable;
+
   Widget? _buildUnlockOutlook(BuildContext context, {bool compact = false}) {
-    if (!widget.kochLesson ||
-        widget.kochLevel >= widget.activeKochChars.length ||
-        _unlockedThisBlock) {
-      return null;
-    }
+    if (!_outlookAvailable) return null;
     final c = AppColors.of(context);
-    final th = _engine?.thresholds ?? _startThresholds;
-    if (th == null) return null;
+    final th = (_engine?.thresholds ?? _startThresholds)!;
     final chars = kochActiveChars(widget.kochLevel, widget.activeKochChars);
-    if (chars.isEmpty) return null;
     final needAttempts = <String, int>{};
     final lowAcc = <String, int>{};
     var doneAttempts = 0, wantAttempts = 0;
@@ -626,12 +648,6 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       sections.add((Strings.t('ac_outlook_attempts'),
           [for (final x in e) '${_displayChar(x.key)} ${x.value}']));
     }
-    if (lowAcc.isNotEmpty) {
-      final e = lowAcc.entries.toList()..sort((a, b) => a.value.compareTo(b.value));
-      sections.add((Strings.t('ac_outlook_accuracy')
-          .replaceFirst('{pct}', '${(th.highThreshold * 100).round()}'),
-          [for (final x in e) '${_displayChar(x.key)} ${x.value} %']));
-    }
     final mono = TextStyle(fontSize: 13, color: c.textMuted);
     return SizedBox(
       width: double.infinity,
@@ -656,6 +672,13 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             Text(label, style: mono),
             const SizedBox(height: 6),
             chips(items),
+          ],
+          if (!compact && _weakChars.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Text(Strings.t('ac_outlook_accuracy_boost')
+                .replaceFirst('{pct}', '${(th.highThreshold * 100).round()}'), style: mono),
+            const SizedBox(height: 6),
+            _buildWeakChips(context, alignment: WrapAlignment.start, showAccuracy: true, small: true),
           ],
         ]),
       ),

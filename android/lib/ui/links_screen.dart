@@ -18,6 +18,7 @@ const _links = [
       'https://www.youtube.com/watch?v=WhjCvgC0iHg&list=PLZjVloEmSdLgGGT_exNDoXzmnV-q0zmET'),
   _Link('LCWO', 'link_lcwo_desc', 'https://lcwo.net/'),
   _Link('VBand', 'link_vband_desc', 'https://hamradio.solutions/vband/'),
+  _Link('WebSDR', 'link_websdr_desc', 'https://www.websdr.org/'),
   _Link('Morserino-32', 'link_morserino_desc', 'https://www.morserino.info/'),
 ];
 
