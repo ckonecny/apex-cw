@@ -48,3 +48,19 @@ List<bool> gradeTyped(String played, String typed) {
   }
   return ok;
 }
+
+/// Whether [typed] counts as a right copy of [played] in the typing mode:
+/// identical (case-insensitive), or the played text followed only by
+/// repetitions of its last character — a key pressed twice at the end is a
+/// typing slip, not a mis-heard character (issue #62). Any other extra or
+/// missing character is still wrong.
+bool isTypedRight(String played, String typed) {
+  final a = played.toUpperCase();
+  final b = typed.toUpperCase();
+  if (a.isEmpty || !b.startsWith(a)) return false;
+  final last = a[a.length - 1];
+  for (var i = a.length; i < b.length; i++) {
+    if (b[i] != last) return false;
+  }
+  return true;
+}

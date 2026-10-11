@@ -666,6 +666,9 @@ usual result page.
   every one after it. Example: played `tqr5u`, typed `tq5u` → only `r` is
   wrong. A character heard wrong is wrong (`cd9al` as `cb9al` → `d` wrong).
   An extra typed character does not make any played character wrong.
+- A key pressed twice at the very end (`ABCC` for `ABC`) counts as a typing
+  slip: the word is ✓ right and not repeated. Any other extra character
+  (`ABCE`, `AABC`) is still wrong, and the word is repeated.
 - **Pass** in the first attempt means every character of that word is wrong,
   like a blank on paper.
 - When typing, the pauses between words don't matter. The app therefore only

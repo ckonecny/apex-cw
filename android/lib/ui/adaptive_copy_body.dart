@@ -726,7 +726,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
           }
           break;
         }
-        final ok = typed == group;
+        final ok = isTypedRight(group, typed);
         if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', ok);
         if (ok) {
           outcome = a == 1 ? 0 : 1;
