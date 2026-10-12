@@ -1986,3 +1986,7 @@ The card's "Accuracy below X %" list and the weak-characters chips described the
 - **Online manual row** in Settings → Info and the **WebSDR** entry under Links only open the browser, same as the other links.
 - **Privacy:** `ACCESS_NOTIFICATION_POLICY` (Focus mode, #55) and `VIBRATE` are described in `PRIVACY.md`; Play's data-safety answers stay "no data collected".
 - **Release 1.7.0:** the beta line v1.6.1-beta1…6 was folded into 1.7.0 (versionName 1.7.0, versionCode 7); manual screenshots taken in the light theme, store raw shots in the dark theme.
+
+## 2026-10-12: CI and automated security checks (GitHub Actions)
+
+Before this, analyze/test/build only ran locally. New in `.github/`: `workflows/ci.yml` (flutter analyze + test, then debug APK build; Flutter pinned to 3.47.3 via `FLUTTER_VERSION`, bump together with the local upgrade), `workflows/codeql.yml` (CodeQL for Kotlin and C++/JNI, weekly + on PR; Dart isn't supported by CodeQL, `flutter analyze` covers it), `workflows/osv-scan.yml` (osv-scanner on `pubspec.lock`, weekly + when the lock file or Gradle files change) and `dependabot.yml` (pub, Gradle weekly; Actions monthly). The `reference/` submodule is deliberately not checked out (no test needs it). No signing key in CI: the debug build works without `key.properties`; release APKs stay with `tools/build_release.sh`. All tools are free for public repos; their licences don't touch the app (rule 11), they are build-time only. Dependabot PRs still go through `license_compat_test.dart`.
