@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/keyer/cw_audio_decoder.dart';
+import 'package:next_cw_trainer/keyer/morse_decoder.dart';
 
 const _codes = {
   'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
@@ -122,5 +123,73 @@ void main() {
     key('-.-.-');      // <ka>
     key('........');   // <err>
     expect(syms.where((s) => s != ' ').toList(), ['<ka>', '<err>']);
+  });
+
+  test('every pattern of the keyer decoder decodes the same through the firmware tree', () {
+    // Two decoders live in the app (keyed symbols: morse_decoder.dart; audio:
+    // the firmware tree). For the same pattern they must give the same character.
+    String norm(String x) => x.replaceAll(RegExp('[<>]'), '').toUpperCase();
+    final mismatches = <String>[];
+    MorseDecoder.table.forEach((pattern, expected) {
+      final syms = <String>[];
+      final d = AudioCwDecoder(onSymbol: syms.add);
+      var t = 0;
+      for (final e in pattern.split('')) {
+        d.decode(true, t);
+        for (var i = 0; i < (e == '.' ? 60 : 180); i += 2) { t += 2; d.decode(true, t); }
+        for (var i = 0; i < 60; i += 2) { t += 2; d.decode(false, t); }
+      }
+      for (var i = 0; i < 400; i += 2) { t += 2; d.decode(false, t); }
+      final got = syms.where((x) => x != ' ').map(norm).join();
+      if (got != norm(expected)) mismatches.add('$pattern: tree $got, keyer $expected');
+    });
+    // Known, deliberate: the firmware tree reads .-.-. as "+" and -...- as "="
+    // like the keyer table, so nothing is expected here.
+    expect(mismatches, isEmpty);
+  });
+
+  test('random noise, clipping and odd chunk sizes neither crash nor flood', () {
+    final rnd = math.Random(7);
+    for (final rate in [8000, 16000, 44100, 48000]) {
+      final det = GoertzelDetector(sampleRate: rate, narrow: rate % 2 == 0);
+      final out = StringBuffer();
+      final dec = MicCwDecoder(det, AudioCwDecoder(onSymbol: out.write));
+      final n = rate * 5;
+      final pcm = Int16List(n);
+      for (var i = 0; i < n; i++) {
+        // full-scale random samples, with stretches of DC offset and silence
+        pcm[i] = (i ~/ 4000) % 3 == 0
+            ? 32767
+            : (i ~/ 4000) % 3 == 1
+                ? 0
+                : rnd.nextInt(65536) - 32768;
+      }
+      var i = 0;
+      while (i < n) {
+        final len = 1 + rnd.nextInt(700);          // odd, unaligned chunk sizes
+        dec.addSamples(Int16List.sublistView(pcm, i, math.min(i + len, n)));
+        i += len;
+      }
+      dec.addSamples(Int16List(0));
+      expect(det.level.isFinite, isTrue);
+      expect(det.limit.isFinite, isTrue);
+      // at most one symbol per two blocks of 1.4 ms: an upper bound that catches a runaway loop
+      expect(out.length, lessThan(rate * 5 / det.n));
+    }
+  });
+
+  test('sample rates other than 16 kHz decode the same text', () {
+    for (final rate in [8000, 11025, 22050, 44100, 48000]) {
+      final pcm = synth(text, rate: rate);
+      final buf = StringBuffer();
+      final dec = MicCwDecoder(
+        GoertzelDetector(sampleRate: rate),
+        AudioCwDecoder(onSymbol: buf.write),
+      );
+      for (var i = 0; i < pcm.length; i += 320) {
+        dec.addSamples(Int16List.sublistView(pcm, i, math.min(i + 320, pcm.length)));
+      }
+      expect(tail(buf.toString().trim()), tail(expected), reason: 'rate $rate');
+    }
   });
 }
