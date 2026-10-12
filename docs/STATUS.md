@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Latest tagged build: v1.7.0 (2026-10-12, tag `v1.7.0` = commit 4fffaa4; exam simulation, learn-from-mistake, word lists, themes, undo bar, focus mode, new logo, DM Sans). Previous: v1.6.0 (2026-10-05), v1.5.0 (2026-10-03); the beta builds v1.6.1-beta1…6 are folded into 1.7.0; older versions in `docs/STATUS-ARCHIVE.md`.
+Latest tagged build: v1.7.0 (2026-10-12; v1.7.1 in progress, see below; tag `v1.7.0` = commit 4fffaa4; exam simulation, learn-from-mistake, word lists, themes, undo bar, focus mode, new logo, DM Sans). Previous: v1.6.0 (2026-10-05), v1.5.0 (2026-10-03); the beta builds v1.6.1-beta1…6 are folded into 1.7.0; older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -31,8 +31,8 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 ## Manual: pending for next release
 (empty — v1.7.0 screenshots retaken, see above)
 
-## CI / security automation (merged 2026-10-12, PR #64)
-GitHub settings done (Secret Protection, Dependabot security updates, private vulnerability reporting, ruleset for `main`). Watch the first Dependabot PRs; `flutter_soloud` updates touch the native audio engine, so test on the phone (rule 2, rule 4). Release review gate: `docs/PROJECT.md` "Release consistency check".
+## v1.7.1 (maintenance release, in progress)
+`main` holds everything (version 1.7.1+8): fidelity audit fixes, review-gate fixes, updated libraries (Dependabot round of 2026-10-12 merged incl. `audio_session` 0.2.4, Gradle 9.8.1, AGP 9.4.1). Tried on the test phone: audio, keyer, settings, links, microphone decoder. **Next**: `v1.7.1-beta1` as GitHub pre-release for Sia (notes: `docs/release-notes-v1.7.1.md`), then the release itself (`tools/build_release.sh v1.7.1`, tag, APK + AAB; the manual PDF stays at v1.7.0, only text changed). Recurring checks and alerts: `docs/PROJECT.md` "Recurring maintenance". Engine config per screen: `android/test/engine_config_test.dart` (DECISIONS); a shared config helper instead of per-screen copies is issue #18.
 
 ## Release note to include (next release)
 Letter and word gaps were one dit too short in all earlier versions (now 3/7 dits at the default spacing), so everything sounds slightly slower. Keyer modes, audio stream locking and the microphone decoder were fixed too (DECISIONS "Keyer audit" etc.). Native tests: `./gradlew :app:testDebugUnitTest` in `android/android` and `tools/run_native_cpp_tests.sh` (CI job `native-test`); locally Gradle needs `JAVA_HOME` of Android Studio's JBR.
