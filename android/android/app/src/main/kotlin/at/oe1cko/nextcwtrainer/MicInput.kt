@@ -104,7 +104,8 @@ class MicInput(private val context: Context) {
 
     @Synchronized
     fun stop() {
-        if (!running) return
+        // No early return on !running: a capture that gave up by itself (read
+        // errors) has running=false but still owns its AudioRecord.
         running = false
         thread?.join(500)
         thread = null

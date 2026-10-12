@@ -7,6 +7,7 @@ ideas and deferred bugs are GitHub issues (rule 12), not listed here.
 
 ## Done
 
+- Fidelity audit of all native/engine modules against firmware V9.0, 2026-10-12 (#67, #73; tried on the test phone, OK 2026-10-12): keyer #67, generator #68, echo evaluation #69, JNI tone engine #70, audio decoder #71. Findings per module in DECISIONS ("Keyer audit", "Generator audit", ...). Koch prosign extension is issue #72.
 - CI and security automation, 2026-10-12 (PR #64, merged): `ci.yml` (analyze, test, debug build), `codeql.yml` (Kotlin, C++), `osv-scan.yml`, `dependabot.yml`; first runs on GitHub all green (CI 2 min / 5 min, CodeQL both languages). Details in DECISIONS.md "CI and automated security checks". GitHub settings and `main` ruleset set up by the user the same day.
 - Hören typing mode: doubled last key (#62, closed 2026-10-11, merged into `main`): `ABCC` for `ABC` repeated the group and showed a yellow/red dot while the statistics said 0 errors. `isTypedRight()` in `copy_grading.dart` now accepts the word plus repetitions of its last char; other extras stay wrong. Details in DECISIONS.md "Hören: typing mode". Reported by Sia.
 - Weak characters on the Listen start page, 2026-10-09 (merged into `main`): the list was computed once in `initState` while the parent still passed the default Koch level 5, so only the first five characters counted (and were boosted). Fixed with `didUpdateWidget` in `adaptive_copy_body.dart`; test `test/weak_chars_start_test.dart`.
