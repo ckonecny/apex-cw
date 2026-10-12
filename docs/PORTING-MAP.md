@@ -7,20 +7,20 @@ Dart files are given relative to `android/` (e.g. `lib/...`).
 
 | Original module | Android module | Status |
 |---|---|---|
-| `m32_v6.ino` generateCW()/fetchNewWord() | `CwGenerator.kt` | Done |
-| `m32_v6.ino` doPaddleIambic() (keyer state machine, CurtisB, ACS) | `CwKeyer.kt` | Done |
+| `m32_v6.ino` generateCW()/fetchNewWord() | `CwGenerator.kt` | Done, audited line by line 2026-10-12 (DECISIONS "Generator audit") |
+| `m32_v6.ino` doPaddleIambic() (keyer state machine, CurtisB, ACS) | `CwKeyer.kt` | Done, audited 2026-10-12 (DECISIONS "Keyer audit") |
 | `m32_v6.ino` echoTrainerEval() | `lib/ui/echo_trainer_screen.dart` | Done (Echo Speed Max as "Gebe-Tempo"; Adaptive Speed differs, see DECISIONS) |
 | `MorseDecoder.cpp` (CWtree decode) | `lib/keyer/morse_decoder.dart` | Done (pattern-table lookup, not the literal tree) |
 | `MorsePreferences.cpp` Koch class / prefs | `lib/content/cw_content.dart`, `lib/ui/settings_screen.dart` | Done, except Koch prosign-tail extension |
 | `callsign_prefixes.h` / getRandomCall() | `CallsignData.kt` | Done |
 | `english_words.h`, `abbrev.h` | `CwGenerator.kt` (word/abbrev lists) | Done |
-| `MorseOutput.cpp` sidetone + envelope | `cw_tone_jni.cpp` (AAudio) | Done (pitch, softness, shift) |
+| `MorseOutput.cpp` sidetone + envelope | `cw_tone_jni.cpp` (AAudio) | Done (pitch, softness, shift), audited 2026-10-12 |
 | `cleanUpProSigns()`/`encodeProSigns()` | inline in generator/echo screens + `morseTable` | Done (display only, two-char mnemonic convention, see DECISIONS.md) |
 | `MorsePreferences.cpp` NVS persistence | `SharedPreferences` | Done (equivalent, different storage) |
 | `MorseTextEntry.cpp` (on-device char picker) | Flutter native text fields | N/A — superseded by touch keyboard |
 | Display layer (`DisplayWrapper`, `M32OledLGFX`) | Flutter widgets | N/A — superseded |
 | `MorseWiFi.cpp` / cwForTx() (WiFi Trx UDP protocol) | `lib/net/mopp.dart`, `lib/net/mopp_client.dart`, `lib/ui/wifi_trx_screen.dart` | Single server/peer, send + receive, in foreground only (2026-09-25), user-tested OK. ESP-NOW/LoRa: N/A |
-| `MorseMorsel.cpp` (Morsel, word guessing) | `lib/ui/morsel_screen.dart` (via `games_screen.dart`) | Ported, single player (2026-09-25), user-tested OK |
+| `MorseMorsel.cpp` (Morsel, word guessing) | `lib/ui/morsel_screen.dart` (via `games_screen.dart`) | Ported, single player (2026-09-25), user-tested OK, audited 2026-10-12 |
 | `MorseMemoryChain.cpp` (Memory Chain) | `lib/ui/memory_chain_screen.dart` (via `games_screen.dart`) | Ported (2026-09-25), user-tested OK |
 | `MorseGridEngine.cpp`, `MorseGridScore.cpp`, `MorseTrailblazer.cpp`, `MorseFoxHunt.cpp` (grid games) | `lib/content/grid_engine.dart`, `lib/content/grid_score.dart`, `lib/ui/maze_game_screen.dart` (via `games_screen.dart`) | Ported (2026-10-03, issue #13), single player; see DECISIONS.md |
 | `MorseGame.cpp`, `MorseGameMode.cpp`, `GameSprite.cpp` (Morse Invaders) | `lib/ui/invaders_screen.dart` (via `games_screen.dart`), effects in `CwTonePlugin.kt` | Ported (2026-09-25), user-tested OK |

@@ -37,6 +37,18 @@ Verify against `reference/`, not memory or the firmware's own docs/manuals —
 those can lag the source. This project's whole value is fidelity to the
 actual firmware behavior.
 
+## Recurring maintenance
+Two scheduled Claude tasks (Claude desktop app, "Scheduled"; they run while the
+app is open) report read-only, without committing or merging anything:
+- `apex-cw-monthly-check`, 1st of each month: open Dependabot PRs with risk
+  and a merge order, Dependabot/CodeQL/secret alerts, CI state of `main`, a
+  quick docs check, whether a release or beta is due.
+- `apex-cw-quarterly-tech-debt`, 2nd of Jan/Apr/Jul/Oct: tech-debt scan,
+  per-screen engine config (rule 2), licences, docs, all test suites.
+Alerts also arrive by e-mail (GitHub notification settings). Audio, build
+tooling (Gradle, Android Gradle Plugin) and `flutter_soloud`/`audio_session`
+updates are merged one group at a time and tried on the test phone first.
+
 ## Release consistency check
 Run before every beta or release (CLAUDE.md rule 16); fix drift right away.
 - `docs/STATUS.md`: latest tag/version line, "Manual: pending" list, open
