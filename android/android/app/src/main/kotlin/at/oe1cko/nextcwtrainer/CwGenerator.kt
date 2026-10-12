@@ -8,9 +8,31 @@ import kotlin.random.Random
  * Converts text → timed dit/dah sequences, drives CwAudioNative directly.
  * No MethodChannel in the playback hot path.
  */
+/** Timing jitter ("bad fist") of the other station, 0..1; CwTonePlugin implements it. */
+interface GenTone {
+    val jitter: Float
+}
+
+/** Where generated CW goes. The default is the native audio engine; tests record it. */
+interface GenOut {
+    fun setPlaying(on: Boolean)
+    fun setRx(on: Boolean)
+}
+
+object NativeGenOut : GenOut {
+    override fun setPlaying(on: Boolean) = CwAudioNative.setPlaying(on)
+    override fun setRx(on: Boolean) = CwAudioNative.setRx(on)
+}
+
 class CwGenerator(
-    private val tone: CwTonePlugin,
+    private val tone: GenTone,
+    private val out: GenOut = NativeGenOut,
+    // Sleeps for the given milliseconds; tests replace it with a virtual clock.
+    private val sleeper: (Long) -> Unit = { Thread.sleep(it) },
     // Reads a bundled Flutter asset ("assets/words/en.txt") as text, null if missing.
+    // Random source; tests pass a seeded one.
+    private val rng: Random = Random.Default,
+    // Keep this the LAST parameter: MainActivity passes it as a trailing lambda.
     private val readAsset: (String) -> String? = { null },
 ) {
 
@@ -126,7 +148,7 @@ class CwGenerator(
     )
 
     // ── Word lists ─────────────────────────────────────────────────────────────
-    // Real CW abbreviation list (244 entries) — ported from abbrev.h, not hand-typed.
+    // Real CW abbreviation list (245 entries) — ported from abbrev.h, not hand-typed.
     private val abbreviations = listOf(
         "CONGRATS", "OUTPUT", "AWARD", "CONDS", "CONDX", "CUAGN", "ELBUG", "EXCUS", 
         "OSCAR", "UNLIS", "WATTS", "AWDH", "AWDS", "BCNU", "BURO", "CALL", "DIFF", "FONE", 
@@ -149,7 +171,7 @@ class CwGenerator(
         "II", "KM", "KW", "KY", "LF", "LP", "LW", "MA", "MM", "MY", "NF", "NO", "NR", 
         "NR", "NW", "OK", "OM", "OP", "OW", "PA", "PM", "PX", "RE", "RF", "RX", "SN", 
         "SP", "TU", "TX", "UP", "UR", "VL", "VY", "WL", "WX", "YL", "I", "K", "N", "R", 
-        "T", "U", "V", "W"
+        "T", "U", "V", "W", "Z"
     )
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -174,7 +196,7 @@ class CwGenerator(
         if (running) return
         val myGen = ++generation
         running = true
-        CwAudioNative.setRx(true)
+        out.setRx(true)
         thread = Thread({
             try {
                 // trailingGap=false: skip the inter-character gap after the LAST
@@ -191,8 +213,8 @@ class CwGenerator(
                 Thread.currentThread().interrupt()
             } finally {
                 running = false
-                CwAudioNative.setPlaying(false)
-                if (myGen == generation) { CwAudioNative.setRx(false); onDone?.invoke(false) }
+                out.setPlaying(false)
+                if (myGen == generation) { out.setRx(false); onDone?.invoke(false) }
             }
         }, "cw-gen-one").also { it.isDaemon = true; it.start() }
     }
@@ -211,20 +233,20 @@ class CwGenerator(
         if (running) return
         val myGen = ++generation
         running = true
-        CwAudioNative.setRx(true)
+        out.setRx(true)
         thread = Thread({
             try {
                 for ((i, p) in patterns.withIndex()) {
                     if (!running) break
                     playPattern(p)
-                    if (i < patterns.size - 1) sleepMs(jitterGap(ditMs() * (interCharSpace - 1), hesitate = true))
+                    if (i < patterns.size - 1) sleepMs(jitterGap(ditMs() * interCharSpace, hesitate = true))
                 }
             } catch (_: InterruptedException) {
                 Thread.currentThread().interrupt()
             } finally {
                 running = false
-                CwAudioNative.setPlaying(false)
-                if (myGen == generation) { CwAudioNative.setRx(false); onDone?.invoke(false) }
+                out.setPlaying(false)
+                if (myGen == generation) { out.setRx(false); onDone?.invoke(false) }
             }
         }, "cw-gen-patterns").also { it.isDaemon = true; it.start() }
     }
@@ -232,9 +254,9 @@ class CwGenerator(
     private fun playPattern(morse: String) {
         for ((idx, sym) in morse.withIndex()) {
             if (!running) break
-            CwAudioNative.setPlaying(true)
+            out.setPlaying(true)
             sleepMs(jitterTone(sym == '.'))
-            CwAudioNative.setPlaying(false)
+            out.setPlaying(false)
             if (idx < morse.length - 1) sleepMs(jitterGap(ditMs()))
         }
     }
@@ -243,7 +265,7 @@ class CwGenerator(
         if (running) return
         val myGen = ++generation
         running = true
-        CwAudioNative.setRx(true)
+        out.setRx(true)
         thread = Thread({ generatorLoop(myGen) }, "cw-generator").also {
             it.isDaemon = true; it.start()
         }
@@ -253,8 +275,8 @@ class CwGenerator(
         generation++
         running = false
         thread?.interrupt()
-        CwAudioNative.setPlaying(false)
-        CwAudioNative.setRx(false)
+        out.setPlaying(false)
+        out.setRx(false)
     }
 
     /** Called from a dit/dah key press while awaitingChoice: dit(repeat=true)=same word, dah(repeat=false)=next word. */
@@ -307,8 +329,8 @@ class CwGenerator(
             Thread.currentThread().interrupt()
         } finally {
             awaitingChoice = false
-            CwAudioNative.setPlaying(false)
-            if (myGen == generation) { CwAudioNative.setRx(false); onDone?.invoke(stoppedByMaxWords) }
+            out.setPlaying(false)
+            if (myGen == generation) { out.setRx(false); onDone?.invoke(stoppedByMaxWords) }
         }
     }
 
@@ -322,14 +344,23 @@ class CwGenerator(
             Mode.CALLSIGNS    -> randomCallsign()
             // Koch Trainer's Mixed is a 3-way split (word/abbrev/random-char-group),
             // matching KOCH_MIXED exactly; plain Mixed stays word/abbrev only.
-            Mode.MIXED        -> if (kochActive) kochMixedContent()
-                                  else if (Random.nextBoolean()) randomWord() else randomAbbrev()
+            Mode.MIXED        -> if (kochActive) kochMixedContent() else mixedContent()
             Mode.PRACTICE_SET -> randomPracticeGroup()
             Mode.ABBREVS      -> randomAbbrev()
         }
     }
 
-    private fun kochMixedContent(): String = when (Random.nextInt(3)) {
+    // Plain MIXED, as in fetchNewWord(): one of four, equally likely — a word,
+    // an abbreviation, a call sign, or a single punctuation mark / prosign
+    // (getRandomChars(1, OPT_PUNCTPRO)).
+    private fun mixedContent(): String = when (rng.nextInt(4)) {
+        0 -> randomWord()
+        1 -> randomAbbrev()
+        2 -> randomCallsign()
+        else -> randomPoolChars(1, option = 7)
+    }
+
+    private fun kochMixedContent(): String = when (rng.nextInt(3)) {
         0 -> randomWord()
         1 -> randomAbbrev()
         else -> randomCharGroup()
@@ -347,7 +378,7 @@ class CwGenerator(
     private fun drawGroupLength(lo: Int, hi: Int): Int {
         val a = lo.coerceIn(1, 8)
         val b = (if (groupLengthMax > 0) groupLengthMax else lo).coerceIn(1, 8)
-        return if (a >= b) a else Random.nextInt(a, b + 1)
+        return if (a >= b) a else rng.nextInt(a, b + 1)
     }
 
     private fun randomCharGroup(): String {
@@ -382,14 +413,23 @@ class CwGenerator(
         else -> 0..50 // All
     }
 
-    private fun randomPoolChars(len: Int): String {
-        val range = randomGroupsRange(randomOption)
-        val tries = boostAttempts()
+    // Non-Koch Random Chars with Boost Practice: an exact WEIGHTED draw, as in
+    // getRandomChars() — characters of the Practice Set count 3x (Moderate) or
+    // 8x (Strong), all others 1x, within the chosen Random Groups range. This
+    // is deliberately not the redraw scheme of the Koch path (boostAttempts);
+    // the firmware warns that the two are not calibrated against each other.
+    private fun randomPoolChars(len: Int, option: Int = randomOption): String {
+        val range = randomGroupsRange(option)
+        val mult = if (boostLevel in 1..2 && practiceChars.isNotEmpty()) intArrayOf(3, 8)[boostLevel - 1] else 1
+        val weight = IntArray(range.count()) { i ->
+            if (mult > 1 && randomCharsAlphabet[range.first + i] in practiceChars) mult else 1
+        }
+        val total = weight.sum()
         return (1..len).joinToString("") {
-            var idx = range.random()
-            var t = 1
-            while (t < tries && randomCharsAlphabet[idx] !in practiceChars) { idx = range.random(); t++ }
-            randomCharsAlphabet[idx]
+            var roll = rng.nextInt(total)
+            var j = 0
+            while (roll >= weight[j]) { roll -= weight[j]; j++ }
+            randomCharsAlphabet[range.first + j]
         }
     }
 
@@ -405,8 +445,8 @@ class CwGenerator(
     // from the firmware.
     private fun weightedKochChar(active: List<String>): String {
         val endk = active.size
-        return if (Random.nextInt(3) != 0) active[Random.nextInt(endk)]
-        else active[Random.nextInt(2 * endk / 3, endk)]
+        return if (rng.nextInt(3) != 0) active[rng.nextInt(endk)]
+        else active[rng.nextInt(2 * endk / 3, endk)]
     }
 
     private fun randomKochChars(len: Int): String {
@@ -427,7 +467,7 @@ class CwGenerator(
         val len = drawGroupLength(groupLength, groupLengthMax).let {
             if (wordLengthMax > 0) minOf(it, wordLengthMax) else it
         }.coerceIn(1, 8)
-        return (1..len).map { practiceChars.random() }.joinToString("")
+        return (1..len).map { practiceChars.random(rng) }.joinToString("")
     }
 
     // A word/abbrev "qualifies" for the active Koch level iff every one of its
@@ -465,7 +505,7 @@ class CwGenerator(
         val cum = LongArray(indices.size)
         var total = 0L
         for ((k, i) in indices.withIndex()) { total += list.weights[i]; cum[k] = total }
-        val r = Random.nextLong(total)
+        val r = rng.nextLong(total)
         var lo = 0; var hi = cum.size - 1
         while (lo < hi) { val mid = (lo + hi) ushr 1; if (cum[mid] > r) hi = mid else lo = mid + 1 }
         return list.words[indices[lo]]
@@ -496,7 +536,7 @@ class CwGenerator(
             pool = pool.filter { kochQualifies(it) }
             if (pool.isEmpty()) return randomKochChars(1)
         }
-        return (if (pool.isEmpty()) abbreviations else pool).random()
+        return (if (pool.isEmpty()) abbreviations else pool).random(rng)
     }
 
     private fun randomCallsign(): String =
@@ -534,15 +574,21 @@ class CwGenerator(
         }
     }
 
+    /** Test hook: plays one word synchronously on the calling thread. */
+    internal fun playWordNow(text: String, trailingGap: Boolean = true) {
+        running = true
+        try { playWord(text, generation, trailingGap) } finally { running = false }
+    }
+
     private fun playChar(ch: String, myGen: Int, withTrailingGap: Boolean = true) {
         val morse = morseTable[ch] ?: return
         for ((idx, sym) in morse.withIndex()) {
             if (!running) break
             val toneDur = jitterTone(sym == '.')
-            CwAudioNative.setPlaying(true)
+            out.setPlaying(true)
             if (myGen == generation) onElement?.invoke(idx, true)
             sleepMs(toneDur)
-            CwAudioNative.setPlaying(false)
+            out.setPlaying(false)
             if (myGen == generation) onElement?.invoke(idx, false)
             // inter-element gap (skip after last symbol — inter-char gap follows)
             if (idx < morse.length - 1) sleepMs(jitterGap(ditMs()))
@@ -551,12 +597,18 @@ class CwGenerator(
         // real device's dispGeneratedChar(), called at KEY_DOWN→KEY_UP once keying
         // for that char is done, not when it starts.
         if (myGen == generation) onChar?.invoke(ch)
-        // inter-character gap: interCharSpace total dits; -1 because last inter-element already consumed 1 dit
-        if (withTrailingGap) sleepMs(jitterGap(ditMs() * (interCharSpace - 1), hesitate = true))
+        // Inter-character gap: Interchar Spc dits counted from the end of the last
+        // tone (generateCW(): genTimer = interCharacterSpace). There is no
+        // inter-element gap after the last element of a character (it was
+        // once subtracted here as "already consumed", which made every
+        // character gap, and with it every word gap, one dit too short).
+        if (withTrailingGap) sleepMs(jitterGap(ditMs() * interCharSpace, hesitate = true))
     }
 
-    // Extra dits needed after inter-char to reach the full (absolute) inter-word gap
-    private fun wordGapExtra(): Int = maxOf(1, interWordSpace - interCharSpace)
+    // Extra dits needed after the inter-char gap to reach the full inter-word
+    // gap, which the firmware computes in updateTimings() as
+    // max(InterWord Spc, Interchar Spc + 4) dits, counted from the last tone.
+    private fun wordGapExtra(): Int = maxOf(interWordSpace, interCharSpace + 4) - interCharSpace
 
     // ── Timing helpers ────────────────────────────────────────────────────────
     private fun ditMs()  = (1200.0 / wpm).roundToInt()
@@ -568,7 +620,7 @@ class CwGenerator(
     // dit:dah ratio, and at high levels a character gap occasionally
     // hesitates. At 0 the timing is exact. Only the other station's signal
     // goes through the generator; the user's own keying is never touched.
-    private fun rnd() = Random.nextFloat() * 2f - 1f   // -1..1
+    private fun rnd() = rng.nextFloat() * 2f - 1f   // -1..1
 
     private fun jitterTone(dit: Boolean): Int {
         val j = tone.jitter
@@ -583,12 +635,12 @@ class CwGenerator(
         val j = tone.jitter
         if (j <= 0f || ms <= 0) return ms
         var v = ms * (1f + j * 0.5f * rnd())
-        if (hesitate && Random.nextFloat() < j * 0.08f) v += ditMs() * (1 + Random.nextInt(2))
+        if (hesitate && rng.nextFloat() < j * 0.08f) v += ditMs() * (1 + rng.nextInt(2))
         return v.roundToInt().coerceAtLeast(1)
     }
 
     private fun sleepMs(ms: Int) {
         if (ms <= 0) return
-        Thread.sleep(ms.toLong())
+        sleeper(ms.toLong())
     }
 }

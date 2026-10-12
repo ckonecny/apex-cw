@@ -501,7 +501,7 @@ The **content** decides what is played:
 | **Words** | Common words (English or German, weighted by frequency). The chip shows roughly how many different words can come up (e.g. “~190”): it depends on the language, the word length and, with Koch, on the unlocked characters | Koch, All |
 | **Abbreviations** | Common CW abbreviations | Koch, All |
 | **Call signs** | Random, realistic call signs | All |
-| **Mixed** | Words, abbreviations and groups mixed | Koch, All |
+| **Mixed** | With Koch: words, abbreviations and groups mixed. With all characters: words, abbreviations, call signs and single punctuation marks or prosigns, as on the Morserino | Koch, All |
 
 With the Koch lesson, only words and abbreviations made **entirely** of
 characters you have already learned are used. In the first lessons there are
