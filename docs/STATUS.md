@@ -32,7 +32,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 (empty — v1.7.0 screenshots retaken, see above)
 
 ## CI / security automation (merged 2026-10-12, PR #64)
-Open (user, GitHub settings): enable Secret Protection (Advanced Security), Dependabot security updates and private vulnerability reporting; create a ruleset for `main` requiring `analyze-test` + `build-debug` (admin bypass). Watch the first Dependabot PRs; `flutter_soloud` updates touch the native audio engine, so test on the phone (rule 2, rule 4).
+GitHub settings done (Secret Protection, Dependabot security updates, private vulnerability reporting, ruleset for `main`). Watch the first Dependabot PRs; `flutter_soloud` updates touch the native audio engine, so test on the phone (rule 2, rule 4). Release review gate: `docs/PROJECT.md` "Release consistency check".
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
