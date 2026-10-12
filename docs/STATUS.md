@@ -31,6 +31,9 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 ## Manual: pending for next release
 (empty — v1.7.0 screenshots retaken, see above)
 
+## CI / security automation (2026-10-12, branch `ci/workflows-security`, not merged)
+Workflows written, `flutter analyze`/`test` pass locally, but the workflows have not run on GitHub yet. After merging to main: check the first runs (Actions tab), fix what the Linux runner reveals, then enable Secret Scanning + Push Protection and Dependabot alerts in repo Settings → Code security. Optionally make `CI` a required check for main.
+
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual

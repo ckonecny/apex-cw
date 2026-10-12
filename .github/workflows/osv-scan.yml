@@ -1,0 +1,32 @@
+name: Dependency vulnerabilities
+
+# Scans pubspec.lock and Gradle dependencies against the OSV database.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android/pubspec.lock'
+      - 'android/android/**/*.gradle*'
+  pull_request:
+    paths:
+      - 'android/pubspec.lock'
+      - 'android/android/**/*.gradle*'
+  schedule:
+    - cron: '41 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  osv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install osv-scanner
+        run: |
+          curl -sSfL -o osv-scanner https://github.com/google/osv-scanner/releases/download/v1.9.2/osv-scanner_linux_amd64
+          chmod +x osv-scanner
+      - name: Scan pubspec.lock
+        run: ./osv-scanner --lockfile=android/pubspec.lock
