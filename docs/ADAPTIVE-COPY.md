@@ -2,7 +2,7 @@
 
 > **Stand seit Phase 7:** Der Klassisch-Ablauf und der Klassisch/Adaptiv-Umschalter sind entfernt; Hören läuft immer als adaptiver Block, für Koch, Alle Zeichen und Übungsset (`docs/archive/training/P7-zeichenvorrat-startseite.md`). Die Abschnitte unten beschreiben die Entstehung und nennen teils Klassisch, `kochMode` und die alten Home-Karten.
 
-Status: planned, not started. Not a firmware port — this concept has no
+Status: implemented (see the banner above; kept as design history). Not a firmware port — this concept has no
 `reference/` equivalent; it originates from a separate ESP32 CW-trainer
 project and is being added here as a net-new mode. Existing modes/data stay
 untouched (per CLAUDE.md hard rules).
@@ -480,3 +480,5 @@ worth a follow-up: showing each active character's own attempts/EMA on the
 result or Settings screen (ties into the still-open "Surface adaptive state
 in Settings" TODO above), so the *actual* blocker is visible without pulling
 prefs off the device by hand.
+
+- **2026-10-11:** the weak-character chips moved from the separate card into the "On the way to X" card on the Listen start and result pages while the unlock card is visible (Koch); the logic above is unchanged (see DECISIONS.md).

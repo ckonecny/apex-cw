@@ -10,17 +10,14 @@ only the current state, organisational steps and hints for the next session.
 ## Next steps — Play Store (user, 2026-09-28)
 Done: upload key and signing, privacy policy, store texts and graphics
 (`docs/PLAY-LISTING.md`, `docs/DECISIONS.md` "Play Store preparation"); store
-raw shots home / Hören and Geben statistics retaken for v1.3.0 (2026-10-01,
-dark, DE+EN), graphics rebuilt; AAB `releases/apex-cw-v1.7.0.aab` (store raw shots still from v1.3.0).
+raw shots and graphics rebuilt 2026-10-08 (dark, DE+EN, beta 1.6.1); AAB `releases/apex-cw-v1.7.0.aab` built.
 1. User: developer account (identity check passed).
-2. Upload the AAB; closed test: 12 testers × 14 days.
+2. Waiting until all testers are collected (user, 2026-10-12). Then: retake the store raw shots (dark, DE+EN; the phone must stay unlocked), `python3 store/make_graphics.py`, update the listing texts and "What's new" for 1.7.0, upload the AAB; closed test: 12 testers × 14 days.
 3. Production.
-The store raw shots `home` and `games` still show the v1.3.0 screens: retake them
-(dark, DE+EN) before uploading the v1.7.0 AAB. Check `qso`, `adventure`, `hear`
-for the old home layout/labels too.
+Since 2026-10-08 the Home tiles (Head copy under Practice, Listen trend), the Listen start (weak chars in the outlook card) and the themes changed: retake all eight raw shots before uploading.
 
 ## Manual: screenshots (v1.7.0)
-All screenshots retaken for v1.7.0 (2026-10-12, light theme, DE+EN, test phone, 12 weeks of statistics seeded; the phone's own data was restored afterwards). Exceptions: `echo_result2.png` (suggestion ticked, needs a hand-played 100 % block) is still from v1.6.0 and shows the old font; `decoder.png` shows an idle decoder (no sound source at hand). Added: `hear_type_learn`, `keyer_sheet`, `exam_setup`. Not shown: Straight-key-only states (issue #17) and the exam result pages.
+All screenshots retaken for v1.7.0 (2026-10-12, light theme, DE+EN, test phone, 12 weeks of statistics seeded; the phone's own data was restored afterwards). Exceptions (accepted by the user, 2026-10-12, no rush): `echo_result2.png` (suggestion ticked, needs a hand-played 100 % block) is still from v1.6.0 and shows the old font; `decoder.png` shows an idle decoder (no sound source at hand). Added: `hear_type_learn`, `keyer_sheet`, `exam_setup`. Not shown: Straight-key-only states (issue #17) and the exam result pages.
 
 ## Landing page (live, Pages source "GitHub Actions" set)
 Open: replace the disabled "Google Play: coming soon" button with the store
@@ -29,8 +26,6 @@ link once the app is live, and set the Play listing's website to the Pages URL.
 ## New logo (2026-10-06, on main): still to do
 Done and checked on the test phone: launcher icons, README, landing page. Pending:
 - **Play Store**: graphics, screenshots and texts rebuilt 2026-10-08 (palette now navy, 8 shots per language, `docs/PLAY-LISTING.md` updated). Still to do in the Play Console: upload `store/out/*` (icon_512, feature graphic, shots in order) and paste the texts, for DE and EN.
-- **GitHub**: upload `android/tool/icon/social_preview.png` (repo Settings →
-  Social preview; no API).
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release

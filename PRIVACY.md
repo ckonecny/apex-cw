@@ -36,6 +36,12 @@ optionale **Erinnerung** einschaltest. Sie wird lokal auf dem Gerät geplant;
 dafür wird nichts übertragen. Zusätzlich darf die App nach einem Neustart die
 Erinnerung wieder einplanen.
 
+### Do Not Disturb
+The optional **Do not disturb while practising** setting needs the Android permission "Do Not Disturb access". It is used only while the setting is on and a training screen is open: the app switches Android's Do Not Disturb filter to "priority" and back afterwards. You grant or revoke the permission in the Android settings. Nothing is read from your notifications or calls, stored or transmitted.
+
+### Vibration
+The vibration permission is used only for the short tick when you press a key or a lesson character (switchable in the settings). Nothing is stored or transmitted.
+
 ### Internet
 Die Berechtigung „Internet“ wird nur für **WiFi Trx** verwendet: Die App
 sendet und empfängt Morsezeichen per UDP an bzw. von dem Server, den du
