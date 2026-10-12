@@ -2052,3 +2052,9 @@ Checked and identical: the 69-entry decoding tree (script, every symbol and both
 Tests added (`test/cw_audio_decoder_test.dart`): every pattern of the keyer decoder table decodes to the same character through the firmware tree (the two decoders in the app agree); full-scale random samples, DC offset and unaligned chunk sizes at 8/16/44.1/48 kHz neither throw nor produce more symbols than blocks; the same text decodes at 8, 11.025, 22.05, 44.1 and 48 kHz.
 
 Fixed in `MicInput.kt`: a failing `AudioRecord.read()` (negative return: microphone taken by another app, dead object) made the capture loop spin at full speed on a max-priority thread; it now pauses 20 ms between attempts and ends the capture after 50 consecutive errors. A capture that ended that way left its `AudioRecord` unreleased; `start()` now releases it. (Dart is not told that the capture stopped; the decoder just goes quiet, the cause is in logcat.)
+
+## Review gate findings for 1.7.1 (2026-10-12)
+`/code-review high` on the diff since v1.7.0 found two real defects in the audit changes, both fixed:
+- `MicInput.stop()` returned early when the capture had already ended by itself (50 failed reads), so the `AudioRecord` was never released; it now always releases.
+- The AAudio error callback gave up when `gStreamMutex` was busy and the stream stayed dead. It still never blocks (a closing thread waits for the callback), but now hands the reopen to a helper thread that takes the lock and re-checks that the stream is still the current one. `getLatencyMs()` reads a value cached at open instead of taking the mutex.
+`/security-review` found nothing. Workflow follow-ups are in a separate PR (OSV scanner checksum, CodeQL uses the Flutter version variable).

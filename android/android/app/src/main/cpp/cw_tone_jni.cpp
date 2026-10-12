@@ -8,6 +8,7 @@
 #include <cmath>
 #include <jni.h>
 #include <mutex>
+#include <thread>
 
 #include "interference.h"
 
@@ -34,6 +35,7 @@ static std::atomic<float>  gEnvelopeMs {5.0f};
 // a nonzero id (from AudioManager.getDevices()) pins the stream to that
 // device. Set by AudioRouteManager.kt before calling restartStream().
 static std::atomic<int32_t> gPreferredDeviceId {0};
+static std::atomic<int>     gLatencyMs {-1};   // cached after open, read without the mutex
 
 // Interference on the other station's signal (noise, QSB, ...); see interference.h.
 static Interference gInterference;
@@ -85,6 +87,7 @@ static void closeStreamLocked() {
         AAudioStream_requestStop(gStream);
         AAudioStream_close(gStream);
         gStream = nullptr;
+        gLatencyMs.store(-1);
     }
 }
 
@@ -126,7 +129,22 @@ static aaudio_result_t openStreamInternal() {
 
     res = AAudioStream_requestStart(gStream);
     if (res != AAUDIO_OK) LOGE("requestStart: %s", AAudio_convertResultToText(res));
+    {
+        // Approximate output latency: 2 bursts (double-buffering) + output pipeline
+        const int32_t burstFrames = AAudioStream_getFramesPerBurst(gStream);
+        const int32_t sampleRate  = AAudioStream_getSampleRate(gStream);
+        gLatencyMs.store(sampleRate > 0 ? (int)(2000.0 * burstFrames / sampleRate) : -1);
+    }
     return res;
+}
+
+// Reopens the stream after an error, but only if [stream] is still the current
+// one. After stopStream() (gStream is null) or a restart (a different stream)
+// nothing may be reopened. Caller holds gStreamMutex.
+static void reopenIfCurrentLocked(AAudioStream* stream) {
+    if (stream != gStream) return;
+    closeStreamLocked();
+    openStreamInternal();
 }
 
 static void errorCallback(AAudioStream* stream, void* /*userData*/, aaudio_result_t error) {
@@ -135,12 +153,17 @@ static void errorCallback(AAudioStream* stream, void* /*userData*/, aaudio_resul
     // the routed device is unplugged/unpaired) leaves the old handle unusable —
     // restarting it in place doesn't work, a fresh stream must be opened.
     std::unique_lock<std::mutex> lock(gStreamMutex, std::try_to_lock);
-    if (!lock.owns_lock()) return;     // another thread is restarting or closing it right now
-    // Only for the stream that is still current. After stopStream() (gStream is
-    // null) or a restart (a different stream) nothing may be reopened here.
-    if (stream != gStream) return;
-    closeStreamLocked();
-    openStreamInternal();
+    if (!lock.owns_lock()) {
+        // Another thread holds the mutex (restart, stop, ...). Never block in
+        // this callback (a closing thread waits for it). Retry from a helper
+        // thread, which may block; the stream check keeps a stale error harmless.
+        std::thread([stream] {
+            std::lock_guard<std::mutex> l(gStreamMutex);
+            reopenIfCurrentLocked(stream);
+        }).detach();
+        return;
+    }
+    reopenIfCurrentLocked(stream);
 }
 
 extern "C" {
@@ -227,13 +250,7 @@ Java_at_oe1cko_nextcwtrainer_CwAudioNative_stopStream(JNIEnv*, jclass)
 JNIEXPORT jint JNICALL
 Java_at_oe1cko_nextcwtrainer_CwAudioNative_getLatencyMs(JNIEnv*, jclass)
 {
-    std::lock_guard<std::mutex> lock(gStreamMutex);
-    if (!gStream) return -1;
-    int32_t burstFrames   = AAudioStream_getFramesPerBurst(gStream);
-    int32_t sampleRate    = AAudioStream_getSampleRate(gStream);
-    if (sampleRate <= 0) return -1;
-    // Approximate output latency: 2 bursts (double-buffering) + output pipeline
-    return (int)(2000.0 * burstFrames / sampleRate);
+    return gLatencyMs.load();
 }
 
 } // extern "C"
