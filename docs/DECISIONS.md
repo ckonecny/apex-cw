@@ -2058,3 +2058,6 @@ Fixed in `MicInput.kt`: a failing `AudioRecord.read()` (negative return: microph
 - `MicInput.stop()` returned early when the capture had already ended by itself (50 failed reads), so the `AudioRecord` was never released; it now always releases.
 - The AAudio error callback gave up when `gStreamMutex` was busy and the stream stayed dead. It still never blocks (a closing thread waits for the callback), but now hands the reopen to a helper thread that takes the lock and re-checks that the stream is still the current one. `getLatencyMs()` reads a value cached at open instead of taking the mutex.
 `/security-review` found nothing. Workflow follow-ups are in a separate PR (OSV scanner checksum, CodeQL uses the Flutter version variable).
+
+## Third-party actions pinned to commit hashes (2026-10-12)
+`subosito/flutter-action` and `github/codeql-action` are referenced by commit hash with the tag as a comment (`@<sha> # v2.23.0`), because a movable tag like `@v2` lets a compromised action repo run new code in our CI on the next run. GitHub's own `actions/*` stay on tags (lower risk). Dependabot recognises the format and proposes updates with the new hash and comment. CodeQL now analyses Kotlin and C++ in one job from one build (a single debug build traced for both languages).
