@@ -115,9 +115,15 @@ the result page, among others. Each area remembers its own size.
 ## Light, dark, language
 
 Under **Settings → Appearance** you choose the **Theme** (System, Light,
-Dark, Amber, Red, Green, Warm grey or Navy & orange). Amber, Red, Green, Warm grey and Navy & orange are dark themes with their own palette: Amber with warm yellows, Red (night vision) with muted red, which disturbs dark adaptation the least, Green like a phosphor terminal, Warm grey with a soft, low-contrast brown-grey, and Navy & orange with a blue-black ground, silver text and an orange accent (like a smartwatch face) and the app **Language** (Deutsch or English). There is also a **Blue light
-filter** you can switch on: it tints the whole app warm (in light and dark) at
-a strength you set. All of it takes effect immediately.
+Dark, Amber, Red, Green, Warm grey or Navy & orange) and the app **Language**
+(Deutsch or English). Amber, Red, Green, Warm grey and Navy & orange are dark
+themes with their own palette: Amber with warm yellows, Red (night vision) with
+muted red, which disturbs dark adaptation the least, Green like a phosphor
+terminal, Warm grey with a soft, low-contrast brown-grey, and Navy & orange
+with a blue-black ground, silver text and an orange accent (only orange and
+silver tones, like a smartwatch face). There is also a **Blue light filter**
+you can switch on: it tints the whole app warm (in light and dark) at a
+strength you set. All of it takes effect immediately.
 
 The app follows the Android **font size** setting, but only up to **1.3×**
 the default size (step 4 of 7 on a Pixel). Larger steps look the same as

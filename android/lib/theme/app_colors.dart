@@ -168,7 +168,8 @@ class AppColors {
   );
 
   /// Navy and orange (watch-face look, dark brightness): blue-black grounds,
-  /// silver text, orange accent, steel-blue secondary.
+  /// silver text, orange accent. Only orange and silver tones (no cyan or pink),
+  /// so menu icons stay within the theme.
   static const navyOrange = AppColors(
     background:    Color(0xFF05080F),
     surface:       Color(0xFF0D1826),
@@ -185,8 +186,8 @@ class AppColors {
     accent:        Color(0xFFF28A2E),
     warning:       Color(0xFFF5B642),
     danger:        Color(0xFFE5483D),
-    info:          Color(0xFF6FB8D8),
-    accentPurple:  Color(0xFFB08AD0),
+    info:          Color(0xFFB9C6D8),
+    accentPurple:  Color(0xFFF0A050),
   );
 
   /// True for the dark-brightness variants (amber, red, green, warm grey).

@@ -118,9 +118,15 @@ Jedes Feld merkt sich seine eigene Größe.
 ## Hell, dunkel, Sprache
 
 Unter **Einstellungen → Darstellung** wählst du das **Farbschema** (System / Hell /
-Dunkel / Bernstein / Rot / Grün / Warmgrau / Marine & Orange). Bernstein, Rot, Grün, Warmgrau und Marine & Orange sind dunkle Schemata mit eigener Farbpalette: Bernstein mit warmen Gelbtönen, Rot (Nachtsicht) mit gedämpftem Rot, das die Dunkeladaption der Augen am wenigsten stört, Grün wie ein Phosphor-Terminal Warmgrau mit weichem, kontrastarmem Braungrau und Marine & Orange mit blauschwarzem Grund, silbernem Text und orangem Akzent (wie ein Smartwatch-Zifferblatt) und die **Sprache** der App (Deutsch / English). Dazu gibt es einen
-zuschaltbaren **Blaulichtfilter**, der die ganze App warm einfärbt (in Hell und
-Dunkel) und dessen Stärke du einstellst. Alles wirkt sofort.
+Dunkel / Bernstein / Rot / Grün / Warmgrau / Marine & Orange) und die **Sprache**
+der App (Deutsch / English). Bernstein, Rot, Grün, Warmgrau und Marine & Orange
+sind dunkle Schemata mit eigener Farbpalette: Bernstein mit warmen Gelbtönen,
+Rot (Nachtsicht) mit gedämpftem Rot, das die Dunkeladaption der Augen am
+wenigsten stört, Grün wie ein Phosphor-Terminal, Warmgrau mit weichem,
+kontrastarmem Braungrau und Marine & Orange mit blauschwarzem Grund, silbernem
+Text und orangem Akzent (nur Orange- und Silbertöne, wie ein Smartwatch-Zifferblatt).
+Dazu gibt es einen zuschaltbaren **Blaulichtfilter**, der die ganze App warm
+einfärbt (in Hell und Dunkel) und dessen Stärke du einstellst. Alles wirkt sofort.
 
 Die **Schriftgröße** übernimmt die App aus den Android-Einstellungen, aber
 nur bis zum **1,3-Fachen** der Standardgröße (beim Pixel die 4. von 7
