@@ -36,7 +36,7 @@ jobs:
           de=$(ls manual/APEXCW_Handbuch_v*.html | sort -V | tail -1)
           cp "$en" _site/manual-en.html
           cp "$de" _site/manual-de.html
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
