@@ -7,13 +7,22 @@
 #include <atomic>
 #include <cmath>
 #include <jni.h>
+#include <mutex>
 
 #include "interference.h"
 
 #define TAG "CwAudio"
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 
+// gStream is opened, closed and replaced from several threads: the JNI calls
+// (main thread, AudioRouteManager) and AAudio's own error-callback thread (a
+// Bluetooth disconnect raises the error callback and the route change at about
+// the same time). All of it goes through gStreamMutex. The audio data callback
+// never takes it. Closing a stream waits for its callbacks to finish, so the
+// error callback must never BLOCK on the mutex (try_lock only), or the two
+// would wait for each other.
 static AAudioStream* gStream = nullptr;
+static std::mutex gStreamMutex;
 static std::atomic<bool>   gPlaying{false};
 static std::atomic<double> gFreqHz {600.0};
 static std::atomic<float>  gVolume {0.7f};
@@ -70,8 +79,17 @@ static aaudio_data_callback_result_t audioCallback(
 
 static void errorCallback(AAudioStream* stream, void* userData, aaudio_result_t error);
 
-// Opens gStream against gPreferredDeviceId (0 = system default). Caller must
-// ensure any previous gStream has already been stopped/closed.
+// Stops and closes the stream, if any. Caller holds gStreamMutex.
+static void closeStreamLocked() {
+    if (gStream) {
+        AAudioStream_requestStop(gStream);
+        AAudioStream_close(gStream);
+        gStream = nullptr;
+    }
+}
+
+// Opens gStream against gPreferredDeviceId (0 = system default). Caller holds
+// gStreamMutex and has already stopped/closed any previous gStream.
 static aaudio_result_t openStreamInternal() {
     const int32_t deviceId = gPreferredDeviceId.load(std::memory_order_relaxed);
 
@@ -111,16 +129,17 @@ static aaudio_result_t openStreamInternal() {
     return res;
 }
 
-static void errorCallback(AAudioStream* /*stream*/, void* /*userData*/, aaudio_result_t error) {
+static void errorCallback(AAudioStream* stream, void* /*userData*/, aaudio_result_t error) {
     LOGE("AAudio error: %s", AAudio_convertResultToText(error));
     // Any AAudio error on this stream (xrun, or AAUDIO_ERROR_DISCONNECTED when
     // the routed device is unplugged/unpaired) leaves the old handle unusable —
     // restarting it in place doesn't work, a fresh stream must be opened.
-    if (gStream) {
-        AAudioStream_requestStop(gStream);
-        AAudioStream_close(gStream);
-        gStream = nullptr;
-    }
+    std::unique_lock<std::mutex> lock(gStreamMutex, std::try_to_lock);
+    if (!lock.owns_lock()) return;     // another thread is restarting or closing it right now
+    // Only for the stream that is still current. After stopStream() (gStream is
+    // null) or a restart (a different stream) nothing may be reopened here.
+    if (stream != gStream) return;
+    closeStreamLocked();
     openStreamInternal();
 }
 
@@ -129,17 +148,15 @@ extern "C" {
 JNIEXPORT jint JNICALL
 Java_at_oe1cko_nextcwtrainer_CwAudioNative_startStream(JNIEnv*, jclass)
 {
+    std::lock_guard<std::mutex> lock(gStreamMutex);
     return openStreamInternal();
 }
 
 JNIEXPORT jint JNICALL
 Java_at_oe1cko_nextcwtrainer_CwAudioNative_restartStream(JNIEnv*, jclass)
 {
-    if (gStream) {
-        AAudioStream_requestStop(gStream);
-        AAudioStream_close(gStream);
-        gStream = nullptr;
-    }
+    std::lock_guard<std::mutex> lock(gStreamMutex);
+    closeStreamLocked();
     return openStreamInternal();
 }
 
@@ -203,19 +220,18 @@ Java_at_oe1cko_nextcwtrainer_CwAudioNative_setClean(JNIEnv*, jclass, jboolean on
 JNIEXPORT void JNICALL
 Java_at_oe1cko_nextcwtrainer_CwAudioNative_stopStream(JNIEnv*, jclass)
 {
-    if (gStream) {
-        AAudioStream_requestStop(gStream);
-        AAudioStream_close(gStream);
-        gStream = nullptr;
-    }
+    std::lock_guard<std::mutex> lock(gStreamMutex);
+    closeStreamLocked();
 }
 
 JNIEXPORT jint JNICALL
 Java_at_oe1cko_nextcwtrainer_CwAudioNative_getLatencyMs(JNIEnv*, jclass)
 {
+    std::lock_guard<std::mutex> lock(gStreamMutex);
     if (!gStream) return -1;
     int32_t burstFrames   = AAudioStream_getFramesPerBurst(gStream);
     int32_t sampleRate    = AAudioStream_getSampleRate(gStream);
+    if (sampleRate <= 0) return -1;
     // Approximate output latency: 2 bursts (double-buffering) + output pipeline
     return (int)(2000.0 * burstFrames / sampleRate);
 }
