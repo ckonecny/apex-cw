@@ -370,18 +370,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SettingsSectionHeader(Strings.t('settings_appearance')),
           const SizedBox(height: 12),
           SettingsCard(children: [
-            ValueListenableBuilder<ThemeMode>(
-              valueListenable: ThemeController.mode,
-              builder: (context, mode, _) => SegmentRow(
+            ValueListenableBuilder<int>(
+              valueListenable: ThemeController.choice,
+              builder: (context, choice, _) => SegmentRow(
                 label: Strings.t('settings_theme'),
-                options: [Strings.t('theme_system'), Strings.t('theme_light'), Strings.t('theme_dark')],
-                selected: switch (mode) {
-                  ThemeMode.light => 1,
-                  ThemeMode.dark  => 2,
-                  _               => 0,
-                },
-                onChanged: (v) => ThemeController.set(
-                    [ThemeMode.system, ThemeMode.light, ThemeMode.dark][v]),
+                options: [Strings.t('theme_system'), Strings.t('theme_light'), Strings.t('theme_dark'), Strings.t('theme_amber'), Strings.t('theme_red'), Strings.t('theme_green'), Strings.t('theme_warmgrey'), Strings.t('theme_navy')],
+                selected: choice,
+                onChanged: ThemeController.set,
               ),
             ),
             const SettingsDivider(),

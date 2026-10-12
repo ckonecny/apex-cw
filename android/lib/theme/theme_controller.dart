@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'app_colors.dart';
 
-/// App-wide theme mode, persisted and shared between Settings and main.dart.
-/// 0=System (default), 1=Light, 2=Dark — matches the usual convention.
+/// App-wide theme, persisted and shared between Settings and main.dart.
+/// 0=System (default), 1=Light, 2=Dark, then the dark-brightness variants
+/// 3=Amber, 4=Red, 5=Green, 6=Warm grey, 7=Navy/Orange.
 class ThemeController {
-  static final ValueNotifier<ThemeMode> mode = ValueNotifier(ThemeMode.system);
+  static final ValueNotifier<int> choice = ValueNotifier(0);
 
   static Future<void> load() async {
     final p = await SharedPreferences.getInstance();
-    mode.value = _fromInt(p.getInt('themeMode') ?? 0);
+    choice.value = (p.getInt('themeMode') ?? 0).clamp(0, 7);
   }
 
-  static Future<void> set(ThemeMode m) async {
-    mode.value = m;
+  static Future<void> set(int v) async {
+    choice.value = v;
     final p = await SharedPreferences.getInstance();
-    await p.setInt('themeMode', _toInt(m));
+    await p.setInt('themeMode', v);
   }
 
-  static int _toInt(ThemeMode m) => switch (m) {
-        ThemeMode.light => 1,
-        ThemeMode.dark  => 2,
-        _               => 0,
+  /// Palette for the dark-brightness variants (3-6), null for plain dark.
+  static AppColors? variantOf(int v) => switch (v) {
+        3 => AppColors.amber,
+        4 => AppColors.red,
+        5 => AppColors.green,
+        6 => AppColors.warmGrey,
+        7 => AppColors.navyOrange,
+        _ => null,
       };
 
-  static ThemeMode _fromInt(int v) => switch (v) {
+  static ThemeMode modeOf(int v) => switch (v) {
         1 => ThemeMode.light,
-        2 => ThemeMode.dark,
+        >= 2 => ThemeMode.dark,
         _ => ThemeMode.system,
       };
 }

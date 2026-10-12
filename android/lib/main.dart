@@ -45,7 +45,8 @@ void main() async {
 class NextCwTrainerApp extends StatelessWidget {
   const NextCwTrainerApp({super.key});
 
-  ThemeData _theme(AppColors c, Brightness brightness) => ThemeData(
+  ThemeData _theme(AppColors c, Brightness brightness, {bool variant = false}) => ThemeData(
+        extensions: [if (variant) ThemeVariantMarker(c)],
         brightness: brightness,
         colorScheme: ColorScheme(
           brightness: brightness,
@@ -63,19 +64,26 @@ class NextCwTrainerApp extends StatelessWidget {
         useMaterial3: true,
       );
 
+  ThemeData _darkTheme(int choice) {
+    final v = ThemeController.variantOf(choice);
+    return v == null
+        ? _theme(AppColors.dark, Brightness.dark)
+        : _theme(v, Brightness.dark, variant: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
-      builder: (context, _, _) => ValueListenableBuilder<ThemeMode>(
-        valueListenable: ThemeController.mode,
-        builder: (context, mode, _) => MaterialApp(
+      builder: (context, _, _) => ValueListenableBuilder<int>(
+        valueListenable: ThemeController.choice,
+        builder: (context, choice, _) => MaterialApp(
           navigatorKey: ShareIntake.navigatorKey,
           title: 'APEX CW',
           debugShowCheckedModeBanner: false,
-          themeMode: mode,
+          themeMode: ThemeController.modeOf(choice),
           theme: _theme(AppColors.light, Brightness.light),
-          darkTheme: _theme(AppColors.dark, Brightness.dark),
+          darkTheme: _darkTheme(choice),
           // System font size is honoured up to 1.3× (Pixel step 4 of 7);
           // beyond that the fixed-geometry training screens stop fitting
           // (DECISIONS.md "System font size: capped at 1.3").

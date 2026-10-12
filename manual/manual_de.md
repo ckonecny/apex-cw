@@ -118,7 +118,7 @@ Jedes Feld merkt sich seine eigene Größe.
 ## Hell, dunkel, Sprache
 
 Unter **Einstellungen → Darstellung** wählst du das **Farbschema** (System / Hell /
-Dunkel) und die **Sprache** der App (Deutsch / English). Dazu gibt es einen
+Dunkel / Bernstein / Rot / Grün / Warmgrau / Marine & Orange). Bernstein, Rot, Grün, Warmgrau und Marine & Orange sind dunkle Schemata mit eigener Farbpalette: Bernstein mit warmen Gelbtönen, Rot (Nachtsicht) mit gedämpftem Rot, das die Dunkeladaption der Augen am wenigsten stört, Grün wie ein Phosphor-Terminal Warmgrau mit weichem, kontrastarmem Braungrau und Marine & Orange mit blauschwarzem Grund, silbernem Text und orangem Akzent (wie ein Smartwatch-Zifferblatt) und die **Sprache** der App (Deutsch / English). Dazu gibt es einen
 zuschaltbaren **Blaulichtfilter**, der die ganze App warm einfärbt (in Hell und
 Dunkel) und dessen Stärke du einstellst. Alles wirkt sofort.
 
@@ -654,7 +654,8 @@ Platz hat.
    es keinen zweiten Versuch: Das Wort klingt noch einmal, jedes Zeichen steht
    als Punkte und Striche darunter (das gerade klingende leuchtet auf), danach
    kommt das nächste Wort. Gewertet wird weiterhin nur der erste Versuch; auch
-   **Passen** zeigt die Lernanzeige (mit Fehlerton, alle Zeichen rot).
+   **Passen** zeigt die Lernanzeige (mit Fehlerton, alle Zeichen rot). Falsche Zeichen sind rot und zusätzlich
+   mit einem Rahmen markiert, damit sie auch im Rot-Schema auffallen.
 6. **Passen** – jederzeit, auch während das Wort spielt. Nach dem letzten
    falschen Versuch oder nach Passen zeigt die App 2 Sekunden lang die Lösung
    (die im ersten Versuch falschen Zeichen rot) und darunter deine Versuche,
@@ -2649,7 +2650,7 @@ wenn du beim Scrollen versehentlich ein Bedienelement berührt hast. Eine neuere
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Farbschema | Helles oder dunkles Erscheinungsbild | **System** / Hell / Dunkel |
+| Farbschema | Helles oder dunkles Erscheinungsbild, dazu fünf weitere dunkle Schemata | **System** / Hell / Dunkel / Bernstein / Rot / Grün / Warmgrau / Marine & Orange |
 | Blaulichtfilter | Warmer Farbfilter über der ganzen App (hell und dunkel), schont abends die Augen | **Aus** / An |
 | Filterstärke | Wie stark das Blau gedämpft wird (nur bei aktivem Filter sichtbar) | 10–100 % (**50 %**) |
 | Statusleiste ausblenden | Blendet die Android-Statusleiste (Uhr, Akku) aus, damit sie nicht gegen den Blaulichtfilter absticht; ein Wisch von oben zeigt sie kurz | **Aus** / An |
