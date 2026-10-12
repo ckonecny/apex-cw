@@ -2006,3 +2006,18 @@ Fixed (each contradicted the firmware, most also the manual):
 Not ported (deliberate): the firmware's `corrTime` of 6 ms per element (output-routine latency of the device), the Latency preference as a setting, the TOT reset.
 
 Repo settings done 2026-10-12: Secret Protection, Dependabot alerts + security updates, private vulnerability reporting, ruleset on `main` (required checks `analyze-test`, `build-debug`; admin bypass; CodeQL deliberately not required). CodeQL stays on the workflow (advanced setup), not GitHub's default setup. Release review gate (`/code-review`, `/security-review`, Security tab) added to the release consistency check in `docs/PROJECT.md`.
+
+## 2026-10-12: Generator audit against `generateCW()` / `fetchNewWord()` / `getRandomChars()` (V9.0)
+
+Tests: `CwGeneratorTimingTest.kt`, `CwGeneratorContentTest.kt` (JVM, seeded random, virtual clock). To make the generator testable it takes a `GenTone` (jitter, implemented by `CwTonePlugin`), a `GenOut` (default `NativeGenOut` = CwAudioNative), an injectable sleeper and `Random`; the asset reader stays the last parameter because `MainActivity` passes it as a trailing lambda.
+
+Fixed:
+- **All gaps were one dit too short, since the first commit.** After a character the generator waited `Interchar Spc - 1` dits and, because no inter-element gap follows the last element, that was the whole gap: 2 dits at the default 3, and word gaps of 6 instead of 7 (comment in the code claimed the last inter-element gap had been "already consumed"). Firmware: `genTimer = interCharacterSpace` after the last element, `interWordSpace` after a word. Now exact; same fix for WiFi Trx pattern playback. **Everyone's practice gets slower by one dit per gap** (effective speed now matches the "eff. WPM" formula, which always assumed the full gaps). Measured by test before the fix (2 / 6 / 8 / 9 dits instead of 3 / 7 / 9 / 13).
+- **Word gap floor:** the firmware uses `max(InterWord Spc, Interchar Spc + 4)` (updateTimings); the app used `max(1, IW - IC)` extra dits, so a small InterWord Spc with a large Interchar Spc produced a word gap shorter than the firmware's.
+- **Abbreviation list lacked the last entry `Z`** (245 in `abbrev.h`, 244 here); one-letter abbreviations are 9, not 8.
+- **Plain Mixed** was a coin flip word/abbreviation. Firmware `MIXED`: `random(4)` = word, abbreviation, call sign, single punctuation/prosign (`getRandomChars(1, OPT_PUNCTPRO)`). Koch Mixed (3-way) was already right. Manual DE+EN corrected (it said "groups").
+- **Boost Practice outside Koch** used the Koch redraw scheme; the firmware uses an exact weighted draw there (weight 3 Moderate, 8 Strong, others 1, within the Random Groups range) and says explicitly that the two paths are not calibrated against each other. Now the same weighted draw; Koch keeps the redraws (3 / 8).
+
+Checked and identical: the 973-entry call sign prefix table (script, all fields), `getRandomCall()` logic (VK/ZL generator, prefix/digit/suffix rules, fallback), Random Groups ranges, Koch last-third weighting, Koch boost attempts, Koch sequences M32/LCWO/CW Academy (without the prosign markers, see the open prosign-tail item), abbreviation length mapping.
+
+Deliberately different (unchanged): frequency-weighted word lists (#53), explicit min/max group length instead of the firmware's length option values 7-10, tone length is exact (the firmware shortens each element by 6 ms to compensate its output routine), jitter ("bad fist"), word doubler and stop-after-word are no longer reachable from the UI (DECISIONS Phase 7).

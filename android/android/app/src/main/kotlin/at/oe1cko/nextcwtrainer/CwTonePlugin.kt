@@ -4,7 +4,7 @@ import android.util.Log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCallHandler, KeySink {
+class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCallHandler, KeySink, GenTone {
 
     companion object {
         const val CHANNEL = "at.oe1cko.nextcwtrainer/cw_tone"
@@ -15,7 +15,7 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
     @Volatile private var lastFreqHz = 600.0
 
     // Timing jitter ("bad fist") of the other station, 0..1; read by CwGenerator.
-    @Volatile var jitter = 0f
+    @Volatile override var jitter = 0f
 
     init {
         channel.setMethodCallHandler(this)
