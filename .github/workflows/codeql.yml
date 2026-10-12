@@ -1,7 +1,9 @@
 name: CodeQL
 
 # Static security analysis of the native parts (Kotlin, C++). Dart is not
-# supported by CodeQL; flutter analyze covers that side.
+# supported by CodeQL; flutter analyze covers that side. One job, one build:
+# both languages are traced during the same debug build (the results still
+# show up as two separate analyses in the Security tab).
 
 on:
   push:
@@ -22,10 +24,6 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [java-kotlin, c-cpp]
     defaults:
       run:
         working-directory: android
@@ -43,10 +41,8 @@ jobs:
       - run: flutter pub get
       - uses: github/codeql-action/init@v4
         with:
-          languages: ${{ matrix.language }}
+          languages: java-kotlin, c-cpp
           build-mode: manual
-      - name: Build debug APK for CodeQL to trace
+      - name: Build debug APK once for CodeQL to trace (Kotlin and C++)
         run: flutter build apk --debug
       - uses: github/codeql-action/analyze@v4
-        with:
-          category: /language:${{ matrix.language }}
