@@ -76,7 +76,9 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
-      - run: flutter pub get
+      # gradlew and the wrapper jar are gitignored; Flutter generates them
+      - name: Generate Gradle wrapper
+        run: flutter build apk --config-only --debug
         working-directory: android
       - name: Kotlin unit tests (keyer etc., app/src/test)
         run: ./gradlew :app:testDebugUnitTest
