@@ -41,12 +41,12 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
-      - uses: github/codeql-action/init@v3
+      - uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           build-mode: manual
       - name: Build debug APK for CodeQL to trace
         run: flutter build apk --debug
-      - uses: github/codeql-action/analyze@v3
+      - uses: github/codeql-action/analyze@v4
         with:
           category: /language:${{ matrix.language }}
