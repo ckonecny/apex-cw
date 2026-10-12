@@ -7,6 +7,7 @@ import 'widgets/setting_rows.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
+import '../content/echo_timing.dart';
 import '../content/cw_content.dart';
 import '../content/block_history.dart';
 import '../content/char_stats.dart';
@@ -210,11 +211,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Deadline from the end of the prompt: 1400 ms + inter-char + inter-word/3
   // (at the prompt speed) + think time. Once the answer has begun, it is
   // evaluated at the word gap, without think time.
-  int get _startDeadlineMs {
-    final dit = 1200 / _currentWpm;
-    return (1400 + _interCharSpace * dit + _interWordSpace * dit / 3).round() +
-        _echoThinkTime * 1000;
-  }
+  int get _startDeadlineMs => echoStartDeadlineMs(
+      promptWpm: _currentWpm.toDouble(),
+      interChar: _interCharSpace,
+      interWord: _interWordSpace,
+      thinkSeconds: _echoThinkTime);
 
   // When the answer counts as finished: silence after the last character, in
   // dits at the answer speed. Firmware (m32_v6.ino, echoTrainer branch of
@@ -223,9 +224,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // end of the character — deliberately generous, "like in listening", so
   // the spacing of the Geben profile also sets how long you may pause
   // between the characters of your answer.
-  int get _answerEndDits =>
-      (2 * _interCharSpace + 1 + max(_interWordSpace, _interCharSpace + 4) / 8)
-          .round();
+  int get _answerEndDits => echoAnswerEndDits(_interCharSpace, _interWordSpace);
   // Straight key: the firmware's decoder ends the word after IW + 1 dits of
   // silence in echo mode (MorseDecoder.cpp, INTERCHAR_ lacktime).
   int get _answerEndDitsStraight => _interWordSpace + 1;
