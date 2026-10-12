@@ -49,6 +49,10 @@ class MicInput(private val context: Context) {
     @Synchronized
     fun start(): Int {
         if (running) return SAMPLE_RATE
+        // A previous capture that ended by itself (read errors, see below) left
+        // its AudioRecord behind: release it before opening a new one.
+        record?.let { try { it.stop() } catch (_: Exception) {}; it.release() }
+        record = null
         val minBuf = AudioRecord.getMinBufferSize(SAMPLE_RATE,
             AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
         if (minBuf <= 0) return 0
@@ -69,9 +73,23 @@ class MicInput(private val context: Context) {
         running = true
         thread = Thread({
             val buf = ShortArray(CHUNK)
+            var failures = 0
             while (running) {
                 val n = rec.read(buf, 0, CHUNK)
-                if (n <= 0) continue
+                if (n <= 0) {
+                    // A negative value is an AudioRecord error (microphone taken by
+                    // another app, ERROR_DEAD_OBJECT, ...). Without a pause this loop
+                    // would spin at full speed on a max-priority thread; and if it
+                    // does not recover, give up instead of spinning forever.
+                    if (n < 0 && ++failures >= 50) {
+                        Log.e(TAG, "read failed ($n) $failures times, stopping capture")
+                        running = false
+                        break
+                    }
+                    try { Thread.sleep(20) } catch (_: InterruptedException) { break }
+                    continue
+                }
+                failures = 0
                 val bytes = ByteArray(n * 2)
                 for (i in 0 until n) {
                     val v = buf[i].toInt()

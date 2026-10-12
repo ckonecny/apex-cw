@@ -83,3 +83,5 @@ jobs:
       - name: Kotlin unit tests (keyer etc., app/src/test)
         run: ./gradlew :app:testDebugUnitTest
         working-directory: android/android
+      - name: Native DSP test (interference.h, ASan + UBSan)
+        run: tools/run_native_cpp_tests.sh

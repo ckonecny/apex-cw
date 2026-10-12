@@ -2004,3 +2004,51 @@ Fixed (each contradicted the firmware, most also the manual):
 - **Thread safety:** paddle memories were written by the main thread and cleared by the keyer thread without a lock (a press in the last millisecond of an element could be lost), and `start()` right after `stop()` returned early while the old thread was still alive, leaving the keyer dead until the next start (Echo Trainer restarts it per word). All state is under one lock; each keyer thread has its own cancel flag.
 
 Not ported (deliberate): the firmware's `corrTime` of 6 ms per element (output-routine latency of the device), the Latency preference as a setting, the TOT reset.
+
+Repo settings done 2026-10-12: Secret Protection, Dependabot alerts + security updates, private vulnerability reporting, ruleset on `main` (required checks `analyze-test`, `build-debug`; admin bypass; CodeQL deliberately not required). CodeQL stays on the workflow (advanced setup), not GitHub's default setup. Release review gate (`/code-review`, `/security-review`, Security tab) added to the release consistency check in `docs/PROJECT.md`.
+
+## 2026-10-12: Generator audit against `generateCW()` / `fetchNewWord()` / `getRandomChars()` (V9.0)
+
+Tests: `CwGeneratorTimingTest.kt`, `CwGeneratorContentTest.kt` (JVM, seeded random, virtual clock). To make the generator testable it takes a `GenTone` (jitter, implemented by `CwTonePlugin`), a `GenOut` (default `NativeGenOut` = CwAudioNative), an injectable sleeper and `Random`; the asset reader stays the last parameter because `MainActivity` passes it as a trailing lambda.
+
+Fixed:
+- **All gaps were one dit too short, since the first commit.** After a character the generator waited `Interchar Spc - 1` dits and, because no inter-element gap follows the last element, that was the whole gap: 2 dits at the default 3, and word gaps of 6 instead of 7 (comment in the code claimed the last inter-element gap had been "already consumed"). Firmware: `genTimer = interCharacterSpace` after the last element, `interWordSpace` after a word. Now exact; same fix for WiFi Trx pattern playback. **Everyone's practice gets slower by one dit per gap** (effective speed now matches the "eff. WPM" formula, which always assumed the full gaps). Measured by test before the fix (2 / 6 / 8 / 9 dits instead of 3 / 7 / 9 / 13).
+- **Word gap floor:** the firmware uses `max(InterWord Spc, Interchar Spc + 4)` (updateTimings); the app used `max(1, IW - IC)` extra dits, so a small InterWord Spc with a large Interchar Spc produced a word gap shorter than the firmware's.
+- **Abbreviation list lacked the last entry `Z`** (245 in `abbrev.h`, 244 here); one-letter abbreviations are 9, not 8.
+- **Plain Mixed** was a coin flip word/abbreviation. Firmware `MIXED`: `random(4)` = word, abbreviation, call sign, single punctuation/prosign (`getRandomChars(1, OPT_PUNCTPRO)`). Koch Mixed (3-way) was already right. Manual DE+EN corrected (it said "groups").
+- **Boost Practice outside Koch** used the Koch redraw scheme; the firmware uses an exact weighted draw there (weight 3 Moderate, 8 Strong, others 1, within the Random Groups range) and says explicitly that the two paths are not calibrated against each other. Now the same weighted draw; Koch keeps the redraws (3 / 8).
+
+Checked and identical: the 973-entry call sign prefix table (script, all fields), `getRandomCall()` logic (VK/ZL generator, prefix/digit/suffix rules, fallback), Random Groups ranges, Koch last-third weighting, Koch boost attempts, Koch sequences M32/LCWO/CW Academy (without the prosign markers, see the open prosign-tail item), abbreviation length mapping.
+
+Deliberately different (unchanged): frequency-weighted word lists (#53), explicit min/max group length instead of the firmware's length option values 7-10, tone length is exact (the firmware shortens each element by 6 ms to compensate its output routine), jitter ("bad fist"), word doubler and stop-after-word are no longer reachable from the UI (DECISIONS Phase 7).
+
+## 2026-10-12: Echo evaluation audit against `echoTrainerEval()` (V9.0)
+
+Checked and matching: the verdict is an exact comparison of the decoded answer with the word (case-insensitive here); `<err>` (7+ dits) and the fourth `e` in a row clear the answer (with the app's deliberate exception for targets that continue with `e`, upstream fix 9aae6f6); a wrong word is played again while `repeats <= Echo Repeats` (7 = forever), i.e. `Echo Repeats + 1` plays in total, then the word is revealed and the next one follows; the start deadline and the answer-end rule use the firmware's terms.
+
+Fixed: `echo_timing.dart` (new, with `test/echo_timing_test.dart`): the start deadline used the raw InterWord Spc; the firmware uses `interWordSpace = max(InterWord Spc, Interchar Spc + 4)` (updateTimings()) there as well, so with a small InterWord Spc and a large Interchar Spc the answer window was too short. The answer-end rule already had the `max`.
+
+Deliberately different (unchanged, see Phase 7/8 notes): the pauses around the verdict are fixed (1.2 s after a correct, 1.5 s before a repeat, 2 s after the reveal) instead of `interCharacterSpace/2` before and `16 dits + interWordSpace/12` after it; Adaptive Speed (±1 WPM per word) is not in the Geben flow, the block flow replaces it; the Koch word/character probabilities (`increaseWordProbability` etc.) are replaced by the statistics-driven weak-character weighting.
+
+Known small gap: a keyed prosign and the same two letters in a row decode to the same text ("AS"), so a target `<AS>` accepts the letters A, S and the other way round. The firmware tells them apart (single-letter codes); fixing it would mean the decoder reporting prosigns as tokens, which the CW Keyer display does not want. Not worth the risk today.
+
+## 2026-10-12: Native tone engine audit (`cw_tone_jni.cpp`, `interference.h`)
+
+Envelope checked against the firmware (`setSidetoneEnvelope()`: attack = release = Tone Softness + 1 ms): matches.
+
+Fixed in `cw_tone_jni.cpp` (stability, found by reading, not yet seen as a crash):
+- **`gStream` was a plain pointer used from several threads without a lock.** AAudio's error callback (it runs on its own thread) closed and reopened it while `restartStream()` (AudioRouteManager, main thread) did the same; a Bluetooth disconnect raises both at about the same time, so the stream could be closed twice, or used after `close`. `getLatencyMs()` could read it while it was being closed. Now everything goes through `gStreamMutex`. The error callback uses `try_lock` only: closing a stream waits for its callbacks, so a blocking lock there could deadlock against `restartStream()`.
+- **The error callback reopened the stream even after `stopStream()`** (app shutdown) or after a restart replaced the stream: it now acts only for the stream that is still current.
+- `getLatencyMs()` returns -1 instead of dividing by a sample rate of 0.
+
+New: `app/src/test/cpp/interference_test.cpp`, run by `tools/run_native_cpp_tests.sh` (also in CI job `native-test`): 19 million samples through `Interference` for sample rates 8-96 kHz, pitches 100-3500 Hz, block sizes 1-4096, extreme and random settings and out-of-range settings; fails on NaN/Inf, output outside the limiter's range, or any AddressSanitizer/UBSan finding. Passes unchanged, so `interference.h` itself needed no fix.
+
+Not changed, noted: `chainPower()` (8192-step impulse response) runs on the audio thread whenever the filter or pitch changes; sub-millisecond on current phones, but a possible glitch source on very slow devices while the filter slider is dragged. The tone itself is not covered by a host test (it lives in the AAudio callback together with the stream).
+
+## 2026-10-12: Audio decoder audit against `goertzel.cpp` / `MorseDecoder.cpp` (V9.0)
+
+Checked and identical: the 69-entry decoding tree (script, every symbol and both branches), the timing state machine (noise blanker, `ON_`/`OFF_`, dit/dah averages including the integer division in the threshold, `lacktime` 2.2/2.3/2.4 and 5/5.5/6, the speed formula), the Goertzel magnitude and the automatic limit (moving average 0.95/÷4, floor, 0.6 factor). The documented deviations stay (sample rate 16 kHz with the same bandwidths, adjustable target frequency, normalized magnitudes, sample time instead of `millis()`; the firmware's echo-trainer word gap of `InterWord + 1` dits is not part of the audio decoder here, the Echo screen has its own rule).
+
+Tests added (`test/cw_audio_decoder_test.dart`): every pattern of the keyer decoder table decodes to the same character through the firmware tree (the two decoders in the app agree); full-scale random samples, DC offset and unaligned chunk sizes at 8/16/44.1/48 kHz neither throw nor produce more symbols than blocks; the same text decodes at 8, 11.025, 22.05, 44.1 and 48 kHz.
+
+Fixed in `MicInput.kt`: a failing `AudioRecord.read()` (negative return: microphone taken by another app, dead object) made the capture loop spin at full speed on a max-priority thread; it now pauses 20 ms between attempts and ends the capture after 50 consecutive errors. A capture that ended that way left its `AudioRecord` unreleased; `start()` now releases it. (Dart is not told that the capture stopped; the decoder just goes quiet, the cause is in logcat.)

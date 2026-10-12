@@ -54,7 +54,15 @@ Run before every beta or release (CLAUDE.md rule 16); fix drift right away.
   cover everything new; `flutter test` incl. `license_compat_test.dart` green.
 - `CLAUDE.md`, `manual/README.md`, `tools/` comments: script names, tag
   patterns (`vX.Y.Z`, `vX.Y.Z-betaN`) and paths still exist and are correct.
-- `flutter analyze` zero issues, `flutter test` green.
+- `flutter analyze` zero issues, `flutter test` green; the `CI` workflow is
+  green on the release branch (GitHub Actions).
+- Automated review gate (release only; for a beta at your discretion):
+  `/code-review high` on the diff since the last tag, `/security-review` on
+  the same diff, and a look at the open GitHub Security tab (Code scanning,
+  Dependabot, Secret scanning alerts). Triage every finding: fix it, or
+  dismiss it with a reason; deferred bugs become GitHub issues (rule 12).
+  Extra focus for a diff touching `CwGenerator.kt`, `CwKeyer.kt` or
+  `cw_tone_jni.cpp`: shared-singleton state (rule 2), thread safety, bounds.
 Not part of a beta (only at a release, or at store launch): retaking
 screenshots, building manual HTML/PDF, Play Store graphics and listing. Their
 pending lists in `docs/STATUS.md` must be complete, though.

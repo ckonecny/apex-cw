@@ -32,10 +32,11 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 (empty — v1.7.0 screenshots retaken, see above)
 
 ## CI / security automation (merged 2026-10-12, PR #64)
-Open (user, GitHub settings): enable Secret Protection (Advanced Security), Dependabot security updates and private vulnerability reporting; create a ruleset for `main` requiring `analyze-test` + `build-debug` (admin bypass). Watch the first Dependabot PRs; `flutter_soloud` updates touch the native audio engine, so test on the phone (rule 2, rule 4).
+GitHub settings done (Secret Protection, Dependabot security updates, private vulnerability reporting, ruleset for `main`). Watch the first Dependabot PRs; `flutter_soloud` updates touch the native audio engine, so test on the phone (rule 2, rule 4). Release review gate: `docs/PROJECT.md` "Release consistency check".
 
-## Fidelity audit (started 2026-10-12)
-Order: keyer, generator, echo evaluation, JNI tone engine, audio decoder, Koch prosign extension. Keyer done on branch `audit/keyer` (see DECISIONS "Keyer audit"); **pending install + try on the test phone** (rule 4): Iambic A/B, Ultimatic and Non-Squeeze by feel, esp. that short taps of the opposite key during an element are now forgotten in mode A (as on the device). Native tests: `./gradlew :app:testDebugUnitTest` in `android/android`; Gradle needs `JAVA_HOME` of Android Studio's JBR.
+## Fidelity audit (2026-10-12, all modules done; #67 merged, #68–#71 via one combined PR)
+Keyer #67, generator #68, echo evaluation #69, JNI tone engine #70, audio decoder #71; findings per module in DECISIONS ("Keyer audit", "Generator audit", ...). The Koch prosign extension became issue #72.
+**Pending install + try on the test phone** (rule 4, nothing is installed yet): keyer modes by feel (Iambic A now forgets short opposite taps during an element, as on the device); generator gaps are now 3/7 dits at the default spacing (were 2/6), so everything sounds a little slower: check Hören, Geben prompts and WiFi Trx playback; switch the audio route / disconnect Bluetooth while playing (stream locking); Decoder screen with the microphone. Release note when shipped: letter and word gaps were one dit too short in all earlier versions. Native tests: `./gradlew :app:testDebugUnitTest` in `android/android` and `tools/run_native_cpp_tests.sh` (CI job `native-test`); locally Gradle needs `JAVA_HOME` of Android Studio's JBR.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
