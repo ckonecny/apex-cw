@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^2.0.0
   flutter_soloud: ^3.4.0      # low-latency audio synthesis
   audio_session: ^0.1.0       # Android audio focus + media stream routing
   provider: ^6.1.2            # state management
