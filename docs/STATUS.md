@@ -31,8 +31,8 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 ## Manual: pending for next release
 (empty — v1.7.0 screenshots retaken, see above)
 
-## CI / security automation (2026-10-12, branch `ci/workflows-security`, not merged)
-Workflows written, `flutter analyze`/`test` pass locally, but the workflows have not run on GitHub yet. After merging to main: check the first runs (Actions tab), fix what the Linux runner reveals, then enable Secret Scanning + Push Protection and Dependabot alerts in repo Settings → Code security. Optionally make `CI` a required check for main.
+## CI / security automation (merged 2026-10-12, PR #64)
+Open (user, GitHub settings): enable Secret Protection (Advanced Security), Dependabot security updates and private vulnerability reporting; create a ruleset for `main` requiring `analyze-test` + `build-debug` (admin bypass). Watch the first Dependabot PRs; `flutter_soloud` updates touch the native audio engine, so test on the phone (rule 2, rule 4).
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
