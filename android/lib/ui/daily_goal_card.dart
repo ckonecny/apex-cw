@@ -42,7 +42,9 @@ class GoalRing extends StatelessWidget {
     final c = AppColors.of(context);
     // Light mode: teal ring on a soft teal track; dark keeps blue-in-progress.
     final light = Theme.of(context).brightness == Brightness.light;
-    final color = status.met || light ? c.accent : c.info;
+    // The evening themes keep the unfinished arc dim (textMuted), not bright.
+    final variant = AppColors.isVariant(context);
+    final color = status.met || light ? c.accent : variant ? c.textMuted : c.info;
     final track = light ? Color.alphaBlend(c.accent.withValues(alpha: 0.22), c.surface) : c.border;
     return SizedBox(
       width: size, height: size,
@@ -115,7 +117,7 @@ class _WeekDots extends StatelessWidget {
     final filled = s == DotState.met || s == DotState.todayMet;
     final color = switch (s) {
       DotState.met || DotState.todayMet => c.accent,
-      DotState.today => Theme.of(context).brightness == Brightness.light ? c.accent : c.info,
+      DotState.today => Theme.of(context).brightness == Brightness.light ? c.accent : AppColors.isVariant(context) ? c.textMuted : c.info,
       DotState.frozen => c.textMuted,
       _ => c.border,
     };

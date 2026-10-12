@@ -81,6 +81,134 @@ class AppColors {
     accentPurple:  Color(0xFF7A3FC0),
   );
 
-  static AppColors of(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? dark : light;
+  /// Amber night look: near-black warm background, amber text (dark
+  /// brightness, so everything that checks `Brightness.dark` keeps working).
+  static const amber = AppColors(
+    background:    Color(0xFF120C04),
+    surface:       Color(0xFF1F1508),
+    surfaceAlt:    Color(0xFF0D0802),
+    surfaceDark:   Color(0xFF080501),
+    border:        Color(0xFF4A3510),
+    borderAlt:     Color(0xFF33250C),
+    textPrimary:   Color(0xFFFFC76A),
+    textMuted:     Color(0xFFC08A30),
+    textFaint:     Color(0xFF7A5A20),
+    textDisabled:  Color(0xFF584218),
+    textMutedAlt:  Color(0xFF946A24),
+    logText:       Color(0xFFE0A850),
+    accent:        Color(0xFFC98A12),
+    warning:       Color(0xFFFF7A1A),
+    danger:        Color(0xFFE5533D),
+    info:          Color(0xFFF0CF8E),
+    accentPurple:  Color(0xFFD08A5A),
+  );
+
+  /// Red night look (dark brightness): keeps dark adaptation, hues carry little
+  /// meaning here so states differ mainly by brightness and saturation.
+  static const red = AppColors(
+    background:    Color(0xFF0C0505),
+    surface:       Color(0xFF170A0A),
+    surfaceAlt:    Color(0xFF080303),
+    surfaceDark:   Color(0xFF050202),
+    border:        Color(0xFF4A1A1A),
+    borderAlt:     Color(0xFF2E1010),
+    textPrimary:   Color(0xFFE85A4F),
+    textMuted:     Color(0xFFA8403A),
+    textFaint:     Color(0xFF6E2A27),
+    textDisabled:  Color(0xFF4C1D1B),
+    textMutedAlt:  Color(0xFF8A3732),
+    logText:       Color(0xFFD4574C),
+    accent:        Color(0xFFD8645A),
+    warning:       Color(0xFFC9602A),
+    danger:        Color(0xFFB01C34),
+    info:          Color(0xFFFF8A66),
+    accentPurple:  Color(0xFFB05A5A),
+  );
+
+  /// Green phosphor look (dark brightness).
+  static const green = AppColors(
+    background:    Color(0xFF050E07),
+    surface:       Color(0xFF0B1A0E),
+    surfaceAlt:    Color(0xFF030A04),
+    surfaceDark:   Color(0xFF020703),
+    border:        Color(0xFF1E4A26),
+    borderAlt:     Color(0xFF12301A),
+    textPrimary:   Color(0xFF7FD98A),
+    textMuted:     Color(0xFF4FA05C),
+    textFaint:     Color(0xFF2E6A38),
+    textDisabled:  Color(0xFF245230),
+    textMutedAlt:  Color(0xFF3E8548),
+    logText:       Color(0xFF6CC078),
+    accent:        Color(0xFF2FA547),
+    warning:       Color(0xFF86BE52),
+    danger:        Color(0xFFF0604A),
+    info:          Color(0xFFB8F0C0),
+    accentPurple:  Color(0xFF5AB0A0),
+  );
+
+  /// Soft warm grey, low contrast (dark brightness).
+  static const warmGrey = AppColors(
+    background:    Color(0xFF1E1B18),
+    surface:       Color(0xFF272320),
+    surfaceAlt:    Color(0xFF171513),
+    surfaceDark:   Color(0xFF12100F),
+    border:        Color(0xFF3E3832),
+    borderAlt:     Color(0xFF322D28),
+    textPrimary:   Color(0xFFE6DCCB),
+    textMuted:     Color(0xFFA39785),
+    textFaint:     Color(0xFF6E6558),
+    textDisabled:  Color(0xFF574F45),
+    textMutedAlt:  Color(0xFF8A7F6E),
+    logText:       Color(0xFFC4B8A4),
+    accent:        Color(0xFFC9B77A),
+    warning:       Color(0xFFD08A4A),
+    danger:        Color(0xFFC86058),
+    info:          Color(0xFFE8D8B0),
+    accentPurple:  Color(0xFFA890B0),
+  );
+
+  /// Navy and orange (watch-face look, dark brightness): blue-black grounds,
+  /// silver text, orange accent, steel-blue secondary.
+  static const navyOrange = AppColors(
+    background:    Color(0xFF05080F),
+    surface:       Color(0xFF0D1826),
+    surfaceAlt:    Color(0xFF08111C),
+    surfaceDark:   Color(0xFF050B14),
+    border:        Color(0xFF1F3550),
+    borderAlt:     Color(0xFF142840),
+    textPrimary:   Color(0xFFE4E8EE),
+    textMuted:     Color(0xFF8A9BB2),
+    textFaint:     Color(0xFF56677F),
+    textDisabled:  Color(0xFF3A4A60),
+    textMutedAlt:  Color(0xFF6A7C95),
+    logText:       Color(0xFFA8B8CC),
+    accent:        Color(0xFFF28A2E),
+    warning:       Color(0xFFF5B642),
+    danger:        Color(0xFFE5483D),
+    info:          Color(0xFF6FB8D8),
+    accentPurple:  Color(0xFFB08AD0),
+  );
+
+  /// True for the dark-brightness variants (amber, red, green, warm grey).
+  static bool isVariant(BuildContext context) =>
+      Theme.of(context).extension<ThemeVariantMarker>() != null;
+
+  static AppColors of(BuildContext context) {
+    final t = Theme.of(context);
+    final v = t.extension<ThemeVariantMarker>();
+    if (v != null) return v.colors;
+    return t.brightness == Brightness.dark ? dark : light;
+  }
+}
+
+/// Tags a dark-brightness ThemeData that uses its own palette (amber, red,
+/// green, warm grey), so [AppColors.of] can tell it from plain dark (and
+/// dependents rebuild when switching between them).
+class ThemeVariantMarker extends ThemeExtension<ThemeVariantMarker> {
+  final AppColors colors;
+  const ThemeVariantMarker(this.colors);
+  @override
+  ThemeVariantMarker copyWith({AppColors? colors}) => ThemeVariantMarker(colors ?? this.colors);
+  @override
+  ThemeVariantMarker lerp(ThemeVariantMarker? other, double t) => other ?? this;
 }

@@ -114,8 +114,8 @@ the result page, among others. Each area remembers its own size.
 
 ## Light, dark, language
 
-Under **Settings → Appearance** you choose the **Theme** (System, Light or
-Dark) and the app **Language** (Deutsch or English). There is also a **Blue light
+Under **Settings → Appearance** you choose the **Theme** (System, Light,
+Dark, Amber, Red, Green, Warm grey or Navy & orange). Amber, Red, Green, Warm grey and Navy & orange are dark themes with their own palette: Amber with warm yellows, Red (night vision) with muted red, which disturbs dark adaptation the least, Green like a phosphor terminal, Warm grey with a soft, low-contrast brown-grey, and Navy & orange with a blue-black ground, silver text and an orange accent (like a smartwatch face) and the app **Language** (Deutsch or English). There is also a **Blue light
 filter** you can switch on: it tints the whole app warm (in light and dark) at
 a strength you set. All of it takes effect immediately.
 
@@ -630,7 +630,8 @@ is hidden to make room for the keyboard.
    no second attempt: the word sounds once more, each character is shown
    below as dots and dashes (the one sounding lights up), then the next word
    follows. Only the first attempt is still graded; a **Pass** also
-   shows the lesson (with the error tone, all characters red).
+   shows the lesson (with the error tone, all characters red). Wrong characters
+   are red and also framed, so they stand out in the Red theme too.
 6. **Pass**: at any time, also while the word plays. After the last wrong
    attempt or a pass, the app shows the solution for 2 seconds (the
    characters wrong in the first attempt in red) with your attempts below
@@ -2556,7 +2557,7 @@ change.
 
 | Setting | Meaning | Values |
 |---|---|---|
-| Theme | Light or dark look | **System** / Light / Dark |
+| Theme | Light or dark look, plus five more dark themes | **System** / Light / Dark / Amber / Red / Green / Warm grey / Navy & orange |
 | Blue light filter | Warm colour filter over the whole app (light and dark), easier on the eyes in the evening | **Off** / On |
 | Filter strength | How strongly blue is reduced (only shown while the filter is on) | 10–100 % (**50 %**) |
 | Hide status bar | Hides the Android status bar (clock, battery) so it does not clash with the blue light filter; swiping down from the top shows it briefly | **Off** / On |

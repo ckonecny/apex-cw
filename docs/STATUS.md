@@ -41,6 +41,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
   cover/info for the old look; screenshots with the launcher icon, if any.
 
 ## Manual: pending for next release
+- Amber theme (feature/amber-theme): new "Bernstein / Rot / Grün / Warmgrau / Marine & Orange" choices under Settings → Appearance; retake the Appearance settings shot (DE+EN) and optionally one amber screen.
 - Interference presets editable (feature/interference-profile-edit): "Default" reset button under the Preset row; retake the interference settings shot if one exists (DE+EN).
 - Learn from the mistake (#50, feature/learn-from-mistake): new row "Nach falscher Antwort / After a wrong answer" in the Listen settings sheet (Type) and a new lesson screen (dots/dashes under the letters); add a shot `hear_type_learn.png` and retake the Listen settings shot (DE+EN).
 - Decoder Chars (#52, feature/decoder-chars): new row "Sonderzeichen beim Dekodieren / Special characters when decoding" in the CW Decoder sheet and the CW Keyer sheet; retake `decoder_sheet.png` and the Keyer settings shot if it exists (DE+EN).

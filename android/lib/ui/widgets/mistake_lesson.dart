@@ -10,7 +10,7 @@ import 'char_playback_overlay.dart' show morsePattern;
 class MistakeLesson extends StatelessWidget {
   final String word;
   final int active;
-  /// Positions that were wrong in the first attempt: shown in red.
+  /// Positions that were wrong in the first attempt: shown in red and framed.
   final Set<int> wrong;
   final String Function(String) display;
   const MistakeLesson({super.key, required this.word, required this.active,
@@ -31,6 +31,9 @@ class MistakeLesson extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
             decoration: BoxDecoration(
                 color: k == active ? c.accent.withValues(alpha: 0.18) : null,
+                // A frame, not only the red: in the red night theme a mistake
+                // can't be told from normal text by colour alone.
+                border: wrong.contains(k) ? Border.all(color: c.danger, width: 2) : null,
                 borderRadius: BorderRadius.circular(8)),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
             Text(display(word[k]), style: TextStyle(fontFamily: 'CwMono',
