@@ -1,6 +1,8 @@
 name: Dependency vulnerabilities
 
-# Scans pubspec.lock and Gradle dependencies against the OSV database.
+# Scans pubspec.lock against the OSV database. Gradle/native dependencies have
+# no lockfile and are covered by Dependabot (gradle ecosystem) instead; the
+# gradle paths below only re-run this scan when a build file changes.
 
 on:
   push:
@@ -26,7 +28,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install osv-scanner
         run: |
-          curl -sSfL -o osv-scanner https://github.com/google/osv-scanner/releases/download/v1.9.2/osv-scanner_linux_amd64
+          base=https://github.com/google/osv-scanner/releases/download/v1.9.2
+          curl -sSfL -o osv-scanner "$base/osv-scanner_linux_amd64"
+          curl -sSfL -o SHA256SUMS "$base/osv-scanner_SHA256SUMS"
+          grep ' osv-scanner_linux_amd64$' SHA256SUMS | sed 's/osv-scanner_linux_amd64$/osv-scanner/' | sha256sum -c -
           chmod +x osv-scanner
       - name: Scan pubspec.lock
         run: ./osv-scanner --lockfile=android/pubspec.lock
