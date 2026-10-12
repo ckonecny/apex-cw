@@ -889,3 +889,6 @@ Details: DECISIONS.md "Head copy / comprehension". Follow-ups: #40 (mini-QSO),
   new "Exam simulation" section with two shots (`*_exam.webp`,
   `*_examcustom.webp`), single-character practice in the Learn list, exam
   moved out of the resources card, mobile overflow of two-phone rows fixed.
+
+## Release v1.7.0 (2026-10-12)
+Tag `v1.7.0` = 4fffaa4 (Version 1.7.0+7). Done and archived with it: the "Manual: pending for next release" list (Amber and other dark themes, interference presets editable, learn from the mistake #50, Decoder Chars #52, word language #53, rename to APEX CW, Head copy under Practice, Listen tile trend, weak characters in the outlook card, WebSDR link, outlook card on the Listen start, online-manual row, break hint sensitivity #48, navy-mist light theme + blue light filter, char practice sliders #44, DM Sans, swapped paddles, #37 keyer text, char detail curves, exam simulation #42, focus mode #55, adapter links #59, key tip #58). All manual screenshots retaken for v1.7.0 in DE+EN; `echo_result2` and the decoder shot are the known exceptions (see STATUS).
