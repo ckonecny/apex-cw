@@ -34,7 +34,7 @@ dependencies:
   flutter_soloud: ^3.4.0      # low-latency audio synthesis
   audio_session: ^0.1.0       # Android audio focus + media stream routing
   provider: ^6.1.2            # state management
-  shared_preferences: ^2.3.0  # persistent settings
+  shared_preferences: ^2.5.6  # persistent settings
   path_provider: ^2.1.6
   url_launcher: ^6.3.3
 
