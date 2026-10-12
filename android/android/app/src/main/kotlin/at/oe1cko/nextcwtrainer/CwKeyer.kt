@@ -2,9 +2,30 @@ package at.oe1cko.nextcwtrainer
 
 import kotlin.math.roundToInt
 
-class CwKeyer(private val tone: CwTonePlugin) {
+/** What the keyer drives: the sidetone (CwTonePlugin), or a fake in tests. */
+interface KeySink {
+    fun setPlaying(on: Boolean)
+}
 
-    enum class State { IDLE, KEY_START, DIT, DAH, INTER_ELEMENT }
+/**
+ * Port of doPaddleIambic() (m32_v6.ino, V9.0). Audited against the firmware
+ * 2026-10-12, see docs/DECISIONS.md "Keyer audit". Paddle latches work like
+ * the firmware's keyerControl bits: they are only written inside defined
+ * windows (Curtis window during an element, the gap after the latency
+ * window) and cleared when an element starts, so a press outside a window
+ * is forgotten. Ultimatic uses its own memories, as in the firmware.
+ *
+ * All state is guarded by [lock]: setInputs() runs on the main thread, tick()
+ * on the keyer thread, stop()/start() on whoever calls them.
+ */
+class CwKeyer(
+    private val tone: KeySink,
+    private val clock: () -> Long = System::currentTimeMillis,
+) {
+
+    private val lock = Any()
+
+    enum class State { IDLE, START_DIT, START_DAH, KEYED_DIT, KEYED_DAH, INTER_ELEMENT }
     enum class Mode { IAMBIC_A, IAMBIC_B, ULTIMATIC, NON_SQUEEZE, STRAIGHT }
 
     @Volatile var wpm: Int = 20
@@ -62,192 +83,257 @@ class CwKeyer(private val tone: CwTonePlugin) {
     private val dahMs  get() = ditMs * 3
     private val gapMs  get() = ditMs
 
-    // Physical paddle state — written by main thread, read by keyer thread
-    @Volatile private var dit = false
-    @Volatile private var dah = false
+    // Physical paddle levels (main thread writes, keyer thread reads; lock)
+    private var dit = false
+    private var dah = false
 
-    // Edge detection state — main thread only
-    @Volatile private var prevDit = false
-    @Volatile private var prevDah = false
+    // A press seen by setInputs() is kept as a pulse until the next tick
+    // samples it, so a very short touch is never missed between two ticks.
+    // A pulse counts exactly like the firmware seeing the paddle down once.
+    private var ditPulse = false
+    private var dahPulse = false
 
-    // Memory latches — set by main thread on leading edge, cleared by keyer thread after element
-    @Volatile private var ditMem = false
-    @Volatile private var dahMem = false
+    // Firmware keyerControl: DIT_L / DAH_L latches, DIT_LAST
+    private var ditL = false
+    private var dahL = false
+    private var ditLast = false      // the element being/last sent is a dit
+    private var ditFirst = false     // first element of this character was a dit
 
-    // Keyer-thread-only state
-    private var state    = State.IDLE
-    private var ditLast  = false
-    private var deadline = 0L
-    private var elementStart = 0L
+    // Ultimatic (firmware ultDitMemory/ultDahMemory/DIT_LAST_CLOSED)
+    private var ultDitMem = false
+    private var ultDahMem = false
+    private var ditLastClosed = false
+    private var prevDit = false
+    private var prevDah = false
+    private var ditOpenedAt = 0L
+    private var dahOpenedAt = 0L
+
+    // Keyer-thread state (under lock)
+    private var state = State.IDLE
+    private var deadline = 0L        // end of the current element / gap
+    private var curtisAt = 0L        // from here on the opposite paddle is sampled
+    private var latencyUntil = 0L    // end of the gap's "paddles insensitive" window
     private var keyIsDown = false
     private var acsGateUntil = 0L
 
-    // Ultimatic: track when paddle opened for debounce
-    private val BOUNCE_MS = 5L
-    @Volatile private var ditOpenedAt = 0L
-    @Volatile private var dahOpenedAt = 0L
+    // Firmware default of the Latency preference (4/8 dit); the app has no setting for it.
+    private val latencyEighths = 4
 
-    // Straight key state (keyer-thread only)
+    // Contact-bounce guard for Ultimatic (CHATTER_GUARD_MS in the firmware)
+    private val chatterGuardMs = 5L
+
+    // Straight key state
     private var skPrevDown   = false
 
-    // Word-gap detection (keyer-thread only): the character-boundary gap
-    // above fires quickly (matches the real device's tight iambic timing),
-    // but the DECODED TEXT should still only get a visible space between
-    // WORDS, not between every letter — so track how long we have sat idle
-    // since the last character boundary and fire a second, distinct "  "
-    // (double-space) event once that idle time crosses a word-gap threshold.
+    // Word-gap detection: the character-boundary gap above fires quickly,
+    // but the DECODED TEXT should only get a visible space between WORDS —
+    // so track how long we have sat idle since the last character boundary
+    // and fire a second, distinct "  " (double-space) event once that idle
+    // time crosses the word-gap threshold.
     private var idleSince   = 0L
     private var wordGapSent = false
 
     var onSymbol: ((String) -> Unit)? = null
 
     // Expose physical state for MainActivity to read when building combined input
-    val ditState: Boolean get() = dit
-    val dahState: Boolean get() = dah
+    val ditState: Boolean get() = synchronized(lock) { dit }
+    val dahState: Boolean get() = synchronized(lock) { dah }
 
-    private var thread: Thread? = null
+    // One flag per keyer thread: stop() cancels the running one and start()
+    // may immediately begin a new one. (A bare thread.isAlive check lost the
+    // restart when start() came right after stop(), see DECISIONS.md.)
+    private class Worker { @Volatile var cancelled = false }
+    private var worker: Worker? = null
 
     fun start() {
-        // If already alive, nothing to do
-        if (thread?.isAlive == true) return
-        // Reset state so a fresh start is clean
-        state     = State.IDLE
-        ditMem    = false; dahMem    = false
-        dit       = false; dah       = false
-        keyIsDown = false
-        idleSince = 0L; wordGapSent = false
-        acsGateUntil = 0L
-        skPrevDown = false
-        // Keeps the measured speed across stop/start (Echo Trainer restarts the
-        // keyer per word); the mode setter is what restarts the measurement.
-        straightDecoder.softReset()
-        reportedWpm = -1
-        CwAudioNative.setPlaying(false)
-        thread = Thread({
-            while (!Thread.currentThread().isInterrupted) {
-                try { tick(); Thread.sleep(1) }
-                catch (e: InterruptedException) { Thread.currentThread().interrupt(); break }
-            }
-        }, "cw-keyer").also { it.isDaemon = true; it.start() }
+        synchronized(lock) {
+            if (worker?.cancelled == false) return
+            // Reset state so a fresh start is clean
+            state     = State.IDLE
+            ditL = false; dahL = false; ditPulse = false; dahPulse = false
+            ultDitMem = false; ultDahMem = false
+            ditLast = false; ditFirst = false
+            dit = false; dah = false; prevDit = false; prevDah = false
+            keyIsDown = false
+            idleSince = 0L; wordGapSent = false
+            acsGateUntil = 0L
+            skPrevDown = false
+            // Keeps the measured speed across stop/start (Echo Trainer restarts the
+            // keyer per word); the mode setter is what restarts the measurement.
+            straightDecoder.softReset()
+            reportedWpm = -1
+            tone.setPlaying(false)
+            val w = Worker().also { worker = it }
+            Thread({
+                while (!w.cancelled && !Thread.currentThread().isInterrupted) {
+                    try { tick(w); Thread.sleep(1) }
+                    catch (e: InterruptedException) { break }
+                }
+            }, "cw-keyer").also { it.isDaemon = true; it.start() }
+        }
     }
 
     fun stop() {
-        thread?.interrupt()
-        setKey(false)
-        state = State.IDLE
+        synchronized(lock) {
+            worker?.cancelled = true
+            setKey(false)
+            state = State.IDLE
+        }
     }
 
     fun setInputs(newDit: Boolean, newDah: Boolean) {
-        val now = System.currentTimeMillis()
-
-        if (mode == Mode.STRAIGHT) {
-            dit = newDit   // keyer thread reads dit to drive straight key
-            return
-        }
-
-        // Set memory on leading edge only
-        if (newDit && !prevDit) ditMem = true
-        if (newDah && !prevDah) dahMem = true
-
-        // Ultimatic: when a new paddle comes in while other is held, suppress older
-        if (mode == Mode.ULTIMATIC) {
+        synchronized(lock) {
+            if (mode == Mode.STRAIGHT) {
+                dit = newDit   // keyer thread reads dit to drive straight key
+                return
+            }
+            val now = clock()
+            // Rising edges: pulse for the next sample, and the Ultimatic
+            // memories (firmware doPaddleIambic, before the state switch).
             if (!newDit && prevDit) ditOpenedAt = now
             if (!newDah && prevDah) dahOpenedAt = now
-            if (newDit && prevDit && newDah && !prevDah && now - ditOpenedAt > BOUNCE_MS) ditMem = false
-            if (newDah && prevDah && newDit && !prevDit && now - dahOpenedAt > BOUNCE_MS) dahMem = false
+            if (newDit && !prevDit) {
+                ditPulse = true
+                ditLastClosed = true
+                val bounce = now - ditOpenedAt < chatterGuardMs
+                if (!(bounce && ditLast)) ultDitMem = true
+            }
+            if (newDah && !prevDah) {
+                dahPulse = true
+                ditLastClosed = false
+                val bounce = now - dahOpenedAt < chatterGuardMs
+                if (!(bounce && !ditLast)) ultDahMem = true
+            }
+            dit = newDit; dah = newDah
+            prevDit = newDit; prevDah = newDah
         }
-
-        dit    = newDit
-        dah    = newDah
-        prevDit = newDit
-        prevDah = newDah
     }
 
-    private fun tick() {
-        val now = System.currentTimeMillis()
+    private fun tick(w: Worker) {
+        synchronized(lock) {
+            if (w.cancelled) return
+            tick()
+        }
+    }
+
+    // One step of the state machine; the caller holds [lock] (tests call it
+    // directly with a fake clock).
+    internal fun tick() {
+        val now = clock()
 
         if (mode == Mode.STRAIGHT) {
             tickStraight(now)
             return
         }
 
-        // Snapshot volatile state once per tick
-        val d = dit; val h = dah
-        val dm = ditMem; val hm = dahMem
+        // What the firmware sees as "the paddle is down" this round
+        val sd = dit || ditPulse
+        val sh = dah || dahPulse
+        ditPulse = false; dahPulse = false
 
         when (state) {
             State.IDLE -> {
-                if (d || h || dm || hm) {
-                    // AutoChar Spc: hold off starting the next character's first
-                    // element until the gate opens — the paddle press/memory
-                    // stays pending (nothing is cleared here) so it fires the
-                    // instant the gate clears, just like the real device's
-                    // acsTimer check in its DIT/DAH keyer-state cases.
-                    if (acsValue == 0 || now >= acsGateUntil) state = State.KEY_START
+                if (sd || sh) {
+                    ditL = ditL || sd; dahL = dahL || sh
+                    ditFirst = sd                       // a squeeze starts with the dit
+                    state = if (sd) State.START_DIT else State.START_DAH
                 } else if (!wordGapSent && idleSince != 0L && now - idleSince >= ditMs * wordGapDits) {
                     onSymbol?.invoke("  ")
                     wordGapSent = true
                 }
             }
 
-            State.KEY_START -> {
-                val sendDit = decideDit(d, h, dm, hm)
-                setKey(true)
-                elementStart = now
-                deadline = now + (if (sendDit) ditMs else dahMs)
-                state = if (sendDit) State.DIT else State.DAH
-                onSymbol?.invoke(if (sendDit) "·" else "—")
+            State.START_DIT -> {
+                // AutoChar Spc: stay here until the gate opens (acsTimer check
+                // in the firmware's DIT/DAH states); the latches stay pending.
+                if (acsValue > 0 && now <= acsGateUntil) return
+                ditL = false; dahL = false; ultDitMem = false
+                ditLast = true
+                startElement(now, ditMs, dit = true)
             }
 
-            State.DIT -> {
-                // Enhanced Curtis mode (Iambic B/Ultimatic): from curtisBDitTiming%
-                // into this dit onward, poll the OPPOSITE (dah) paddle only —
-                // mirrors m32_v6.ino's KEYED-state curtistimer check.
-                if ((mode == Mode.IAMBIC_B || mode == Mode.ULTIMATIC) && !dahMem && h &&
-                    now >= elementStart + 2 + (ditMs * curtisBDitTiming / 100)) {
-                    dahMem = true
-                }
-                if (now >= deadline) {
-                    setKey(false)
-                    ditMem = false
-                    ditLast = true
-                    deadline = now + gapMs
-                    state = State.INTER_ELEMENT
-                }
+            State.START_DAH -> {
+                if (acsValue > 0 && now <= acsGateUntil) return
+                ditL = false; dahL = false; ultDahMem = false
+                ditLast = false
+                startElement(now, dahMs, dit = false)
             }
 
-            State.DAH -> {
-                if ((mode == Mode.IAMBIC_B || mode == Mode.ULTIMATIC) && !ditMem && d &&
-                    now >= elementStart + 2 + (dahMs * curtisBDahTiming / 100)) {
-                    ditMem = true
-                }
+            State.KEYED_DIT, State.KEYED_DAH -> {
                 if (now >= deadline) {
                     setKey(false)
-                    dahMem = false
-                    ditLast = false
                     deadline = now + gapMs
+                    latencyUntil = now + latencyEighths * ditMs / 8L
                     state = State.INTER_ELEMENT
+                } else if (now >= curtisAt) {
+                    // Curtis window: only the OPPOSITE paddle is sampled
+                    if (ditLast) dahL = dahL || sh else ditL = ditL || sd
                 }
             }
 
             State.INTER_ELEMENT -> {
-                // Iambic B/Ultimatic: while both held during inter-element gap, queue opposite
-                if ((mode == Mode.IAMBIC_B || mode == Mode.ULTIMATIC) && d && h) {
-                    if (ditLast) dahMem = true else ditMem = true
-                }
-                if (now >= deadline) {
-                    // Re-snapshot to catch any paddle changes during the gap
-                    val d2 = dit; val h2 = dah; val dm2 = ditMem; val hm2 = dahMem
-                    if (d2 || h2 || dm2 || hm2) state = State.KEY_START
-                    else {
-                        state = State.IDLE
-                        onSymbol?.invoke(" ")
-                        idleSince = now
-                        wordGapSent = false
-                        if (acsValue > 0) acsGateUntil = now + ditMs * (acsValue + 1)
-                    }
+                if (now < latencyUntil) {
+                    // right after the element the paddle just used is insensitive
+                    if (ditLast) dahL = dahL || sh else ditL = ditL || sd
+                } else {
+                    ditL = ditL || sd; dahL = dahL || sh
+                    if (now >= deadline) nextElementOrEnd(now)
                 }
             }
+        }
+    }
+
+    private fun startElement(now: Long, lengthMs: Int, dit: Boolean) {
+        curtisAt = when (mode) {
+            Mode.IAMBIC_B ->
+                now + 2 + lengthMs * (if (dit) curtisBDitTiming else curtisBDahTiming) / 100
+            Mode.NON_SQUEEZE -> now + 3
+            else -> Long.MAX_VALUE   // Iambic A: no early look; Ultimatic ignores it
+        }
+        setKey(true)
+        deadline = now + lengthMs
+        state = if (dit) State.KEYED_DIT else State.KEYED_DAH
+        onSymbol?.invoke(if (dit) "·" else "—")
+    }
+
+    // End of the inter-element gap: firmware `switch (keyerControl)`.
+    private fun nextElementOrEnd(now: Long) {
+        if (mode == Mode.ULTIMATIC) ultimaticSelect()
+        val sendDit: Boolean? = when {
+            ditL && dahL -> when (mode) {
+                Mode.NON_SQUEEZE -> ditFirst         // repeat the character's first element
+                Mode.ULTIMATIC -> ditLastClosed
+                else -> !ditLast                     // iambic: alternate
+            }
+            ditL -> true
+            dahL -> false
+            else -> null
+        }
+        if (sendDit != null) {
+            state = if (sendDit) State.START_DIT else State.START_DAH
+            return
+        }
+        // no latch: the character is complete
+        state = State.IDLE
+        onSymbol?.invoke(" ")
+        idleSince = now
+        wordGapSent = false
+        if (acsValue > 0) acsGateUntil = now + ditMs * (acsValue + 1)
+        ditL = false; dahL = false; ditLast = false
+        ultDitMem = false; ultDahMem = false
+    }
+
+    // Firmware ultimaticSelect(): decide from the memories and the LIVE paddle
+    // levels, and express the answer in the latch bits.
+    private fun ultimaticSelect() {
+        ditL = false; dahL = false
+        when {
+            ultDitMem && ultDahMem -> if (ditLastClosed) ditL = true else dahL = true
+            ultDitMem -> ditL = true
+            ultDahMem -> dahL = true
+            dit && dah -> if (ditLastClosed) ditL = true else dahL = true
+            dit -> ditL = true
+            dah -> dahL = true
         }
     }
 
@@ -268,13 +354,6 @@ class CwKeyer(private val tone: CwTonePlugin) {
         skPrevDown = keyDown
         val m = straightDecoder.wpm
         if (m != reportedWpm) { reportedWpm = m; onMeasuredWpm?.invoke(m) }
-    }
-
-    private fun decideDit(d: Boolean, h: Boolean, dm: Boolean, hm: Boolean): Boolean {
-        if (mode == Mode.NON_SQUEEZE) return if (ditLast) !(h || hm) else (d || dm)
-        if (d && h) return !ditLast
-        if (d || dm) return true
-        return false
     }
 
     private fun setKey(on: Boolean) {

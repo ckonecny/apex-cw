@@ -54,8 +54,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // ── Keyer ──────────────────────────────────────────────────────────────────
   int  _keyerMode   = 0;    // 0=Iambic A, 1=Iambic B, 2=Ultimatic, 3=Non-Squeeze, 4=Straight
   // "CurtisB DitT%"/"CurtisB DahT%" (M32 defaults 75/45): only meaningful in
-  // Iambic B/Ultimatic — how far into the current element (as a % of its
-  // length) the keyer starts looking ahead for the opposite paddle.
+  // Iambic B (Ultimatic ignores them, as in the firmware) — how far into the
+  // current element (as a % of its length) the keyer starts looking ahead for
+  // the opposite paddle.
   int  _curtisBDitTiming = 75;
   int  _curtisBDahTiming = 45;
   // "AutoChar Spc" (M32 posACS, default 0=off): minimum pause enforced
@@ -563,7 +564,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ],
-            if (_keyerMode == 1 || _keyerMode == 2) ...[
+            if (_keyerMode == 1) ...[
               const SettingsDivider(),
               LabeledSlider(label: Strings.t('settings_curtisb_dit'),
                   value: _curtisBDitTiming.toDouble(),
