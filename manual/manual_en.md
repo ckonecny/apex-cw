@@ -643,6 +643,10 @@ is hidden to make room for the keyboard.
    characters wrong in the first attempt in red) with your attempts below
    it, then moves on.
 
+::: {.shots one}
+![After a wrong answer → Learn: the word as dots and dashes, the sounding character lights up](img/en/hear_type_learn.png)
+:::
+
 ::: {.shots}
 ![Typing: the keyboard, only the lesson's characters are active](img/en/hear_type.png)
 
@@ -797,7 +801,7 @@ These are the thresholds the app bases its suggestions on. They apply to
 [Adaptive mode settings](#adaptive-mode-settings).
 
 ::: {.shots .one}
-![⚙ sheet: Adaptive mode](img/en/hear_sheet4.png)
+![⚙ sheet: After a wrong answer, Adaptive mode](img/en/hear_sheet4.png)
 :::
 
 # Send: Echo Trainer
@@ -1508,6 +1512,10 @@ For free keying. What you key is heard and shown as decoded text.
   Ä, Ö, Ü, CH and `;` `!` `"` `'`.
 - The ⚙ sheet also holds **Special characters when decoding** (see
   [Special characters when decoding](#special-characters-when-decoding)).
+
+::: {.shots one}
+![CW Keyer ⚙ sheet: Special characters when decoding](img/en/keyer_sheet.png)
+:::
 
 You set the keyer mode and its details in the global settings under
 **Keyer** (see [Keyer](#keyer)). They apply everywhere you key: CW Keyer,
@@ -2411,6 +2419,10 @@ You first choose a **country**, then the **speed**:
 | **India** | 5 or 8 WPM, 1 minute without a mistake |
 | **USA** | ARRL Code Proficiency: 10 to 40 WPM, 1 minute without a mistake, receive only |
 | **Custom** | your own profile, see below |
+
+::: {.shots one}
+![Exam simulation: choose country and speed](img/en/exam_setup.png)
+:::
 
 The card below the choice shows the rules of the chosen exam for both parts
 (receiving and sending), the source they come from and the kind of text. The plain text is amateur-radio text with figures: **German** (without umlauts)

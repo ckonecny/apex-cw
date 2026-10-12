@@ -667,6 +667,10 @@ Platz hat.
    (die im ersten Versuch falschen Zeichen rot) und darunter deine Versuche,
    dann geht es weiter.
 
+::: {.shots one}
+![Nach falscher Antwort → Lernen: das Wort mit Punkten und Strichen, das klingende Zeichen leuchtet](img/de/hear_type_learn.png)
+:::
+
 ::: {.shots}
 ![Tippen: die Tastatur, nur die Zeichen der Lektion sind aktiv](img/de/hear_type.png)
 
@@ -823,7 +827,7 @@ Die Schwellenwerte, nach denen die App ihre Vorschläge macht. Sie gelten für
 beschrieben.
 
 ::: {.shots .one}
-![⚙-Blatt: Adaptiver Modus](img/de/hear_sheet4.png)
+![⚙-Blatt: Nach falscher Antwort, Adaptiver Modus](img/de/hear_sheet4.png)
 :::
 
 # Geben – Echo Trainer
@@ -1562,6 +1566,10 @@ angezeigt.
   der Keyer auch Ä, Ö, Ü, CH sowie `;` `!` `"` `'`.
 - Im ⚙-Blatt stellst du außerdem die **Sonderzeichen beim Dekodieren** ein
   (siehe [Sonderzeichen beim Dekodieren](#sonderzeichen-beim-dekodieren)).
+
+::: {.shots one}
+![⚙-Blatt des CW Keyers: Sonderzeichen beim Dekodieren](img/de/keyer_sheet.png)
+:::
 
 Den Keyer-Modus und seine Feinheiten stellst du in den globalen Einstellungen
 unter **Keyer** ein (siehe [Keyer](#keyer)). Sie gelten überall, wo du
@@ -2500,6 +2508,10 @@ Du wählst zuerst das **Land**, dann das **Tempo**:
 | **Indien** | 5 oder 8 WPM, 1 Minute fehlerfrei |
 | **USA** | ARRL Code Proficiency: 10 bis 40 WPM, 1 Minute fehlerfrei, nur Hören |
 | **Eigenes Profil** | dein eigenes Profil, siehe unten |
+
+::: {.shots one}
+![Prüfungssimulation: Land und Tempo wählen](img/de/exam_setup.png)
+:::
 
 Die Karte unter der Auswahl zeigt die Regeln der gewählten Prüfung für beide
 Teile (Hören und Geben), die Quelle dafür und die Textart. Der Klartext ist Amateurfunk-Text mit Ziffern: **deutsch** (ohne Umlaute) für
