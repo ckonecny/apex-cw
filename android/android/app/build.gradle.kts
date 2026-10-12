@@ -119,3 +119,9 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // Unit tests of the native engine (app/src/test). Test-only: never part of
+    // the APK. JUnit 4 is EPL-1.0, fine for a tool that is not distributed.
+    testImplementation("junit:junit:4.13.2")
+}

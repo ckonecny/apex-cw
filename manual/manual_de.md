@@ -2741,7 +2741,7 @@ Diese Einstellungen gelten überall, wo du tastest.
 |---|---|---|
 | Modus | Wie der Keyer die Tasten auswertet (siehe unten) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
 | Bildschirm-Paddles vertauschen | Setzt bei den beiden Touch-Tasten **Dah** nach links und **Dit** nach rechts. Wirkt nur auf die Tasten am Bildschirm, nicht auf die Tasten eines Adapters (die bleiben, wie du sie angelernt hast, siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen)). Bei Straight nicht angezeigt | **Aus** / An |
-| CurtisB Dit-Timing | Nur Iambic B und Ultimatic: ab wie viel Prozent eines Dits ein Druck auf die andere Taste schon gespeichert wird | 0–100 % in 5er-Schritten (**75 %**) |
+| CurtisB Dit-Timing | Nur Iambic B: ab wie viel Prozent eines Dits ein Druck auf die andere Taste schon gespeichert wird | 0–100 % in 5er-Schritten (**75 %**) |
 | CurtisB Dah-Timing | Dasselbe für Dahs | 0–100 % in 5er-Schritten (**45 %**) |
 | Auto-Zeichenabstand | Erzwingt eine Mindestpause zwischen Zeichen, damit sie nicht zusammenlaufen. Bei Straight nicht verfügbar | **Aus** / 2 / 3 / 4 Dits |
 | Starttempo Handtaste | Nur bei Straight (ersetzt Auto-Zeichenabstand): erste Schätzung für die Tempo-Messung, siehe [Handtaste](#handtaste-automatisches-tempo) | 5–40 WPM (**15**) |

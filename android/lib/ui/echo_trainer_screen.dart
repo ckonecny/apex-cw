@@ -126,7 +126,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int _keyerMode = 0;
   bool _touchDit = false;
   bool _touchDah = false;
-  // "CurtisB DitT%"/"CurtisB DahT%" — only meaningful in Iambic B/Ultimatic;
+  // "CurtisB DitT%"/"CurtisB DahT%" — only meaningful in Iambic B;
   // shared with the CW Keyer screen, synced to the native keyer at session
   // start (see _startSession()) since this screen's own keyer instance is
   // otherwise left at whatever a different screen last configured it to.

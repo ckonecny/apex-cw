@@ -4,7 +4,7 @@ import android.util.Log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCallHandler {
+class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCallHandler, KeySink {
 
     companion object {
         const val CHANNEL = "at.oe1cko.nextcwtrainer/cw_tone"
@@ -27,7 +27,7 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
     // Called directly by CwKeyer/CwGenerator (no MethodChannel in the hot
     // path). Keying owns the audio: a running game sound effect stops at once
     // (MorseGame.cpp updateSound() drops its effect when the keyer leaves IDLE).
-    fun setPlaying(on: Boolean) {
+    override fun setPlaying(on: Boolean) {
         if (on) cancelEffect()
         CwAudioNative.setPlaying(on)
     }

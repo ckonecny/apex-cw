@@ -34,6 +34,9 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 ## CI / security automation (merged 2026-10-12, PR #64)
 GitHub settings done (Secret Protection, Dependabot security updates, private vulnerability reporting, ruleset for `main`). Watch the first Dependabot PRs; `flutter_soloud` updates touch the native audio engine, so test on the phone (rule 2, rule 4). Release review gate: `docs/PROJECT.md` "Release consistency check".
 
+## Fidelity audit (started 2026-10-12)
+Order: keyer, generator, echo evaluation, JNI tone engine, audio decoder, Koch prosign extension. Keyer done on branch `audit/keyer` (see DECISIONS "Keyer audit"); **pending install + try on the test phone** (rule 4): Iambic A/B, Ultimatic and Non-Squeeze by feel, esp. that short taps of the opposite key during an element are now forgotten in mode A (as on the device). Native tests: `./gradlew :app:testDebugUnitTest` in `android/android`; Gradle needs `JAVA_HOME` of Android Studio's JBR.
+
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual
