@@ -1979,3 +1979,10 @@ The card's "Accuracy below X %" list and the weak-characters chips described the
 ## 2026-10-11: Extra dark themes (Amber, Red, Green, Warm grey, Navy & orange) as Theme choices
 
 `ThemeController.choice` (int, pref `themeMode`): 0 System, 1 Light, 2 Dark, 3 Amber, 4 Red, 5 Green, 6 Warm grey, 7 Navy & orange. 3-7 are dark-brightness `ThemeData` (so `Brightness.dark` checks and system chrome keep working) carrying a `ThemeVariantMarker` with their palette; `AppColors.of` returns it when present. The marker is a `ThemeExtension` because dark -> variant leaves the brightness unchanged and dependents would otherwise not rebuild. Old stored values 0-2 are unchanged.
+
+## 2026-10-12: Release 1.7.0 — small items without their own entry
+- **Practice a character (#44):** the Hear/Send sliders on that page are per page and don't change the training's speed; the page pushes its own config on entry (rule 2).
+- **Adapter links (#59) and key tip (#58):** two discreet links (ready-made vband adapter, DIY instructions) in Settings → vband Morse Key and a one-time lightbulb tip on the Send start page (`keyAdapterHintSeen`); no network access, the links open the browser.
+- **Online manual row** in Settings → Info and the **WebSDR** entry under Links only open the browser, same as the other links.
+- **Privacy:** `ACCESS_NOTIFICATION_POLICY` (Focus mode, #55) and `VIBRATE` are described in `PRIVACY.md`; Play's data-safety answers stay "no data collected".
+- **Release 1.7.0:** the beta line v1.6.1-beta1…6 was folded into 1.7.0 (versionName 1.7.0, versionCode 7); manual screenshots taken in the light theme, store raw shots in the dark theme.

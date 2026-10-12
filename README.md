@@ -36,6 +36,12 @@ By Christian Konecny, OE1CKO.
   Germany, the UK, New Zealand, India and the USA (ARRL), or define your own
   profile — receiving *and* sending, with the exam's speed, duration, error
   limit, retries and text type, and a result page that says passed or not.
+- **Comfort for long sessions:** a wrong answer can replay the word with its
+  dots and dashes under the letters (learn from the mistake), an undo bar
+  follows every settings change, Do Not Disturb can switch on while you
+  practise, and the app has a light theme plus five extra dark ones (Amber,
+  Red for night vision, Green, Warm grey, Navy & orange) with an optional
+  blue-light filter.
 - **Your own material and more games:** share any text from another app
   into Own texts and let the app play it, plus games from arcade to a CW
   text adventure.
@@ -201,8 +207,7 @@ character detail has weekly curves with tap-for-attempts.
 - Training-specific settings live in a ⚙ sheet in each screen; the global
   Settings page only holds what is really global.
 - Where Android has a better native equivalent, the app uses it instead of
-  imitating the device: the OS theme instead of a "Theme" preference,
-  pinch-to-zoom text size instead of "Font Size", an in-app German/English
+  imitating the device: pinch-to-zoom text size instead of "Font Size", an in-app German/English
   switch (the device UI is English-only), on-device dit/dah key learning
   instead of fixed adapter presets, and audio output handling that follows
   USB/Bluetooth connect/disconnect (plus a manual Auto/Speaker/Wired/

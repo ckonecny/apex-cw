@@ -37,3 +37,16 @@ v1.1.0 (2026-09-27) additions:
 - Poll `ui.py dump` for status texts ("spielt …", "Geben …", "Gesendet")
   instead of fixed sleeps; `screencap` right after keying catches
   short-lived states (✓ Richtig) that a slower dump misses.
+
+v1.7.0 (2026-10-12) additions:
+
+- `seed_history.py <prefs.xml>` pads a copy of the prefs with ~10 earlier weeks
+  of statistics, so the progress/heatmap/detail shots show 12 weeks. Push it
+  with `run-as` on a debug build, restore the original afterwards.
+- Landscape shots (Morse tree): `settings put system accelerometer_rotation 0`
+  and `user_rotation 1`, crop rows 100..1060 of the 2424x1080 screencap, scale
+  to 1080 px wide; set rotation back afterwards.
+- Phone locked or Do Not Disturb shade on top: adb taps then hit the lock
+  screen. Keep the screen awake and unlocked for the whole session.
+- Keying via `key.sh` is only reliable for short letters; a 100 % Echo block
+  (needed for `echo_result2`) has to be keyed by hand.
