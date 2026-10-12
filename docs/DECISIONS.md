@@ -2029,3 +2029,16 @@ Fixed: `echo_timing.dart` (new, with `test/echo_timing_test.dart`): the start de
 Deliberately different (unchanged, see Phase 7/8 notes): the pauses around the verdict are fixed (1.2 s after a correct, 1.5 s before a repeat, 2 s after the reveal) instead of `interCharacterSpace/2` before and `16 dits + interWordSpace/12` after it; Adaptive Speed (±1 WPM per word) is not in the Geben flow, the block flow replaces it; the Koch word/character probabilities (`increaseWordProbability` etc.) are replaced by the statistics-driven weak-character weighting.
 
 Known small gap: a keyed prosign and the same two letters in a row decode to the same text ("AS"), so a target `<AS>` accepts the letters A, S and the other way round. The firmware tells them apart (single-letter codes); fixing it would mean the decoder reporting prosigns as tokens, which the CW Keyer display does not want. Not worth the risk today.
+
+## 2026-10-12: Native tone engine audit (`cw_tone_jni.cpp`, `interference.h`)
+
+Envelope checked against the firmware (`setSidetoneEnvelope()`: attack = release = Tone Softness + 1 ms): matches.
+
+Fixed in `cw_tone_jni.cpp` (stability, found by reading, not yet seen as a crash):
+- **`gStream` was a plain pointer used from several threads without a lock.** AAudio's error callback (it runs on its own thread) closed and reopened it while `restartStream()` (AudioRouteManager, main thread) did the same; a Bluetooth disconnect raises both at about the same time, so the stream could be closed twice, or used after `close`. `getLatencyMs()` could read it while it was being closed. Now everything goes through `gStreamMutex`. The error callback uses `try_lock` only: closing a stream waits for its callbacks, so a blocking lock there could deadlock against `restartStream()`.
+- **The error callback reopened the stream even after `stopStream()`** (app shutdown) or after a restart replaced the stream: it now acts only for the stream that is still current.
+- `getLatencyMs()` returns -1 instead of dividing by a sample rate of 0.
+
+New: `app/src/test/cpp/interference_test.cpp`, run by `tools/run_native_cpp_tests.sh` (also in CI job `native-test`): 19 million samples through `Interference` for sample rates 8-96 kHz, pitches 100-3500 Hz, block sizes 1-4096, extreme and random settings and out-of-range settings; fails on NaN/Inf, output outside the limiter's range, or any AddressSanitizer/UBSan finding. Passes unchanged, so `interference.h` itself needed no fix.
+
+Not changed, noted: `chainPower()` (8192-step impulse response) runs on the audio thread whenever the filter or pitch changes; sub-millisecond on current phones, but a possible glitch source on very slow devices while the filter slider is dragged. The tone itself is not covered by a host test (it lives in the AAudio callback together with the stream).
