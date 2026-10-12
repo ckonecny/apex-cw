@@ -2019,3 +2019,13 @@ Fixed:
 Checked and identical: the 973-entry call sign prefix table (script, all fields), `getRandomCall()` logic (VK/ZL generator, prefix/digit/suffix rules, fallback), Random Groups ranges, Koch last-third weighting, Koch boost attempts, Koch sequences M32/LCWO/CW Academy (without the prosign markers, see the open prosign-tail item), abbreviation length mapping.
 
 Deliberately different (unchanged): frequency-weighted word lists (#53), explicit min/max group length instead of the firmware's length option values 7-10, tone length is exact (the firmware shortens each element by 6 ms to compensate its output routine), jitter ("bad fist"), word doubler and stop-after-word are no longer reachable from the UI (DECISIONS Phase 7).
+
+## 2026-10-12: Echo evaluation audit against `echoTrainerEval()` (V9.0)
+
+Checked and matching: the verdict is an exact comparison of the decoded answer with the word (case-insensitive here); `<err>` (7+ dits) and the fourth `e` in a row clear the answer (with the app's deliberate exception for targets that continue with `e`, upstream fix 9aae6f6); a wrong word is played again while `repeats <= Echo Repeats` (7 = forever), i.e. `Echo Repeats + 1` plays in total, then the word is revealed and the next one follows; the start deadline and the answer-end rule use the firmware's terms.
+
+Fixed: `echo_timing.dart` (new, with `test/echo_timing_test.dart`): the start deadline used the raw InterWord Spc; the firmware uses `interWordSpace = max(InterWord Spc, Interchar Spc + 4)` (updateTimings()) there as well, so with a small InterWord Spc and a large Interchar Spc the answer window was too short. The answer-end rule already had the `max`.
+
+Deliberately different (unchanged, see Phase 7/8 notes): the pauses around the verdict are fixed (1.2 s after a correct, 1.5 s before a repeat, 2 s after the reveal) instead of `interCharacterSpace/2` before and `16 dits + interWordSpace/12` after it; Adaptive Speed (±1 WPM per word) is not in the Geben flow, the block flow replaces it; the Koch word/character probabilities (`increaseWordProbability` etc.) are replaced by the statistics-driven weak-character weighting.
+
+Known small gap: a keyed prosign and the same two letters in a row decode to the same text ("AS"), so a target `<AS>` accepts the letters A, S and the other way round. The firmware tells them apart (single-letter codes); fixing it would mean the decoder reporting prosigns as tokens, which the CW Keyer display does not want. Not worth the risk today.
