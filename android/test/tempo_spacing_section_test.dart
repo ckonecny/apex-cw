@@ -49,9 +49,20 @@ void main() {
     expect(find.text('20 WPM (eff. 9)'), findsOneWidget);
   });
 
-  testWidgets('compact keeps the sub line', (tester) async {
+  testWidgets('compact keeps the sub line on a tall screen', (tester) async {
+    tester.view.physicalSize = const Size(412, 915);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(_host(compact: true));
     expect(find.textContaining('Dits ·'), findsNWidgets(2));
+  });
+
+  testWidgets('compact drops the sub line on a short screen', (tester) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(_host(compact: true));
+    expect(find.textContaining('Dits ·'), findsNothing);
   });
 
   testWidgets('char gap + keeps the word gap at least as large', (tester) async {
