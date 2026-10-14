@@ -417,7 +417,7 @@ speed (20 WPM). That changes now, in this order:
    unlocked (or you practice with **All characters**), the app suggests shorter
    pauses after two good blocks in a row, one dit per step, down to the normal
    3 / 7 dits (see [Pauses and speed](#pauses-and-speed)). You can also do this
-   yourself: **Spacing char/word** on the start view and the result page.
+   yourself: **Spacing char/word** right above the WPM slider.
 2. **Only then raise the speed.** Once the pauses are at 3 / 7, the app suggests
    +1 WPM when things go well. Small steps, no jumps.
 3. **If it goes badly, it goes back.** If the block EMA falls below the lower
@@ -551,8 +551,8 @@ only offers the **Random** content.
 ## Speed
 
 The **WPM** slider below the practice area sets the character speed (10 to 60
-WPM). You set the pauses in the ⚙ sheet under **Spacing**, or directly on the
-start and result pages with **Spacing char/word**.
+WPM). You set the pauses in the ⚙ sheet under **Spacing**, or directly above
+the WPM slider with **Spacing char/word**.
 
 ## How a block runs
 
@@ -697,12 +697,14 @@ From top to bottom, the result page shows:
   plus "*x* of *y* correct". It is green from 90 %, yellow from 70 % and red
   below that.
 - The **trend** line, from the sixth block on (see [trend](#trend)). Speed,
-  effective speed and spacing are in the WPM slider and **Spacing char/word**.
-- **Spacing char/word:** − and + change character spacing and word spacing together
-  by 1 dit each. This takes effect immediately and doesn't depend on the
-  suggestions. After a block in typing mode the field is called **Spacing
-  char** and changes only the character spacing, because the word spacing has
-  no effect there.
+  effective speed and spacing are in the **Spacing char/word** field and the
+  WPM slider below it, above the buttons (the same on the start view and
+  the "Sent" view).
+- **Spacing char/word** (above the WPM slider, not in the result list): − and +
+  change character spacing and word spacing together by 1 dit each. This takes
+  effect immediately and doesn't depend on the suggestions. Once you started
+  **Typing**, the field is called **Spacing char** and changes only the
+  character spacing, because the word spacing has no effect there.
 - **Weak characters:** the characters that cause you the most errors over
   time, with their error rate (see [Weak characters](#weak-characters)).
 - **On the way to "X"** (Koch lesson only): what you still need before the
@@ -1113,7 +1115,9 @@ The app always changes the **pauses** first, and only then the speed:
 When copying on the **on-screen keyboard**, the app only changes the
 **character spacing**; the word spacing stays, because the app waits for you
 after every word there anyway. The pauses then count as normal as soon as the
-character spacing is at 3 dits.
+character spacing is at 3 dits. For the same reason the **Spacing char/word**
+field shows only the character spacing once you start **Typing**, and the ⚙
+sheet notes at the word spacing that it only applies to **Paper**.
 
 **While you are still working through the Koch sequence, the app neither
 shortens the pauses nor raises the speed.** You should be able to concentrate

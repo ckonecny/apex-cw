@@ -19,13 +19,11 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             child: _FitOrCompact(
               availableHeight: constraints.maxHeight - 32,
               builder: (compact) => Column(mainAxisSize: MainAxisSize.min, children: [
-                _buildSpacingControl(context, scale: 1.2),
-                if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact)) ...[
-                  const SizedBox(height: 16),
+                if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
                   _buildWeakCharsSection(context, scale: 1.2),
-                ],
                 if (_buildUnlockOutlook(context, compact: compact) case final outlook?) ...[
-                  const SizedBox(height: 12),
+                  if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
+                    const SizedBox(height: 12),
                   outlook,
                 ],
               ]),
@@ -91,51 +89,6 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           style: TextStyle(fontSize: 11 * scale, color: c.textMuted)),
       const SizedBox(height: 8),
       _buildWeakChips(context, scale: scale),
-    ])));
-  }
-
-  // Manual spacing control, requested to be visible at every summary and at
-  // the start ("bitte bei jeder zusammenfassung und auch zu beginn den
-  // block zum anpassen der pausen einblenden") — separate from the engine's
-  // own accept/reject spacing suggestion on the result screen: this one
-  // always shows and lets the user nudge the pause directly, any time.
-  // Bounds match the Settings sliders (interCharSpace/interWordSpace), not
-  // _startInterCharSpace/_startInterWordSpace — those only cap how far the
-  // *engine* is allowed to auto-widen, not a manual override.
-  //
-  // [charOnly] (typing mode, result page): the word gap has no effect there
-  // (DECISIONS.md "Hören: typing mode"), so only the char gap is shown and
-  // changed; the stored word gap stays untouched. The word gap is kept at
-  // least as large as the char gap, as in the ⚙ sheet.
-  void _adjustSpacing(int delta, {bool charOnly = false}) {
-    final ic = (widget.interCharSpace + delta).clamp(3, 45);
-    final iw = charOnly
-        ? (widget.interWordSpace < ic ? ic.clamp(6, 105) : widget.interWordSpace)
-        : (widget.interWordSpace + delta).clamp(6, 105);
-    if (ic == widget.interCharSpace && iw == widget.interWordSpace) return;
-    widget.onSpacingChanged?.call(ic, iw);
-  }
-
-  Widget _buildSpacingControl(BuildContext context,
-      {double scale = 1, bool charOnly = false}) {
-    final c = AppColors.of(context);
-    return SizedBox(width: double.infinity, child: AppCard(child: Row(children: [
-      Expanded(child: Text(
-          Strings.t(charOnly ? 'ac_spacing_control_title_char' : 'ac_spacing_control_title'),
-          style: TextStyle(fontSize: 11 * scale, color: c.textMuted))),
-      _TapTarget(onTap: () => _adjustSpacing(-1, charOnly: charOnly),
-          child: Icon(Icons.remove, size: 20, color: c.accent)),
-      SizedBox(
-        width: 60 * scale,
-        child: Text(charOnly
-            ? '${widget.interCharSpace}'
-            : '${widget.interCharSpace}/${widget.interWordSpace}',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15 * scale,
-                fontWeight: FontWeight.bold, color: c.accent)),
-      ),
-      _TapTarget(onTap: () => _adjustSpacing(1, charOnly: charOnly),
-          child: Icon(Icons.add, size: 20, color: c.accent)),
     ])));
   }
 
@@ -411,6 +364,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           );
         }),
       ),
+      if (widget.controls != null) widget.controls!,
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: _PrimaryButton(
@@ -518,6 +472,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           ),
         ),
       ),
+      if (widget.controls != null) widget.controls!,
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: _SecondaryButton(
@@ -556,8 +511,6 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                       .replaceFirst('{arrow}', _trend!.arrow),
                   style: TextStyle(fontSize: 13, color: c.textMuted)),
             ],
-            const SizedBox(height: 20),
-            _buildSpacingControl(context, scale: 1.2, charOnly: _typing),
             if (weak.isNotEmpty && !_outlookHostsWeakChars(false)) ...[
               const SizedBox(height: 20),
               _buildWeakCharsSection(context, scale: 1.2),
@@ -576,6 +529,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           ]),
         ),
       ),
+      if (widget.controls != null) widget.controls!,
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Row(children: [

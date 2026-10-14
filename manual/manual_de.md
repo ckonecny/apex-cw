@@ -434,8 +434,7 @@ Zeichentempo (20 WPM). Das ändert sich jetzt, in dieser Reihenfolge:
    sind (oder du mit **Alle Zeichen** übst), schlägt die App nach zwei guten
    Blöcken in Folge kürzere Pausen vor, je einen Dit pro Schritt, bis zu den
    normalen 3 / 7 Dits (siehe [Pausen und Tempo](#pausen-und-tempo)). Du kannst
-   das auch selbst tun: **Abstand Zeichen/Wort** auf der Startansicht und der
-   Ergebnisseite.
+   das auch selbst tun: **Abstand Zeichen/Wort** direkt über dem WPM-Regler.
 2. **Erst dann das Tempo erhöhen.** Sind die Pausen bei 3 / 7, schlägt die App
    +1 WPM vor, wenn es gut läuft. Kleine Schritte, keine Sprünge.
 3. **Läuft es schlecht, geht es zurück.** Fällt die Block-EMA unter die untere
@@ -573,8 +572,8 @@ wurden. Beim Übungsset gibt es nur den Inhalt **Zufall**.
 ## Tempo
 
 Der Regler **WPM** unter der Übungsfläche stellt das Zeichentempo ein (10 bis 60
-WPM). Die Pausen stellst du im ⚙-Blatt unter **Abstände** ein oder direkt auf
-der Start- und Ergebnisseite mit **Abstand Zeichen/Wort**.
+WPM). Die Pausen stellst du im ⚙-Blatt unter **Abstände** ein oder direkt über
+dem WPM-Regler mit **Abstand Zeichen/Wort**.
 
 ## Ein Block im Ablauf
 
@@ -720,12 +719,14 @@ Die Ergebnisseite zeigt von oben nach unten:
 - **Trefferquote** in Prozent (Anteil richtig mitgeschriebener Zeichen) –
   grün ab 90 %, gelb ab 70 %, darunter rot – und „*x* von *y* richtig“.
 - Die **Trend**-Zeile, ab dem sechsten Block (siehe [Trend](#trend)). Tempo,
-  effektives Tempo und Abstände stehen im WPM-Regler und bei **Abstand Zeichen/Wort**.
-- **Abstand Zeichen/Wort** – mit − und + änderst du Zeichenabstand und Wortabstand
-  gemeinsam um je 1 Dit. Das gilt sofort und unabhängig von den
-  Vorschlägen. Nach einem Block im Tipp-Modus heißt das Feld **Abstand
-  Zeichen** und ändert nur den Zeichenabstand, weil der Wortabstand dort ohne
-  Wirkung ist.
+  effektives Tempo und Abstände stehen unten im Feld **Abstand Zeichen/Wort**
+  und im WPM-Regler darunter, über den Schaltflächen (so auch auf der
+  Startansicht und der Ansicht „Gesendet“).
+- **Abstand Zeichen/Wort** (über dem WPM-Regler, nicht in der Ergebnisliste) –
+  mit − und + änderst du Zeichenabstand und Wortabstand gemeinsam um je 1 Dit.
+  Das gilt sofort und unabhängig von den Vorschlägen. Hast du **Tippen**
+  gestartet, heißt das Feld **Abstand Zeichen** und ändert nur den
+  Zeichenabstand, weil der Wortabstand dort ohne Wirkung ist.
 - **Schwache Zeichen** – die Zeichen, die dir auf Dauer die meisten Fehler
   machen, mit ihrer Fehlerquote (siehe
   [Schwache Zeichen](#schwache-zeichen)).
@@ -1149,7 +1150,9 @@ Die App verändert immer zuerst die **Pausen**, erst dann das Tempo:
 Beim Mitschreiben mit der **Bildschirmtastatur** ändert die App nur den
 **Zeichenabstand**; der Wortabstand bleibt, weil die App dort ohnehin nach jedem
 Wort auf dich wartet. Die Pausen gelten dann als normal, sobald der
-Zeichenabstand bei 3 Dits ist.
+Zeichenabstand bei 3 Dits ist. Aus demselben Grund zeigt das Feld **Abstand
+Zeichen/Wort** nach dem Start von **Tippen** nur noch den Zeichenabstand, und
+im ⚙-Blatt steht beim Wortabstand ein Hinweis, dass er nur für **Papier** gilt.
 
 **Solange du die Koch-Reihenfolge noch durcharbeitest, verkürzt die App die
 Pausen nicht und erhöht auch das Tempo nicht.** Du sollst dich auf neue Zeichen

@@ -109,6 +109,12 @@ class AdaptiveCopyBody extends StatefulWidget {
   // true while the typing keyboard is on screen — the parent hides its WPM
   // slider then, to leave room for the keys.
   final ValueChanged<bool>? onKeyboardChanged;
+  // Spacing card + WPM slider, shown by the body above its own buttons on the
+  // revealed and result screens so those buttons stay at the very bottom
+  // (same order as the start screen: spacing, WPM, button). The parent hides
+  // its own copy while [onControlsInBodyChanged] says true.
+  final Widget? controls;
+  final ValueChanged<bool>? onControlsInBodyChanged;
   final AdaptiveCopyController? controller;
   // Profile's practice set: the keyboard's active keys for that charset.
   final String practiceChars;
@@ -139,6 +145,8 @@ class AdaptiveCopyBody extends StatefulWidget {
     this.onSpacingChanged,
     this.onActiveChanged,
     this.onKeyboardChanged,
+    this.controls,
+    this.onControlsInBodyChanged,
     this.controller,
     this.practiceChars = '',
   });
@@ -230,7 +238,16 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   int _activeWpm = 0;
   int _activeInterChar = 0, _activeInterWord = 0; // spacing of the in-flight block
 
-  _Phase _phase = _Phase.idle;
+  _Phase _phaseValue = _Phase.idle;
+  bool _controlsInBody = false;
+  _Phase get _phase => _phaseValue;
+  set _phase(_Phase v) {
+    _phaseValue = v;
+    final inBody = v == _Phase.revealed || v == _Phase.result;
+    if (inBody == _controlsInBody) return;
+    _controlsInBody = inBody;
+    widget.onControlsInBodyChanged?.call(inBody);
+  }
   // Stop<Next>Rep: true = Gruppe wiederholen, false = weiter.
   Completer<bool>? _choiceGate;
   bool _awaitingChoice = false;
@@ -1000,7 +1017,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // sequence characters unlocked yet) — user feedback 2026-09-22: pausing
     // reduction pressure on top of still-being-introduced-to-new-characters
     // felt like a constant nag. The manual spacing +/- control
-    // (_buildSpacingControl) is untouched by this — it's independent of the
+    // (SpacingStepperCard) is untouched by this — it's independent of the
     // engine's proposals and still lets the user tighten by hand any time.
     // Once the full sequence is unlocked, the (now hysteresis-gated, see
     // AdaptiveCopyThresholds.spacingUpConsecutiveBlocks) tighten/speed-up

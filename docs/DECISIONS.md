@@ -812,17 +812,30 @@ confirmed by the user on 2026-09-27:
   key (0 errors): the two disagreed. Every other extra character (`ABCE`,
   `AABC`) stays wrong. Side effect: for a group ending in a doubled char
   (`ABB`), `ABBB` is accepted too.
-- **Spacing suggestions:** in the typing mode the adaptive mode only
-  suggests changes to the **inter-character** spacing (inter-word spacing has
-  no effect there).
-- **Manual spacing card (2026-10-14):** on the result page after a typing
-  block the card shows and changes only the char gap ("Abstand Zeichen",
-  `charOnly` in `_buildSpacingControl`); the stored word gap is untouched. The
-  start page keeps "Zeichen/Wort" because the mode is chosen only by the start
-  button. The ⚙ sheet is shared by both modes and opened before the mode is
-  chosen, so its word-gap slider stays and gets a note below the sliders
-  (`settings_word_spacing_hear_note`). Open: the `eff.` value on the WPM
-  slider still uses the word gap in typing mode.
+- **Word gap in typing mode (one rule, 2026-10-14):** the app waits for the
+  user after every word, so the inter-word gap has no effect there. Only the
+  **inter-character** gap counts, in three places: (1) the adaptive spacing
+  suggestions only change the char gap (`_stepPendingSpacing`, suggestion row);
+  (2) the manual spacing card shows and changes only the char gap once a
+  typing block has started ("Abstand Zeichen", `charOnly` in
+  `SpacingStepperCard`; the stored word gap stays untouched, never below the
+  char gap); (3) the ⚙ sheet is shared by both modes and opened before the
+  mode is chosen, so its word-gap slider stays and a note below the sliders
+  says it applies to paper only (`settings_word_spacing_hear_note`). The start
+  screen keeps "Zeichen/Wort" because the mode is chosen only by the start
+  button. Open: the `eff.` value on the WPM slider still uses the word gap in
+  typing mode.
+- **Spacing card placement (2026-10-14):** the card moved out of the practice
+  area to the bottom control area directly **above** the WPM slider
+  (`SpacingStepperCard`, `widgets/spacing_stepper_card.dart`, built by
+  `_controls()` in `generator_screen.dart`): speed and pauses belong together;
+  the practice area keeps "auf dem Weg zu", weak characters and hit rate.
+  Order at the bottom is spacing → WPM → buttons on the start, "Gesendet"
+  (revealed, incl. word marking) and result screens; there the body renders
+  the controls itself above its buttons (`AdaptiveCopyBody.controls`, parent
+  hides its copy via `onControlsInBodyChanged`). While a block runs nothing
+  changes: paper mode shows the WPM slider only (no spacing card), typing mode
+  has no slider (keyboard on screen).
 - **After the block:** the usual "Gesendet" page, errors pre-marked from the
   first attempts, typed text under each group; marks can be removed by
   tapping (typos). Then the **unchanged** result page (no ●◐○ split, no
