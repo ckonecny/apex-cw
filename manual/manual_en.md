@@ -2519,7 +2519,7 @@ key contacts into **key presses**:
   a widely used, ready-made USB adapter built exactly for this.
 - **Homemade:** any small USB HID device that reports the dit and dah
   contacts as two different keys works. A ready-to-build example is
-  [xiao-vband-adapter](https://github.com/ckonecny/xiao-vband-adapter). It is a
+  [diy-vband-adapter](https://github.com/ckonecny/diy-vband-adapter). It is a
   Seeed XIAO SAMD21 with a 3.5 mm jack that sends the same keys as the vband
   adapter. It plugs straight into the phone with a USB-C cable.
 

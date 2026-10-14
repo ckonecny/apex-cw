@@ -2610,7 +2610,7 @@ der die Tastenkontakte in **Tastendrücke** übersetzt:
   ein fertiger, weit verbreiteter USB-Adapter genau dafür.
 - **Selbstgebaut:** Jedes kleine USB-HID-Gerät, das Dit- und Dah-Kontakt als
   zwei verschiedene Tasten meldet. Ein fertiges Beispiel zum Nachbauen ist
-  [xiao-vband-adapter](https://github.com/ckonecny/xiao-vband-adapter): ein
+  [diy-vband-adapter](https://github.com/ckonecny/diy-vband-adapter): ein
   Seeed XIAO SAMD21 mit 3,5-mm-Buchse, der dieselben Tasten sendet wie der
   vband-Adapter. Er wird mit einem USB-C-Kabel direkt ans Handy gesteckt.
 

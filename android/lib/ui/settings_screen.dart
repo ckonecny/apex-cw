@@ -773,7 +773,7 @@ class _AdapterHintState extends State<_AdapterHint> {
   late final _vband = TapGestureRecognizer()
     ..onTap = () => widget.onOpen('https://hamradio.solutions/vband/');
   late final _diy = TapGestureRecognizer()
-    ..onTap = () => widget.onOpen('https://github.com/ckonecny/xiao-vband-adapter');
+    ..onTap = () => widget.onOpen('https://github.com/ckonecny/diy-vband-adapter');
 
   @override
   void dispose() {
