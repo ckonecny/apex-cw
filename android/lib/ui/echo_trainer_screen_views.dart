@@ -68,7 +68,6 @@ extension _EchoViews on _EchoTrainerScreenState {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.warning)),
           ),
-        _buildTempoControls(c),
         const SizedBox(height: 4),
         Expanded(child: PinchZoomFontSize(
           prefsKey: 'echoResultFontSize',
@@ -119,27 +118,31 @@ extension _EchoViews on _EchoTrainerScreenState {
           ),
         )),
         const SizedBox(height: 12),
-        AppButton(
-          height: 56,
-          label: Strings.t('block_next'),
-          color: c.accent,
-          onTap: () async {
-            await _applyAccepted(boost: true);
-            if (mounted) _update(() {});
-            await _startSession();
-          },
-        ),
-        const SizedBox(height: 8),
-        AppButton(
-          height: 56,
-          primary: false,
-          label: Strings.t('block_end'),
-          color: c.accent,
-          onTap: () async {
-            await _applyAccepted(boost: false);
-            if (mounted) _update(() => _showResult = false);
-          },
-        ),
+        _controlsCard(),
+        const SizedBox(height: 12),
+        Row(children: [
+          Expanded(child: AppButton(
+            height: 56,
+            primary: false,
+            label: Strings.t('block_end'),
+            color: c.accent,
+            onTap: () async {
+              await _applyAccepted(boost: false);
+              if (mounted) _update(() => _showResult = false);
+            },
+          )),
+          const SizedBox(width: 12),
+          Expanded(child: AppButton(
+            height: 56,
+            label: Strings.t('block_next'),
+            color: c.accent,
+            onTap: () async {
+              await _applyAccepted(boost: true);
+              if (mounted) _update(() {});
+              await _startSession();
+            },
+          )),
+        ]),
       ]),
     );
   }

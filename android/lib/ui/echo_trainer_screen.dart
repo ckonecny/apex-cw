@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'widgets/setting_rows.dart';
+import 'widgets/tempo_spacing_section.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
@@ -510,46 +511,63 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await p.setInt('echoAnswerWpmMax', _answerWpmMax);
   }
 
-  // Give speed 0 means "same as hearing"; stepping up to the hearing speed
-  // goes back to that, stepping down from it starts at hearing speed - 1.
-  void _stepGiveWpm(int d) {
-    final eff = _answerWpmMax == 0 ? _wpm : min(_answerWpmMax, _wpm);
-    if (_wpm <= kGiveWpmMin) {
-      _setGiveWpm(0);
-      return;
-    }
-    final n = (eff + d).clamp(kGiveWpmMin, _wpm);
-    _setGiveWpm(n >= _wpm ? 0 : n);
+  // Manual spacing change (idle / result card). Like a manual tempo change it
+  // overrides the matching suggestion of the finished block.
+  Future<void> _setSpacing(int ic, int iw) async {
+    setState(() {
+      _interCharSpace = ic;
+      _interWordSpace = iw;
+      _pendIC = _pendIW = null;
+    });
+    final pf = await TrainingProfile.open(TrainingProfile.echo);
+    await pf.setInt('interCharSpace', _interCharSpace);
+    await pf.setInt('interWordSpace', _interWordSpace);
   }
 
-  Widget _tempoStepper(AppColors c, String label, String value,
-      VoidCallback? onMinus, VoidCallback? onPlus) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Text(label, style: TextStyle(fontSize: 12, color: c.textMuted)),
-      IconButton(
-          icon: const Icon(Icons.remove_circle_outline), color: c.accent,
-          visualDensity: VisualDensity.compact, onPressed: onMinus),
-      SizedBox(width: 62, child: Text(value, textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 13, color: c.accent))),
-      IconButton(
-          icon: const Icon(Icons.add_circle_outline), color: c.accent,
-          visualDensity: VisualDensity.compact, onPressed: onPlus),
-    ]);
+  // Geben speed above Hören and its spacing: the spacing belongs to the
+  // hearing (prompt) speed directly below, not to the give speed. The leftmost
+  // notch (kGiveWpmMin - 1) means "same as Hören". Straight key: the speed is
+  // measured from the keying, so the slider is disabled and just follows it.
+  Widget _giveSlider() {
+    final straight = _keyerMode == 4;
+    return LabeledSlider(
+      label: Strings.t('block_give'),
+      display: straight
+          ? '$_measuredWpm WPM'
+          : _answerWpmMax == 0
+              ? Strings.t('settings_answer_wpm_same')
+              : '$_answerWpmMax WPM',
+      value: (straight
+              ? _measuredWpm.clamp(kGiveWpmMin - 1, 60)
+              : (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax))
+          .toDouble(),
+      min: kGiveWpmMin - 1.0,
+      max: 60,
+      divisions: 61 - kGiveWpmMin,
+      dense: true,
+      showUndo: false,
+      onChanged: straight
+          ? null
+          : (v) => _setGiveWpm(v < kGiveWpmMin ? 0 : v.round()),
+    );
   }
 
-  Widget _buildTempoControls(AppColors c) {
-    return Wrap(alignment: WrapAlignment.center, spacing: 8, children: [
-      _tempoStepper(c, Strings.t('block_hear'), '$_wpm WPM',
-          () => _setHearWpm(_wpm - 1), () => _setHearWpm(_wpm + 1)),
-      // Straight key: the Geben speed is measured, so the stepper is disabled.
-      if (_keyerMode == 4)
-        _tempoStepper(c, Strings.t('block_give'), '$_measuredWpm WPM', null, null)
-      else
-        _tempoStepper(c, Strings.t('block_give'),
-            _answerWpmMax == 0 ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax WPM',
-            () => _stepGiveWpm(-1), () => _stepGiveWpm(1)),
-    ]);
-  }
+  // The same tempo + spacing block as in Hören and Verstehen
+  // (TempoSpacingSection), with the give slider on top. Shown on the start
+  // and result screens, never while a block runs.
+  Widget _controlsCard() => SettingsCard(children: [
+        TempoSpacingSection(
+          leading: _giveSlider(),
+          speedLabel: Strings.t('block_hear'),
+          wpm: _wpm,
+          interChar: _interCharSpace,
+          interWord: _interWordSpace,
+          compact: true,
+          showUndo: false,
+          onWpm: _setHearWpm,
+          onSpacing: _setSpacing,
+        ),
+      ]);
 
   void _stepSpacing(int d) => setState(() {
         _pendIC = (_pendIC! + d).clamp(3, max(_capInterChar, _interCharSpace));
@@ -1096,27 +1114,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           // ── Status label ─────────────────────────────────────────────────
           _StatusLabel(state: _state, preparing: _preparing),
 
-          // ── Sliders ──────────────────────────────────────────────────────
+          // ── Tempo + spacing card (start screen only) ─────────────────────
           if (_state == _State.idle)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(children: [
-              SliderRow(label: Strings.t('block_hear'), labelWidth: 56, valueWidth: 112, value: _wpm.toDouble(),
-                  display: '$_wpm (eff. ${(50 * _wpm / (31 + 4 * _interCharSpace + _interWordSpace)).round()})',
-                  min: TrainingProfile.minWpm.toDouble(), max: 60,
-                  divisions: 60 - TrainingProfile.minWpm,
-                  onChanged: (v) { setState(() => _wpm = v.round()); _savePrefs(); }),
-              // Leftmost notch (kGiveWpmMin - 1) = "same as Hören".
-              if (_keyerMode == 4) _straightGiveRow()
-              else
-              SliderRow(label: Strings.t('block_give'), labelWidth: 56, valueWidth: 112,
-                  value: (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax).toDouble(),
-                  min: kGiveWpmMin - 1.0, max: 60, divisions: 61 - kGiveWpmMin,
-                  display: _answerWpmMax == 0
-                      ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax',
-                  onChanged: (v) => _setGiveWpm(v < kGiveWpmMin ? 0 : v.round())),
-            ]),
-          ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: _controlsCard(),
+            ),
 
           ],
           if (!_showResult) ...[
@@ -1126,14 +1129,16 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: _straightGiveRow(),
             ),
-          // ── Touch paddle ─────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-            child: _keyerMode == 4
-                ? StraightKeyPaddle(onDown: _ditDown, onUp: _ditUp)
-                : IambicPaddles(onDitDown: _ditDown, onDitUp: _ditUp,
-                    onDahDown: _dahDown, onDahUp: _dahUp),
-          ),
+          // ── Touch paddle (only while a block runs; it has no function on the
+          // start screen, see also the external-interface idea in #95) ──────
+          if (_state != _State.idle)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+              child: _keyerMode == 4
+                  ? StraightKeyPaddle(onDown: _ditDown, onUp: _ditUp)
+                  : IambicPaddles(onDitDown: _ditDown, onDitUp: _ditUp,
+                      onDahDown: _dahDown, onDahUp: _dahUp),
+            ),
 
           // ── Start / Stop ─────────────────────────────────────────────────
           Padding(

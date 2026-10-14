@@ -10,14 +10,21 @@ import 'setting_rows.dart';
 /// brackets right behind the WPM, then one −/+ row for the character spacing
 /// and one for the word spacing. Put it into a [SettingsCard].
 ///
+/// [leading] is an extra row above the tempo (Geben: the give-speed slider);
+/// [speedLabel] replaces "Tempo" where there are two speeds ("Hören"). The
+/// spacing rows always belong to the speed directly above them.
+///
 /// [typing] (Hören on the on-screen keyboard): the app waits after every word,
 /// so only the character spacing is shown and counts for "eff." (see
-/// [effectiveWpm]). [compact] drops the "Dits · s" sub line and uses denser
-/// rows, for screens where height is short. [showUndo] switches off the
+/// [effectiveWpm]). [compact] uses denser sliders and rows, for screens where
+/// height is short; the "Dits · s" sub line stays, so the block looks the same
+/// everywhere. [showUndo] switches off the
 /// "Changed … Undo" snackbar of the slider (it would cover buttons below).
 class TempoSpacingSection extends StatelessWidget {
   final int wpm, interChar, interWord;
   final bool typing, compact, showUndo;
+  final Widget? leading;
+  final String? speedLabel;
   final ValueChanged<int> onWpm;
   final void Function(int interChar, int interWord) onSpacing;
 
@@ -31,20 +38,24 @@ class TempoSpacingSection extends StatelessWidget {
     this.typing = false,
     this.compact = false,
     this.showUndo = true,
+    this.leading,
+    this.speedLabel,
   });
 
   @override
   Widget build(BuildContext context) {
     final eff = effectiveWpm(wpm, interChar, interWord, typing: typing);
     return Column(mainAxisSize: MainAxisSize.min, children: [
+      if (leading != null) ...[leading!, const SettingsDivider()],
       LabeledSlider(
-        label: Strings.t('hc_speed'),
+        label: speedLabel ?? Strings.t('hc_speed'),
         display: '$wpm WPM (eff. $eff)',
         value: wpm.toDouble(),
         min: TrainingProfile.minWpm.toDouble(),
         max: 60,
         divisions: 60 - TrainingProfile.minWpm,
         showUndo: showUndo,
+        dense: compact,
         onChanged: (v) => onWpm(v.round()),
       ),
       const SettingsDivider(),
@@ -54,7 +65,7 @@ class TempoSpacingSection extends StatelessWidget {
           _StepRow(
             label: Strings.t('settings_char_spacing'),
             value: '$interChar',
-            sub: compact ? null : 'Dits · ${ditsToSeconds(interChar, wpm)}',
+            sub: 'Dits · ${ditsToSeconds(interChar, wpm)}',
             compact: compact,
             onMinus: interChar > 3 ? () => onSpacing(interChar - 1, interWord) : null,
             // The word gap never drops below the char gap.
@@ -66,7 +77,7 @@ class TempoSpacingSection extends StatelessWidget {
             _StepRow(
               label: Strings.t('settings_word_spacing'),
               value: '$interWord',
-              sub: compact ? null : 'Dits · ${ditsToSeconds(interWord, wpm)}',
+              sub: 'Dits · ${ditsToSeconds(interWord, wpm)}',
               compact: compact,
               onMinus: interWord > 6 && interWord > interChar
                   ? () => onSpacing(interChar, interWord - 1)

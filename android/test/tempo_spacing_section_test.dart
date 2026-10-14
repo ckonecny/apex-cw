@@ -49,9 +49,9 @@ void main() {
     expect(find.text('20 WPM (eff. 9)'), findsOneWidget);
   });
 
-  testWidgets('compact drops the sub line', (tester) async {
+  testWidgets('compact keeps the sub line', (tester) async {
     await tester.pumpWidget(_host(compact: true));
-    expect(find.textContaining('Dits ·'), findsNothing);
+    expect(find.textContaining('Dits ·'), findsNWidgets(2));
   });
 
   testWidgets('char gap + keeps the word gap at least as large', (tester) async {

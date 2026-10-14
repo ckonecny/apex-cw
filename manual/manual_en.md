@@ -858,6 +858,12 @@ At the bottom are the dit/dah keys or the straight key, and **Start**.
 ![While answering: prompt (Prompt = Both), attempt and speed](img/en/echo_answer.png)
 :::
 
+On the **start view** the same **speed and spacing** card sits at the bottom as
+on the result page. The **Send** speed is at the top (the leftmost step is
+"same as Listen"; with a straight key the slider only shows the measured
+speed), below it the **Listen** speed with the spacing. The touch paddles only
+appear once the block runs.
+
 ## How a word runs
 
 1. After **Start** the app waits 2 seconds, then plays the first word.
@@ -913,18 +919,21 @@ After the last word of a block the result page appears:
   - **◐ after repeat**: correct only after a repeat.
   - **○ wrong**: not made even after all repeats.
 - The **status line** shows the lesson and the [trend](#trend) (speeds are in
-  the controls below).
+  the card below).
 - **Mix-ups** lists which characters you confused in this block, as "target
   → given", for example `p → w`. A `–` means nothing came at that position.
-- The **Listen** and **Send** speed controls. A change here replaces the
-  matching suggestion.
+- The **speed and spacing** card (at the bottom, above the buttons): sliders
+  **Send** and **Listen** (with the effective speed in brackets), plus
+  **Character spacing** and **Word spacing**. The spacing belongs to the
+  Listen speed directly above it. A change here replaces the matching
+  suggestion.
 - **Suggestions** and **Weak characters** (see
   [Adaptive mode](#adaptive-mode)).
 - The list of all words in the block. The target word is shown in bold, with
   your **first** attempt below it and the first wrong character highlighted
   in red. A `_` means nothing came at that position.
 
-**Next block** applies the ticked suggestions, boosts the ticked weak
+**Next block** (right) applies the ticked suggestions, boosts the ticked weak
 characters in the next block, and starts it. **Finish** applies the ticked
 suggestions without a boost and returns to the start view.
 

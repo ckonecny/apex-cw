@@ -884,6 +884,12 @@ Unten liegen die Dit-/Dah-Tasten bzw. die Handtaste und **Start**.
 ![Während der Antwort: Vorgabe (Vorgabe = Beides), Versuch und Tempo](img/de/echo_answer.png)
 :::
 
+Auf der **Startansicht** steht unten dieselbe Karte **Tempo und Abstände** wie auf
+der Ergebnisseite. Das Tempo für **Geben** steht oben (die unterste Stufe heißt
+„wie Hören“; bei der Handtaste zeigt der Regler nur das gemessene Tempo), darunter
+das Tempo für **Hören** mit den Abständen. Die Touch-Paddles erscheinen erst,
+wenn der Block läuft.
+
 ## Ein Wort im Ablauf
 
 1. Nach **Start** wartet die App 2 Sekunden, dann spielt sie das erste Wort.
@@ -940,20 +946,22 @@ Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
   - **◐ nach Wiederholung** – erst nach einer Wiederholung richtig,
   - **○ falsch** – auch nach allen Wiederholungen nicht geschafft.
 - Die **Statuszeile**: Lektion und der [Trend](#trend) (die Tempi stehen in
-  den Reglern darunter).
+  der Karte darunter).
 - **Verwechslungen** – welche Zeichen du in diesem Block verwechselt hast, als
   „Soll → Gegeben“, z. B. `p → w`. Ein `–` heißt, dass an dieser Stelle nichts
   kam.
-- Die Tempo-Regler **Hören** und **Geben** – eine Änderung hier ersetzt den
-  passenden Vorschlag.
+- Die Karte **Tempo und Abstände** (unten, über den Schaltflächen): Regler
+  **Geben** und **Hören** (mit dem effektiven Tempo in Klammern) sowie
+  **Zeichenabstand** und **Wortabstand**. Die Abstände gehören zum Hören-Tempo
+  direkt darüber. Eine Änderung hier ersetzt den passenden Vorschlag.
 - **Vorschläge** und **Schwache Zeichen** (siehe
   [Der adaptive Modus](#der-adaptive-modus)).
 - Die Liste aller Wörter des Blocks: das Soll-Wort fett, darunter dein
   **erster** Versuch, das erste falsche Zeichen rot hervorgehoben (ein `_`
   heißt, dass an dieser Stelle nichts kam).
 
-**Nächster Block** übernimmt die angehakten Vorschläge, verstärkt die
-angehakten schwachen Zeichen im nächsten Block und startet ihn. **Beenden**
+**Nächster Block** (rechts) übernimmt die angehakten Vorschläge, verstärkt die
+angehakten schwachen Zeichen im nächsten Block und startet ihn. **Beenden** (links)
 übernimmt die angehakten Vorschläge ohne Verstärkung und kehrt zur
 Startansicht zurück.
 

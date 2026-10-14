@@ -832,16 +832,28 @@ confirmed by the user on 2026-09-27:
   brackets behind the WPM (`20 WPM (eff. 7)`, replaces the separate "Effektiv:"
   line), then −/+ rows for Zeichenabstand and Wortabstand ("Dits · s" sub
   line). Used by the Sätze, Mini-QSO and Q-Groups setup screens (copies of the
-  old block removed) and by Hören. In Hören it is `compact` (no sub line,
-  denser rows, no undo snackbar that would cover the buttons) because height
-  is short. Placement in Hören: bottom area directly above the buttons on the
+  old block removed) and by Hören. In Hören and Geben it is `compact` (denser
+  sliders and rows, no undo snackbar that would cover the buttons) because
+  height is short; the "Dits · s" sub line stays so the block looks the same
+  everywhere (the touch paddles are gone from the start screen, which pays for
+  it). Placement in Hören: bottom area directly above the buttons on the
   start and result screens (`_controls()` in `generator_screen.dart`; on the
   result screen the body renders it above its buttons via
   `AdaptiveCopyBody.controls`). It is **not** shown while a block runs (paper:
   the slider was disabled anyway, typing: keyboard on screen), not on
   "Gesendet" (unimportant at that point) and not on the word-marking screen. Practice area keeps "auf dem Weg
-  zu", weak characters and hit rate. Not yet converted to this block: the ⚙
-  sheet sliders, Echo trainer, Adventure sheets.
+  zu", weak characters and hit rate. Geben (Echo trainer) uses the same block
+  with a give-speed slider on top (`leading` slot, `speedLabel` "Hören"): the
+  spacing rows follow the Hören slider directly because they belong to the
+  prompt speed, not to the give speed (leftmost notch "wie Hören"; straight
+  key: disabled slider showing the measured speed). It replaces the two start
+  sliders and the small −/+ tempo switches of the result page; the result
+  buttons stand side by side like in Hören (Beenden left, Nächster Block
+  right). The touch paddles are only shown while a block runs (no function on
+  start and result screens); hiding them when an external key interface is
+  detected is issue #95. A manual spacing change overrides the matching
+  suggestion (`_setSpacing`). Not yet converted to this block: the ⚙ sheet
+  sliders, Adventure sheets.
 - **After the block:** the usual "Gesendet" page, errors pre-marked from the
   first attempts, typed text under each group; marks can be removed by
   tapping (typos). Then the **unchanged** result page (no ●◐○ split, no
