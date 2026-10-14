@@ -2611,7 +2611,8 @@ der die Tastenkontakte in **Tastendrücke** übersetzt:
 - **Selbstgebaut:** Jedes kleine USB-HID-Gerät, das Dit- und Dah-Kontakt als
   zwei verschiedene Tasten meldet. Ein fertiges Beispiel zum Nachbauen ist
   [diy-vband-adapter](https://github.com/ckonecny/diy-vband-adapter): ein
-  Seeed XIAO SAMD21 mit 3,5-mm-Buchse, der dieselben Tasten sendet wie der
+  kleiner Adapter aus einem Mikrocontroller-Board mit 3,5-mm-Buchse (mehrere
+  Boards werden unterstützt), der dieselben Tasten sendet wie der
   vband-Adapter. Er wird mit einem USB-C-Kabel direkt ans Handy gesteckt.
 
 Ältere Handys mit Micro-USB brauchen einen USB-OTG-Adapter.
