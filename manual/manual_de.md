@@ -2477,13 +2477,15 @@ und decodiert. Er stimmt also immer mit dem überein, was du hörst.
 ## Zeichentabelle
 
 Die Zeichentabelle listet alle Zeichen der App mit ihrem Code, gruppiert in
-**Buchstaben**, **Ziffern**, **Satzzeichen** und **Prosigns** (SK, KN, KA, AS,
+**Buchstaben**, **Umlaute und CH** (Ä, Ö, Ü, CH), **Ziffern**, **Satzzeichen** und **Prosigns** (SK, KN, KA, AS,
 VE, BK). Jeder Code ist als Punkte und Striche gezeichnet.
 
 Tippe auf ein Zeichen: Es klingt mit deiner Tonhöhe, und seine Punkte und
 Striche leuchten auf, während sie erklingen. Das Tempo startet mit dem Wert aus
 dem Training Hören; mit **−** und **+** änderst du es nur für diese Ansicht.
-Die Tonhöhe stellst du unter Einstellungen → Allgemein ein.
+Die Tonhöhe stellst du unter Einstellungen → Allgemein ein. CH ist ein
+historisches Zusatzzeichen; beim Antippen erscheint ein Hinweis, es immer als
+zwei Buchstaben C und H zu senden.
 
 ::: {.shots .one}
 ![Zeichentabelle: ein Zeichen leuchtet beim Abspielen](img/de/chart.png)
