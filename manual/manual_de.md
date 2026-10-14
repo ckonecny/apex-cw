@@ -888,7 +888,8 @@ Auf der **Startansicht** steht unten dieselbe Karte **Tempo und Abstände** wie 
 der Ergebnisseite. Das Tempo für **Geben** steht oben (die unterste Stufe heißt
 „wie Hören“; bei der Handtaste zeigt der Regler nur das gemessene Tempo), darunter
 das Tempo für **Hören** mit den Abständen. Die Touch-Paddles erscheinen erst,
-wenn der Block läuft.
+wenn der Block läuft, und stehen dann ganz unten wie in den anderen Tast-Bildschirmen.
+Der Block lässt sich mit **Stopp** oben rechts oder mit dem Zurück-Pfeil beenden.
 
 ## Ein Wort im Ablauf
 

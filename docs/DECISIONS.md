@@ -850,7 +850,11 @@ confirmed by the user on 2026-09-27:
   sliders and the small −/+ tempo switches of the result page; the result
   buttons stand side by side like in Hören (Beenden left, Nächster Block
   right). The touch paddles are only shown while a block runs (no function on
-  start and result screens); hiding them when an external key interface is
+  start and result screens) and are then the last element at the bottom like in
+  Keyer, WiFi Trx, QSO bot and the games; Stop moves to the app bar while a
+  block runs (replacing the stats and settings icons, which are hidden then;
+  precedent: the QSO bot has Start/Stop at the top; the back arrow also
+  stops), Start stays the big button at the bottom of the start screen; hiding them when an external key interface is
   detected is issue #95. A manual spacing change overrides the matching
   suggestion (`_setSpacing`). Not yet converted to this block: the ⚙ sheet
   sliders, Adventure sheets.

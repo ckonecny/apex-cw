@@ -31,7 +31,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 ## Manual: pending for next release
 - Hören ⚙ sheet, Abstände section: new note under the sliders (word gap only applies to paper mode).
 - Hören start and result screens (paper and typing) and the Sätze, Mini-QSO and Q-Groups setup screens: new shared tempo + spacing block (`hear_result.png`, `*_setup.png`, Hören start view); effective speed now in brackets behind the WPM.
-- Geben start and result screens: same block with the give slider on top, no touch paddles on the start screen, result buttons side by side (`echo_start.png`, Geben result).
+- Geben start and result screens: same block with the give slider on top, no touch paddles on the start screen, result buttons side by side, Stop in the app bar and paddles at the very bottom while a block runs (`echo_start.png`, `echo_answer.png`, Geben result).
 
 ## v1.7.1 (maintenance release, in progress)
 `main` holds everything (version 1.7.1+8): fidelity audit fixes, review-gate fixes, updated libraries (Dependabot round of 2026-10-12 merged incl. `audio_session` 0.2.4, Gradle 9.8.1, AGP 9.4.1). Tried on the test phone: audio, keyer, settings, links, microphone decoder. **Next**: `v1.7.1-beta1` as GitHub pre-release for Sia (notes: `docs/release-notes-v1.7.1.md`), then the release itself (`tools/build_release.sh v1.7.1`, tag, APK + AAB; the manual PDF stays at v1.7.0, only text changed). Recurring checks and alerts: `docs/PROJECT.md` "Recurring maintenance". Engine config per screen: `android/test/engine_config_test.dart` (DECISIONS); a shared config helper instead of per-screen copies is issue #18.

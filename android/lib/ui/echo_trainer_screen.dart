@@ -1042,6 +1042,16 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         ),
         actions: [
             const InterferenceButton(),
+          // While a block runs, Stop sits here (where the stats and settings
+          // icons are hidden anyway) so the touch paddles can be the last
+          // element at the bottom, as in Keyer, WiFi Trx, QSO bot and games.
+          if (_state != _State.idle)
+            TextButton.icon(
+              onPressed: _stopSession,
+              icon: Icon(Icons.stop_rounded, color: c.warning),
+              label: Text(Strings.t('stop').toUpperCase(),
+                  style: TextStyle(color: c.warning, fontWeight: FontWeight.bold)),
+            ),
           if (_state == _State.idle)
             IconButton(
               icon: Icon(Icons.bar_chart_outlined, color: c.textMuted),
@@ -1129,35 +1139,36 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: _straightGiveRow(),
             ),
-          // ── Touch paddle (only while a block runs; it has no function on the
-          // start screen, see also the external-interface idea in #95) ──────
-          if (_state != _State.idle)
+          // ── Start (idle only; Stop is in the app bar) ────────────────────
+          if (_state == _State.idle)
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-              child: _keyerMode == 4
-                  ? StraightKeyPaddle(onDown: _ditDown, onUp: _ditUp)
-                  : IambicPaddles(onDitDown: _ditDown, onDitUp: _ditUp,
-                      onDahDown: _dahDown, onDahUp: _dahUp),
-            ),
-
-          // ── Start / Stop ─────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity, height: 56,
-              child: AppButton(
-                height: 56,
-                // Material icons, not ▶/■ glyphs: Android renders ▶ as an
-                // orange emoji.
-                icon: (_state == _State.idle) ? Icons.play_arrow_rounded : Icons.stop_rounded,
-                label: (_state == _State.idle)
-                    ? Strings.t('start').toUpperCase()
-                    : Strings.t('stop').toUpperCase(),
-                color: (_state != _State.idle) ? c.warning : c.accent,
-                onTap: (_state == _State.idle) ? _startSession : _stopSession,
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
+                width: double.infinity, height: 56,
+                child: AppButton(
+                  height: 56,
+                  // Material icons, not ▶ glyphs: Android renders ▶ as an
+                  // orange emoji.
+                  icon: Icons.play_arrow_rounded,
+                  label: Strings.t('start').toUpperCase(),
+                  color: c.accent,
+                  onTap: _startSession,
+                ),
               ),
             ),
-          ),
+
+          // ── Touch paddle: the last element while a block runs, like in the
+          // other keying screens. No function on the start screen, see also
+          // the external-interface idea in #95. ─────────────────────────────
+          if (_state != _State.idle) ...[
+            const SizedBox(height: 12),
+            if (_keyerMode == 4)
+              StraightKeyPaddle(onDown: _ditDown, onUp: _ditUp)
+            else
+              IambicPaddles(onDitDown: _ditDown, onDitUp: _ditUp,
+                  onDahDown: _dahDown, onDahUp: _dahUp),
+            const SizedBox(height: 16),
+          ],
           ],
         ],
       ),

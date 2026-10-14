@@ -862,7 +862,9 @@ On the **start view** the same **speed and spacing** card sits at the bottom as
 on the result page. The **Send** speed is at the top (the leftmost step is
 "same as Listen"; with a straight key the slider only shows the measured
 speed), below it the **Listen** speed with the spacing. The touch paddles only
-appear once the block runs.
+appear once the block runs, and then sit at the very bottom like in the other
+keying screens. You end the block with **Stop** at the top right or with the
+back arrow.
 
 ## How a word runs
 
