@@ -814,7 +814,7 @@ confirmed by the user on 2026-09-27:
   (`ABB`), `ABBB` is accepted too.
 - **Word gap in typing mode (one rule, 2026-10-14):** the app waits for the
   user after every word, so the inter-word gap has no effect there. Only the
-  **inter-character** gap counts, in three places: (1) the adaptive spacing
+  **inter-character** gap counts, in four places: (1) the adaptive spacing
   suggestions only change the char gap (`_stepPendingSpacing`, suggestion row);
   (2) the manual spacing card shows and changes only the char gap once a
   typing block has started ("Abstand Zeichen", `charOnly` in
@@ -823,8 +823,11 @@ confirmed by the user on 2026-09-27:
   mode is chosen, so its word-gap slider stays and a note below the sliders
   says it applies to paper only (`settings_word_spacing_hear_note`). The start
   screen keeps "Zeichen/Wort" because the mode is chosen only by the start
-  button. Open: the `eff.` value on the WPM slider still uses the word gap in
-  typing mode.
+  button. (4) The `eff.` value on the WPM slider uses the char gap only in
+  typing mode, with the word gap fixed at the normal 7 dits so it equals the WPM
+  at char gap 3 (`effectiveWpm(..., typing: true)` in
+  `content/effective_wpm.dart`, tested); paper mode and the start screen (mode
+  not chosen yet) count both gaps.
 - **Spacing card placement (2026-10-14):** the card moved out of the practice
   area to the bottom control area directly **above** the WPM slider
   (`SpacingStepperCard`, `widgets/spacing_stepper_card.dart`, built by

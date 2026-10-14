@@ -16,6 +16,7 @@ import '../util/practice_clock.dart';
 import '../l10n/strings.dart';
 import '../content/training_profile.dart';
 import '../content/charset_content.dart';
+import '../content/effective_wpm.dart';
 import 'widgets/charset_header.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'widgets/training_settings_sheet.dart';
@@ -144,8 +145,9 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           divisions: 60 - TrainingProfile.minWpm,
           valueWidth: 112,
           // Farnsworth text speed implied by wpm + spacing, like the
-          // adaptive block's status line used to show it.
-          display: '$_wpm (eff. ${(50 * _wpm / (31 + 4 * _interCharSpace + _interWordSpace)).round()})',
+          // adaptive block's status line used to show it. Typing mode (once
+          // chosen by starting a block): char gap only, no word gap.
+          display: '$_wpm (eff. ${effectiveWpm(_wpm, _interCharSpace, _interWordSpace, typing: _practiceActive && _copyMode == 1)})',
           onChanged: (v) {
             setState(() => _wpm = v.round());
             _savePrefs();

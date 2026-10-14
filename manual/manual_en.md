@@ -192,6 +192,15 @@ Example: 20 WPM with 28/40 dits gives 50 × 20 / (31 + 112 + 40) ≈ 5 WPM.
 The characters sound like 20 WPM, but you have as much time as at 5 WPM. With
 3/7 dits the two values are the same.
 
+When copying on the **on-screen keyboard** (Typing) the app waits for you after
+every word, so the word spacing does not matter. Then only the character
+spacing counts; the word spacing is taken at the normal 7 dits:
+
+  eff. WPM = 50 × WPM / (31 + 4 × character spacing + 7)
+
+With character spacing 3 the value equals the WPM. On the start view, where you
+have not chosen Paper or Typing yet, the display calculates as for Paper.
+
 ## The Koch method
 
 With the Koch method you start with **two characters** at full speed. Once

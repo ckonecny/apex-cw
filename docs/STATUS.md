@@ -30,7 +30,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 
 ## Manual: pending for next release
 - Hören ⚙ sheet, Abstände section: new note under the sliders (word gap only applies to paper mode).
-- Hören start page and result page (`hear_result.png`, Hören start view if shown): spacing card moved from the practice area to above the WPM slider; on "Gesendet" and result the spacing + WPM controls now sit above the buttons; in typing mode it reads "Abstand Zeichen" / "Spacing char" with one value (char gap only).
+- Hören start page and result page (`hear_result.png`, Hören start view if shown): spacing card moved from the practice area to above the WPM slider; on "Gesendet" and result the spacing + WPM controls now sit above the buttons; in typing mode it reads "Abstand Zeichen" / "Spacing char" with one value (char gap only); `eff.` on the WPM slider ignores the word gap in typing mode.
 
 ## v1.7.1 (maintenance release, in progress)
 `main` holds everything (version 1.7.1+8): fidelity audit fixes, review-gate fixes, updated libraries (Dependabot round of 2026-10-12 merged incl. `audio_session` 0.2.4, Gradle 9.8.1, AGP 9.4.1). Tried on the test phone: audio, keyer, settings, links, microphone decoder. **Next**: `v1.7.1-beta1` as GitHub pre-release for Sia (notes: `docs/release-notes-v1.7.1.md`), then the release itself (`tools/build_release.sh v1.7.1`, tag, APK + AAB; the manual PDF stays at v1.7.0, only text changed). Recurring checks and alerts: `docs/PROJECT.md` "Recurring maintenance". Engine config per screen: `android/test/engine_config_test.dart` (DECISIONS); a shared config helper instead of per-screen copies is issue #18.

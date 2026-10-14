@@ -200,6 +200,15 @@ Beispiel: 20 WPM mit 28/40 Dits ergibt 50 × 20 / (31 + 112 + 40) ≈ 5 WPM.
 Die Zeichen klingen also nach 20 WPM, aber du hast Zeit wie bei 5 WPM. Mit
 3/7 Dits sind beide Werte gleich.
 
+Beim Mitschreiben mit der **Bildschirmtastatur** (Tippen) wartet die App nach
+jedem Wort auf dich, der Wortabstand spielt also keine Rolle. Dann zählt nur
+der Zeichenabstand; der Wortabstand wird mit den normalen 7 Dits angesetzt:
+
+  eff. WPM = 50 × WPM / (31 + 4 × Zeichenabstand + 7)
+
+Bei Zeichenabstand 3 ist der Wert gleich den WPM. Auf der Startansicht, wo du
+Papier oder Tippen noch nicht gewählt hast, rechnet die Anzeige wie bei Papier.
+
 ## Die Koch-Methode
 
 Bei der Koch-Methode fängst du mit **zwei Zeichen** an, im vollen Tempo. Sobald
