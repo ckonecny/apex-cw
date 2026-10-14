@@ -815,6 +815,14 @@ confirmed by the user on 2026-09-27:
 - **Spacing suggestions:** in the typing mode the adaptive mode only
   suggests changes to the **inter-character** spacing (inter-word spacing has
   no effect there).
+- **Manual spacing card (2026-10-14):** on the result page after a typing
+  block the card shows and changes only the char gap ("Abstand Zeichen",
+  `charOnly` in `_buildSpacingControl`); the stored word gap is untouched. The
+  start page keeps "Zeichen/Wort" because the mode is chosen only by the start
+  button. The ⚙ sheet is shared by both modes and opened before the mode is
+  chosen, so its word-gap slider stays and gets a note below the sliders
+  (`settings_word_spacing_hear_note`). Open: the `eff.` value on the WPM
+  slider still uses the word gap in typing mode.
 - **After the block:** the usual "Gesendet" page, errors pre-marked from the
   first attempts, typed text under each group; marks can be removed by
   tapping (typos). Then the **unchanged** result page (no ●◐○ split, no

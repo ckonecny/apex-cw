@@ -102,28 +102,39 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   // Bounds match the Settings sliders (interCharSpace/interWordSpace), not
   // _startInterCharSpace/_startInterWordSpace — those only cap how far the
   // *engine* is allowed to auto-widen, not a manual override.
-  void _adjustSpacing(int delta) {
+  //
+  // [charOnly] (typing mode, result page): the word gap has no effect there
+  // (DECISIONS.md "Hören: typing mode"), so only the char gap is shown and
+  // changed; the stored word gap stays untouched. The word gap is kept at
+  // least as large as the char gap, as in the ⚙ sheet.
+  void _adjustSpacing(int delta, {bool charOnly = false}) {
     final ic = (widget.interCharSpace + delta).clamp(3, 45);
-    final iw = (widget.interWordSpace + delta).clamp(6, 105);
+    final iw = charOnly
+        ? (widget.interWordSpace < ic ? ic.clamp(6, 105) : widget.interWordSpace)
+        : (widget.interWordSpace + delta).clamp(6, 105);
     if (ic == widget.interCharSpace && iw == widget.interWordSpace) return;
     widget.onSpacingChanged?.call(ic, iw);
   }
 
-  Widget _buildSpacingControl(BuildContext context, {double scale = 1}) {
+  Widget _buildSpacingControl(BuildContext context,
+      {double scale = 1, bool charOnly = false}) {
     final c = AppColors.of(context);
     return SizedBox(width: double.infinity, child: AppCard(child: Row(children: [
-      Expanded(child: Text(Strings.t('ac_spacing_control_title'),
+      Expanded(child: Text(
+          Strings.t(charOnly ? 'ac_spacing_control_title_char' : 'ac_spacing_control_title'),
           style: TextStyle(fontSize: 11 * scale, color: c.textMuted))),
-      _TapTarget(onTap: () => _adjustSpacing(-1),
+      _TapTarget(onTap: () => _adjustSpacing(-1, charOnly: charOnly),
           child: Icon(Icons.remove, size: 20, color: c.accent)),
       SizedBox(
         width: 60 * scale,
-        child: Text('${widget.interCharSpace}/${widget.interWordSpace}',
+        child: Text(charOnly
+            ? '${widget.interCharSpace}'
+            : '${widget.interCharSpace}/${widget.interWordSpace}',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 15 * scale,
                 fontWeight: FontWeight.bold, color: c.accent)),
       ),
-      _TapTarget(onTap: () => _adjustSpacing(1),
+      _TapTarget(onTap: () => _adjustSpacing(1, charOnly: charOnly),
           child: Icon(Icons.add, size: 20, color: c.accent)),
     ])));
   }
@@ -546,7 +557,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                   style: TextStyle(fontSize: 13, color: c.textMuted)),
             ],
             const SizedBox(height: 20),
-            _buildSpacingControl(context, scale: 1.2),
+            _buildSpacingControl(context, scale: 1.2, charOnly: _typing),
             if (weak.isNotEmpty && !_outlookHostsWeakChars(false)) ...[
               const SizedBox(height: 20),
               _buildWeakCharsSection(context, scale: 1.2),

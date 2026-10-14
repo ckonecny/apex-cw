@@ -240,6 +240,10 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               _setInt('interWordSpace', _interWordSpace);
             }),
       ]),
+      // The sheet is shared by paper and typing mode and opened before the
+      // mode is chosen, so the word gap stays editable and gets a note.
+      if (widget.profile == TrainingProfile.hear)
+        _hint(Strings.t('settings_word_spacing_hear_note')),
       const SizedBox(height: 24),
     ];
   }

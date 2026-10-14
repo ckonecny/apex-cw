@@ -723,7 +723,9 @@ Die Ergebnisseite zeigt von oben nach unten:
   effektives Tempo und Abstände stehen im WPM-Regler und bei **Abstand Zeichen/Wort**.
 - **Abstand Zeichen/Wort** – mit − und + änderst du Zeichenabstand und Wortabstand
   gemeinsam um je 1 Dit. Das gilt sofort und unabhängig von den
-  Vorschlägen.
+  Vorschlägen. Nach einem Block im Tipp-Modus heißt das Feld **Abstand
+  Zeichen** und ändert nur den Zeichenabstand, weil der Wortabstand dort ohne
+  Wirkung ist.
 - **Schwache Zeichen** – die Zeichen, die dir auf Dauer die meisten Fehler
   machen, mit ihrer Fehlerquote (siehe
   [Schwache Zeichen](#schwache-zeichen)).
@@ -795,6 +797,10 @@ einzelne auf.
 
 Der Wortabstand kann nie kleiner sein als der Zeichenabstand: Schiebst du den
 Zeichenabstand darüber hinaus, wird der Wortabstand mitgezogen.
+
+Der Wortabstand wirkt nur im Papier-Modus. Im Tipp-Modus wartet die App nach
+jedem Wort auf deine Eingabe, dort zählt nur der Zeichenabstand. Das ⚙-Blatt
+weist unter den Reglern darauf hin.
 
 ### Wortauswahl
 

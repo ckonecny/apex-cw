@@ -700,7 +700,9 @@ From top to bottom, the result page shows:
   effective speed and spacing are in the WPM slider and **Spacing char/word**.
 - **Spacing char/word:** − and + change character spacing and word spacing together
   by 1 dit each. This takes effect immediately and doesn't depend on the
-  suggestions.
+  suggestions. After a block in typing mode the field is called **Spacing
+  char** and changes only the character spacing, because the word spacing has
+  no effect there.
 - **Weak characters:** the characters that cause you the most errors over
   time, with their error rate (see [Weak characters](#weak-characters)).
 - **On the way to "X"** (Koch lesson only): what you still need before the
@@ -770,6 +772,10 @@ characters come together, the less each single one stands out.
 
 Word spacing can never be smaller than character spacing. If you move
 character spacing past it, word spacing is pulled along.
+
+Word spacing only applies in paper mode. In typing mode the app waits for your
+input after each word, so only the character spacing counts there. The ⚙ sheet
+notes this below the sliders.
 
 ### Word selection
 
