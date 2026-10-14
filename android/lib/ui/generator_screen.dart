@@ -116,9 +116,9 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   }
 
   // Tempo + spacing card, the same block as on the Verstehen setup screens
-  // (TempoSpacingSection), compact here to save height. Shown on the start
-  // screen and, by the body, on the result screen; never while a block runs or
-  // on "Gesendet". Typing mode (once chosen by starting a block) has no word gap:
+  // (TempoSpacingSection), compact here to save height. Shown by the body, in
+  // its scrolling start area and on the result screen; never while a block
+  // runs or on "Gesendet". Typing mode (once chosen by starting a block) has no word gap:
   // char gap only, and "eff." ignores the word gap.
   Widget _controls() {
     return Padding(
@@ -342,10 +342,6 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               controls: _controls(),
             ),
           ),
-
-          // ── Controls (start screen only; the body shows them itself on the
-          // revealed and result screens, and nothing while a block runs) ────
-          if (!_practiceActive) _controls(),
 
           // ── Start (idle only; the running block has its own buttons) ─────
           // Two starts: copy on paper, or type on the on-screen keyboard.

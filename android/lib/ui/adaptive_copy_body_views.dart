@@ -9,11 +9,20 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   // away, not only from the second block onward.
   Widget _buildIdle(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
+      // The tempo + spacing card sits at the bottom of the scrolling area
+      // (directly above the start buttons when there is room) and scrolls
+      // with the rest on small phones instead of overflowing.
       return SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: constraints.maxHeight),
-          child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Center(
             // Full "on the way to" card when the screen has room for it,
             // compact (bar only) just when the full one would need scrolling.
             child: _FitOrCompact(
@@ -28,6 +37,10 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                 ],
               ]),
             ),
+                ),
+              ),
+              if (widget.controls != null) widget.controls!,
+            ],
           ),
         ),
       );

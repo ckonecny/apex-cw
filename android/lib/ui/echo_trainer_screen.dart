@@ -1124,13 +1124,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           // ── Status label ─────────────────────────────────────────────────
           _StatusLabel(state: _state, preparing: _preparing),
 
-          // ── Tempo + spacing card (start screen only) ─────────────────────
-          if (_state == _State.idle)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: _controlsCard(),
-            ),
-
           ],
           if (!_showResult) ...[
           // Straight key: Geben speed (measured), also while answering.

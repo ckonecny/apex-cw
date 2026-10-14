@@ -17,7 +17,8 @@ import 'setting_rows.dart';
 /// [typing] (Hören on the on-screen keyboard): the app waits after every word,
 /// so only the character spacing is shown and counts for "eff." (see
 /// [effectiveWpm]). [compact] uses denser sliders and rows, for screens where
-/// height is short; the "Dits · s" sub line stays, so the block looks the same
+/// height is short; on screens lower than 700 dp it also drops the "Dits · s"
+/// sub line, otherwise the sub line stays so the block looks the same
 /// everywhere. [showUndo] switches off the
 /// "Changed … Undo" snackbar of the slider (it would cover buttons below).
 class TempoSpacingSection extends StatelessWidget {
@@ -45,6 +46,8 @@ class TempoSpacingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final eff = effectiveWpm(wpm, interChar, interWord, typing: typing);
+    // Compact + short screen: the sub line goes first when height is tight.
+    final showSub = !compact || MediaQuery.sizeOf(context).height >= 700;
     return Column(mainAxisSize: MainAxisSize.min, children: [
       if (leading != null) ...[leading!, const SettingsDivider()],
       LabeledSlider(
@@ -65,7 +68,7 @@ class TempoSpacingSection extends StatelessWidget {
           _StepRow(
             label: Strings.t('settings_char_spacing'),
             value: '$interChar',
-            sub: 'Dits · ${ditsToSeconds(interChar, wpm)}',
+            sub: showSub ? 'Dits · ${ditsToSeconds(interChar, wpm)}' : null,
             compact: compact,
             onMinus: interChar > 3 ? () => onSpacing(interChar - 1, interWord) : null,
             // The word gap never drops below the char gap.
@@ -77,7 +80,7 @@ class TempoSpacingSection extends StatelessWidget {
             _StepRow(
               label: Strings.t('settings_word_spacing'),
               value: '$interWord',
-              sub: 'Dits · ${ditsToSeconds(interWord, wpm)}',
+              sub: showSub ? 'Dits · ${ditsToSeconds(interWord, wpm)}' : null,
               compact: compact,
               onMinus: interWord > 6 && interWord > interChar
                   ? () => onSpacing(interChar, interWord - 1)

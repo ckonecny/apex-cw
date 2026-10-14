@@ -836,9 +836,10 @@ confirmed by the user on 2026-09-27:
   sliders and rows, no undo snackbar that would cover the buttons) because
   height is short; the "Dits · s" sub line stays so the block looks the same
   everywhere (the touch paddles are gone from the start screen, which pays for
-  it). Placement in Hören: bottom area directly above the buttons on the
-  start and result screens (`_controls()` in `generator_screen.dart`; on the
-  result screen the body renders it above its buttons via
+  it); on screens lower than 700 dp the compact variant drops the sub line. Placement in Hören: at the bottom of the scrolling start area (above the
+  start buttons when there is room, scrolling with the content on small phones
+  — the fixed variant overflowed the 360×640 / scale 1.3 overflow test) and
+  directly above the buttons on the result screen (`_controls()` in `generator_screen.dart`, rendered by the body via
   `AdaptiveCopyBody.controls`). It is **not** shown while a block runs (paper:
   the slider was disabled anyway, typing: keyboard on screen), not on
   "Gesendet" (unimportant at that point) and not on the word-marking screen. Practice area keeps "auf dem Weg

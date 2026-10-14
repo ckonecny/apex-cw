@@ -109,11 +109,10 @@ class AdaptiveCopyBody extends StatefulWidget {
   // true while the typing keyboard is on screen — the parent hides its WPM
   // slider then, to leave room for the keys.
   final ValueChanged<bool>? onKeyboardChanged;
-  // Tempo + spacing card, shown by the body above its own buttons on the
-  // result screen so those buttons stay at the very bottom (same order as the
-  // start screen: card, button). The parent shows it itself on the start
-  // screen and not at all while a block runs, on "Gesendet" or on the word
-  // marking screen.
+  // Tempo + spacing card, shown by the body at the bottom of its scrolling
+  // start area and above its buttons on the result screen (same order
+  // everywhere: card, then buttons). Not while a block runs, on "Gesendet" or
+  // on the word marking screen.
   final Widget? controls;
   final AdaptiveCopyController? controller;
   // Profile's practice set: the keyboard's active keys for that charset.
