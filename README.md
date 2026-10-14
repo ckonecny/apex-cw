@@ -236,7 +236,7 @@ small USB (or USB‑OTG) adapter that turns key contacts into keystrokes:
   example, an Arduino/Pro Micro running a simple keyboard-emulation sketch)
   that reports the dit and dah key contacts as two separate keystrokes.
   A ready-to-build example is
-  **[xiao-vband-adapter](https://github.com/ckonecny/xiao-vband-adapter)**:
+  **[diy-vband-adapter](https://github.com/ckonecny/diy-vband-adapter)**:
   a Seeed XIAO SAMD21 plus a 3.5 mm jack, sending the same keys as the vband
   adapter; it connects to the phone with a USB‑C ↔ USB‑C cable.
 
