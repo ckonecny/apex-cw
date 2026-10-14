@@ -90,9 +90,11 @@ class LabeledSlider extends StatefulWidget {
   final double value, min, max;
   final int divisions;
   final ValueChanged<double> onChanged;
+  // false: no "Changed … Undo" snackbar (e.g. where it would cover buttons).
+  final bool showUndo;
   const LabeledSlider({super.key, required this.label, required this.value, required this.min,
       required this.max, required this.divisions, required this.display,
-      required this.onChanged});
+      required this.onChanged, this.showUndo = true});
 
   @override
   State<LabeledSlider> createState() => _LabeledSliderState();
@@ -123,7 +125,7 @@ class _LabeledSliderState extends State<LabeledSlider> {
             onChangeEnd: (_) {
               final start = _start;
               _start = null;
-              if (start == null || start == widget.value) return;
+              if (!widget.showUndo || start == null || start == widget.value) return;
               showSettingUndo(context, label, () => widget.onChanged(start));
             }),
       ),

@@ -298,7 +298,7 @@ Open **Listen** and set:
   will start counting dots and dashes.
 - **Spacing:** **28 / 40 dits**, the default. At 20 WPM this gives an effective
   speed of about 5 WPM (see [Effective speed](#effective-speed)). The app shows
-  it below the sliders. If that is too hard, you can widen the spacing further
+  it in brackets behind the speed, for example "20 WPM (eff. 5)". If that is too hard, you can widen the spacing further
   in the ⚙ sheet (up to 45 / 105 dits).
 - In the ⚙ sheet under **Word selection** you can set **Group length** to 3–3 if
   groups of five are too long at the start.
@@ -426,7 +426,8 @@ speed (20 WPM). That changes now, in this order:
    unlocked (or you practice with **All characters**), the app suggests shorter
    pauses after two good blocks in a row, one dit per step, down to the normal
    3 / 7 dits (see [Pauses and speed](#pauses-and-speed)). You can also do this
-   yourself: **Spacing char/word** right above the WPM slider.
+   yourself: with **Character spacing** and **Word spacing** in the card below
+   the practice area.
 2. **Only then raise the speed.** Once the pauses are at 3 / 7, the app suggests
    +1 WPM when things go well. Small steps, no jumps.
 3. **If it goes badly, it goes back.** If the block EMA falls below the lower
@@ -559,9 +560,12 @@ only offers the **Random** content.
 
 ## Speed
 
-The **WPM** slider below the practice area sets the character speed (10 to 60
-WPM). You set the pauses in the ⚙ sheet under **Spacing**, or directly above
-the WPM slider with **Spacing char/word**.
+Below the practice area is a card with **Speed** (character speed, 10 to 60
+WPM, the effective speed in brackets behind it), **Character spacing** and
+**Word spacing**. It is the same as in Sentences, Mini QSO and Q-groups. You see
+it on the start view and in the result, not while a block runs and not in
+"Sent" (nor while you mark single words). You can also set the pauses in the ⚙ sheet
+under **Spacing**.
 
 ## How a block runs
 
@@ -706,14 +710,13 @@ From top to bottom, the result page shows:
   plus "*x* of *y* correct". It is green from 90 %, yellow from 70 % and red
   below that.
 - The **trend** line, from the sixth block on (see [trend](#trend)). Speed,
-  effective speed and spacing are in the **Spacing char/word** field and the
-  WPM slider below it, above the buttons (the same on the start view and
-  the "Sent" view).
-- **Spacing char/word** (above the WPM slider, not in the result list): − and +
-  change character spacing and word spacing together by 1 dit each. This takes
-  effect immediately and doesn't depend on the suggestions. Once you started
-  **Typing**, the field is called **Spacing char** and changes only the
-  character spacing, because the word spacing has no effect there.
+  effective speed and spacing are in the card at the bottom, above the
+  buttons (the same on the start view).
+- The **speed and spacing card** (not in the result list): − and + change
+  **Character spacing** and **Word spacing** by 1 dit each, the slider the
+  speed. This takes effect immediately and doesn't depend on the suggestions.
+  Once you started **Typing**, the word spacing is missing, because it has no
+  effect there.
 - **Weak characters:** the characters that cause you the most errors over
   time, with their error rate (see [Weak characters](#weak-characters)).
 - **On the way to "X"** (Koch lesson only): what you still need before the
@@ -1124,8 +1127,8 @@ The app always changes the **pauses** first, and only then the speed:
 When copying on the **on-screen keyboard**, the app only changes the
 **character spacing**; the word spacing stays, because the app waits for you
 after every word there anyway. The pauses then count as normal as soon as the
-character spacing is at 3 dits. For the same reason the **Spacing char/word**
-field shows only the character spacing once you start **Typing**, and the ⚙
+character spacing is at 3 dits. For the same reason the **speed and spacing**
+card shows only the character spacing once you start **Typing**, and the ⚙
 sheet notes at the word spacing that it only applies to **Paper**.
 
 **While you are still working through the Koch sequence, the app neither
@@ -1141,7 +1144,7 @@ The block in which a new character is added also never shortens the pauses or
 raises the speed.
 
 You can step in yourself at any time, independently of these rules. In Listen
-use **Spacing char/word**, and in Send use the speed controls.
+use the **speed and spacing** card, and in Send use the speed controls.
 
 ### Sending speed in Send
 
@@ -1854,8 +1857,8 @@ text stays hidden until the result.
 independent of the app language), the **level** (1, 2 or 3 sentences) and the
 **speed**, plus **character spacing** and **word spacing** (in dits, with the
 time in seconds below). They apply to Sentences only; on first open the app
-takes them from **Listen**, after that they are separate. Below the spacing the **effective speed** in WPM
-is shown, the result of speed and both spacings (formula under
+takes them from **Listen**, after that they are separate. The **effective speed** is shown in brackets behind
+the speed, the result of speed and both spacings (formula under
 [Effective speed](#effective-speed)). Below the start button you see the hit rate of the recent rounds.
 
 ::: {.shots .one}
@@ -1906,8 +1909,9 @@ ordered by how common they are, and each level adds the rarer ones: level 1
 has the 8 most common, level 2 has 16 in all, level 3 all 24; below the choice
 it says what the level means), the **questions per round** (5 or 10), **speed**,
 **character spacing** and **word spacing**. They apply to Q-groups only; on
-first open the app takes them from **Listen**. Below the spacing the **effective
-speed** is shown, below the start button the hit rate of the recent rounds.
+first open the app takes them from **Listen**. The **effective
+speed** is shown in brackets behind the speed, below the start button the hit
+rate of the recent rounds.
 **Cheat sheet** opens the list of all groups.
 
 ::: {.shots .one}
@@ -1959,7 +1963,7 @@ questions are translated.
 independent of the app language), the **level** (1, 2 or 3; below the choice it
 says what the level means), **speed**, **character spacing** and **word
 spacing**. They apply to Mini QSO only; on first open the app takes them from
-**Listen**. Below the spacing the **effective speed** is shown, below the
+**Listen**. The **effective speed** is shown in brackets behind the speed, below the
 start button the hit rate of the recent rounds.
 
 ::: {.shots .one}
@@ -2851,7 +2855,7 @@ See [When the next Koch character comes](#when-the-next-koch-character-comes).
 **The pauses never get shorter.**
 That's intended while you work through the Koch sequence (see
 [Pauses and speed](#pauses-and-speed)). You can shorten them yourself at any
-time with **Spacing char/word**.
+time with the **speed and spacing** card.
 
 **The decoder only writes garbage.**
 Check pitch, bandwidth and threshold (see

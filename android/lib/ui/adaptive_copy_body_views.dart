@@ -364,7 +364,6 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           );
         }),
       ),
-      if (widget.controls != null) widget.controls!,
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: _PrimaryButton(
@@ -472,7 +471,6 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           ),
         ),
       ),
-      if (widget.controls != null) widget.controls!,
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: _SecondaryButton(

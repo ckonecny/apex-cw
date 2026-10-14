@@ -308,8 +308,8 @@ nicht alles an einem Tag üben.
   Zeichen nicht spielen, sonst fängst du an, Punkte und Striche zu zählen.
 - **Abstände:** **28 / 40 Dits**, die Voreinstellung. Mit 20 WPM ergibt das ein
   effektives Tempo von rund 5 WPM (siehe
-  [Effektives Tempo](#effektives-tempo)). Die App zeigt es unter den Reglern
-  an. Fällt dir das zu schwer, kannst du die Abstände im ⚙-Blatt noch weiter
+  [Effektives Tempo](#effektives-tempo)). Die App zeigt es in Klammern hinter
+  dem Tempo an, zum Beispiel „20 WPM (eff. 5)“. Fällt dir das zu schwer, kannst du die Abstände im ⚙-Blatt noch weiter
   vergrößern (bis 45 / 105 Dits).
 - Im ⚙-Blatt unter **Wortauswahl** kannst du **Gruppenlänge** auf 3–3 stellen,
   wenn dir Fünfergruppen am Anfang zu lang sind.
@@ -443,7 +443,8 @@ Zeichentempo (20 WPM). Das ändert sich jetzt, in dieser Reihenfolge:
    sind (oder du mit **Alle Zeichen** übst), schlägt die App nach zwei guten
    Blöcken in Folge kürzere Pausen vor, je einen Dit pro Schritt, bis zu den
    normalen 3 / 7 Dits (siehe [Pausen und Tempo](#pausen-und-tempo)). Du kannst
-   das auch selbst tun: **Abstand Zeichen/Wort** direkt über dem WPM-Regler.
+   das auch selbst tun: mit **Zeichenabstand** und **Wortabstand** in der Karte
+   unter der Übungsfläche.
 2. **Erst dann das Tempo erhöhen.** Sind die Pausen bei 3 / 7, schlägt die App
    +1 WPM vor, wenn es gut läuft. Kleine Schritte, keine Sprünge.
 3. **Läuft es schlecht, geht es zurück.** Fällt die Block-EMA unter die untere
@@ -580,9 +581,12 @@ wurden. Beim Übungsset gibt es nur den Inhalt **Zufall**.
 
 ## Tempo
 
-Der Regler **WPM** unter der Übungsfläche stellt das Zeichentempo ein (10 bis 60
-WPM). Die Pausen stellst du im ⚙-Blatt unter **Abstände** ein oder direkt über
-dem WPM-Regler mit **Abstand Zeichen/Wort**.
+Unter der Übungsfläche steht eine Karte mit **Tempo** (Zeichentempo, 10 bis 60
+WPM, dahinter in Klammern das effektive Tempo), **Zeichenabstand** und
+**Wortabstand**. Sie ist dieselbe wie in Sätze, Mini-QSO und Q-Gruppen. Du siehst
+sie auf der Startansicht und im Ergebnis, nicht während ein Block läuft und
+nicht in „Gesendet“ (auch nicht bei der Markierung einzelner Wörter). Die Pausen kannst du auch
+im ⚙-Blatt unter **Abstände** einstellen.
 
 ## Ein Block im Ablauf
 
@@ -728,14 +732,12 @@ Die Ergebnisseite zeigt von oben nach unten:
 - **Trefferquote** in Prozent (Anteil richtig mitgeschriebener Zeichen) –
   grün ab 90 %, gelb ab 70 %, darunter rot – und „*x* von *y* richtig“.
 - Die **Trend**-Zeile, ab dem sechsten Block (siehe [Trend](#trend)). Tempo,
-  effektives Tempo und Abstände stehen unten im Feld **Abstand Zeichen/Wort**
-  und im WPM-Regler darunter, über den Schaltflächen (so auch auf der
-  Startansicht und der Ansicht „Gesendet“).
-- **Abstand Zeichen/Wort** (über dem WPM-Regler, nicht in der Ergebnisliste) –
-  mit − und + änderst du Zeichenabstand und Wortabstand gemeinsam um je 1 Dit.
-  Das gilt sofort und unabhängig von den Vorschlägen. Hast du **Tippen**
-  gestartet, heißt das Feld **Abstand Zeichen** und ändert nur den
-  Zeichenabstand, weil der Wortabstand dort ohne Wirkung ist.
+  effektives Tempo und Abstände stehen unten in der Karte über den
+  Schaltflächen (so auch auf der Startansicht).
+- Die **Karte Tempo und Abstände** (nicht in der Ergebnisliste): mit − und +
+  änderst du **Zeichenabstand** und **Wortabstand** um je 1 Dit, mit dem Regler
+  das Tempo. Das gilt sofort und unabhängig von den Vorschlägen. Hast du
+  **Tippen** gestartet, fehlt der Wortabstand, weil er dort ohne Wirkung ist.
 - **Schwache Zeichen** – die Zeichen, die dir auf Dauer die meisten Fehler
   machen, mit ihrer Fehlerquote (siehe
   [Schwache Zeichen](#schwache-zeichen)).
@@ -1159,8 +1161,8 @@ Die App verändert immer zuerst die **Pausen**, erst dann das Tempo:
 Beim Mitschreiben mit der **Bildschirmtastatur** ändert die App nur den
 **Zeichenabstand**; der Wortabstand bleibt, weil die App dort ohnehin nach jedem
 Wort auf dich wartet. Die Pausen gelten dann als normal, sobald der
-Zeichenabstand bei 3 Dits ist. Aus demselben Grund zeigt das Feld **Abstand
-Zeichen/Wort** nach dem Start von **Tippen** nur noch den Zeichenabstand, und
+Zeichenabstand bei 3 Dits ist. Aus demselben Grund zeigt die Karte **Tempo und
+Abstände** nach dem Start von **Tippen** nur noch den Zeichenabstand, und
 im ⚙-Blatt steht beim Wortabstand ein Hinweis, dass er nur für **Papier** gilt.
 
 **Solange du die Koch-Reihenfolge noch durcharbeitest, verkürzt die App die
@@ -1174,7 +1176,7 @@ ist dagegen immer möglich. Verkürzen und Tempo erhöhen kommen erst, wenn
 Auch in dem Block, in dem ein neues Zeichen dazukommt, gibt es kein
 Verkürzen und keine Tempoerhöhung.
 
-Mit **Abstand Zeichen/Wort** (Hören) bzw. den Tempo-Reglern (Geben) kannst du
+Mit der Karte **Tempo und Abstände** (Hören) bzw. den Tempo-Reglern (Geben) kannst du
 jederzeit selbst eingreifen, unabhängig von diesen Regeln.
 
 ### Gebetempo bei Geben
@@ -1914,8 +1916,8 @@ bleibt bis zur Auswertung verdeckt.
 unabhängig von der App-Sprache), die **Stufe** (1, 2 oder 3 Sätze) und das
 **Tempo** sowie **Zeichenabstand** und **Wortabstand** (in Dits, mit der Zeit
 in Sekunden darunter). Die Werte gelten nur für Sätze; beim ersten Öffnen
-übernimmt die App sie aus **Hören**, danach laufen sie getrennt. Unter den Abständen steht das **effektive Tempo** in
-WPM, das sich aus Tempo und beiden Abständen ergibt (Formel unter
+übernimmt die App sie aus **Hören**, danach laufen sie getrennt. Das **effektive Tempo** steht in Klammern hinter dem
+Tempo, es ergibt sich aus Tempo und beiden Abständen (Formel unter
 [Effektives Tempo](#effektives-tempo)). Unter dem Start steht die Trefferquote der letzten Runden.
 
 ::: {.shots .one}
@@ -1967,8 +1969,8 @@ nach Häufigkeit geordnet, und jede Stufe nimmt die seltenere dazu: Stufe 1 hat
 die 8 häufigsten, Stufe 2 insgesamt 16, Stufe 3 alle 24; unter der Auswahl
 steht, was die Stufe bedeutet), die **Fragen pro Runde** (5 oder 10), **Tempo**,
 **Zeichenabstand** und **Wortabstand**. Die Werte gelten nur für Q-Gruppen;
-beim ersten Öffnen übernimmt die App sie aus **Hören**. Unter den Abständen
-steht das **effektive Tempo**, unter dem Start die Trefferquote der letzten
+beim ersten Öffnen übernimmt die App sie aus **Hören**. Das **effektive Tempo**
+steht in Klammern hinter dem Tempo, unter dem Start die Trefferquote der letzten
 Runden. **Spickzettel** öffnet die Liste aller Gruppen.
 
 ::: {.shots .one}
@@ -2022,7 +2024,7 @@ die Fragen.
 von der App-Sprache), die **Stufe** (1, 2 oder 3; unter der Auswahl steht, was
 die Stufe bedeutet), **Tempo**, **Zeichenabstand** und **Wortabstand**. Die
 Werte gelten nur für Mini-QSO; beim ersten Öffnen übernimmt die App sie aus
-**Hören**. Unter den Abständen steht das **effektive Tempo**, unter dem Start
+**Hören**. Das **effektive Tempo** steht in Klammern hinter dem Tempo, unter dem Start
 die Trefferquote der letzten Runden.
 
 ::: {.shots .one}
@@ -2945,7 +2947,7 @@ zuletzt Fehler hatte. Siehe
 
 **Die Pausen werden nie kürzer.**
 Das ist Absicht, solange du die Koch-Reihenfolge durcharbeitest (siehe
-[Pausen und Tempo](#pausen-und-tempo)). Mit **Abstand Zeichen/Wort** kannst du sie
+[Pausen und Tempo](#pausen-und-tempo)). Mit der Karte **Tempo und Abstände** kannst du sie
 jederzeit selbst verkürzen.
 
 **Der Decoder schreibt nur Unsinn.**

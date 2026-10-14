@@ -9,14 +9,13 @@ import 'char_practice_screen.dart';
 import 'adaptive_copy_body.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
-import 'widgets/slider_row.dart';
-import 'widgets/spacing_stepper_card.dart';
+import 'widgets/setting_rows.dart';
+import 'widgets/tempo_spacing_section.dart';
 import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
 import '../l10n/strings.dart';
 import '../content/training_profile.dart';
 import '../content/charset_content.dart';
-import '../content/effective_wpm.dart';
 import 'widgets/charset_header.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'widgets/training_settings_sheet.dart';
@@ -64,10 +63,6 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   final _adaptiveController = AdaptiveCopyController();
   bool _adaptiveActive = false;
   bool get _practiceActive => _adaptiveActive;
-  // Typing mode keyboard on screen: the WPM slider makes room for it.
-  bool _keyboardShown = false;
-  // The body shows spacing + WPM itself (revealed and result screens).
-  bool _controlsInBody = false;
   // Last used way to copy (0 = paper, 1 = typing): its start button is the
   // highlighted one (DECISIONS.md "Hören: typing mode").
   int _copyMode = 0;
@@ -120,36 +115,28 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     await _toneChannel.invokeMethod('setEnvelopeMs', (toneSoftness + 1).toDouble());
   }
 
-  // Spacing card (optional) above the WPM slider: both are about speed.
-  // Typing mode (once chosen by starting a block) has no word gap, so the card
-  // then shows the char gap only.
-  Widget _controls({required bool withSpacing}) {
+  // Tempo + spacing card, the same block as on the Verstehen setup screens
+  // (TempoSpacingSection), compact here to save height. Shown on the start
+  // screen and, by the body, on the result screen; never while a block runs or
+  // on "Gesendet". Typing mode (once chosen by starting a block) has no word gap:
+  // char gap only, and "eff." ignores the word gap.
+  Widget _controls() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        if (withSpacing) ...[
-          SpacingStepperCard(
-            interCharSpace: _interCharSpace,
-            interWordSpace: _interWordSpace,
-            charOnly: _practiceActive && _copyMode == 1,
-            onChanged: (ic, iw) {
-              setState(() { _interCharSpace = ic; _interWordSpace = iw; });
-              _savePrefs();
-            },
-          ),
-          const SizedBox(height: 4),
-        ],
-        SliderRow(
-          label: 'WPM', value: _wpm.toDouble(),
-          min: TrainingProfile.minWpm.toDouble(), max: 60,
-          divisions: 60 - TrainingProfile.minWpm,
-          valueWidth: 112,
-          // Farnsworth text speed implied by wpm + spacing, like the
-          // adaptive block's status line used to show it. Typing mode (once
-          // chosen by starting a block): char gap only, no word gap.
-          display: '$_wpm (eff. ${effectiveWpm(_wpm, _interCharSpace, _interWordSpace, typing: _practiceActive && _copyMode == 1)})',
-          onChanged: (v) {
-            setState(() => _wpm = v.round());
+      child: SettingsCard(children: [
+        TempoSpacingSection(
+          wpm: _wpm,
+          interChar: _interCharSpace,
+          interWord: _interWordSpace,
+          typing: _practiceActive && _copyMode == 1,
+          compact: true,
+          showUndo: false,
+          onWpm: (v) {
+            setState(() => _wpm = v);
+            _savePrefs();
+          },
+          onSpacing: (ic, iw) {
+            setState(() { _interCharSpace = ic; _interWordSpace = iw; });
             _savePrefs();
           },
         ),
@@ -352,19 +339,13 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               controller: _adaptiveController,
               practiceChars: _practiceChars,
               onActiveChanged: (v) { if (mounted) setState(() => _adaptiveActive = v); },
-              onKeyboardChanged: (v) { if (mounted) setState(() => _keyboardShown = v); },
-              controls: _controls(withSpacing: true),
-              onControlsInBodyChanged: (v) { if (mounted) setState(() => _controlsInBody = v); },
+              controls: _controls(),
             ),
           ),
 
-          // ── Controls ──────────────────────────────────────────────────────
-          // Start screen: spacing above WPM above the start buttons. While a
-          // block runs, only the WPM slider (as before). On the revealed and
-          // result screens the body shows the same two controls itself, above
-          // its own buttons, so the buttons stay at the very bottom.
-          if (!_keyboardShown && !_controlsInBody)
-            _controls(withSpacing: !_practiceActive),
+          // ── Controls (start screen only; the body shows them itself on the
+          // revealed and result screens, and nothing while a block runs) ────
+          if (!_practiceActive) _controls(),
 
           // ── Start (idle only; the running block has its own buttons) ─────
           // Two starts: copy on paper, or type on the on-screen keyboard.

@@ -816,29 +816,32 @@ confirmed by the user on 2026-09-27:
   user after every word, so the inter-word gap has no effect there. Only the
   **inter-character** gap counts, in four places: (1) the adaptive spacing
   suggestions only change the char gap (`_stepPendingSpacing`, suggestion row);
-  (2) the manual spacing card shows and changes only the char gap once a
-  typing block has started ("Abstand Zeichen", `charOnly` in
-  `SpacingStepperCard`; the stored word gap stays untouched, never below the
-  char gap); (3) the ⚙ sheet is shared by both modes and opened before the
-  mode is chosen, so its word-gap slider stays and a note below the sliders
-  says it applies to paper only (`settings_word_spacing_hear_note`). The start
-  screen keeps "Zeichen/Wort" because the mode is chosen only by the start
-  button. (4) The `eff.` value on the WPM slider uses the char gap only in
-  typing mode, with the word gap fixed at the normal 7 dits so it equals the WPM
-  at char gap 3 (`effectiveWpm(..., typing: true)` in
-  `content/effective_wpm.dart`, tested); paper mode and the start screen (mode
-  not chosen yet) count both gaps.
-- **Spacing card placement (2026-10-14):** the card moved out of the practice
-  area to the bottom control area directly **above** the WPM slider
-  (`SpacingStepperCard`, `widgets/spacing_stepper_card.dart`, built by
-  `_controls()` in `generator_screen.dart`): speed and pauses belong together;
-  the practice area keeps "auf dem Weg zu", weak characters and hit rate.
-  Order at the bottom is spacing → WPM → buttons on the start, "Gesendet"
-  (revealed, incl. word marking) and result screens; there the body renders
-  the controls itself above its buttons (`AdaptiveCopyBody.controls`, parent
-  hides its copy via `onControlsInBodyChanged`). While a block runs nothing
-  changes: paper mode shows the WPM slider only (no spacing card), typing mode
-  has no slider (keyboard on screen).
+  (2) the tempo/spacing card shows only the char gap once a typing block has
+  started (`typing:` in `TempoSpacingSection`; the stored word gap stays
+  untouched, never below the char gap); (3) the ⚙ sheet is shared by both
+  modes and opened before the mode is chosen, so its word-gap slider stays and
+  a note below the sliders says it applies to paper only
+  (`settings_word_spacing_hear_note`); (4) the `eff.` value uses the char gap
+  only, with the word gap fixed at the normal 7 dits so it equals the WPM at
+  char gap 3 (`effectiveWpm(..., typing: true)` in `content/effective_wpm.dart`,
+  tested). Paper mode and the start screen (mode not chosen yet, two start
+  buttons) count both gaps.
+- **Tempo + spacing block, one component (2026-10-14):** `TempoSpacingSection`
+  (`widgets/tempo_spacing_section.dart`, inside a `SettingsCard`) is the one
+  look for speed and pauses: "Tempo" slider with the effective speed in
+  brackets behind the WPM (`20 WPM (eff. 7)`, replaces the separate "Effektiv:"
+  line), then −/+ rows for Zeichenabstand and Wortabstand ("Dits · s" sub
+  line). Used by the Sätze, Mini-QSO and Q-Groups setup screens (copies of the
+  old block removed) and by Hören. In Hören it is `compact` (no sub line,
+  denser rows, no undo snackbar that would cover the buttons) because height
+  is short. Placement in Hören: bottom area directly above the buttons on the
+  start and result screens (`_controls()` in `generator_screen.dart`; on the
+  result screen the body renders it above its buttons via
+  `AdaptiveCopyBody.controls`). It is **not** shown while a block runs (paper:
+  the slider was disabled anyway, typing: keyboard on screen), not on
+  "Gesendet" (unimportant at that point) and not on the word-marking screen. Practice area keeps "auf dem Weg
+  zu", weak characters and hit rate. Not yet converted to this block: the ⚙
+  sheet sliders, Echo trainer, Adventure sheets.
 - **After the block:** the usual "Gesendet" page, errors pre-marked from the
   first attempts, typed text under each group; marks can be removed by
   tapping (typos). Then the **unchanged** result page (no ●◐○ split, no
@@ -862,8 +865,8 @@ confirmed by the user on 2026-09-27:
   Memory Chain prompt box.
 - `AppButton` labels are one line and shrink to fit (`FittedBox`) instead of
   clipping; horizontal padding reduced to 12.
-- Long scroll areas use `ScrollHint` (always-visible scrollbar + bottom fade
-  while there is more): Hören "Gesendet" overview, Hören result page, and the
+- Long scroll areas use `ScrollHint` (scrollbar only while scrolling + bottom
+  fade while there is more, 2026-10-14): Hören "Gesendet" overview, Hören result page, and the
   home screen, which switches from 7 height-sharing cards to fixed-height
   cards in a scroll view when the screen is too short for them.
 - **Android "Display size" (Anzeigegröße) is ignored entirely**:

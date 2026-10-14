@@ -296,7 +296,6 @@ class Strings {
     'hc_level_2': ['2 Sätze', '2 sentences'],
     'hc_level_3': ['3 Sätze', '3 sentences'],
     'hc_speed': ['Tempo', 'Speed'],
-    'hc_effective': ['Effektiv: {e} WPM', 'Effective: {e} WPM'],
     'hc_start': ['Runde starten', 'Start round'],
     'hc_recent': ['Letzte Runden: {p} % richtig', 'Recent rounds: {p}% right'],
     'hc_no_rounds': ['Noch keine Runde gespielt', 'No round played yet'],
@@ -694,9 +693,7 @@ class Strings {
     'ac_outlook_more': ['+{n} weitere', '+{n} more'],
     'ac_char_unlocked': ['Neues Zeichen freigeschaltet', 'New character unlocked'],
     'ac_suggestions_title': ['VORSCHLÄGE · ANTIPPEN ZUM ÄNDERN', 'SUGGESTIONS · TAP TO TOGGLE'],
-    'ac_spacing_control_title': ['Abstand Zeichen/Wort', 'Spacing char/word'],
     'settings_word_spacing_hear_note': ['Der Wortabstand wirkt nur im Papier-Modus. Im Tipp-Modus wartet die App nach jedem Wort auf deine Eingabe; dort zählt nur der Zeichenabstand.', 'Word spacing only applies in paper mode. In typing mode the app waits for your input after each word; only the character spacing counts there.'],
-    'ac_spacing_control_title_char': ['Abstand Zeichen', 'Spacing char'],
 
     // ── Adaptive Mode settings ───────────────────────────────────────────
     'settings_koch_sequence_desc': ['Gilt für alle Trainings, die die Koch-Methode nutzen (auch Geben und der adaptive Modus).', 'Applies to every training that uses the Koch method (Send and the adaptive mode too).'],

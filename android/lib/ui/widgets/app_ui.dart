@@ -162,9 +162,10 @@ class _ScrollHintState extends State<ScrollHint> {
             _update();
             return false;
           },
+          // The thumb shows only while scrolling; the bottom fade below is
+          // the standing hint that there is more.
           child: Scrollbar(
             controller: _controller,
-            thumbVisibility: true,
             child: SingleChildScrollView(
               controller: _controller,
               padding: widget.padding,
