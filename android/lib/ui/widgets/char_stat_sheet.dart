@@ -6,11 +6,13 @@
 // docs/STATUS.md).
 import 'package:flutter/material.dart';
 import '../../content/char_stats.dart';
+import '../../content/mixup_trend.dart';
 import '../../content/progress_series.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import '../../util/char_color.dart';
 import 'app_ui.dart';
+import 'mixup_trend_view.dart';
 import 'progress_charts.dart';
 
 // Difference in percentage points below which "current" counts as equal to
@@ -69,6 +71,30 @@ class _CharStatSheet extends StatelessWidget {
     return Strings.t('cs_days_ago').replaceFirst('{n}', '$days');
   }
 
+  // One mix-up: "K → R   ▲ 12 % (before 6 %)   7×" — the trend part only when
+  // there is enough data for a statement (mixup_trend.dart).
+  Widget _mixRow(AppColors c, MapEntry<String, int> e, MixupTrend? t, TextStyle mono) {
+    final a = t == null ? null : mixupArrow(t.direction, c);
+    final txt = t == null || t.direction == MixupDirection.tooFew ? null : mixupRateText(t);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 2),
+      child: Row(children: [
+        Text(mixupLabel(e.key, outputCase),
+            style: mono.copyWith(color: c.warning, fontWeight: FontWeight.bold)),
+        const SizedBox(width: 10),
+        if (a?.arrow != null && txt != null)
+          Expanded(
+            child: Text(
+                '${a!.arrow} ${txt.head}${txt.detail == null ? '' : '  ${txt.detail}'}',
+                style: TextStyle(fontSize: 12, color: a!.color)),
+          )
+        else
+          const Spacer(),
+        Text('${e.value}×', style: TextStyle(fontSize: 12, color: c.textMuted)),
+      ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
@@ -125,6 +151,9 @@ class _CharStatSheet extends StatelessWidget {
         .toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     final last = _lastPractised();
+    final trends = {
+      for (final t in mixupTrends(days, DateTime.now())) t.pair: t
+    };
 
     return Scaffold(
       backgroundColor: c.background,
@@ -213,11 +242,14 @@ class _CharStatSheet extends StatelessWidget {
               mix.isEmpty
                   ? Text(Strings.t('cs_mixups_none'), style: faint)
                   : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      for (final e in mix.take(5))
-                        Text(
-                            '$display → ${(outputCase == 1 ? e.key.split('>')[1] : e.key.split('>')[1].toLowerCase())}   ${e.value}×',
-                            style: mono.copyWith(color: c.warning)),
+                      for (final e in mix.take(5)) _mixRow(c, e, trends[e.key], mono),
                     ])),
+          if (mix.isNotEmpty)
+            section('',
+                MixupPairCurve(
+                    days: days,
+                    pairs: [for (final e in mix.take(5)) e.key],
+                    outputCase: outputCase)),
         ]),
       ),
       ),

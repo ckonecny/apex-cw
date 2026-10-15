@@ -24,7 +24,9 @@ import 'package:next_cw_trainer/ui/q_groups_sheet_screen.dart';
 import 'package:next_cw_trainer/ui/home_screen.dart';
 import 'package:next_cw_trainer/ui/invaders_screen.dart';
 import 'package:next_cw_trainer/ui/keyer_screen.dart';
+import 'package:next_cw_trainer/content/char_stats.dart';
 import 'package:next_cw_trainer/ui/widgets/decoder_chars_setting.dart';
+import 'package:next_cw_trainer/ui/widgets/mixup_trend_view.dart';
 import 'package:next_cw_trainer/ui/widgets/mistake_lesson.dart';
 import 'package:next_cw_trainer/ui/learn_screen.dart';
 import 'package:next_cw_trainer/ui/links_screen.dart';
@@ -38,6 +40,27 @@ import 'package:next_cw_trainer/ui/radio_cave_screen.dart';
 import 'package:next_cw_trainer/ui/wifi_trx_screen.dart';
 import 'package:next_cw_trainer/ui/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Per-day stats with mix-ups in both windows of the trend view (#101): one pair
+// each for up / down / gone / new / too few, so every group is laid out.
+Map<String, DayStat> _mixupDays() {
+  final now = DateTime.now();
+  DayStat d(Map<String, int> pairs, Map<String, int> att) {
+    final s = DayStat()..pairs.addAll(pairs);
+    att.forEach((k, v) => s.chars[k] = [v, 0]);
+    s.attempts = att.values.fold(0, (a, v) => a + v);
+    return s;
+  }
+  return {
+    dayKey(now.subtract(const Duration(days: 2))): d(
+        {'K>R': 8, 'F>L': 1, 'B>D': 4, 'S>H': 3, 'Q>G': 0},
+        {'K': 40, 'F': 40, 'B': 40, 'S': 40, 'Q': 40}),
+    dayKey(now.subtract(const Duration(days: 20))): d(
+        {'K>R': 2, 'F>L': 6, 'Q>G': 5, 'S>H': 3},
+        {'K': 40, 'F': 40, 'B': 40, 'S': 40, 'Q': 40}),
+    dayKey(now.subtract(const Duration(days: 4))): d({'M>–': 1}, {'M': 3}),
+  };
+}
 
 void main() {
   final screens = <String, Widget Function()>{
@@ -95,6 +118,15 @@ void main() {
     'wifi_trx': () => const WifiTrxScreen(),
     'pileup': () => const PileupScreen(),
     'home': () => const HomeScreen(),
+    // Mix-up trends tab (#101): populated, and only fresh data (empty state).
+    'mixup_trends': () => Scaffold(
+        body: MixupTrendView(days: _mixupDays(), outputCase: 1, onChar: (_) {})),
+    'mixup_trends_empty': () => Scaffold(
+        body: MixupTrendView(
+            days: {dayKey(DateTime.now()): DayStat()..pairs['K>R'] = 1},
+            outputCase: 0, onChar: (_) {})),
+    'mixup_trends_none': () => Scaffold(
+        body: MixupTrendView(days: const {}, outputCase: 0, onChar: (_) {})),
   };
   for (final e in screens.entries) {
     for (final lang in [0, 1]) {

@@ -1439,8 +1439,9 @@ attempts (default 20) **and** a current accuracy above the threshold (default
   attempt of each word counts, and in it the first wrong character. In Listen
   this exists only in typing mode; in paper mode only "wrong" is marked, not
   what you heard. A skipped word (pass) does not count. Mix-ups are also
-  logged per day, separately for Listen and Send, so that trends can be shown
-  later.
+  logged per day, separately for Listen and Send. An arrow after each pair
+  shows its trend (see the *Trends* tab), and below it a curve of the mix-up
+  rate over 12 weeks; pick other pairs with the chips.
 - **Listen** – plays the character three times, at this training's speed.
 
 ::: {.shots}
@@ -1449,8 +1450,8 @@ attempts (default 20) **and** a current accuracy above the threshold (default
 ![Detail view in Send: last 30 attempts, curve, mix-ups](img/en/echo_char_detail.png)
 :::
 
-**Progress tab.** At the top, switch between *Characters* (the list above)
-and *Progress*. Progress shows how practice develops over time, separately for
+**Progress tab.** At the top, switch between *Characters* (the list above),
+*Progress* and *Trends* (see *Trends* below). Progress shows how practice develops over time, separately for
 each training. It fills up from the day this feature was added; earlier
 practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
 
@@ -1485,6 +1486,27 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
 
 ![Progress tab (Send)](img/en/echo_progress.png)
 :::
+
+**Trends tab.** Shows whether a specific mix-up is becoming more or less
+frequent, separately for Listen and Send. It compares the **mix-up rate** of
+the last 14 days (or 30 days, chip) with the days before. The rate is "how
+often K was taken for R, divided by all attempts at K", so practising more
+does not make a mix-up look more frequent. The pairs are grouped by what needs
+attention:
+
+- **Getting more frequent** (▲) and **Newly appeared** – worth practising.
+- **Getting less frequent** (▼) and **Gone** (✓) – practice is working.
+- **Unchanged** (►) – the rate stayed about the same (change under 2
+  percentage points or under 30 % of the old rate).
+- **Too little data** – collapsed. An arrow only appears once the character
+  came up at least 15 times in both periods and there are at least three
+  mix-ups in total.
+
+Each row shows the pair, arrow, current rate, the rate before, a small weekly
+curve and the count in the current period. Tap it to open the character.
+Mix-ups are logged per day only since this feature exists, so the first weeks
+show just a "Trend from …" hint with a progress bar; there is no trend for the
+time before.
 
 The **reset** icon deletes all of this training's statistics after a
 confirmation: error rates, weights, mix-ups and the progress. The other training's

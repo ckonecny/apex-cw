@@ -1487,8 +1487,9 @@ zeigt nur die Versuche, nicht die Quote.
   Buchstabe. Beim Hören gibt es das nur im Tipp-Modus; im Papier-Modus wird
   nur „falsch“ markiert, nicht was du gehört hast. Ein übersprungenes Wort
   (Passen) zählt nicht. Die Verwechslungen werden außerdem pro Tag
-  mitgeschrieben, getrennt für Hören und Geben, damit später Entwicklungen
-  sichtbar werden können.
+  mitgeschrieben, getrennt für Hören und Geben. Hinter jedem Paar zeigt ein
+  Pfeil den Trend (siehe Reiter *Trends*), und darunter steht die Kurve der
+  Verwechslungsrate über 12 Wochen; mehrere Paare wählst du per Chip.
 - **Anhören** – spielt das Zeichen dreimal ab, mit dem Tempo dieses Trainings.
 
 ::: {.shots}
@@ -1497,8 +1498,8 @@ zeigt nur die Versuche, nicht die Quote.
 ![Detailansicht in Geben: letzte 30 Versuche, Kurve, Verwechslungen](img/de/echo_char_detail.png)
 :::
 
-**Reiter Verlauf.** Oben schaltest du zwischen *Zeichen* (die Liste oben)
-und *Verlauf* um. Der Verlauf zeigt, wie sich das Üben über die Zeit
+**Reiter Verlauf.** Oben schaltest du zwischen *Zeichen* (die Liste oben),
+*Verlauf* und *Trends* um (zu *Trends* siehe unten). Der Verlauf zeigt, wie sich das Üben über die Zeit
 entwickelt, getrennt für jedes Training. Er füllt sich ab dem Tag, an dem es
 die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
 **12 Wochen** oder **Alles**:
@@ -1537,6 +1538,27 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
 
 ![Reiter Verlauf (Geben)](img/de/echo_progress.png)
 :::
+
+**Reiter Trends.** Zeigt, ob eine bestimmte Verwechslung häufiger oder
+seltener wird, getrennt für Hören und Geben. Verglichen wird die
+**Verwechslungsrate** der letzten 14 Tage (oder 30 Tage, per Chip) mit den
+Tagen davor. Die Rate ist „wie oft wurde K für R gehalten, geteilt durch alle
+Versuche bei K“; mehr Üben allein lässt eine Verwechslung also nicht häufiger
+aussehen. Die Paare sind nach Handlungsbedarf gruppiert:
+
+- **Wird häufiger** (▲) und **Neu aufgetaucht** – hier lohnt sich Üben.
+- **Wird seltener** (▼) und **Verschwunden** (✓) – das Üben wirkt.
+- **Unverändert** (►) – die Rate ist ungefähr gleich geblieben (Änderung unter
+  2 Prozentpunkten oder unter 30 % der alten Rate).
+- **Zu wenig Daten** – eingeklappt. Ein Pfeil erscheint erst, wenn das Zeichen
+  in beiden Zeiträumen mindestens 15-mal drankam und insgesamt mindestens drei
+  Verwechslungen vorliegen.
+
+Jede Zeile zeigt Paar, Pfeil, aktuelle Rate, die Rate davor, eine kleine
+Wochenkurve und die Anzahl im aktuellen Zeitraum. Ein Tipp öffnet das Zeichen.
+Verwechslungen werden erst ab Einführung der Funktion pro Tag mitgeschrieben,
+deshalb gibt es in den ersten Wochen nur den Hinweis „Trend ab …“ mit
+Fortschrittsbalken; für die Zeit davor gibt es keinen Trend.
 
 Mit dem Symbol **Zurücksetzen** löschst du nach einer Sicherheitsabfrage die
 gesamte Statistik dieses Trainings – Fehlerquoten, Gewichte,
