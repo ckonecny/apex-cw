@@ -29,10 +29,12 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
-(empty — v1.7.0 screenshots retaken, see above)
+- `settings1.png` (DE+EN): the Keyer card has a new row "Hide touch keys when an adapter is detected" (#95).
 
 ## v1.7.1 (maintenance release, in progress)
 `main` holds everything (version 1.7.1+8): fidelity audit fixes, review-gate fixes, updated libraries (Dependabot round of 2026-10-12 merged incl. `audio_session` 0.2.4, Gradle 9.8.1, AGP 9.4.1). Tried on the test phone: audio, keyer, settings, links, microphone decoder. **Next**: `v1.7.1-beta1` as GitHub pre-release for Sia (notes: `docs/release-notes-v1.7.1.md`), then the release itself (`tools/build_release.sh v1.7.1`, tag, APK + AAB; the manual PDF stays at v1.7.0, only text changed). Recurring checks and alerts: `docs/PROJECT.md` "Recurring maintenance". Engine config per screen: `android/test/engine_config_test.dart` (DECISIONS); a shared config helper instead of per-screen copies is issue #18.
+
+**#95 (hide touch keys with an adapter): implemented, not yet built or tested.** Written without a Flutter SDK, so `flutter analyze`/`flutter test` have not run. Next: analyze, test, debug build, install on the test phone and check with a real adapter (touch keys vanish after the first dit/dah, hint X, hint tap → Settings, unplug → keys return). Then commit with `Closes #95` once asked.
 
 ## Release note to include (next release)
 Letter and word gaps were one dit too short in all earlier versions (now 3/7 dits at the default spacing), so everything sounds slightly slower. Keyer modes, audio stream locking and the microphone decoder were fixed too (DECISIONS "Keyer audit" etc.). Native tests: `./gradlew :app:testDebugUnitTest` in `android/android` and `tools/run_native_cpp_tests.sh` (CI job `native-test`); locally Gradle needs `JAVA_HOME` of Android Studio's JBR.

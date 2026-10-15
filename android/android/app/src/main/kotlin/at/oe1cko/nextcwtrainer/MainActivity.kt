@@ -11,6 +11,7 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.hardware.input.InputManager
 import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.WindowManager
@@ -80,6 +81,20 @@ class MainActivity : FlutterActivity() {
     // Separate from settingsEventSink (which only the Settings screen listens on):
     // every Send-mode screen watches this one for the Bluetooth latency hint.
     private var routeEventSink: EventChannel.EventSink? = null
+    // Key adapter (#95): a real (non-virtual) input device that has sent one of
+    // the learned dit/dah keys. Detected by use, not by mere presence, so a
+    // plain USB/Bluetooth keyboard never counts. Dropped when it is unplugged.
+    private val keyAdapterDevices = mutableSetOf<Int>()
+    private var keyAdapterEventSink: EventChannel.EventSink? = null
+    private val inputDeviceListener = object : InputManager.InputDeviceListener {
+        override fun onInputDeviceAdded(deviceId: Int) {}
+        override fun onInputDeviceChanged(deviceId: Int) {}
+        override fun onInputDeviceRemoved(deviceId: Int) {
+            if (keyAdapterDevices.remove(deviceId) && keyAdapterDevices.isEmpty()) {
+                keyAdapterEventSink?.success(false)
+            }
+        }
+    }
     // Hören-Block, nach dem Aufdecken: Paddle wählt Wiederholen (Dit) / Weiter (Dah).
     // Dart schaltet das ein; der Tastendruck geht dann als Event nach Dart, nicht in den Keyer.
     @Volatile private var paddleChoiceActive = false
@@ -95,6 +110,7 @@ class MainActivity : FlutterActivity() {
         private const val SETTINGS_CHANNEL = "at.oe1cko.nextcwtrainer/settings"
         private const val SETTINGS_EV      = "at.oe1cko.nextcwtrainer/settings_events"
         private const val ROUTE_EV         = "at.oe1cko.nextcwtrainer/audio_route_events"
+        private const val KEY_ADAPTER_EV   = "at.oe1cko.nextcwtrainer/key_adapter_events"
         private const val PREFS_NAME       = "next_cw_trainer_prefs"
         private const val PREF_DIT         = "paddle_dit"
         private const val PREF_DAH         = "paddle_dah"
@@ -209,6 +225,16 @@ class MainActivity : FlutterActivity() {
                     routeEventSink = events
                 }
                 override fun onCancel(args: Any?) { routeEventSink = null }
+            })
+
+        (getSystemService(Context.INPUT_SERVICE) as InputManager)
+            .registerInputDeviceListener(inputDeviceListener, null)
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, KEY_ADAPTER_EV)
+            .setStreamHandler(object : EventChannel.StreamHandler {
+                override fun onListen(args: Any?, events: EventChannel.EventSink) {
+                    keyAdapterEventSink = events
+                }
+                override fun onCancel(args: Any?) { keyAdapterEventSink = null }
             })
 
         // ── Keyer config + touch paddles ──────────────────────────────────────
@@ -429,6 +455,7 @@ class MainActivity : FlutterActivity() {
                         "available" to audioRouteManager.listAvailableKinds()
                     ))
                     "isBluetoothOutput" -> result.success(audioRouteManager.isBluetoothActive())
+                    "isKeyAdapterDetected" -> result.success(keyAdapterDevices.isNotEmpty())
                     "setOutputDeviceKind" -> {
                         audioRouteManager.setPreferredKind(
                             (call.arguments as? Number)?.toInt() ?: AudioRouteManager.KIND_AUTO)
@@ -554,6 +581,7 @@ class MainActivity : FlutterActivity() {
         val isDah = chMeta == dahChar || chRaw == dahChar || (dahChar < 0 && -event.keyCode == dahChar)
         if (isDit || isDah) {
             val down = event.action == KeyEvent.ACTION_DOWN
+            if (down) noteKeyAdapter(event)
             // Generator paused after a word (Stop<Next>Rep): dit=repeat, dah=next — matches
             // the real device's paddle-driven autoStop, not the keyer.
             if (down && generator.awaitingChoice) {
@@ -575,6 +603,16 @@ class MainActivity : FlutterActivity() {
             return true
         }
         return super.dispatchKeyEvent(event)
+    }
+
+    // The on-screen keyboard and injected events come from a virtual device
+    // (or none); only a physical one counts as a key adapter.
+    private fun noteKeyAdapter(event: KeyEvent) {
+        val dev = event.device ?: return
+        if (dev.isVirtual) return
+        if (keyAdapterDevices.add(event.deviceId) && keyAdapterDevices.size == 1) {
+            keyAdapterEventSink?.success(true)
+        }
     }
 
     private fun handleLearnKeyEvent(ch: Int): Boolean {
@@ -644,6 +682,8 @@ class MainActivity : FlutterActivity() {
         keyer.stop()
         generator.stop()
         audioRouteManager.stop()
+        (getSystemService(Context.INPUT_SERVICE) as InputManager)
+            .unregisterInputDeviceListener(inputDeviceListener)
         micInput.stop()
         CwAudioNative.stopStream()
         super.onDestroy()

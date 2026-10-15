@@ -577,6 +577,8 @@ class Strings {
     'settings_answer_wpm_same': ['wie Hören', 'same as prompt'],
     'settings_answer_wpm_help': ['Deine Antwort wird mit höchstens diesem Tempo erwartet. Vorgespielt wird weiter mit dem normalen Tempo.', 'Your answer is expected at this speed at most. The prompt still plays at the normal speed.'],
     'echo_answer_wpm': ['Geben', 'Send'],
+    'settings_hide_softkeys_adapter': ['Touch-Tasten ausblenden, wenn Adapter erkannt', 'Hide touch keys when an adapter is detected'],
+    'key_adapter_hidden_hint': ['Taste erkannt – Touch-Tasten ausgeblendet. Tippen für die Einstellung.', 'Key detected – touch keys hidden. Tap for the setting.'],
     'settings_swap_touch_paddles': ['Bildschirm-Paddles vertauschen (Dah links)', 'Swap on-screen paddles (dah left)'],
     'settings_adapter_pre': ['Noch keine Morsetaste am Handy? ', 'No Morse key on your phone yet? '],
     'settings_adapter_vband': ['Fertiger vband-Adapter', 'Ready-made vband adapter'],
