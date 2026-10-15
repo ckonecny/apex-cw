@@ -124,7 +124,7 @@ sind dunkle Schemata mit eigener Farbpalette: Bernstein mit warmen Gelbtönen,
 Rot (Nachtsicht) mit gedämpftem Rot, das die Dunkeladaption der Augen am
 wenigsten stört, Grün wie ein Phosphor-Terminal, Warmgrau mit weichem,
 kontrastarmem Braungrau und Marine & Orange mit blauschwarzem Grund, silbernem
-Text und orangem Akzent (nur Orange- und Silbertöne, wie ein Smartwatch-Zifferblatt).
+Text und orangem Akzent (nur Orange- und Silbertöne, wie ein Smartwatch-Zifferblatt; alle Menü-Symbole sind orange).
 Dazu gibt es einen zuschaltbaren **Blaulichtfilter**, der die ganze App warm
 einfärbt (in Hell und Dunkel) und dessen Stärke du einstellst. Alles wirkt sofort.
 

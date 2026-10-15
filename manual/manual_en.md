@@ -121,7 +121,7 @@ themes with their own palette: Amber with warm yellows, Red (night vision) with
 muted red, which disturbs dark adaptation the least, Green like a phosphor
 terminal, Warm grey with a soft, low-contrast brown-grey, and Navy & orange
 with a blue-black ground, silver text and an orange accent (only orange and
-silver tones, like a smartwatch face). There is also a **Blue light filter**
+silver tones, like a smartwatch face; all menu icons are orange). There is also a **Blue light filter**
 you can switch on: it tints the whole app warm (in light and dark) at a
 strength you set. All of it takes effect immediately.
 

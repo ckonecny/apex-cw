@@ -223,6 +223,7 @@ class _ModeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
+    final color = c.tile(this.color);
     return Material(
       color: c.surface,
       borderRadius: BorderRadius.circular(18),
