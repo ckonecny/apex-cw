@@ -2512,9 +2512,12 @@ that sounds for as long as you press it.
 
 **Hiding the touch keys.** If you key with a real key on an adapter, you don't
 need the touch keys. To hide them, switch on **Settings → Keyer → Hide touch
-keys when an adapter is detected**. The app detects an adapter the first time
-you send a dit or dah with it (an ordinary USB or Bluetooth keyboard does not
-count). The touch keys then disappear in all modes, and a small notice takes
+keys when an adapter is detected**. When you
+[teach the dit and dah keys](#learning-the-dit-and-dah-keys), the app also
+remembers your adapter and recognises it as soon as you plug it in. Without
+teaching on the adapter (or if you taught it earlier), it detects the adapter the
+first time you send a dit or dah with it. An ordinary USB or Bluetooth keyboard
+never counts. The touch keys then disappear in all modes, and a small notice takes
 their place. The **X** closes it until an adapter is detected the next time;
 tapping the notice opens the setting. When you unplug the adapter, the touch
 keys come back. The "A real Morse key is better" tip no longer appears then.

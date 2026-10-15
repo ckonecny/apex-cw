@@ -2603,9 +2603,12 @@ Fläche **KEY**, die so lange Ton gibt, wie du sie drückst.
 
 **Touch-Tasten ausblenden.** Wer mit einer echten Taste am Adapter tastet,
 braucht die Touch-Tasten nicht. Schalte dazu **Einstellungen → Keyer →
-Touch-Tasten ausblenden, wenn Adapter erkannt** ein. Die App erkennt einen
-Adapter, sobald du mit ihm das erste Mal Dit oder Dah gibst (eine normale
-USB- oder Bluetooth-Tastatur zählt nicht). Dann verschwinden die Touch-Tasten
+Touch-Tasten ausblenden, wenn Adapter erkannt** ein. Beim
+[Anlernen der Dit-/Dah-Tasten](#dit-dah-tasten-anlernen) merkt sich die App
+auch deinen Adapter und erkennt ihn danach schon beim Einstecken. Ohne
+Anlernen am Adapter (oder bei einem früher angelernten) erkennt sie ihn, sobald
+du mit ihm das erste Mal Dit oder Dah gibst. Eine normale USB- oder
+Bluetooth-Tastatur zählt in keinem Fall. Dann verschwinden die Touch-Tasten
 in allen Modi, und an ihrer Stelle steht ein kleiner Hinweis. Mit dem **X**
 blendest du ihn aus, bis ein Adapter das nächste Mal erkannt wird; ein Tipp auf
 den Hinweis öffnet die Einstellung. Ziehst du den Adapter ab, erscheinen die
