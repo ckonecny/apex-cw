@@ -1482,8 +1482,13 @@ zeigt nur die Versuche, nicht die Quote.
 - **Freischaltung** – was noch fehlt: wie viele Versuche und wie
   viele richtige Antworten in Folge, bis die Quote wieder über der Schwelle
   liegt.
-- **Verwechslungen** (nur Geben) – was du stattdessen gegeben hast. Beim
-  Hören gibt es diesen Punkt nicht.
+- **Verwechslungen** – was du stattdessen gegeben (Geben) oder getippt (Hören)
+  hast. Gezählt wird nur der erste Versuch je Wort und dort der erste falsche
+  Buchstabe. Beim Hören gibt es das nur im Tipp-Modus; im Papier-Modus wird
+  nur „falsch“ markiert, nicht was du gehört hast. Ein übersprungenes Wort
+  (Passen) zählt nicht. Die Verwechslungen werden außerdem pro Tag
+  mitgeschrieben, getrennt für Hören und Geben, damit später Entwicklungen
+  sichtbar werden können.
 - **Anhören** – spielt das Zeichen dreimal ab, mit dem Tempo dieses Trainings.
 
 ::: {.shots}

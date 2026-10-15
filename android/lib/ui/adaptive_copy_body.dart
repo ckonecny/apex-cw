@@ -952,6 +952,13 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         results.add(!wrong);
         _charStats.record(group[i], !wrong, block: _blockNumber);
       }
+      // Typing mode: the first attempt shows what was heard instead (#92).
+      // Passed (null) says nothing about what was heard; paper mode neither.
+      if (_typing && g < _typedAttempts.length && _typedAttempts[g].isNotEmpty) {
+        final typed = _typedAttempts[g].first;
+        final pair = typed == null ? null : firstMixup(group, typed);
+        if (pair != null) _charStats.recordMixup(pair);
+      }
     }
     await _charStats.save(p);
 

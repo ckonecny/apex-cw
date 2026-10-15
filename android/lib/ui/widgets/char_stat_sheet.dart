@@ -1,8 +1,9 @@
 // Detail screen for one character of the statistics screen (tap on a row):
 // overall vs. moving rate, the last results as a strip, when it was last
 // practised, its draw weight, what is still missing for the unlock (Listen)
-// and the mix-ups (Send). The moving rate is what the unlock rule uses, so
-// both are shown side by side (user 2026-09-30, docs/STATUS.md).
+// and the mix-ups (Listen typing mode and Send). The moving rate is what the
+// unlock rule uses, so both are shown side by side (user 2026-09-30,
+// docs/STATUS.md).
 import 'package:flutter/material.dart';
 import '../../content/char_stats.dart';
 import '../../content/progress_series.dart';
@@ -20,7 +21,6 @@ Future<void> showCharStatSheet(
   BuildContext context, {
   required String ch,
   required CharStat stat,
-  required bool isHear,
   required bool ready,
   required int unlockOccurrences,
   required double highThreshold,
@@ -33,7 +33,7 @@ Future<void> showCharStatSheet(
   // sheet that could only be closed by gesture (issue #28).
   return Navigator.of(context).push(MaterialPageRoute<void>(
     builder: (_) => _CharStatSheet(
-      ch: ch, stat: stat, isHear: isHear, ready: ready,
+      ch: ch, stat: stat, ready: ready,
       unlockOccurrences: unlockOccurrences, highThreshold: highThreshold,
       outputCase: outputCase, pairs: pairs, days: days, onListen: onListen,
     ),
@@ -43,14 +43,14 @@ Future<void> showCharStatSheet(
 class _CharStatSheet extends StatelessWidget {
   final String ch;
   final CharStat stat;
-  final bool isHear, ready;
+  final bool ready;
   final int unlockOccurrences, outputCase;
   final double highThreshold;
   final Map<String, int> pairs;
   final Map<String, DayStat> days;
   final Future<void> Function() onListen;
   const _CharStatSheet({
-    required this.ch, required this.stat, required this.isHear, required this.ready,
+    required this.ch, required this.stat, required this.ready,
     required this.unlockOccurrences, required this.highThreshold,
     required this.outputCase, required this.pairs, required this.days,
     required this.onListen,
@@ -208,17 +208,16 @@ class _CharStatSheet extends StatelessWidget {
                         style: mono.copyWith(color: c.accent))
                     : Column(crossAxisAlignment: CrossAxisAlignment.start,
                         children: [for (final l in unlockLines) Text(l, style: mono)])),
-          if (!isHear)
-            section(
+          section(
               Strings.t('cs_mixups'),
               mix.isEmpty
-                      ? Text(Strings.t('cs_mixups_none'), style: faint)
-                      : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          for (final e in mix.take(5))
-                            Text(
-                                '$display → ${(outputCase == 1 ? e.key.split('>')[1] : e.key.split('>')[1].toLowerCase())}   ${e.value}×',
-                                style: mono.copyWith(color: c.warning)),
-                        ])),
+                  ? Text(Strings.t('cs_mixups_none'), style: faint)
+                  : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      for (final e in mix.take(5))
+                        Text(
+                            '$display → ${(outputCase == 1 ? e.key.split('>')[1] : e.key.split('>')[1].toLowerCase())}   ${e.value}×',
+                            style: mono.copyWith(color: c.warning)),
+                    ])),
         ]),
       ),
       ),

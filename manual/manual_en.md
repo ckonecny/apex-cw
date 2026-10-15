@@ -1435,7 +1435,12 @@ attempts (default 20) **and** a current accuracy above the threshold (default
   character comes up in adaptive exercises.
 - **Unlock** – what is still missing: how many attempts and how
   many right answers in a row until the rate is back above the threshold.
-- **Mix-ups** (Send only) – what you sent instead. Listen has no such item.
+- **Mix-ups** – what you sent (Send) or typed (Listen) instead. Only the first
+  attempt of each word counts, and in it the first wrong character. In Listen
+  this exists only in typing mode; in paper mode only "wrong" is marked, not
+  what you heard. A skipped word (pass) does not count. Mix-ups are also
+  logged per day, separately for Listen and Send, so that trends can be shown
+  later.
 - **Listen** – plays the character three times, at this training's speed.
 
 ::: {.shots}
