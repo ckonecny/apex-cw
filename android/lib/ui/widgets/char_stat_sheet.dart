@@ -86,7 +86,7 @@ class _CharStatSheet extends StatelessWidget {
           Expanded(
             child: Text(
                 '${a!.arrow} ${txt.head}${txt.detail == null ? '' : '  ${txt.detail}'}',
-                style: TextStyle(fontSize: 12, color: a!.color)),
+                style: TextStyle(fontSize: 12, color: a.color)),
           )
         else
           const Spacer(),
