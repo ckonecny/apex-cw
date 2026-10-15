@@ -195,7 +195,7 @@ void main() {
     });
 
     test('days saved before the mix-up log load with none', () {
-      final d = DayStat.fromJson({'a': 4, 'e': 1, 'ws': 80, 'wm': 20, 'c': {}});
+      final d = DayStat.fromJson({'a': 4, 'e': 1, 'ws': 80, 'wm': 20, 'c': <String, dynamic>{}});
       expect(d.pairs, isEmpty);
       expect(d.toJson().containsKey('p'), isFalse);
     });
