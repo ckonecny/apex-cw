@@ -1176,7 +1176,8 @@ through), or to include it again.
   every result page. In the next block they are boosted at the *Moderate*
   level, with up to 3 draws per character (see [Practice set](#practice-set-settings)).
   This only applies to random groups (Koch lesson or All characters ·
-  Random), not to words. If you have your own practice set characters and
+  Random). With words, abbreviations, mixed and the practice set the boost has
+  no effect, so the app does not show the weak characters there at all. If you have your own practice set characters and
   **Boost practice set** switched on, they are added, and the higher level applies
   (so Strong for all of them if you chose Strong).
 - **Send:** the weak characters appear on the result page when you practice

@@ -1214,7 +1214,8 @@ mehrere Blöcke und Sitzungen.
   jeder Ergebnisseite. Im nächsten Block werden sie mit der Stufe *Mäßig*
   verstärkt (bis zu 3 Würfe pro Zeichen, siehe
   [Übungsset](#uebungsset-einstellungen)). Das gilt nur für Zufallsgruppen (Koch-Lektion
-  oder Alle Zeichen · Zufall), nicht für Wörter. Hast du im Übungsset
+  oder Alle Zeichen · Zufall). Bei Wörtern, Abkürzungen, Gemischt und Übungsset
+  wirkt die Verstärkung nicht; dort zeigt die App die schwachen Zeichen gar nicht erst an. Hast du im Übungsset
   eigene Zeichen und **Übungsset bevorzugen** eingestellt, kommen diese dazu; es gilt
   dann die höhere Stufe (Stark also für alle, wenn du Stark gewählt hast).
 - **Geben:** Die schwachen Zeichen erscheinen auf der Ergebnisseite, wenn du
