@@ -26,6 +26,8 @@ import 'package:next_cw_trainer/ui/invaders_screen.dart';
 import 'package:next_cw_trainer/ui/keyer_screen.dart';
 import 'package:next_cw_trainer/content/char_stats.dart';
 import 'package:next_cw_trainer/ui/widgets/decoder_chars_setting.dart';
+import 'package:next_cw_trainer/content/mixup_suggest.dart';
+import 'package:next_cw_trainer/ui/widgets/mixup_boost_chips.dart';
 import 'package:next_cw_trainer/ui/widgets/mixup_trend_view.dart';
 import 'package:next_cw_trainer/ui/widgets/mistake_lesson.dart';
 import 'package:next_cw_trainer/ui/learn_screen.dart';
@@ -125,6 +127,17 @@ void main() {
         body: MixupTrendView(
             days: {dayKey(DateTime.now()): DayStat()..pairs['K>R'] = 1},
             outputCase: 0, onChar: (_) {})),
+    // Mix-up pairs of the practice suggestion (#102): one ticked, one left out.
+    'mixup_boost_chips': () {
+      final pairs = suggestedMixups(_mixupDays(), DateTime.now(), maxPairs: 6, minRate: 0.0);
+      return Scaffold(
+          body: SingleChildScrollView(
+              child: MixupBoostChips(
+                  pairs: pairs,
+                  excluded: {if (pairs.isNotEmpty) pairs.first.pair},
+                  outputCase: 1,
+                  onToggle: (_) {})));
+    },
     'mixup_trends_none': () => Scaffold(
         body: MixupTrendView(days: const {}, outputCase: 0, onChar: (_) {})),
   };

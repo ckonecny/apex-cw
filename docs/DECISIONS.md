@@ -2079,3 +2079,21 @@ Pure function `mixupTrends()` in `content/mixup_trend.dart`, on `CharStatsStore.
 - Listen counts only the first wrong character per word but every wrong character counts as an attempt error, so Listen rates sit lower than the character's error rate. That is consistent over time, which is all a trend needs.
 - **No back-fill**: before #92 nothing was logged per day. `mixupTrendStart` = first day with logged mix-ups + 2 windows; until then the tab shows "Trend from …" with a progress bar instead of an empty area.
 - Display: third tab "Trends" in the character statistics (grouped: up/new, down/gone, same, too few collapsed; row = pair, arrow, rate, previous, 6-week sparkline, count); in the character detail each pair gets its arrow and a 12-week curve (`ProgressBucket.pairRate`, same weekly buckets as the hit-rate curve; weeks with < 5 attempts stay gaps). Reverse pairs (K>R, R>K) stay separate: hearing and sending them have different causes. #102 (practice suggestions) will use `mixupTrends()` too.
+## Mix-up practice suggestion (2026-10-16, #102)
+Supersedes "mix-ups never influence what is drawn" (#92): they still never do
+silently, but they are now offered as a proposal next to the weak characters.
+- **Reuse, not a new exercise.** The pair's two characters join the existing
+  boosted draw (Listen: `setPracticeChars` + boost level 1; Send: weight ×2 for
+  one block). Weak characters and pair characters form **one set** — a character
+  in several places is boosted once, weights never add up (user decision).
+- **Rule** (`content/mixup_suggest.dart`, `suggestedMixups`): a pair is offered if
+  its #101 trend is up or new, or if it is simply frequent (recent window ≥ 3
+  mix-ups, ≥ 15 attempts, rate ≥ 10 %), so a permanently bad pair is offered
+  before four weeks of data exist. Falling and vanished pairs never; left-out
+  ('–') and identical pairs never; at most 3 pairs, worst rate first. Only pairs
+  whose played character can be drawn (Koch active set / seen characters).
+  Thresholds are judgement values, tunable in one place.
+- **Same scope as the weak characters**: only where the boost works (random
+  groups); Listen counts typing-mode blocks only (no mix-ups in paper mode).
+- Tapping a pair leaves it out (struck through), as for weak characters; the
+  choice is per result page and not stored.

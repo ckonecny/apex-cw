@@ -24,6 +24,10 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                   const SizedBox(height: 16),
                   _buildWeakCharsSection(context, scale: 1.2),
                 ],
+                if (_mixups.isNotEmpty && !compact) ...[
+                  const SizedBox(height: 16),
+                  _buildMixupSection(context, scale: 1.2),
+                ],
                 if (_buildUnlockOutlook(context, compact: compact) case final outlook?) ...[
                   const SizedBox(height: 12),
                   outlook,
@@ -92,6 +96,21 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       const SizedBox(height: 8),
       _buildWeakChips(context, scale: scale),
     ])));
+  }
+
+  // Recurring mix-ups, tappable to leave a pair out of the boosted draw (#102).
+  Widget _buildMixupSection(BuildContext context, {double scale = 1}) {
+    return SizedBox(
+        width: double.infinity,
+        child: AppCard(
+            child: MixupBoostChips(
+                pairs: _mixups,
+                excluded: _excludedMixups,
+                outputCase: _outputCase,
+                scale: scale,
+                onToggle: (p) => _update(() {
+                      if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+                    }))));
   }
 
   // Manual spacing control, requested to be visible at every summary and at
@@ -550,6 +569,10 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             if (weak.isNotEmpty && !_outlookHostsWeakChars(false)) ...[
               const SizedBox(height: 20),
               _buildWeakCharsSection(context, scale: 1.2),
+            ],
+            if (_mixups.isNotEmpty) ...[
+              const SizedBox(height: 20),
+              _buildMixupSection(context, scale: 1.2),
             ],
             if (_buildUnlockOutlook(context) case final outlook?) ...[
               const SizedBox(height: 20),

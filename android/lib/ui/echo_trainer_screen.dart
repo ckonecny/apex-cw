@@ -11,6 +11,8 @@ import '../content/echo_timing.dart';
 import '../content/cw_content.dart';
 import '../content/block_history.dart';
 import '../content/char_stats.dart';
+import '../content/mixup_suggest.dart';
+import '../content/mixup_trend.dart';
 import '../content/adaptive_copy_engine.dart';
 import '../content/echo_suggestions.dart';
 import 'adaptive_copy_body.dart' show SuggestionRow;
@@ -26,6 +28,7 @@ import 'widgets/key_adapter_hint.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
+import 'widgets/mixup_boost_chips.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
@@ -153,6 +156,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int? _pendWpm, _pendAnswer, _pendIC, _pendIW;
   bool _accUnlock = true, _accWpm = true, _accSpacing = true, _accAnswer = false;
   final Set<String> _excludedBoost = {};
+  // Recurring mix-ups offered for the same boost (#102), pairs left out by the user.
+  List<MixupTrend> _mixups = [];
+  final Set<String> _excludedMixups = {};
   bool _previewing = false;
   // Weak chars boosted in the block after the result page (accepted chips).
   List<String> _boostChars = [];
@@ -433,6 +439,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _accUnlock = _accWpm = _accSpacing = true;
     _accAnswer = false;
     _excludedBoost.clear();
+    _excludedMixups.clear();
+    _mixups = charContent
+        ? suggestedMixups(_charStats.days, DateTime.now(),
+            candidates: kochActiveChars(_kochLevel, _activeKochChars))
+        : const [];
   }
 
   AdaptiveCopyEngine? _echoEngine;
@@ -465,8 +476,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
     _currentWpm = _wpm;
     await _savePrefs();
+    // Weak characters plus both characters of the mix-up pairs still ticked;
+    // one set, so a character in both is not boosted any harder.
     _boostChars = boost
-        ? s.weakChars.keys.where((ch) => !_excludedBoost.contains(ch)).toList()
+        ? {
+            ...s.weakChars.keys.where((ch) => !_excludedBoost.contains(ch)),
+            ...mixupBoostChars(_mixups.where((t) => !_excludedMixups.contains(t.pair)),
+                kochActiveChars(_kochLevel, _activeKochChars)),
+          }.toList()
         : [];
     _suggestions = null;
     _pendWpm = _pendAnswer = _pendIC = _pendIW = null;
@@ -644,6 +661,19 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               ),
           ]),
         ]),
+      ));
+    }
+    if (_mixups.isNotEmpty) {
+      rows.add(Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: MixupBoostChips(
+          pairs: _mixups,
+          excluded: _excludedMixups,
+          outputCase: _outputCase,
+          onToggle: (p) => setState(() {
+            if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+          }),
+        ),
       ));
     }
     if (rows.isNotEmpty) rows.add(const Divider());

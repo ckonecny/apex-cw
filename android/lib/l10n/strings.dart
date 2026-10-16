@@ -680,6 +680,7 @@ class Strings {
     'ac_paddle_hint': ['Morsetaste: Dit = wiederholen, Dah = weiter', 'Morse key: dit = repeat, dah = next'],
     'ac_done_errors': ['Fertig · {n} Fehler', 'Done · {n} errors'],
     'ac_correct_of': ['{c} von {t} richtig', '{c} of {t} correct'],
+    'mx_boost_title': ['Häufige Verwechslungen: gezielt üben?', 'Recurring mix-ups: practice these?'],
     'ac_weak_chars': ['Schwache Zeichen: öfter abfragen?', 'Weak characters: practice more?'],
     'ac_finish': ['Beenden', 'Finish'],
     'ac_next_block': ['Nächster Block', 'Next block'],
