@@ -153,21 +153,42 @@ extension _EchoViews on _EchoTrainerScreenState {
     String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
     final weak = _startWeakChars();
     final mixups = _startMixups();
-    return SingleChildScrollView(
-      child: Column(children: [
-        const KeyAdapterHint(),
-        if (weak.isNotEmpty || mixups.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: AppCard(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                if (weak.isNotEmpty) _weakCharsBlock(c, weak, cs),
-                if (mixups.isNotEmpty) _mixupBlock(mixups),
-              ]),
-            ),
-          ),
-      ]),
-    );
+    final hasBoost = weak.isNotEmpty || mixups.isNotEmpty;
+    // Full cards while they fit, else one row + sheet (#109).
+    return LayoutBuilder(builder: (context, constraints) {
+      return SingleChildScrollView(
+        child: FitOrCompact(
+          availableHeight: constraints.maxHeight,
+          builder: (compact) => SizedBox(width: double.infinity, child: Column(children: [
+            const KeyAdapterHint(),
+            if (hasBoost)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: compact
+                    ? BoostSummaryRow(
+                        chars: [
+                          for (final ch in weak.keys)
+                            if (!_excludedBoost.contains(ch)) cs(ch),
+                        ],
+                        pairs: mixups.where((m) => !_excludedMixups.contains(m.pair)).length,
+                        onTap: () => showBoostSheet(context, cards: (refresh) => [
+                              if (weak.isNotEmpty)
+                                AppCard(child: _weakCharsBlock(c, weak, cs, onChanged: refresh)),
+                              if (mixups.isNotEmpty)
+                                AppCard(child: _mixupBlock(mixups, onChanged: refresh)),
+                            ]),
+                      )
+                    : AppCard(
+                        child: Column(mainAxisSize: MainAxisSize.min, children: [
+                          if (weak.isNotEmpty) _weakCharsBlock(c, weak, cs),
+                          if (mixups.isNotEmpty) _mixupBlock(mixups),
+                        ]),
+                      ),
+              ),
+          ])),
+        ),
+      );
+    });
   }
 
   // Running: the current word centred — the prompt (if shown), what the

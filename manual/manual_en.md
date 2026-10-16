@@ -1243,7 +1243,11 @@ appear in their own card as before.
 The **start page** of Listen (before the first block) shows the same card as
 at the end of a block, as long as everything fits on the screen. If space gets
 tight (small display, large font, many weak characters), it shrinks to just
-the title and the bar, without the character lists.
+the title and the bar, without the character lists. The weak characters and
+mix-ups then appear in **one row**
+("Practice focus: E 5 Q · 2 mix-ups"). Tapping it opens a sheet from the bottom
+with all characters and pairs to tick or leave out; **Done** closes it. The
+same applies to the Send start view.
 
 ## Trend
 

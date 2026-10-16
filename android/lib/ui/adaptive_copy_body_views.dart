@@ -16,11 +16,16 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           child: Center(
             // Full "on the way to" card when the screen has room for it,
             // compact (bar only) just when the full one would need scrolling.
-            child: _FitOrCompact(
+            child: FitOrCompact(
               availableHeight: constraints.maxHeight - 32,
               builder: (compact) => Column(mainAxisSize: MainAxisSize.min, children: [
                 _buildSpacingControl(context, scale: 1.2),
-                if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact)) ...[
+                // Tight: one row, the chips live in a sheet (#109).
+                if (compact && (_weakChars.isNotEmpty || _mixups.isNotEmpty)) ...[
+                  const SizedBox(height: 16),
+                  _buildBoostSummary(context),
+                ],
+                if (!compact && _weakChars.isNotEmpty && !_outlookHostsWeakChars(compact)) ...[
                   const SizedBox(height: 16),
                   _buildWeakCharsSection(context, scale: 1.2),
                 ],
@@ -46,20 +51,24 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       {double scale = 1,
       WrapAlignment alignment = WrapAlignment.center,
       bool showAccuracy = false,
-      bool small = false}) {
+      bool small = false,
+      VoidCallback? onChanged}) {
     final c = AppColors.of(context);
     final radius = small ? 12.0 : 20.0;
     return Wrap(spacing: small ? 6 : 8, runSpacing: small ? 6 : 8, alignment: alignment,
         children: _weakChars.entries.map((e) {
           final included = !_excludedBoostChars.contains(e.key);
           return InkWell(
-            onTap: () => _update(() {
-              if (included) {
-                _excludedBoostChars.add(e.key);
-              } else {
-                _excludedBoostChars.remove(e.key);
-              }
-            }),
+            onTap: () {
+              _update(() {
+                if (included) {
+                  _excludedBoostChars.add(e.key);
+                } else {
+                  _excludedBoostChars.remove(e.key);
+                }
+              });
+              onChanged?.call();
+            },
             borderRadius: BorderRadius.circular(radius),
             child: Container(
               padding: small
@@ -88,18 +97,20 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   // scale bumps text size for the result screen ("der komplette text beim
   // resultat screen könnte ruhig größer sein") without also growing this
   // section where it's reused on the idle screen.
-  Widget _buildWeakCharsSection(BuildContext context, {double scale = 1}) {
+  Widget _buildWeakCharsSection(BuildContext context,
+      {double scale = 1, VoidCallback? onChanged}) {
     final c = AppColors.of(context);
     return SizedBox(width: double.infinity, child: AppCard(child: Column(mainAxisSize: MainAxisSize.min, children: [
       Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
           style: TextStyle(fontSize: 11 * scale, color: c.textMuted)),
       const SizedBox(height: 8),
-      _buildWeakChips(context, scale: scale),
+      _buildWeakChips(context, scale: scale, onChanged: onChanged),
     ])));
   }
 
   // Recurring mix-ups, tappable to leave a pair out of the boosted draw (#102).
-  Widget _buildMixupSection(BuildContext context, {double scale = 1}) {
+  Widget _buildMixupSection(BuildContext context,
+      {double scale = 1, VoidCallback? onChanged}) {
     return SizedBox(
         width: double.infinity,
         child: AppCard(
@@ -108,9 +119,28 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                 excluded: _excludedMixups,
                 outputCase: _outputCase,
                 scale: scale,
-                onToggle: (p) => _update(() {
-                      if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
-                    }))));
+                onToggle: (p) {
+                  _update(() {
+                    if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+                  });
+                  onChanged?.call();
+                })));
+  }
+
+  // Compact start view (#109): what is ticked in one row; a tap opens the sheet
+  // with the full chips of both cards.
+  Widget _buildBoostSummary(BuildContext context) {
+    return BoostSummaryRow(
+      chars: [
+        for (final ch in _weakChars.keys)
+          if (!_excludedBoostChars.contains(ch)) _displayChar(ch),
+      ],
+      pairs: _mixups.where((m) => !_excludedMixups.contains(m.pair)).length,
+      onTap: () => showBoostSheet(context, cards: (refresh) => [
+            if (_weakChars.isNotEmpty) _buildWeakCharsSection(context, onChanged: refresh),
+            if (_mixups.isNotEmpty) _buildMixupSection(context, onChanged: refresh),
+          ]),
+    );
   }
 
   // Manual spacing control, requested to be visible at every summary and at
@@ -765,39 +795,5 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       ));
     }
     return rows;
-  }
-}
-
-// Shows builder(false) while it fits into [availableHeight], else
-// builder(true). The full variant is laid out offstage to measure it, so the
-// choice adapts to font scale, orientation and content without a guess.
-class _FitOrCompact extends StatefulWidget {
-  final double availableHeight;
-  final Widget Function(bool compact) builder;
-  const _FitOrCompact({required this.availableHeight, required this.builder});
-
-  @override
-  State<_FitOrCompact> createState() => _FitOrCompactState();
-}
-
-class _FitOrCompactState extends State<_FitOrCompact> {
-  final _fullKey = GlobalKey();
-  bool _compact = false;
-
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final h = _fullKey.currentContext?.size?.height;
-      if (!mounted || h == null) return;
-      final compact = h > widget.availableHeight;
-      if (compact != _compact) setState(() => _compact = compact);
-    });
-    return Stack(children: [
-      Positioned(
-        left: 0, right: 0, top: 0,
-        child: Offstage(child: KeyedSubtree(key: _fullKey, child: widget.builder(false))),
-      ),
-      widget.builder(_compact),
-    ]);
   }
 }

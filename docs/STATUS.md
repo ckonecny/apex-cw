@@ -33,6 +33,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - New shot (DE+EN): the "Trends" tab of the character statistics, e.g. `hear_trends.png`, `echo_trends.png` (#101); the segmented button above all statistics shots now has three segments (`hear_stats.png`, `echo_stats.png`, `hear_progress*.png`, `echo_progress.png`).
 - `hear_start.png`, `hear_result.png`, `echo_result*.png` (DE+EN): a card "Recurring mix-ups: practice these?" appears next to the weak characters once pairs recur (#102).
 - `echo_start.png` (DE+EN): with Koch · Random, the start view now shows the weak characters and mix-up pairs card (#107).
+- New shots (DE+EN), e.g. `hear_start_compact.png`, `hear_boost_sheet.png`: the compact row and its sheet when space is tight (#109).
 
 ## v1.7.1 (maintenance release, in progress)
 `main` holds everything (version 1.7.1+8): fidelity audit fixes, review-gate fixes, updated libraries (Dependabot round of 2026-10-12 merged incl. `audio_session` 0.2.4, Gradle 9.8.1, AGP 9.4.1). Tried on the test phone: audio, keyer, settings, links, microphone decoder. **Next**: `v1.7.1-beta1` as GitHub pre-release for Sia (notes: `docs/release-notes-v1.7.1.md`), then the release itself (`tools/build_release.sh v1.7.1`, tag, APK + AAB; the manual PDF stays at v1.7.0, only text changed). Recurring checks and alerts: `docs/PROJECT.md` "Recurring maintenance". Engine config per screen: `android/test/engine_config_test.dart` (DECISIONS); a shared config helper instead of per-screen copies is issue #18.
@@ -48,6 +49,9 @@ Written without Flutter. To do: `flutter analyze`, `flutter test` (new `mixup_su
 
 ## #107 Send start view (branch `claude/send-start-weak-107`, built on #102, not built or tested)
 Written without Flutter. To do: `flutter analyze`, `flutter test`, then on the phone: Send · Koch · Random with some weak characters shows the card on the start view; START boosts the first block with what is ticked; words/callsigns show no card.
+
+## #109 Compact boost row (branch `claude/boost-compact-109`, built on #107, not built or tested)
+Written without Flutter. To do: `flutter analyze`, `flutter test` (overflow entries `boost_summary_row`, `boost_sheet_body`), then on the phone: Listen · Koch with a large system font (or small display) shows one row "Practice focus …" instead of the cards; tap opens the sheet, toggling chips updates the row; with enough room the cards stay inline as before. Same on the Send start view.
 
 ## Release note to include (next release)
 Letter and word gaps were one dit too short in all earlier versions (now 3/7 dits at the default spacing), so everything sounds slightly slower. Keyer modes, audio stream locking and the microphone decoder were fixed too (DECISIONS "Keyer audit" etc.). Native tests: `./gradlew :app:testDebugUnitTest` in `android/android` and `tools/run_native_cpp_tests.sh` (CI job `native-test`); locally Gradle needs `JAVA_HOME` of Android Studio's JBR.

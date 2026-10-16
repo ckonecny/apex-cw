@@ -2107,3 +2107,17 @@ as the result page); START boosts the first block with what stays ticked
 (Send's weight ×2 is per block); the next block comes from the result page as
 before. The ticks (`_excludedBoost`, `_excludedMixups`) are shared by both
 views and cleared after each block.
+
+## Start views: compact row + sheet when space is tight (2026-10-16, #109)
+The weak-character and mix-up cards of Listen's and Send's start views stay
+inline while they fit; otherwise one row ("Practice focus: E 5 Q · 2 mix-ups")
+opens a scrollable bottom sheet with the same tappable chips (`boost_summary.dart`).
+"Fits" is measured, not guessed: `FitOrCompact` (moved from the Listen views to
+`widgets/fit_or_compact.dart`) lays the full variant out offstage and compares
+its height with the space available, so font scale and orientation are covered.
+The ticks are the same state as before (`_excludedBoostChars`, `_excludedBoost`,
+`_excludedMixups`); the sheet only rebuilds itself after a toggle. Result pages
+scroll anyway and are unchanged. Considered and rejected: a collapsible card
+(opens into the same lack of space) and a card with its own scroll area
+(scroll within scroll).
+

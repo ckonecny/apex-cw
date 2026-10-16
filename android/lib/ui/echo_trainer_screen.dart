@@ -29,6 +29,8 @@ import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/mixup_boost_chips.dart';
+import 'widgets/boost_summary.dart';
+import 'widgets/fit_or_compact.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
@@ -668,7 +670,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   // Tappable weak characters (leave one out of the boost / take it back in),
   // shared by the result page and the start view.
-  Widget _weakCharsBlock(AppColors c, Map<String, double> weak, String Function(String) cs) =>
+  Widget _weakCharsBlock(AppColors c, Map<String, double> weak, String Function(String) cs,
+          {VoidCallback? onChanged}) =>
       Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Column(children: [
@@ -678,9 +681,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
             for (final e in weak.entries)
               InkWell(
-                onTap: () => setState(() {
-                  if (!_excludedBoost.remove(e.key)) _excludedBoost.add(e.key);
-                }),
+                onTap: () {
+                  setState(() {
+                    if (!_excludedBoost.remove(e.key)) _excludedBoost.add(e.key);
+                  });
+                  onChanged?.call();
+                },
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -699,15 +705,18 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         ]),
       );
 
-  Widget _mixupBlock(List<MixupTrend> mixups) => Padding(
+  Widget _mixupBlock(List<MixupTrend> mixups, {VoidCallback? onChanged}) => Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: MixupBoostChips(
           pairs: mixups,
           excluded: _excludedMixups,
           outputCase: _outputCase,
-          onToggle: (p) => setState(() {
-            if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
-          }),
+          onToggle: (p) {
+            setState(() {
+              if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+            });
+            onChanged?.call();
+          },
         ),
       );
 
