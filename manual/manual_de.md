@@ -1217,16 +1217,16 @@ mehrere Blöcke und Sitzungen.
   oder Alle Zeichen · Zufall), nicht für Wörter. Hast du im Übungsset
   eigene Zeichen und **Übungsset bevorzugen** eingestellt, kommen diese dazu; es gilt
   dann die höhere Stufe (Stark also für alle, wenn du Stark gewählt hast).
-- **Geben:** Die schwachen Zeichen erscheinen auf der Ergebnisseite, wenn du
-  **Koch-Lektion · Zufall** übst. Mit **Nächster Block** kommen die
-  angehakten Zeichen im nächsten Block doppelt so oft. Die Verstärkung gilt
-  genau einen Block.
+- **Geben:** Die schwachen Zeichen erscheinen auf der Startansicht und auf der
+  Ergebnisseite, wenn du **Koch-Lektion · Zufall** übst. Mit **Start** bzw.
+  **Nächster Block** kommen die angehakten Zeichen im folgenden Block doppelt so
+  oft. Die Verstärkung gilt genau einen Block; danach wird neu berechnet.
 
 ### Häufige Verwechslungen üben
 
 Zusätzlich zu den schwachen Zeichen schlägt die App Verwechslungen vor, die sich
 häufen (z. B. K → R). Die Vorschläge stehen am selben Ort wie die schwachen
-Zeichen (Hören: Startansicht und Ergebnisseite, Geben: Ergebnisseite) und gelten nur,
+Zeichen (jeweils Startansicht und Ergebnisseite) und gelten nur,
 wo auch die Verstärkung wirkt (Zufallsgruppen). Es sind höchstens drei Paare.
 Ein Paar wird vorgeschlagen, wenn
 

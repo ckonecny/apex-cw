@@ -2097,3 +2097,13 @@ silently, but they are now offered as a proposal next to the weak characters.
   groups); Listen counts typing-mode blocks only (no mix-ups in paper mode).
 - Tapping a pair leaves it out (struck through), as for weak characters; the
   choice is per result page and not stored.
+
+## Send: proposals on the start view too (2026-10-16, #107)
+Weak characters and mix-up pairs now also show on Send's start view (Koch ·
+Random only), as in Listen. They are computed in the build from the stats
+already in memory (`_startWeakChars`, `_startMixups`, same rules and thresholds
+as the result page); START boosts the first block with what stays ticked
+(`_startFromIdle` → `_chosenBoost`). The boost still lasts exactly one block
+(Send's weight ×2 is per block); the next block comes from the result page as
+before. The ticks (`_excludedBoost`, `_excludedMixups`) are shared by both
+views and cleared after each block.

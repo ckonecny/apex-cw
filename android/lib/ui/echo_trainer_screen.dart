@@ -110,6 +110,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _callRegionOpt   = 0;
   bool _callCommonOnly  = true;
   int  _outputCase      = 0;   // 0=lower, 1=UPPER — display only
+  double _highThreshold = 0.9; // upper success threshold: what counts as a weak character
   // "Random"/"Zufall" and "Adapt. Rand." echo a GROUP of characters, not a
   // single one — matches fetchNewWord()'s RANDOMS/KOCH_ADAPTIVE cases in
   // m32_v6.ino, both getRandomChars(posRandomLength, ...): the same shared
@@ -310,6 +311,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _callRegionOpt   = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
       _outputCase      = (p.getInt('outputCase') ?? 0).clamp(0, 1);
+      _highThreshold   = (p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99) / 100;
       _groupLength     = pf.getInt('groupLength')    ?? 5;
       _groupLengthMax  = (pf.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMin   = (pf.getInt('wordLengthMin') ?? 0).clamp(0, 8);
@@ -376,6 +378,38 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (pair != null) _blockPairs.add(pair);
     final p = await SharedPreferences.getInstance();
     await _charStats.save(p);
+  }
+
+  // Char-based content only: weak characters and mix-up pairs need a char set
+  // (Koch lesson · Random, where the boost works).
+  bool get _boostApplies => _koch && _choice.content == ContentKind.random;
+
+  // The proposals of the start view (#107), same rules as the result page:
+  // weak characters from the lifetime EMA, recurring mix-up pairs from the log.
+  Map<String, double> _startWeakChars() => !_boostApplies
+      ? const {}
+      : weakCharsLifetime(_charStats, kochActiveChars(_kochLevel, _activeKochChars),
+          threshold: weakCharErrorThreshold(_echoEngine?.thresholds.highThreshold ?? _highThreshold));
+
+  List<MixupTrend> _startMixups() => !_boostApplies
+      ? const []
+      : suggestedMixups(_charStats.days, DateTime.now(),
+          candidates: kochActiveChars(_kochLevel, _activeKochChars));
+
+  // Weak characters plus both characters of the mix-up pairs still ticked;
+  // one set, so a character in both is not boosted any harder.
+  List<String> _chosenBoost(Iterable<String> weak, Iterable<MixupTrend> mixups) => {
+        ...weak.where((ch) => !_excludedBoost.contains(ch)),
+        ...mixupBoostChars(mixups.where((t) => !_excludedMixups.contains(t.pair)),
+            kochActiveChars(_kochLevel, _activeKochChars)),
+      }.toList();
+
+  // START on the idle view: the ticked proposals boost this first block (the
+  // result page's "next block" sets its own boost in _applyAccepted).
+  Future<void> _startFromIdle() async {
+    if (_state != _State.idle) return;
+    _boostChars = _chosenBoost(_startWeakChars().keys, _startMixups());
+    await _startSession();
   }
 
   // Block end: feed the first-try results to the adaptive engine and keep
@@ -478,13 +512,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _savePrefs();
     // Weak characters plus both characters of the mix-up pairs still ticked;
     // one set, so a character in both is not boosted any harder.
-    _boostChars = boost
-        ? {
-            ...s.weakChars.keys.where((ch) => !_excludedBoost.contains(ch)),
-            ...mixupBoostChars(_mixups.where((t) => !_excludedMixups.contains(t.pair)),
-                kochActiveChars(_kochLevel, _activeKochChars)),
-          }.toList()
-        : [];
+    _boostChars = boost ? _chosenBoost(s.weakChars.keys, _mixups) : [];
     _suggestions = null;
     _pendWpm = _pendAnswer = _pendIC = _pendIW = null;
   }
@@ -632,15 +660,23 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             style: TextStyle(fontSize: 11, color: c.textMuted)),
       ));
     }
-    if (s.weakChars.isNotEmpty) {
-      rows.add(Padding(
+    if (s.weakChars.isNotEmpty) rows.add(_weakCharsBlock(c, s.weakChars, cs));
+    if (_mixups.isNotEmpty) rows.add(_mixupBlock(_mixups));
+    if (rows.isNotEmpty) rows.add(const Divider());
+    return rows;
+  }
+
+  // Tappable weak characters (leave one out of the boost / take it back in),
+  // shared by the result page and the start view.
+  Widget _weakCharsBlock(AppColors c, Map<String, double> weak, String Function(String) cs) =>
+      Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Column(children: [
           Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
               style: TextStyle(fontSize: 11, color: c.textMuted)),
           const SizedBox(height: 6),
           Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
-            for (final e in s.weakChars.entries)
+            for (final e in weak.entries)
               InkWell(
                 onTap: () => setState(() {
                   if (!_excludedBoost.remove(e.key)) _excludedBoost.add(e.key);
@@ -661,24 +697,19 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               ),
           ]),
         ]),
-      ));
-    }
-    if (_mixups.isNotEmpty) {
-      rows.add(Padding(
+      );
+
+  Widget _mixupBlock(List<MixupTrend> mixups) => Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: MixupBoostChips(
-          pairs: _mixups,
+          pairs: mixups,
           excluded: _excludedMixups,
           outputCase: _outputCase,
           onToggle: (p) => setState(() {
             if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
           }),
         ),
-      ));
-    }
-    if (rows.isNotEmpty) rows.add(const Divider());
-    return rows;
-  }
+      );
 
   @override
   void dispose() {
@@ -1179,7 +1210,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                     ? Strings.t('start').toUpperCase()
                     : Strings.t('stop').toUpperCase(),
                 color: (_state != _State.idle) ? c.warning : c.accent,
-                onTap: (_state == _State.idle) ? _startSession : _stopSession,
+                onTap: (_state == _State.idle) ? _startFromIdle : _stopSession,
               ),
             ),
           ),

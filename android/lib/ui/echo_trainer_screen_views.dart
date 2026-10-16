@@ -147,8 +147,28 @@ extension _EchoViews on _EchoTrainerScreenState {
   // Idle: nothing but empty space, like the Hören start view; the tempo is
   // on the sliders below.
   // Empty start area; carries the one-time tip about a real Morse key (#58).
-  Widget _buildIdle(AppColors c) =>
-      const SingleChildScrollView(child: KeyAdapterHint());
+  // Below it the weak characters and recurring mix-ups of Koch · Random, tappable
+  // like on the result page; what stays ticked boosts the first block (#107).
+  Widget _buildIdle(AppColors c) {
+    String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
+    final weak = _startWeakChars();
+    final mixups = _startMixups();
+    return SingleChildScrollView(
+      child: Column(children: [
+        const KeyAdapterHint(),
+        if (weak.isNotEmpty || mixups.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: AppCard(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                if (weak.isNotEmpty) _weakCharsBlock(c, weak, cs),
+                if (mixups.isNotEmpty) _mixupBlock(mixups),
+              ]),
+            ),
+          ),
+      ]),
+    );
+  }
 
   // Running: the current word centred — the prompt (if shown), what the
   // operator keyed so far, and the verdict. Same one-thing-at-a-time layout
