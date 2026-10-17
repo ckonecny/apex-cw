@@ -18,13 +18,13 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
           // The card is judged against the room left above the tempo block, so
           // the two never need scrolling when the compact card would fit.
-          child: _FitOrCompact(
+          child: FitOrCompact(
             availableHeight: constraints.maxHeight - 32,
             below: widget.controls,
             builder: (compact) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
+                if (!compact && _weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
                   _buildWeakCharsSection(context, scale: 1.2),
                 if (_mixups.isNotEmpty && !compact) ...[
                   if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
@@ -32,9 +32,15 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                   _buildMixupSection(context, scale: 1.2),
                 ],
                 if (_buildUnlockOutlook(context, compact: compact) case final outlook?) ...[
-                  if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
+                  if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact) && !compact)
                     const SizedBox(height: 12),
                   outlook,
+                ],
+                // Tight: one row below the bar (in the full card the weak
+                // characters sit at its bottom too), chips in a sheet (#109).
+                if (compact && (_weakChars.isNotEmpty || _mixups.isNotEmpty)) ...[
+                  if (_outlookAvailable) const SizedBox(height: 12),
+                  _buildBoostSummary(context),
                 ],
               ]),
             ),
@@ -50,20 +56,24 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       {double scale = 1,
       WrapAlignment alignment = WrapAlignment.center,
       bool showAccuracy = false,
-      bool small = false}) {
+      bool small = false,
+      VoidCallback? onChanged}) {
     final c = AppColors.of(context);
     final radius = small ? 12.0 : 20.0;
     return Wrap(spacing: small ? 6 : 8, runSpacing: small ? 6 : 8, alignment: alignment,
         children: _weakChars.entries.map((e) {
           final included = !_excludedBoostChars.contains(e.key);
           return InkWell(
-            onTap: () => _update(() {
-              if (included) {
-                _excludedBoostChars.add(e.key);
-              } else {
-                _excludedBoostChars.remove(e.key);
-              }
-            }),
+            onTap: () {
+              _update(() {
+                if (included) {
+                  _excludedBoostChars.add(e.key);
+                } else {
+                  _excludedBoostChars.remove(e.key);
+                }
+              });
+              onChanged?.call();
+            },
             borderRadius: BorderRadius.circular(radius),
             child: Container(
               padding: small
@@ -92,18 +102,20 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   // scale bumps text size for the result screen ("der komplette text beim
   // resultat screen könnte ruhig größer sein") without also growing this
   // section where it's reused on the idle screen.
-  Widget _buildWeakCharsSection(BuildContext context, {double scale = 1}) {
+  Widget _buildWeakCharsSection(BuildContext context,
+      {double scale = 1, VoidCallback? onChanged}) {
     final c = AppColors.of(context);
     return SizedBox(width: double.infinity, child: AppCard(child: Column(mainAxisSize: MainAxisSize.min, children: [
       Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
           style: TextStyle(fontSize: 11 * scale, color: c.textMuted)),
       const SizedBox(height: 8),
-      _buildWeakChips(context, scale: scale),
+      _buildWeakChips(context, scale: scale, onChanged: onChanged),
     ])));
   }
 
   // Recurring mix-ups, tappable to leave a pair out of the boosted draw (#102).
-  Widget _buildMixupSection(BuildContext context, {double scale = 1}) {
+  Widget _buildMixupSection(BuildContext context,
+      {double scale = 1, VoidCallback? onChanged}) {
     return SizedBox(
         width: double.infinity,
         child: AppCard(
@@ -112,9 +124,28 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                 excluded: _excludedMixups,
                 outputCase: _outputCase,
                 scale: scale,
-                onToggle: (p) => _update(() {
-                      if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
-                    }))));
+                onToggle: (p) {
+                  _update(() {
+                    if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+                  });
+                  onChanged?.call();
+                })));
+  }
+
+  // Compact start view (#109): what is ticked in one row; a tap opens the sheet
+  // with the full chips of both cards.
+  Widget _buildBoostSummary(BuildContext context) {
+    return BoostSummaryRow(
+      chars: [
+        for (final ch in _weakChars.keys)
+          if (!_excludedBoostChars.contains(ch)) _displayChar(ch),
+      ],
+      pairs: _mixups.where((m) => !_excludedMixups.contains(m.pair)).length,
+      onTap: () => showBoostSheet(context, cards: (refresh) => [
+            if (_weakChars.isNotEmpty) _buildWeakCharsSection(context, onChanged: refresh),
+            if (_mixups.isNotEmpty) _buildMixupSection(context, onChanged: refresh),
+          ]),
+    );
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -734,51 +765,5 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       ));
     }
     return rows;
-  }
-}
-
-// Shows builder(false) while it fits into [availableHeight], else
-// builder(true). The full variant is laid out offstage to measure it, so the
-// choice adapts to font scale, orientation and content without a guess.
-class _FitOrCompact extends StatefulWidget {
-  final double availableHeight;
-  final Widget? below; // the tempo block under the card, always full size
-  final Widget Function(bool compact) builder;
-  const _FitOrCompact({required this.availableHeight, required this.builder, this.below});
-
-  @override
-  State<_FitOrCompact> createState() => _FitOrCompactState();
-}
-
-class _FitOrCompactState extends State<_FitOrCompact> {
-  final _fullKey = GlobalKey();
-  final _belowKey = GlobalKey();
-  bool _compact = false;
-
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final h = _fullKey.currentContext?.size?.height;
-      final below = _belowKey.currentContext?.size?.height ?? 0;
-      if (!mounted || h == null) return;
-      final compact = h + below + 12 > widget.availableHeight;
-      if (compact != _compact) setState(() => _compact = compact);
-    });
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Center(
-          child: Stack(children: [
-            Positioned(
-              left: 0, right: 0, top: 0,
-              child: Offstage(child: KeyedSubtree(key: _fullKey, child: widget.builder(false))),
-            ),
-            widget.builder(_compact),
-          ]),
-        ),
-        if (widget.below != null) KeyedSubtree(key: _belowKey, child: widget.below!),
-      ],
-    );
   }
 }

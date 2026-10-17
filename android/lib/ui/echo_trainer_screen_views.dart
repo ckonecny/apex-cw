@@ -133,28 +133,46 @@ extension _EchoViews on _EchoTrainerScreenState {
   // the Start button when there is room) and scrolls on small phones instead
   // of overflowing.
   Widget _buildIdle(AppColors c) {
-    final cards = _proposalCards(c, _startWeakChars(), _startMixups());
+    String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
+    final weak = _startWeakChars();
+    final mixups = _startMixups();
+    // Full cards while they fit above the tempo card, else one row + sheet (#109).
     return LayoutBuilder(
       builder: (context, box) => SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: box.maxHeight),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Column(children: [
-                const KeyAdapterHint(),
-                if (cards.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                    child: Column(children: cards),
-                  ),
-              ]),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: _controlsCard(),
-              ),
-            ],
+          child: FitOrCompact(
+            availableHeight: box.maxHeight,
+            below: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: _controlsCard(),
+            ),
+            builder: (compact) => Column(children: [
+              const KeyAdapterHint(),
+              if (weak.isNotEmpty || mixups.isNotEmpty || (_boostApplies && _koch))
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                  child: compact
+                      ? Column(children: [
+                          // Like Listen: the "On the way to" bar first, the row below it.
+                          ..._proposalCards(c, weak, mixups, compactOutlook: true),
+                          if (weak.isNotEmpty || mixups.isNotEmpty) ...[
+                            if (_boostApplies && _koch) const SizedBox(height: 12),
+                            BoostSummaryRow(
+                              chars: [
+                                for (final ch in weak.keys)
+                                  if (!_excludedBoost.contains(ch)) cs(ch),
+                              ],
+                              pairs: mixups.where((m) => !_excludedMixups.contains(m.pair)).length,
+                              onTap: () => showBoostSheet(context,
+                                  cards: (refresh) => _proposalCards(c, weak, mixups,
+                                      includeOutlook: false, onChanged: refresh)),
+                            ),
+                          ],
+                        ])
+                      : Column(children: _proposalCards(c, weak, mixups)),
+                ),
+            ]),
           ),
         ),
       ),

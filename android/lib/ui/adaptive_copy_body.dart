@@ -29,6 +29,8 @@ import 'widgets/mistake_lesson.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/mixup_boost_chips.dart';
+import 'widgets/boost_summary.dart';
+import 'widgets/fit_or_compact.dart';
 import '../util/char_color.dart';
 import '../util/interference_profile.dart';
 import '../l10n/strings.dart';

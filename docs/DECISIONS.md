@@ -2212,3 +2212,17 @@ Also with "all characters" · Random (candidates = characters seen so far, as in
 Listen); the "On the way to" card stays Koch-only.
 Running view (user, 2026-10-17): Send's block view follows Listen's typing view — header with content/Koch lesson, one dot per word (green first try, amber after repeat, red failed, ring = current), "Group n / t · WPM", one status pill (attempt, listening, sending, right, wrong), the word in letter-spaced mono with a coloured line. The old stats bar and status line are gone (the dots carry the result; the result page has the numbers).
 Result page (user, 2026-10-17): Send's block summary follows Listen's — percentage, "x of y correct", trend, proposal cards, suggestions, tempo card, buttons. The breakdown (right/after repeat/wrong), the mix-up line of the block and the word list with the first attempts are gone; the mix-ups still go to the statistics and the character detail.
+
+## Start views: compact row + sheet when space is tight (2026-10-16, #109)
+The weak-character and mix-up cards of Listen's and Send's start views stay
+inline while they fit; otherwise one row ("Practice focus: E 5 Q · 2 mix-ups")
+opens a scrollable bottom sheet with the same tappable chips (`boost_summary.dart`).
+"Fits" is measured, not guessed: `FitOrCompact` (moved from the Listen views to
+`widgets/fit_or_compact.dart`) lays the full variant out offstage and compares
+its height with the space available, so font scale and orientation are covered.
+The ticks are the same state as before (`_excludedBoostChars`, `_excludedBoost`,
+`_excludedMixups`); the sheet only rebuilds itself after a toggle. Result pages
+scroll anyway and are unchanged. Considered and rejected: a collapsible card
+(opens into the same lack of space) and a card with its own scroll area
+(scroll within scroll).
+Both now measure the tempo block below the cards too (`FitOrCompact(below: …)`), so the cards go compact as soon as cards + tempo block would not fit; in the sheet the Send cards are the same weak-character/mix-up cards (the "On the way to" card is not part of the compact variant).

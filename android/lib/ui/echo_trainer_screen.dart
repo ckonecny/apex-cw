@@ -30,6 +30,8 @@ import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/mixup_boost_chips.dart';
+import 'widgets/boost_summary.dart';
+import 'widgets/fit_or_compact.dart';
 import 'widgets/unlock_outlook_card.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
@@ -683,19 +685,22 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // way to" card, which then hosts the weak characters itself. Shared by the
   // start view and the result page (#107).
   List<Widget> _proposalCards(AppColors c, Map<String, double> weak, List<MixupTrend> mixups,
-      {bool unlockNow = false}) {
+      {bool unlockNow = false, bool includeOutlook = true, bool compactOutlook = false, VoidCallback? onChanged}) {
     String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
-    void toggle(String ch) => setState(() {
-          if (!_excludedBoost.remove(ch)) _excludedBoost.add(ch);
-        });
-    final outlook = _boostApplies && _koch && !unlockNow && _kochLevel < _activeKochChars.length;
-    final hosted = outlook && weak.isNotEmpty;
+    void toggle(String ch) {
+      setState(() {
+        if (!_excludedBoost.remove(ch)) _excludedBoost.add(ch);
+      });
+      onChanged?.call();
+    }
+    final outlook = includeOutlook && _boostApplies && _koch && !unlockNow && _kochLevel < _activeKochChars.length;
+    final hosted = outlook && weak.isNotEmpty && !compactOutlook;
     final cards = <Widget>[
-      if (weak.isNotEmpty && !hosted)
+      if (weak.isNotEmpty && !hosted && !compactOutlook)
         WeakCharsCard(
             chips: WeakCharChips(
                 weak: weak, excluded: _excludedBoost, display: cs, onToggle: toggle, scale: 1.2)),
-      if (mixups.isNotEmpty)
+      if (mixups.isNotEmpty && !compactOutlook)
         SizedBox(
             width: double.infinity,
             child: AppCard(
@@ -704,9 +709,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                     excluded: _excludedMixups,
                     outputCase: _outputCase,
                     scale: 1.2,
-                    onToggle: (p) => setState(() {
-                          if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
-                        })))),
+                    onToggle: (p) {
+                      setState(() {
+                        if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+                      });
+                      onChanged?.call();
+                    }))),
       if (outlook)
         UnlockOutlookCard(
             next: cs(_activeKochChars[_kochLevel]),
@@ -717,7 +725,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             display: cs,
             weak: weak,
             excluded: _excludedBoost,
-            onToggle: toggle),
+            onToggle: toggle,
+            compact: compactOutlook),
     ];
     return [
       for (var i = 0; i < cards.length; i++) ...[

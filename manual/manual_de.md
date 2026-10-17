@@ -1312,7 +1312,11 @@ schwachen Zeichen wie bisher in einer eigenen Karte.
 Auf der **Startseite** von Hören (vor dem ersten Block) zeigt die Karte
 dasselbe wie am Blockende, solange alles auf den Bildschirm passt. Wird der
 Platz knapp (kleines Display, große Schrift, viele schwache Zeichen), schrumpft
-sie auf Titel und Balken, ohne die Zeichenlisten.
+sie auf Titel und Balken, ohne die Zeichenlisten. Die schwachen Zeichen und
+Verwechslungen stehen dann in **einer Zeile**
+(„Gezielt üben: E 5 Q · 2 Verwechslungen“). Ein Tipp darauf öffnet ein Fenster
+von unten mit allen Zeichen und Paaren zum An- und Abwählen; **Fertig** schließt es.
+Dasselbe gilt für die Startansicht von Geben.
 
 ## Trend
 

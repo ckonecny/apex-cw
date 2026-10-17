@@ -28,6 +28,7 @@ import 'package:next_cw_trainer/content/char_stats.dart';
 import 'package:next_cw_trainer/ui/widgets/decoder_chars_setting.dart';
 import 'package:next_cw_trainer/content/mixup_suggest.dart';
 import 'package:next_cw_trainer/ui/widgets/mixup_boost_chips.dart';
+import 'package:next_cw_trainer/ui/widgets/boost_summary.dart';
 import 'package:next_cw_trainer/ui/widgets/mixup_trend_view.dart';
 import 'package:next_cw_trainer/ui/widgets/mistake_lesson.dart';
 import 'package:next_cw_trainer/ui/widgets/paddle_widgets.dart';
@@ -141,6 +142,23 @@ void main() {
                   excluded: {if (pairs.isNotEmpty) pairs.first.pair},
                   outputCase: 1,
                   onToggle: (_) {})));
+    },
+    // Compact row and sheet body of the start views (#109), with a long list.
+    'boost_summary_row': () => Scaffold(
+        body: Padding(
+            padding: const EdgeInsets.all(16),
+            child: BoostSummaryRow(
+                chars: const ['K', 'M', 'R', 'S', 'U', 'A', 'P', 'T', 'L', 'N'],
+                pairs: 3,
+                onTap: () {}))),
+    'boost_sheet_body': () {
+      final pairs = suggestedMixups(_mixupDays(), DateTime.now(), maxPairs: 6, minRate: 0.0);
+      return Scaffold(
+          body: BoostSheetBody(onDone: () {}, cards: [
+        MixupBoostChips(pairs: pairs, excluded: const {}, outputCase: 1, onToggle: (_) {}),
+        MixupBoostChips(pairs: pairs, excluded: const {}, outputCase: 0, onToggle: (_) {}),
+        MixupBoostChips(pairs: pairs, excluded: const {}, outputCase: 0, onToggle: (_) {}),
+      ]));
     },
     'mixup_trends_none': () => Scaffold(
         body: MixupTrendView(days: const {}, outputCase: 0, onChar: (_) {})),
