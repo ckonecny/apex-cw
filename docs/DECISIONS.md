@@ -1115,6 +1115,9 @@ built like the games hub (the tile widget is now the shared `HubCard` in
   lighting as in the tree (rule 2 config push, `<XX>` for prosigns, elementOn/
   Off events). Portrait only (no landscape exception needed). Tile order is
   fixed in the screen; the codes come from the table, so they cannot diverge.
+  Section "Umlauts and CH" (Ä Ö Ü CH) added so every character of the Morse
+  tree is in the chart (CH shows the tree's obsolete-note). ; ! " ' stay out:
+  not in the tree and the generator has no codes for them.
 
 ## Home: free modes grouped one level down (2026-09-29, user request)
 The home screen scrolled with its eight cards and the scroll bar was
