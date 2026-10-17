@@ -1257,7 +1257,7 @@ mehrere Blöcke und Sitzungen.
   eigene Zeichen und **Übungsset bevorzugen** eingestellt, kommen diese dazu; es gilt
   dann die höhere Stufe (Stark also für alle, wenn du Stark gewählt hast).
 - **Geben:** Die schwachen Zeichen erscheinen auf der Startansicht und auf der
-  Ergebnisseite, wenn du **Koch-Lektion · Zufall** übst. Mit **Start** bzw.
+  Ergebnisseite, wenn du **Zufall** (Koch-Lektion oder alle Zeichen) übst. Mit **Start** bzw.
   **Nächster Block** kommen die angehakten Zeichen im folgenden Block doppelt so
   oft. Die Verstärkung gilt genau einen Block; danach wird neu berechnet.
 

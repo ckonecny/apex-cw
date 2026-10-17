@@ -1223,7 +1223,7 @@ through), or to include it again.
   **Boost practice set** switched on, they are added, and the higher level applies
   (so Strong for all of them if you chose Strong).
 - **Send:** the weak characters appear on the start view and on the result page
-  when you practice **Koch lesson · Random**. With **Start** or **Next block**,
+  when you practice **Random** (Koch lesson or all characters). With **Start** or **Next block**,
   the ticked characters come up twice as often in the following block. The boost
   lasts exactly one block; after that it is recomputed.
 

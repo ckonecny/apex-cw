@@ -2193,7 +2193,7 @@ effect, not predictable for the user). Manual DE+EN updated.
   them when a block starts now.
 
 ## Send: proposals on the start view too (2026-10-16, #107)
-Weak characters and mix-up pairs now also show on Send's start view (Koch ·
+Weak characters and mix-up pairs now also show on Send's start view (Random in
 Random only), as in Listen. They are computed in the build from the stats
 already in memory (`_startWeakChars`, `_startMixups`, same rules and thresholds
 as the result page); START boosts the first block with what stays ticked
@@ -2208,3 +2208,5 @@ Look (user, 2026-10-17): Send's proposal cards look like Listen's — amber chip
 start view and the result page. Shared widgets in `widgets/unlock_outlook_card.dart`
 (`WeakCharChips`, `WeakCharsCard`, `UnlockOutlookCard`); Listen still has its own
 copies of the chips/outlook code (same rules, to be merged later).
+Also with "all characters" · Random (candidates = characters seen so far, as in
+Listen); the "On the way to" card stays Koch-only.

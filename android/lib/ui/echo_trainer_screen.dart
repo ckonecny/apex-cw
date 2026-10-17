@@ -385,19 +385,23 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   // Char-based content only: weak characters and mix-up pairs need a char set
   // (Koch lesson · Random, where the boost works).
-  bool get _boostApplies => _koch && _choice.content == ContentKind.random;
+  bool get _boostApplies => _choice.set != CharSet.practice && _choice.content == ContentKind.random;
+
+  // The characters a boosted draw can pick from: the active Koch set, or with
+  // all characters those seen so far (as in Listen).
+  List<String> get _boostCandidates =>
+      _koch ? kochActiveChars(_kochLevel, _activeKochChars) : _charStats.stats.keys.toList();
 
   // The proposals of the start view (#107), same rules as the result page:
   // weak characters from the lifetime EMA, recurring mix-up pairs from the log.
   Map<String, double> _startWeakChars() => !_boostApplies
       ? const {}
-      : weakCharsLifetime(_charStats, kochActiveChars(_kochLevel, _activeKochChars),
+      : weakCharsLifetime(_charStats, _boostCandidates,
           threshold: weakCharErrorThreshold(_echoEngine?.thresholds.highThreshold ?? _highThreshold));
 
   List<MixupTrend> _startMixups() => !_boostApplies
       ? const []
-      : suggestedMixups(_charStats.days, DateTime.now(),
-          candidates: kochActiveChars(_kochLevel, _activeKochChars));
+      : suggestedMixups(_charStats.days, DateTime.now(), candidates: _boostCandidates);
 
   // Weak characters plus both characters of the mix-up pairs still ticked;
   // one set, so a character in both is not boosted any harder.
@@ -431,7 +435,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     );
     await _charStats.load(p);
     // Char-based content only: unlock check and weak chars need a char set.
-    final charContent = _koch && _choice.content == ContentKind.random;
+    final charContent = _boostApplies;
     final s = evaluateEchoBlock(
       _echoEngine!,
       EchoSuggestionInput(
@@ -442,7 +446,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         maxInterCharSpace: max(_capInterChar, _interCharSpace),
         kochLevel: _koch ? _kochLevel : 0,
         kochTotal: _koch ? _activeKochChars.length : 0,
-        activeChars: charContent ? kochActiveChars(_kochLevel, _activeKochChars) : const [],
+        activeChars: charContent ? _boostCandidates : const [],
         stats: _charStats,
         straightKey: _keyerMode == 4,
       ),
@@ -475,8 +479,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _excludedBoost.clear();
     _excludedMixups.clear();
     _mixups = charContent
-        ? suggestedMixups(_charStats.days, DateTime.now(),
-            candidates: kochActiveChars(_kochLevel, _activeKochChars))
+        ? suggestedMixups(_charStats.days, DateTime.now(), candidates: _boostCandidates)
         : const [];
   }
 
@@ -688,7 +691,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     void toggle(String ch) => setState(() {
           if (!_excludedBoost.remove(ch)) _excludedBoost.add(ch);
         });
-    final outlook = _boostApplies && !unlockNow && _kochLevel < _activeKochChars.length;
+    final outlook = _boostApplies && _koch && !unlockNow && _kochLevel < _activeKochChars.length;
     final hosted = outlook && weak.isNotEmpty;
     final cards = <Widget>[
       if (weak.isNotEmpty && !hosted)
