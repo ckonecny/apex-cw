@@ -68,7 +68,6 @@ extension _EchoViews on _EchoTrainerScreenState {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.warning)),
           ),
-        _buildTempoControls(c),
         const SizedBox(height: 4),
         Expanded(child: PinchZoomFontSize(
           prefsKey: 'echoResultFontSize',
@@ -119,27 +118,31 @@ extension _EchoViews on _EchoTrainerScreenState {
           ),
         )),
         const SizedBox(height: 12),
-        AppButton(
-          height: 56,
-          label: Strings.t('block_next'),
-          color: c.accent,
-          onTap: () async {
-            await _applyAccepted(boost: true);
-            if (mounted) _update(() {});
-            await _startSession();
-          },
-        ),
-        const SizedBox(height: 8),
-        AppButton(
-          height: 56,
-          primary: false,
-          label: Strings.t('block_end'),
-          color: c.accent,
-          onTap: () async {
-            await _applyAccepted(boost: false);
-            if (mounted) _update(() => _showResult = false);
-          },
-        ),
+        _controlsCard(),
+        const SizedBox(height: 12),
+        Row(children: [
+          Expanded(child: AppButton(
+            height: 56,
+            primary: false,
+            label: Strings.t('block_end'),
+            color: c.accent,
+            onTap: () async {
+              await _applyAccepted(boost: false);
+              if (mounted) _update(() => _showResult = false);
+            },
+          )),
+          const SizedBox(width: 12),
+          Expanded(child: AppButton(
+            height: 56,
+            label: Strings.t('block_next'),
+            color: c.accent,
+            onTap: () async {
+              await _applyAccepted(boost: true);
+              if (mounted) _update(() {});
+              await _startSession();
+            },
+          )),
+        ]),
       ]),
     );
   }
@@ -147,8 +150,27 @@ extension _EchoViews on _EchoTrainerScreenState {
   // Idle: nothing but empty space, like the Hören start view; the tempo is
   // on the sliders below.
   // Empty start area; carries the one-time tip about a real Morse key (#58).
-  Widget _buildIdle(AppColors c) =>
-      const SingleChildScrollView(child: KeyAdapterHint());
+  // The tempo + spacing card sits at the bottom of the scrolling area (above
+  // the Start button when there is room) and scrolls on small phones instead
+  // of overflowing.
+  Widget _buildIdle(AppColors c) => LayoutBuilder(
+        builder: (context, box) => SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: box.maxHeight),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const KeyAdapterHint(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: _controlsCard(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 
   // Running: the current word centred — the prompt (if shown), what the
   // operator keyed so far, and the verdict. Same one-thing-at-a-time layout

@@ -26,6 +26,7 @@ import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart' show cwGenEvents;
 import 'widgets/interference_button.dart';
 import 'widgets/setting_rows.dart';
+import 'widgets/tempo_spacing_section.dart';
 
 part 'head_copy_views.dart';
 
