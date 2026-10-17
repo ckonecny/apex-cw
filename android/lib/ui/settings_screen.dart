@@ -12,6 +12,7 @@ import '../licenses.dart';
 import 'widgets/setting_rows.dart';
 import 'interference_settings_card.dart';
 import '../util/bluetooth_hint.dart';
+import '../util/key_adapter_state.dart';
 import '../content/break_hint.dart';
 import '../util/break_reminder.dart';
 import '../util/focus_mode.dart';
@@ -25,7 +26,8 @@ class SettingsScreen extends StatefulWidget {
   /// Opens scrolled to the "Audio output" section (used by the Bluetooth hint
   /// above the paddles, so the output can be switched right there).
   final bool scrollToAudio;
-  const SettingsScreen({super.key, this.scrollToAudio = false});
+  final bool scrollToKeyer;
+  const SettingsScreen({super.key, this.scrollToAudio = false, this.scrollToKeyer = false});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -37,6 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   static const _toneChannel     = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
   final _scroll = ScrollController();
   final _audioKey = GlobalKey();
+  final _keyerKey = GlobalKey();
 
   // ── General ────────────────────────────────────────────────────────────────
   // Which training's profile the profile-backed fields below edit (P2 D5;
@@ -130,14 +133,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _loadOutputDeviceKinds();
     _loadAppVersion();
     _eventSub = _settingsEvents.receiveBroadcastStream().listen(_onSettingsEvent);
-    if (widget.scrollToAudio) WidgetsBinding.instance.addPostFrameCallback((_) => _revealAudio());
+    if (widget.scrollToAudio) WidgetsBinding.instance.addPostFrameCallback((_) => _reveal(_audioKey));
+    if (widget.scrollToKeyer) WidgetsBinding.instance.addPostFrameCallback((_) => _reveal(_keyerKey));
   }
 
   // The list builds its children lazily, so the section may not exist yet:
   // step down the page until its context appears, then bring it into view.
-  Future<void> _revealAudio() async {
+  Future<void> _reveal(GlobalKey key) async {
     for (var i = 0; i < 20 && mounted; i++) {
-      final ctx = _audioKey.currentContext;
+      final ctx = key.currentContext;
       if (ctx != null && ctx.mounted) {
         await Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 250));
         return;
@@ -543,7 +547,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 24),
 
           // ── Keyer ──────────────────────────────────────────────────────────
-          SettingsSectionHeader('Keyer'),
+          SettingsSectionHeader('Keyer', key: _keyerKey),
           const SizedBox(height: 12),
           SettingsCard(children: [
             SegmentRow(
@@ -564,6 +568,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ],
+            // Real key on an adapter detected (#95): the touch keys only take space.
+            const SettingsDivider(),
+            ValueListenableBuilder<bool>(
+              valueListenable: KeyAdapterState.hideEnabled,
+              builder: (context, on, _) => ToggleRow(
+                label: Strings.t('settings_hide_softkeys_adapter'),
+                value: on,
+                onChanged: KeyAdapterState.setHideEnabled,
+              ),
+            ),
             if (_keyerMode == 1) ...[
               const SettingsDivider(),
               LabeledSlider(label: Strings.t('settings_curtisb_dit'),

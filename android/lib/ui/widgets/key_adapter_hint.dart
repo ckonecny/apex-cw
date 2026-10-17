@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
+import '../../util/key_adapter_state.dart';
 
 /// One-time tip for new users in Send (#58): keying feels much better with a
 /// real Morse key on an adapter than on the touch paddles. Shown until it is
@@ -44,9 +45,14 @@ class _KeyAdapterHintState extends State<KeyAdapterHint> {
     }
   }
 
+  // Pointless once a real key is in use (#95).
   @override
-  Widget build(BuildContext context) {
-    if (!_show) return const SizedBox.shrink();
+  Widget build(BuildContext context) => ValueListenableBuilder<bool>(
+      valueListenable: KeyAdapterState.detected,
+      builder: (context, detected, _) =>
+          (!_show || detected) ? const SizedBox.shrink() : _tip(context));
+
+  Widget _tip(BuildContext context) {
     final c = AppColors.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),

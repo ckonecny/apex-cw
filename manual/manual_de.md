@@ -2639,6 +2639,20 @@ In allen Modi, in denen du tastest, erscheinen unten zwei Flächen: **DIT**
 (links) und **DAH** (rechts). Im Keyer-Modus **Straight** ist es eine einzige
 Fläche **KEY**, die so lange Ton gibt, wie du sie drückst.
 
+**Touch-Tasten ausblenden.** Wer mit einer echten Taste am Adapter tastet,
+braucht die Touch-Tasten nicht. Schalte dazu **Einstellungen → Keyer →
+Touch-Tasten ausblenden, wenn Adapter erkannt** ein. Beim
+[Anlernen der Dit-/Dah-Tasten](#dit-dah-tasten-anlernen) merkt sich die App
+auch deinen Adapter und erkennt ihn danach schon beim Einstecken. Ohne
+Anlernen am Adapter (oder bei einem früher angelernten) erkennt sie ihn, sobald
+du mit ihm das erste Mal Dit oder Dah gibst. Eine normale USB- oder
+Bluetooth-Tastatur zählt in keinem Fall. Dann verschwinden die Touch-Tasten
+in allen Modi, und an ihrer Stelle steht ein kleiner Hinweis. Mit dem **X**
+blendest du ihn aus, bis ein Adapter das nächste Mal erkannt wird; ein Tipp auf
+den Hinweis öffnet die Einstellung. Ziehst du den Adapter ab, erscheinen die
+Touch-Tasten wieder. Der Tipp „Echte Morsetaste ist besser“ erscheint dann
+nicht mehr.
+
 ## Echte Morsetaste oder Handtaste
 
 Ein Handy hat keinen Morsetasten-Eingang. Du brauchst einen kleinen USB-Adapter,
@@ -2780,6 +2794,7 @@ Diese Einstellungen gelten überall, wo du tastest.
 |---|---|---|
 | Modus | Wie der Keyer die Tasten auswertet (siehe unten) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
 | Bildschirm-Paddles vertauschen | Setzt bei den beiden Touch-Tasten **Dah** nach links und **Dit** nach rechts. Wirkt nur auf die Tasten am Bildschirm, nicht auf die Tasten eines Adapters (die bleiben, wie du sie angelernt hast, siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen)). Bei Straight nicht angezeigt | **Aus** / An |
+| Touch-Tasten ausblenden, wenn Adapter erkannt | Blendet die Touch-Tasten in allen Modi aus, sobald ein Adapter mit Dit oder Dah getastet hat; stattdessen steht ein Hinweis, der sich mit X schließen lässt (siehe [Touch-Keyer](#touch-keyer)) | **Aus** / An |
 | CurtisB Dit-Timing | Nur Iambic B: ab wie viel Prozent eines Dits ein Druck auf die andere Taste schon gespeichert wird | 0–100 % in 5er-Schritten (**75 %**) |
 | CurtisB Dah-Timing | Dasselbe für Dahs | 0–100 % in 5er-Schritten (**45 %**) |
 | Auto-Zeichenabstand | Erzwingt eine Mindestpause zwischen Zeichen, damit sie nicht zusammenlaufen. Bei Straight nicht verfügbar | **Aus** / 2 / 3 / 4 Dits |

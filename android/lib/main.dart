@@ -6,6 +6,7 @@ import 'theme/theme_controller.dart';
 import 'l10n/strings.dart';
 import 'licenses.dart';
 import 'util/bluetooth_hint.dart';
+import 'util/key_adapter_state.dart';
 import 'util/break_reminder.dart';
 import 'util/focus_mode.dart';
 import 'util/interference_profile.dart';
@@ -39,6 +40,7 @@ void main() async {
   runApp(const NextCwTrainerApp());
   ShareIntake.init();
   BluetoothHint.init();
+  KeyAdapterState.init();
   BreakReminder.init();
 }
 

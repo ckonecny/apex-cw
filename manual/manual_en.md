@@ -2552,6 +2552,18 @@ Every mode where you key shows two areas at the bottom: **DIT** (left) and
 **DAH** (right). In the **Straight** keyer mode there is a single **KEY** area
 that sounds for as long as you press it.
 
+**Hiding the touch keys.** If you key with a real key on an adapter, you don't
+need the touch keys. To hide them, switch on **Settings → Keyer → Hide touch
+keys when an adapter is detected**. When you
+[teach the dit and dah keys](#learning-the-dit-and-dah-keys), the app also
+remembers your adapter and recognises it as soon as you plug it in. Without
+teaching on the adapter (or if you taught it earlier), it detects the adapter the
+first time you send a dit or dah with it. An ordinary USB or Bluetooth keyboard
+never counts. The touch keys then disappear in all modes, and a small notice takes
+their place. The **X** closes it until an adapter is detected the next time;
+tapping the notice opens the setting. When you unplug the adapter, the touch
+keys come back. The "A real Morse key is better" tip no longer appears then.
+
 ## A real Morse key or straight key
 
 A phone has no Morse key input. You need a small USB adapter that turns the
@@ -2690,6 +2702,7 @@ These settings apply wherever you key.
 |---|---|---|
 | Mode | How the keyer reads the keys (see below) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
 | Swap on-screen paddles | Puts **dah** on the left and **dit** on the right of the two touch buttons. Affects only the on-screen buttons, not the keys of an adapter (those stay as you taught them, see [Learning the dit and dah keys](#learning-the-dit-and-dah-keys)). Not shown for Straight | **Off** / On |
+| Hide touch keys when an adapter is detected | Hides the touch keys in all modes once an adapter has sent a dit or dah; a notice takes their place and can be closed with the X (see [Touch keyer](#touch-keyer)) | **Off** / On |
 | CurtisB dit timing | Iambic B only: from what percentage of a dit a press on the other key is already stored | 0–100 % in steps of 5 (**75 %**) |
 | CurtisB dah timing | The same for dahs | 0–100 % in steps of 5 (**45 %**) |
 | Auto character spacing | Enforces a minimum pause between characters so they don't run together. Not available for Straight | **Off** / 2 / 3 / 4 dits |
