@@ -655,12 +655,6 @@ class MainActivity : FlutterActivity() {
                 // Remember the device only if both keys came from the same one.
                 adapterDescriptor = physicalDescriptor(event).takeIf { it == learnDescriptor }
                 if (adapterDescriptor != null) addKeyAdapter(event.deviceId)
-                learnStep = 2
-                sendLearnEvent("step", "2")  // "Press Dah paddle"
-                true
-            }
-            2 -> {
-                if (ch == ditChar) return true  // same key pressed twice — wait for different key
                 dahChar = ch
                 learnStep = 0
                 savePaddlePrefs()
