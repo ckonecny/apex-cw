@@ -24,9 +24,6 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             builder: (compact) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                // Tight: one row, the chips live in a sheet (#109).
-                if (compact && (_weakChars.isNotEmpty || _mixups.isNotEmpty))
-                  _buildBoostSummary(context),
                 if (!compact && _weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
                   _buildWeakCharsSection(context, scale: 1.2),
                 if (_mixups.isNotEmpty && !compact) ...[
@@ -35,9 +32,15 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                   _buildMixupSection(context, scale: 1.2),
                 ],
                 if (_buildUnlockOutlook(context, compact: compact) case final outlook?) ...[
-                  if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
+                  if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact) && !compact)
                     const SizedBox(height: 12),
                   outlook,
+                ],
+                // Tight: one row below the bar (in the full card the weak
+                // characters sit at its bottom too), chips in a sheet (#109).
+                if (compact && (_weakChars.isNotEmpty || _mixups.isNotEmpty)) ...[
+                  if (_outlookAvailable) const SizedBox(height: 12),
+                  _buildBoostSummary(context),
                 ],
               ]),
             ),

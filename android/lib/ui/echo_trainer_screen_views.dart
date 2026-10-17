@@ -154,7 +154,10 @@ extension _EchoViews on _EchoTrainerScreenState {
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                   child: compact
                       ? Column(children: [
-                          if (weak.isNotEmpty || mixups.isNotEmpty)
+                          // Like Listen: the "On the way to" bar first, the row below it.
+                          ..._proposalCards(c, weak, mixups, compactOutlook: true),
+                          if (weak.isNotEmpty || mixups.isNotEmpty) ...[
+                            if (_boostApplies && _koch) const SizedBox(height: 12),
                             BoostSummaryRow(
                               chars: [
                                 for (final ch in weak.keys)
@@ -165,9 +168,7 @@ extension _EchoViews on _EchoTrainerScreenState {
                                   cards: (refresh) => _proposalCards(c, weak, mixups,
                                       includeOutlook: false, onChanged: refresh)),
                             ),
-                          // Like Listen: the "On the way to" bar stays.
-                          if (weak.isNotEmpty || mixups.isNotEmpty) const SizedBox(height: 12),
-                          ..._proposalCards(c, weak, mixups, compactOutlook: true),
+                          ],
                         ])
                       : Column(children: _proposalCards(c, weak, mixups)),
                 ),
