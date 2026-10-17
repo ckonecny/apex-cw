@@ -57,6 +57,9 @@ To check on the phone: Send · Koch · Random with some weak characters shows th
 ## #109 Compact boost row (PR #110)
 To check on the phone: Listen · Koch with a large system font (or small display) shows one row "Practice focus …" instead of the cards; tap opens the sheet, toggling chips updates the row; with enough room the cards stay inline as before. Same on the Send start view.
 
+## Spaced goal credit (branch `claude/spread-goal-credit`)
+Spaced goal reworked: each session credits at most goal / n (DECISIONS 2026-10-13), manual DE+EN updated, tests green. Pending: check on the test phone, then merge. Screenshots of the daily-goal card/goal screen may change at the next release (ring label now shows credited minutes).
+
 ## Release note to include (next release)
 Letter and word gaps were one dit too short in all earlier versions (now 3/7 dits at the default spacing), so everything sounds slightly slower. Keyer modes, audio stream locking and the microphone decoder were fixed too (DECISIONS "Keyer audit" etc.). Native tests: `./gradlew :app:testDebugUnitTest` in `android/android` and `tools/run_native_cpp_tests.sh` (CI job `native-test`); locally Gradle needs `JAVA_HOME` of Android Studio's JBR.
 
