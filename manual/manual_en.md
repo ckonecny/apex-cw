@@ -1236,19 +1236,15 @@ characters are **merged**: a character that is weak and in two pairs is boosted
 only once, the weights do not add up. Listen and Send count separately; in Listen
 only typing-mode blocks count.
 
-### Weighting in Send
-In **Send · Koch lesson · Random** the app also draws the characters by
-weight. On the Morserino this is called "Adaptive Random". Every character has
-a weight between 1 and 20, and the higher it is, the more often the character
-comes up. After the first attempt of each word:
+### Character selection in Send
 
-- **Word fully correct:** each character of the word gets −1.
-- **Error:** the first wrong character gets +4, and its neighbours in the
-  word get +2 each (if they are different characters).
-
-Characters you get wrong come up more often quickly. They only become rarer
-again once you key them correctly several times. That isn't always pleasant,
-but it's very effective.
+In **Send · Koch lesson · Random** the characters are drawn exactly as in
+Listen (see [Koch sequence](#koch-sequence)): two draws in three come evenly from
+all active characters, every third from the last third. Weak characters you
+leave ticked in the **Weak characters** card are favoured in the next block; how
+strongly is set in the ⚙ sheet under **Boost practice set**. A mistake therefore
+does not act at once in the middle of a block but through the statistics in the
+next block, the same in Listen and Send.
 
 ## Progress card "On the way to X"
 
