@@ -43,100 +43,56 @@ extension _EchoViews on _EchoTrainerScreenState {
     ]);
   }
 
+  // Same result page as Listen's: percentage, "x of y correct", trend, the
+  // proposal cards and the suggestions; no list of the single words.
   Widget _buildBlockResult(AppColors c) {
     final first = _blockResults.where((r) => r.outcome == WordOutcome.first).length;
-    final again = _blockResults.where((r) => r.outcome == WordOutcome.afterRepeat).length;
-    final failed = _blockResults.where((r) => r.outcome == WordOutcome.failed).length;
     final total = _blockResults.length;
-    final pct = total == 0 ? 0 : first * 100 ~/ total;
-    final status = [
-      if (_koch) '${Strings.t('block_lesson')} $_kochLevel',
-      if (_trend != null)
-        Strings.t('trend_line')
-            .replaceFirst('{pct}', '${_trend!.percent}')
-            .replaceFirst('{arrow}', _trend!.arrow),
-    ].join(' · ');
+    final pct = total == 0 ? 100 : first * 100 ~/ total;
     String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
     return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        const BreakHintCard(),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text('$pct %',
-              style: TextStyle(fontFamily: 'DMSans', fontSize: 52,
-                  fontVariations: const [FontVariation('wght', 600)],
-                  color: pct >= 90 ? c.accent : pct >= 70 ? c.warning : c.danger)),
-          const SizedBox(width: 20),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('● ${Strings.t('block_right')} $first',
-                style: TextStyle(fontSize: 14, color: c.accent)),
-            Text('◐ ${Strings.t('block_after')} $again',
-                style: TextStyle(fontSize: 14, color: c.warning)),
-            Text('○ ${Strings.t('block_wrong')} $failed',
-                style: TextStyle(fontSize: 14, color: c.danger)),
-          ]),
-        ]),
-        const SizedBox(height: 6),
-        if (status.isNotEmpty)
-          Text(status, textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: c.textMuted)),
-        if (_blockPairs.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-                '${Strings.t('pairs_block')}: ${_blockPairs.map((x) => cs(x.replaceFirst('>', ' → '))).join(', ')}',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.warning)),
-          ),
-        const SizedBox(height: 4),
-        Expanded(child: PinchZoomFontSize(
-          prefsKey: 'echoResultFontSize',
-          initialSize: 20,
-          minSize: 12,
-          maxSize: 40,
-          builder: (context, fontSize) => Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: c.surface,
-              borderRadius: BorderRadius.circular(16),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+      child: Column(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            Flexible(
+              child: Text('${contentLabel(_choice.content)}${_koch ? ' · KOCH $_kochLevel' : ''}',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 12, color: c.textMuted)),
             ),
-            child: ListView(children: [
-              ..._buildSuggestionRows(c, MediaQuery.of(context).size.width - 56, cs),
-              for (final r in _blockResults)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(switch (r.outcome) {
-                      WordOutcome.first => '● ',
-                      WordOutcome.afterRepeat => '◐ ',
-                      WordOutcome.failed => '○ ',
-                    }, style: TextStyle(fontFamily: 'CwMono', fontSize: fontSize,
-                        color: switch (r.outcome) {
-                          WordOutcome.first => c.accent,
-                          WordOutcome.afterRepeat => c.warning,
-                          WordOutcome.failed => c.danger,
-                        })),
-                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(cs(r.target), style: TextStyle(fontFamily: 'CwMono',
-                          fontSize: fontSize, fontWeight: FontWeight.bold, color: c.textPrimary)),
-                      if (r.outcome != WordOutcome.first || r.firstWrongIndex >= 0)
-                        RichText(text: TextSpan(children: [
-                          for (var i = 0; i < r.firstAttempt.length; i++)
-                            TextSpan(text: cs(r.firstAttempt[i]), style: TextStyle(
-                                fontFamily: 'CwMono', fontSize: fontSize * 0.85,
-                                color: i == r.firstWrongIndex ? c.danger : c.textMuted,
-                                fontWeight: i == r.firstWrongIndex ? FontWeight.bold : FontWeight.normal)),
-                          if (r.firstWrongIndex >= r.firstAttempt.length)
-                            TextSpan(text: r.firstAttempt.isEmpty ? '–' : '_', style: TextStyle(
-                                fontFamily: 'CwMono', fontSize: fontSize * 0.85,
-                                color: c.danger, fontWeight: FontWeight.bold)),
-                        ])),
-                    ])),
-                  ]),
-                ),
+          ]),
+        ),
+        Expanded(
+          child: ScrollHint(
+            center: true,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(width: double.infinity, child: BreakHintCard()),
+              ),
+              Text('$pct %',
+                  style: TextStyle(fontFamily: 'DMSans', fontSize: 52,
+                      fontVariations: const [FontVariation('wght', 600)],
+                      color: pct >= 90 ? c.accent : pct >= 70 ? c.warning : c.danger)),
+              Text(Strings.t('ac_correct_of').replaceFirst('{c}', '$first').replaceFirst('{t}', '$total'),
+                  style: TextStyle(fontSize: 16, color: c.textMuted)),
+              if (_trend != null) ...[
+                const SizedBox(height: 10),
+                Text(Strings.t('trend_line')
+                        .replaceFirst('{pct}', '${_trend!.percent}')
+                        .replaceFirst('{arrow}', _trend!.arrow),
+                    style: TextStyle(fontSize: 13, color: c.textMuted)),
+              ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: Column(children: _buildSuggestionRows(c, MediaQuery.of(context).size.width - 40, cs)),
+              ),
             ]),
           ),
-        )),
+        ),
+        Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Column(children: [
         const SizedBox(height: 12),
         _controlsCard(),
         const SizedBox(height: 12),
@@ -163,6 +119,7 @@ extension _EchoViews on _EchoTrainerScreenState {
             },
           )),
         ]),
+        ])),
       ]),
     );
   }

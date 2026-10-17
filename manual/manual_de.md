@@ -945,16 +945,8 @@ deaktiviert und zeigt das gemessene Tempo.
 Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
 
 - **Trefferquote** – Anteil der Wörter, die beim **ersten Versuch** richtig
-  waren (Farben wie bei Hören).
-- Daneben die Aufteilung:
-  - **● richtig** – beim ersten Versuch richtig,
-  - **◐ nach Wiederholung** – erst nach einer Wiederholung richtig,
-  - **○ falsch** – auch nach allen Wiederholungen nicht geschafft.
-- Die **Statuszeile**: Lektion und der [Trend](#trend) (die Tempi stehen in
-  der Karte darunter).
-- **Verwechslungen** – welche Zeichen du in diesem Block verwechselt hast, als
-  „Soll → Gegeben“, z. B. `p → w`. Ein `–` heißt, dass an dieser Stelle nichts
-  kam.
+  waren (Farben wie bei Hören), darunter „x von y richtig“ und der
+  [Trend](#trend). Wie bei Hören gibt es keine Liste der einzelnen Wörter.
 - Die Karte **Tempo und Abstände** (unten, über den Schaltflächen): Regler
   **Geben** und **Hören** (mit dem effektiven Tempo in Klammern) sowie
   **Zeichenabstand**. Die Antwortpause steht nicht hier, sondern im ⚙-Blatt;
@@ -962,9 +954,6 @@ Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
   direkt darüber. Eine Änderung hier ersetzt den passenden Vorschlag.
 - **Vorschläge** und **Schwache Zeichen** (siehe
   [Der adaptive Modus](#der-adaptive-modus)).
-- Die Liste aller Wörter des Blocks: das Soll-Wort fett, darunter dein
-  **erster** Versuch, das erste falsche Zeichen rot hervorgehoben (ein `_`
-  heißt, dass an dieser Stelle nichts kam).
 
 **Nächster Block** (rechts) übernimmt die angehakten Vorschläge, verstärkt die
 angehakten schwachen Zeichen im nächsten Block und startet ihn. **Beenden** (links)
@@ -972,7 +961,7 @@ angehakten schwachen Zeichen im nächsten Block und startet ihn. **Beenden** (li
 Startansicht zurück.
 
 ::: {.shots}
-![Ergebnisseite: Aufteilung, Verwechslungen, schwache Zeichen, erste Versuche](img/de/echo_result.png)
+![Ergebnisseite: Trefferquote, schwache Zeichen, Vorschläge](img/de/echo_result.png)
 
 ![Ein Vorschlag (hier: Gebetempo erhöhen), angehakt](img/de/echo_result2.png)
 :::

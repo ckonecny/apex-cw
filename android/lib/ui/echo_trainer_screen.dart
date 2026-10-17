@@ -675,7 +675,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
     final cards = _proposalCards(c, s.weakChars, _mixups, unlockNow: s.unlockNext);
     if (cards.isNotEmpty) rows.insertAll(0, [...cards, const SizedBox(height: 16)]);
-    if (rows.isNotEmpty) rows.add(const Divider());
     return rows;
   }
 

@@ -919,15 +919,8 @@ disabled and shows the measured speed.
 After the last word of a block the result page appears:
 
 - **Accuracy** is the share of words correct on the **first attempt**. The
-  colours are the same as in Listen.
-- Next to it is the breakdown:
-  - **● right**: correct on the first attempt.
-  - **◐ after repeat**: correct only after a repeat.
-  - **○ wrong**: not made even after all repeats.
-- The **status line** shows the lesson and the [trend](#trend) (speeds are in
-  the card below).
-- **Mix-ups** lists which characters you confused in this block, as "target
-  → given", for example `p → w`. A `–` means nothing came at that position.
+  colours are the same as in Listen. Below it come "x of y correct" and the
+  [trend](#trend). As in Listen, there is no list of the single words.
 - The **speed and spacing** card (at the bottom, above the buttons): sliders
   **Send** and **Listen** (with the effective speed in brackets), plus
   **Character spacing**. The answer pause is not on this screen but in the ⚙
@@ -936,16 +929,13 @@ After the last word of a block the result page appears:
   suggestion.
 - **Suggestions** and **Weak characters** (see
   [Adaptive mode](#adaptive-mode)).
-- The list of all words in the block. The target word is shown in bold, with
-  your **first** attempt below it and the first wrong character highlighted
-  in red. A `_` means nothing came at that position.
 
 **Next block** (right) applies the ticked suggestions, boosts the ticked weak
 characters in the next block, and starts it. **Finish** applies the ticked
 suggestions without a boost and returns to the start view.
 
 ::: {.shots}
-![Result page: breakdown, mix-ups, weak characters, first attempts](img/en/echo_result.png)
+![Result page: accuracy, weak characters, suggestions](img/en/echo_result.png)
 
 ![A suggestion (here: raise the sending speed), ticked](img/en/echo_result2.png)
 :::
