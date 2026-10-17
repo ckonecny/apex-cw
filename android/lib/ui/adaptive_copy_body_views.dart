@@ -15,7 +15,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       return SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
           // The card is judged against the room left above the tempo block, so
           // the two never need scrolling when the compact card would fit.
           child: _FitOrCompact(
