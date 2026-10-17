@@ -226,11 +226,14 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               final newChar = v.round();
               setState(() {
                 _interCharSpace = newChar;
-                if (_interWordSpace < newChar) _interWordSpace = newChar.clamp(6, 105);
+                if (widget.profile != TrainingProfile.echo && _interWordSpace < newChar) {
+                  _interWordSpace = newChar.clamp(6, 105);
+                }
               });
               _setInt('interCharSpace', _interCharSpace);
               _setInt('interWordSpace', _interWordSpace);
             }),
+        if (widget.profile != TrainingProfile.echo) ...[
         const SettingsDivider(),
         LabeledSlider(
             label: Strings.t('settings_word_spacing'), value: _interWordSpace.toDouble(),
@@ -239,7 +242,12 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               setState(() => _interWordSpace = v.round().clamp(_interCharSpace, 105));
               _setInt('interWordSpace', _interWordSpace);
             }),
+        ],
       ]),
+      // The sheet is shared by paper and typing mode and opened before the
+      // mode is chosen, so the word gap stays editable and gets a note.
+      if (widget.profile == TrainingProfile.hear)
+        _hint(Strings.t('settings_word_spacing_hear_note')),
       const SizedBox(height: 24),
     ];
   }
@@ -555,11 +563,33 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       SettingsCard(children: [
         LabeledSlider(
             label: Strings.t('settings_think_time'), value: _echoThinkTime.toDouble(),
-            min: 1, max: 20, divisions: 19, display: '${_echoThinkTime}s',
+            min: 0, max: 20, divisions: 20, display: '${_echoThinkTime}s',
             onChanged: (v) {
               setState(() => _echoThinkTime = v.round());
               _p?.setInt('echoThinkTime', _echoThinkTime);
             }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
+          child: Text(Strings.t('settings_think_time_help'),
+              style: TextStyle(fontSize: 12, color: c.textMuted)),
+        ),
+        const SettingsDivider(),
+        // Not the word gap of the other profiles: never played, it only sets
+        // when the answer counts (DECISIONS "Answer pause"). Independent of
+        // the character spacing.
+        LabeledSlider(
+            label: Strings.t('settings_answer_pause'), value: _interWordSpace.toDouble(),
+            min: 6, max: 105, divisions: 99,
+            display: '${_dits(_interWordSpace)} · ${ditsToSeconds(_interWordSpace, _wpm)} @\u00A0$_wpm\u00A0WPM',
+            onChanged: (v) {
+              setState(() => _interWordSpace = v.round());
+              _setInt('interWordSpace', _interWordSpace);
+            }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
+          child: Text(Strings.t('settings_answer_pause_help'),
+              style: TextStyle(fontSize: 12, color: c.textMuted)),
+        ),
         const SettingsDivider(),
         LabeledSlider(
             label: Strings.t('settings_repeats'), value: _echoRepeats.toDouble(),

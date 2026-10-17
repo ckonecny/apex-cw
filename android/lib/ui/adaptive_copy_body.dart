@@ -109,6 +109,11 @@ class AdaptiveCopyBody extends StatefulWidget {
   // true while the typing keyboard is on screen — the parent hides its WPM
   // slider then, to leave room for the keys.
   final ValueChanged<bool>? onKeyboardChanged;
+  // Tempo + spacing card, shown by the body at the bottom of its scrolling
+  // start area and above its buttons on the result screen (same order
+  // everywhere: card, then buttons). Not while a block runs, on "Gesendet" or
+  // on the word marking screen.
+  final Widget? controls;
   final AdaptiveCopyController? controller;
   // Profile's practice set: the keyboard's active keys for that charset.
   final String practiceChars;
@@ -139,6 +144,7 @@ class AdaptiveCopyBody extends StatefulWidget {
     this.onSpacingChanged,
     this.onActiveChanged,
     this.onKeyboardChanged,
+    this.controls,
     this.controller,
     this.practiceChars = '',
   });
@@ -313,6 +319,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     if (old.kochLevel == widget.kochLevel &&
         old.kochLesson == widget.kochLesson &&
         old.contentModeIndex == widget.contentModeIndex &&
+        old.contentModeOrdinals[old.contentModeIndex] ==
+            widget.contentModeOrdinals[widget.contentModeIndex] &&
         listEquals(old.activeKochChars, widget.activeKochChars)) {
       return;
     }
@@ -323,10 +331,12 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // Populates _weakChars from lifetime stats right away, so the idle/start
   // screen's panel (and the boost it drives) is available from the very
   // first block, not only after _finishBlock() has run once.
-  // The native boost only works on random groups (Koch lesson or all
-  // characters); the practice-set pool and words are not boosted.
-  bool get _boostApplies =>
-      widget.kochLesson || widget.contentModeOrdinals[widget.contentModeIndex] == 0;
+  // The native boost only works on random character groups (content mode 0,
+  // in a Koch lesson or over all characters). Words, abbreviations, mixed
+  // (only a third are groups) and the practice-set pool are not boosted, so
+  // there neither the weak-characters card nor its chips are shown and the
+  // draw is never changed.
+  bool get _boostApplies => widget.contentModeOrdinals[widget.contentModeIndex] == 0;
 
   Map<String, double> _weakCharsNow() {
     if (!_boostApplies) return {};
@@ -1000,7 +1010,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // sequence characters unlocked yet) — user feedback 2026-09-22: pausing
     // reduction pressure on top of still-being-introduced-to-new-characters
     // felt like a constant nag. The manual spacing +/- control
-    // (_buildSpacingControl) is untouched by this — it's independent of the
+    // (TempoSpacingSection) is untouched by this — it's independent of the
     // engine's proposals and still lets the user tighten by hand any time.
     // Once the full sequence is unlocked, the (now hysteresis-gated, see
     // AdaptiveCopyThresholds.spacingUpConsecutiveBlocks) tighten/speed-up

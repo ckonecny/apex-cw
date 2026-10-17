@@ -20,6 +20,8 @@ class AppColors {
   final Color danger;        // red
   final Color info;          // blue
   final Color accentPurple;  // echo trainer accent
+  /// If set, menu tiles (home, hubs) use this one colour for all icons.
+  final Color? tileTint;
 
   const AppColors({
     required this.background,
@@ -39,7 +41,11 @@ class AppColors {
     required this.danger,
     required this.info,
     required this.accentPurple,
+    this.tileTint,
   });
+
+  /// Colour of a menu tile icon: the theme's single tint, else [c].
+  Color tile(Color c) => tileTint ?? c;
 
   static const dark = AppColors(
     background:    Color(0xFF111827),
@@ -168,8 +174,7 @@ class AppColors {
   );
 
   /// Navy and orange (watch-face look, dark brightness): blue-black grounds,
-  /// silver text, orange accent. Only orange and silver tones (no cyan or pink),
-  /// so menu icons stay within the theme.
+  /// silver text, orange accent. All menu tile icons are orange ([tileTint]).
   static const navyOrange = AppColors(
     background:    Color(0xFF05080F),
     surface:       Color(0xFF0D1826),
@@ -188,6 +193,7 @@ class AppColors {
     danger:        Color(0xFFE5483D),
     info:          Color(0xFFB9C6D8),
     accentPurple:  Color(0xFFF0A050),
+    tileTint:      Color(0xFFF28A2E),
   );
 
   /// True for the dark-brightness variants (amber, red, green, warm grey).

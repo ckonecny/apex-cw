@@ -121,7 +121,7 @@ themes with their own palette: Amber with warm yellows, Red (night vision) with
 muted red, which disturbs dark adaptation the least, Green like a phosphor
 terminal, Warm grey with a soft, low-contrast brown-grey, and Navy & orange
 with a blue-black ground, silver text and an orange accent (only orange and
-silver tones, like a smartwatch face). There is also a **Blue light filter**
+silver tones, like a smartwatch face; all menu icons are orange). There is also a **Blue light filter**
 you can switch on: it tints the whole app warm (in light and dark) at a
 strength you set. All of it takes effect immediately.
 
@@ -191,6 +191,15 @@ this as **eff.** (effective WPM):
 Example: 20 WPM with 28/40 dits gives 50 × 20 / (31 + 112 + 40) ≈ 5 WPM.
 The characters sound like 20 WPM, but you have as much time as at 5 WPM. With
 3/7 dits the two values are the same.
+
+When copying on the **on-screen keyboard** (Typing) the app waits for you after
+every word, so the word spacing does not matter. Then only the character
+spacing counts; the word spacing is taken at the normal 7 dits:
+
+  eff. WPM = 50 × WPM / (31 + 4 × character spacing + 7)
+
+With character spacing 3 the value equals the WPM. On the start view, where you
+have not chosen Paper or Typing yet, the display calculates as for Paper.
 
 ## The Koch method
 
@@ -289,7 +298,7 @@ Open **Listen** and set:
   will start counting dots and dashes.
 - **Spacing:** **28 / 40 dits**, the default. At 20 WPM this gives an effective
   speed of about 5 WPM (see [Effective speed](#effective-speed)). The app shows
-  it below the sliders. If that is too hard, you can widen the spacing further
+  it in brackets behind the speed, for example "20 WPM (eff. 5)". If that is too hard, you can widen the spacing further
   in the ⚙ sheet (up to 45 / 105 dits).
 - In the ⚙ sheet under **Word selection** you can set **Group length** to 3–3 if
   groups of five are too long at the start.
@@ -417,7 +426,8 @@ speed (20 WPM). That changes now, in this order:
    unlocked (or you practice with **All characters**), the app suggests shorter
    pauses after two good blocks in a row, one dit per step, down to the normal
    3 / 7 dits (see [Pauses and speed](#pauses-and-speed)). You can also do this
-   yourself: **Spacing char/word** on the start view and the result page.
+   yourself: with **Character spacing** and **Word spacing** in the card below
+   the practice area.
 2. **Only then raise the speed.** Once the pauses are at 3 / 7, the app suggests
    +1 WPM when things go well. Small steps, no jumps.
 3. **If it goes badly, it goes back.** If the block EMA falls below the lower
@@ -550,9 +560,12 @@ only offers the **Random** content.
 
 ## Speed
 
-The **WPM** slider below the practice area sets the character speed (10 to 60
-WPM). You set the pauses in the ⚙ sheet under **Spacing**, or directly on the
-start and result pages with **Spacing char/word**.
+Below the practice area is a card with **Speed** (character speed, 10 to 60
+WPM, the effective speed in brackets behind it), **Character spacing** and
+**Word spacing**. It is the same as in Sentences, Mini QSO and Q-groups. You see
+it on the start view and in the result, not while a block runs and not in
+"Sent" (nor while you mark single words). You can also set the pauses in the ⚙ sheet
+under **Spacing**.
 
 ## How a block runs
 
@@ -697,10 +710,13 @@ From top to bottom, the result page shows:
   plus "*x* of *y* correct". It is green from 90 %, yellow from 70 % and red
   below that.
 - The **trend** line, from the sixth block on (see [trend](#trend)). Speed,
-  effective speed and spacing are in the WPM slider and **Spacing char/word**.
-- **Spacing char/word:** − and + change character spacing and word spacing together
-  by 1 dit each. This takes effect immediately and doesn't depend on the
-  suggestions.
+  effective speed and spacing are in the card at the bottom, above the
+  buttons (the same on the start view).
+- The **speed and spacing card** (not in the result list): − and + change
+  **Character spacing** and **Word spacing** by 1 dit each, the slider the
+  speed. This takes effect immediately and doesn't depend on the suggestions.
+  Once you started **Typing**, the word spacing is missing, because it has no
+  effect there.
 - **Weak characters:** the characters that cause you the most errors over
   time, with their error rate (see [Weak characters](#weak-characters)).
 - **On the way to "X"** (Koch lesson only): what you still need before the
@@ -771,6 +787,10 @@ characters come together, the less each single one stands out.
 Word spacing can never be smaller than character spacing. If you move
 character spacing past it, word spacing is pulled along.
 
+Word spacing only applies in paper mode. In typing mode the app waits for your
+input after each word, so only the character spacing counts there. The ⚙ sheet
+notes this below the sliders.
+
 ### Word selection
 
 Only the settings that fit the chosen content are shown. The line "Applies
@@ -838,6 +858,14 @@ At the bottom are the dit/dah keys or the straight key, and **Start**.
 ![While answering: prompt (Prompt = Both), attempt and speed](img/en/echo_answer.png)
 :::
 
+On the **start view** the same **speed and spacing** card sits at the bottom as
+on the result page. The **Send** speed is at the top (the leftmost step is
+"same as Listen"; with a straight key the slider only shows the measured
+speed), below it the **Listen** speed with the spacing. The touch paddles only
+appear once the block runs, and then sit at the very bottom like in the other
+keying screens. You end the block with **Stop** at the top right or with the
+back arrow.
+
 ## How a word runs
 
 1. After **Start** the app waits 2 seconds, then plays the first word.
@@ -845,12 +873,13 @@ At the bottom are the dit/dah keys or the straight key, and **Start**.
    tone so you can tell prompt and answer apart. This is the **Tone shift**
    setting.
 3. **When you have to start:** from the end of the prompt you have about
-   1.4 seconds, plus one character pause, plus a third of the word pause, plus
-   the **Think time** (default 8 s) to **begin** your answer. If nothing
+   1.4 seconds, plus one character pause, plus a third of the **answer pause**,
+   plus the **Think time** (default 8 s) to **begin** your answer. If nothing
    comes by then, the word counts as wrong.
 4. **When the answer ends:** once you have started, the think time no longer
-   applies. The answer is complete as soon as you leave a 7-dit word pause, at
-   sending speed.
+   applies. The answer is complete as soon as you pause long enough after a
+   character (formula under [Settings in the ⚙ sheet](#settings-send)),
+   at sending speed.
 5. **Correcting:** key `<err>` (eight dits) or four `e` in a row to clear
    your answer so far and start again. The exception is when the word itself
    continues with another `e` at that point. Then the `e` counts as a normal
@@ -893,18 +922,22 @@ After the last word of a block the result page appears:
   - **◐ after repeat**: correct only after a repeat.
   - **○ wrong**: not made even after all repeats.
 - The **status line** shows the lesson and the [trend](#trend) (speeds are in
-  the controls below).
+  the card below).
 - **Mix-ups** lists which characters you confused in this block, as "target
   → given", for example `p → w`. A `–` means nothing came at that position.
-- The **Listen** and **Send** speed controls. A change here replaces the
-  matching suggestion.
+- The **speed and spacing** card (at the bottom, above the buttons): sliders
+  **Send** and **Listen** (with the effective speed in brackets), plus
+  **Character spacing**. The answer pause is not on this screen but in the ⚙
+  sheet; the effective speed counts it at the normal 7. The spacing belongs to the
+  Listen speed directly above it. A change here replaces the matching
+  suggestion.
 - **Suggestions** and **Weak characters** (see
   [Adaptive mode](#adaptive-mode)).
 - The list of all words in the block. The target word is shown in bold, with
   your **first** attempt below it and the first wrong character highlighted
   in red. A `_` means nothing came at that position.
 
-**Next block** applies the ticked suggestions, boosts the ticked weak
+**Next block** (right) applies the ticked suggestions, boosts the ticked weak
 characters in the next block, and starts it. **Finish** applies the ticked
 suggestions without a boost and returns to the start view.
 
@@ -926,18 +959,20 @@ apply to the Send profile. There are two differences:
   after a character:
 
   ```
-  2 × character spacing + 1 + word spacing / 8   (dits at the answer speed)
+  2 × character spacing + 1 + answer pause / 8   (dits at the answer speed)
   ```
 
-  With a straight key it is word spacing + 1 dits, measured at your own speed
+  With a straight key it is answer pause + 1 dits, measured at your own speed
   (up to 30 WPM; above that the shorter straight-key gaps apply). Example: character
-  spacing 28, word spacing 40, answer speed 18 WPM gives 62 dits, about 4 s.
+  spacing 28, answer pause 40, answer speed 18 WPM gives 62 dits, about 4 s.
   That is how long you may pause between the characters of a group, and how
   long the app waits after the last character before it scores. If that is
   too lenient or too slow for you, lower the character spacing; the normal
-  3 / 7 gives 8 dits. When the adaptive feature shortens the spacing, the
-  answer gets stricter too. Longer spacing also gives you more time to begin
-  your answer.
+  3 / 7 gives 8 dits. When the adaptive feature shortens the character
+  spacing, the answer gets stricter too. A longer character spacing also gives
+  you more time to begin your answer. The **Spacing** section has only the
+  character spacing here; the answer pause is in the **Echo Trainer** section
+  and does not depend on it.
 - **Word selection** also uses the call sign settings from the global
   settings (see [Call signs](#call-signs)).
 
@@ -945,7 +980,8 @@ In addition there is the **Echo Trainer** section:
 
 | Setting | Meaning | Values |
 |---|---|---|
-| Think time | Extra time to **begin** your answer | 1–20 s (**8 s**) |
+| Think time | Extra time after the played word to **begin** your answer (for example for head copy). It only applies until your first character | 0–20 s (**8 s**) |
+| Answer pause | Silence after your last character before the answer counts (formula above). It is never played and independent of the character spacing. Also extends the time to begin a little (a third of it) | 6–105 dits (**40**) |
 | Repeats | How often a wrongly answered word is played again before the app reveals it. "Forever" repeats until you get it right | 0–6 (**3**), Forever |
 | Prompt | How the prompt is given. **Sound** means you only hear it. **Display** means you only read it, with no audio. **Both** means you hear it and then read it once it has played | **Sound** / Display / Both |
 | Sending speed (max) | Highest speed for your answer, see [Sending speed](#sending-speed) | **same as prompt**, 10–50 WPM |
@@ -1097,7 +1133,8 @@ lesson.
 The app always changes the **pauses** first, and only then the speed:
 
 - **Shorten:** character spacing and word spacing each get 1 dit shorter, down to
-  the normal 3 / 7 dits.
+  the normal 3 / 7 dits. In Send only the character spacing changes; the
+  answer pause stays as you set it.
 - **Raise the speed:** only once the pauses are already at 3 / 7 dits does
   the app suggest **+1 WPM**.
 - **Lengthen:** character spacing and word spacing each get 1 dit longer, but
@@ -1107,7 +1144,9 @@ The app always changes the **pauses** first, and only then the speed:
 When copying on the **on-screen keyboard**, the app only changes the
 **character spacing**; the word spacing stays, because the app waits for you
 after every word there anyway. The pauses then count as normal as soon as the
-character spacing is at 3 dits.
+character spacing is at 3 dits. For the same reason the **speed and spacing**
+card shows only the character spacing once you start **Typing**, and the ⚙
+sheet notes at the word spacing that it only applies to **Paper**.
 
 **While you are still working through the Koch sequence, the app neither
 shortens the pauses nor raises the speed.** You should be able to concentrate
@@ -1122,7 +1161,7 @@ The block in which a new character is added also never shortens the pauses or
 raises the speed.
 
 You can step in yourself at any time, independently of these rules. In Listen
-use **Spacing char/word**, and in Send use the speed controls.
+use the **speed and spacing** card, and in Send use the speed controls.
 
 ### Sending speed in Send
 
@@ -1176,7 +1215,8 @@ through), or to include it again.
   every result page. In the next block they are boosted at the *Moderate*
   level, with up to 3 draws per character (see [Practice set](#practice-set-settings)).
   This only applies to random groups (Koch lesson or All characters ·
-  Random), not to words. If you have your own practice set characters and
+  Random). With words, abbreviations, mixed and the practice set the boost has
+  no effect, so the app does not show the weak characters there at all. If you have your own practice set characters and
   **Boost practice set** switched on, they are added, and the higher level applies
   (so Strong for all of them if you chose Strong).
 - **Send:** the weak characters appear on the result page when you practice
@@ -1835,8 +1875,8 @@ text stays hidden until the result.
 independent of the app language), the **level** (1, 2 or 3 sentences) and the
 **speed**, plus **character spacing** and **word spacing** (in dits, with the
 time in seconds below). They apply to Sentences only; on first open the app
-takes them from **Listen**, after that they are separate. Below the spacing the **effective speed** in WPM
-is shown, the result of speed and both spacings (formula under
+takes them from **Listen**, after that they are separate. The **effective speed** is shown in brackets behind
+the speed, the result of speed and both spacings (formula under
 [Effective speed](#effective-speed)). Below the start button you see the hit rate of the recent rounds.
 
 ::: {.shots .one}
@@ -1887,8 +1927,9 @@ ordered by how common they are, and each level adds the rarer ones: level 1
 has the 8 most common, level 2 has 16 in all, level 3 all 24; below the choice
 it says what the level means), the **questions per round** (5 or 10), **speed**,
 **character spacing** and **word spacing**. They apply to Q-groups only; on
-first open the app takes them from **Listen**. Below the spacing the **effective
-speed** is shown, below the start button the hit rate of the recent rounds.
+first open the app takes them from **Listen**. The **effective
+speed** is shown in brackets behind the speed, below the start button the hit
+rate of the recent rounds.
 **Cheat sheet** opens the list of all groups.
 
 ::: {.shots .one}
@@ -1940,7 +1981,7 @@ questions are translated.
 independent of the app language), the **level** (1, 2 or 3; below the choice it
 says what the level means), **speed**, **character spacing** and **word
 spacing**. They apply to Mini QSO only; on first open the app takes them from
-**Listen**. Below the spacing the **effective speed** is shown, below the
+**Listen**. The **effective speed** is shown in brackets behind the speed, below the
 start button the hit rate of the recent rounds.
 
 ::: {.shots .one}
@@ -2389,12 +2430,13 @@ decoding, so it always matches what you hear.
 ## Character chart
 
 The character chart lists every character of the app with its code, grouped
-into **Letters**, **Digits**, **Punctuation** and **Prosigns** (SK, KN, KA, AS,
+into **Letters**, **Umlauts and CH** (Ä, Ö, Ü, CH), **Digits**, **Punctuation** and **Prosigns** (SK, KN, KA, AS,
 VE, BK). Each code is drawn as dots and dashes.
 
 Tap a character: it sounds at your pitch, and its dots and dashes light up as
 they sound. The speed starts at the value from the Listen training; **−** and
-**+** change it for this view only. Set the pitch under Settings → General.
+**+** change it for this view only. Set the pitch under Settings → General. CH is a historic extra character;
+tapping it shows a note to always send it as the two letters C and H.
 
 ::: {.shots .one}
 ![Character chart: a character lights up while it plays](img/en/chart.png)
@@ -2846,7 +2888,7 @@ See [When the next Koch character comes](#when-the-next-koch-character-comes).
 **The pauses never get shorter.**
 That's intended while you work through the Koch sequence (see
 [Pauses and speed](#pauses-and-speed)). You can shorten them yourself at any
-time with **Spacing char/word**.
+time with the **speed and spacing** card.
 
 **The decoder only writes garbage.**
 Check pitch, bandwidth and threshold (see

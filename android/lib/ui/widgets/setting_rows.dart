@@ -89,10 +89,15 @@ class LabeledSlider extends StatefulWidget {
   final String label, display;
   final double value, min, max;
   final int divisions;
-  final ValueChanged<double> onChanged;
+  // null: the slider is shown disabled (e.g. a measured value).
+  final ValueChanged<double>? onChanged;
+  // false: no "Changed … Undo" snackbar (e.g. where it would cover buttons).
+  final bool showUndo;
+  // Tighter padding and a smaller thumb/overlay, where height is short.
+  final bool dense;
   const LabeledSlider({super.key, required this.label, required this.value, required this.min,
       required this.max, required this.divisions, required this.display,
-      required this.onChanged});
+      required this.onChanged, this.showUndo = true, this.dense = false});
 
   @override
   State<LabeledSlider> createState() => _LabeledSliderState();
@@ -106,7 +111,7 @@ class _LabeledSliderState extends State<LabeledSlider> {
     final label = widget.label, display = widget.display;
     final c = AppColors.of(context);
     return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    padding: EdgeInsets.symmetric(horizontal: 16, vertical: widget.dense ? 4 : 8),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       _SliderHead(label: label, display: display),
       SliderTheme(
@@ -116,6 +121,10 @@ class _LabeledSliderState extends State<LabeledSlider> {
           thumbColor: c.accent,
           overlayColor: c.accent.withValues(alpha: 0.1),
           trackHeight: 3,
+          thumbShape: widget.dense
+              ? const RoundSliderThumbShape(enabledThumbRadius: 8) : null,
+          overlayShape: widget.dense
+              ? const RoundSliderOverlayShape(overlayRadius: 14) : null,
         ),
         child: Slider(value: widget.value, min: widget.min, max: widget.max,
             divisions: widget.divisions, onChanged: widget.onChanged,
@@ -123,8 +132,9 @@ class _LabeledSliderState extends State<LabeledSlider> {
             onChangeEnd: (_) {
               final start = _start;
               _start = null;
-              if (start == null || start == widget.value) return;
-              showSettingUndo(context, label, () => widget.onChanged(start));
+              final change = widget.onChanged;
+              if (change == null || !widget.showUndo || start == null || start == widget.value) return;
+              showSettingUndo(context, label, () => change(start));
             }),
       ),
     ]),

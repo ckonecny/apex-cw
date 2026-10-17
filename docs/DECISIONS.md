@@ -812,9 +812,71 @@ confirmed by the user on 2026-09-27:
   key (0 errors): the two disagreed. Every other extra character (`ABCE`,
   `AABC`) stays wrong. Side effect: for a group ending in a doubled char
   (`ABB`), `ABBB` is accepted too.
-- **Spacing suggestions:** in the typing mode the adaptive mode only
-  suggests changes to the **inter-character** spacing (inter-word spacing has
-  no effect there).
+- **Word gap in typing mode (one rule, 2026-10-14):** the app waits for the
+  user after every word, so the inter-word gap has no effect there. Only the
+  **inter-character** gap counts, in four places: (1) the adaptive spacing
+  suggestions only change the char gap (`_stepPendingSpacing`, suggestion row);
+  (2) the tempo/spacing card shows only the char gap once a typing block has
+  started (`typing:` in `TempoSpacingSection`; the stored word gap stays
+  untouched, never below the char gap); (3) the ⚙ sheet is shared by both
+  modes and opened before the mode is chosen, so its word-gap slider stays and
+  a note below the sliders says it applies to paper only
+  (`settings_word_spacing_hear_note`); (4) the `eff.` value uses the char gap
+  only, with the word gap fixed at the normal 7 dits so it equals the WPM at
+  char gap 3 (`effectiveWpm(..., typing: true)` in `content/effective_wpm.dart`,
+  tested). Paper mode and the start screen (mode not chosen yet, two start
+  buttons) count both gaps.
+- **Send: "Answer pause" instead of "Word spacing" (2026-10-17):** in Send
+  (profile `echo`) one word is played at a time, so the word gap is never
+  heard; it only sets the answer window (start deadline: IW/3, end of the
+  answer: IW/8, straight key: IW + 1, see `echo_timing.dart`) and feeds the
+  spacing suggestions. The slider is therefore called "Antwortpause"/"Answer
+  pause" and lives only in the ⚙ sheet, section "Echo Trainer", right after
+  the think time, each with a help line (what they do, which phase). The
+  practice screen shows only character spacing and the two speeds
+  (`TempoSpacingSection(showWordGap: false)`; `eff.` counts the gap at the
+  normal 7, like typing mode). **Decoupled from the character spacing
+  (2026-10-17):** no "never below char gap" lock and no pulling along in Send;
+  the paddle path still uses `max(pause, IC + 4)` inside (firmware), the
+  straight key uses pause + 1 directly. Adaptive suggestions in Send change
+  only the character spacing (`EchoSuggestions.newInterWord` is gone);
+  "spacing at char speed" (the WPM may rise) now means char gap <= 3 alone.
+  The key `interWordSpace` and the timing formulas are unchanged. Think time
+  slider now starts at 0 (firmware range 0-20; the 1 was an unrecorded port
+  deviation).
+- **Tempo + spacing block, one component (2026-10-14):** `TempoSpacingSection`
+  (`widgets/tempo_spacing_section.dart`, inside a `SettingsCard`) is the one
+  look for speed and pauses: "Tempo" slider with the effective speed in
+  brackets behind the WPM (`20 WPM (eff. 7)`, replaces the separate "Effektiv:"
+  line), then −/+ rows for Zeichenabstand and Wortabstand ("Dits · s" sub
+  line). Used by the Sätze, Mini-QSO and Q-Groups setup screens (copies of the
+  old block removed) and by Hören. In Hören and Geben it is `compact` (denser
+  sliders and rows, no undo snackbar that would cover the buttons) because
+  height is short; the "Dits · s" sub line stays so the block looks the same
+  everywhere (the touch paddles are gone from the start screen, which pays for
+  it); on screens lower than 700 dp the compact variant drops the sub line. Placement in Hören: at the bottom of the scrolling start area (above the
+  start buttons when there is room, scrolling with the content on small phones
+  — the fixed variant overflowed the 360×640 / scale 1.3 overflow test) and
+  directly above the buttons on the result screen (`_controls()` in `generator_screen.dart`, rendered by the body via
+  `AdaptiveCopyBody.controls`). It is **not** shown while a block runs (paper:
+  the slider was disabled anyway, typing: keyboard on screen), not on
+  "Gesendet" (unimportant at that point) and not on the word-marking screen. Practice area keeps "auf dem Weg
+  zu", weak characters and hit rate. Geben (Echo trainer) uses the same block
+  with a give-speed slider on top (`leading` slot, `speedLabel` "Hören"): the
+  spacing rows follow the Hören slider directly because they belong to the
+  prompt speed, not to the give speed (leftmost notch "wie Hören"; straight
+  key: disabled slider showing the measured speed). It replaces the two start
+  sliders and the small −/+ tempo switches of the result page; the result
+  buttons stand side by side like in Hören (Beenden left, Nächster Block
+  right). The touch paddles are only shown while a block runs (no function on
+  start and result screens) and are then the last element at the bottom like in
+  Keyer, WiFi Trx, QSO bot and the games; Stop moves to the app bar while a
+  block runs (replacing the stats and settings icons, which are hidden then;
+  precedent: the QSO bot has Start/Stop at the top; the back arrow also
+  stops), Start stays the big button at the bottom of the start screen; hiding them when an external key interface is
+  detected is issue #95. A manual spacing change overrides the matching
+  suggestion (`_setSpacing`). Not yet converted to this block: the ⚙ sheet
+  sliders, Adventure sheets.
 - **After the block:** the usual "Gesendet" page, errors pre-marked from the
   first attempts, typed text under each group; marks can be removed by
   tapping (typos). Then the **unchanged** result page (no ●◐○ split, no
@@ -838,8 +900,8 @@ confirmed by the user on 2026-09-27:
   Memory Chain prompt box.
 - `AppButton` labels are one line and shrink to fit (`FittedBox`) instead of
   clipping; horizontal padding reduced to 12.
-- Long scroll areas use `ScrollHint` (always-visible scrollbar + bottom fade
-  while there is more): Hören "Gesendet" overview, Hören result page, and the
+- Long scroll areas use `ScrollHint` (scrollbar only while scrolling + bottom
+  fade while there is more, 2026-10-14): Hören "Gesendet" overview, Hören result page, and the
   home screen, which switches from 7 height-sharing cards to fixed-height
   cards in a scroll view when the screen is too short for them.
 - **Android "Display size" (Anzeigegröße) is ignored entirely**:
@@ -1115,6 +1177,9 @@ built like the games hub (the tile widget is now the shared `HubCard` in
   lighting as in the tree (rule 2 config push, `<XX>` for prosigns, elementOn/
   Off events). Portrait only (no landscape exception needed). Tile order is
   fixed in the screen; the codes come from the table, so they cannot diverge.
+  Section "Umlauts and CH" (Ä Ö Ü CH) added so every character of the Morse
+  tree is in the chart (CH shows the tree's obsolete-note). ; ! " ' stay out:
+  not in the tree and the generator has no codes for them.
 
 ## Home: free modes grouped one level down (2026-09-29, user request)
 The home screen scrolled with its eight cards and the scroll bar was
@@ -2067,3 +2132,13 @@ Rule 2 (the native engines are shared singletons, every screen pushes its own co
 
 ## 2026-10-15: Hide touch keys when a key adapter is detected (#95)
 Detection is by use, not by presence: `MainActivity.noteKeyAdapter()` registers a physical (non-virtual) `InputDevice` the first time it sends a learned dit/dah key, and an `InputDeviceListener` drops it on unplug. A plain USB/Bluetooth keyboard never counts, so there are no false positives; the cost is that the touch keys stay until the first keypress. Presence-based detection (any external keyboard-type device) was rejected: it cannot tell an adapter from a keyboard. On top of that, "Learn dit/dah keys" stores the `InputDevice.descriptor` of the device both keys came from (pref `paddle_adapter_descriptor`, only if both came from the same physical device; learning on the on-screen keyboard clears it). A device with that descriptor counts as detected at plug-in (`onInputDeviceAdded`) and at app start, with no keypress. Detection by use stays as the fallback for adapters learned before this change and is never stored, so a keyboard that happens to type the default dit/dah characters is not remembered. `KeyAdapterState` (pref `hideSoftKeysOnAdapter`, default off) holds detected/enabled/dismissed; the hiding sits in the two shared widgets `IambicPaddles` and `StraightKeyPaddle`, so every Send screen follows. The notice has no setting of its own (a second switch would only confuse); its X lasts until the next detection. The Bluetooth latency warning stays visible with hidden paddles (it matters for real keys too); the one-time key tip (#58) is hidden while an adapter is detected. Hardware keys never went through the widgets (`dispatchKeyEvent`), so hiding changes nothing for keying.
+
+## Weak-character card only where the boost works (2026-10-16)
+The native boost (`practiceChars` + `boostLevel`) acts only on random character
+groups (content mode 0). In a Koch lesson with words, abbreviations or mixed
+(of which only a third are groups) it did nothing, yet the weak-characters card
+and its include/exclude chips were shown. `_boostApplies` in
+`adaptive_copy_body.dart` is now `contentMode == 0`, in a Koch lesson as well;
+elsewhere there are no weak characters, no chips and no boost push, so the
+draw is never changed silently. Mixed was left out deliberately (partial
+effect, not predictable for the user). Manual DE+EN updated.
