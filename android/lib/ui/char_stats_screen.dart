@@ -20,6 +20,7 @@ import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'progress_view.dart';
 import 'widgets/char_stat_sheet.dart';
+import 'widgets/mixup_trend_view.dart';
 import '../util/char_color.dart';
 import '../util/practice_clock.dart';
 
@@ -40,7 +41,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
   int _unlockOccurrences = 20;
   double _highThreshold = 0.90;
   int _outputCase = 0;
-  int _tab = 0; // 0 = Zeichen, 1 = Verlauf
+  int _tab = 0; // 0 = Zeichen, 1 = Verlauf, 2 = Trends (Verwechslungen)
 
   @override
   void initState() {
@@ -100,6 +101,15 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
   Future<void> _openChar(String ch) {
     final s = _store.stats[ch] ?? CharStat();
     return _openDetail(ch, s, _isReady(s));
+  }
+
+  // Mix-up pairs are upper-case, the stats keep the case as played: find the
+  // key of the same letter, else the active character, else lower case.
+  Future<void> _openPlayed(String played) {
+    final u = played.toUpperCase();
+    final ch = [..._store.stats.keys, ..._active]
+        .firstWhere((k) => k.toUpperCase() == u, orElse: () => played.toLowerCase());
+    return _openChar(ch);
   }
 
   // Irreversible, so a short confirmation guards against a stray tap.
@@ -175,6 +185,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
                     segments: [
                       ButtonSegment(value: 0, label: Text(Strings.t('pr_tab_chars'))),
                       ButtonSegment(value: 1, label: Text(Strings.t('pr_tab_progress'))),
+                      ButtonSegment(value: 2, label: Text(Strings.t('mx_tab'))),
                     ],
                     selected: {_tab},
                     onSelectionChanged: (v) => setState(() => _tab = v.first),
@@ -184,6 +195,12 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
               Expanded(
                 child: _tab == 0
                     ? _buildBody(c)
+                    : _tab == 2
+                    ? MixupTrendView(
+                        days: _store.days,
+                        outputCase: _outputCase,
+                        onChar: _openPlayed,
+                      )
                     : ProgressView(
                         days: _store.days,
                         order: _active,

@@ -2,6 +2,7 @@
 // progress view draws (issue #16, docs/DECISIONS.md "Progress view over time").
 // Pure Dart: range → buckets (day / week / month), KPIs, per-character cells.
 import 'char_stats.dart';
+import 'mixup_trend.dart' show attemptsOfChar;
 import 'practice_log.dart' show PracticeDay;
 
 enum ProgressRange { weeks4, weeks12, all }
@@ -29,6 +30,7 @@ class ProgressBucket {
   int totalSeconds = 0; // all trainings together
   int unsplitDays = 0; // days with time but no split per mode (from before it existed)
   final Map<String, List<int>> chars = {};
+  final Map<String, int> pairs = {}; // mix-ups "K>R" → count (#101)
 
   ProgressBucket(this.start);
 
@@ -43,6 +45,14 @@ class ProgressBucket {
   }
 
   int charAttempts(String ch) => chars[ch]?[0] ?? 0;
+
+  /// Mix-up rate of one pair "K>R" (times K was taken for R ÷ attempts at K);
+  /// null below [minAttempts] at K.
+  double? pairRate(String pair, {int minAttempts = 5}) {
+    final n = attemptsOfChar(chars, pair.split('>').first);
+    if (n == 0 || n < minAttempts) return null;
+    return (pairs[pair] ?? 0) / n;
+  }
 }
 
 class ProgressSeries {
@@ -161,6 +171,7 @@ ProgressSeries buildSeries(Map<String, DayStat> days, ProgressRange range, DateT
       c[0] += v[0];
       c[1] += v[1];
     });
+    s.pairs.forEach((p, n) => b.pairs[p] = (b.pairs[p] ?? 0) + n);
   });
   // Time comes from the practice log (the daily goal's clock): the track's own
   // and all trainings; days roll over at 04:00 — its key is read as a plain date.
