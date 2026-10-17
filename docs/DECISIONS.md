@@ -2201,3 +2201,10 @@ as the result page); START boosts the first block with what stays ticked
 (Send's weight ×2 is per block); the next block comes from the result page as
 before. The ticks (`_excludedBoost`, `_excludedMixups`) are shared by both
 views and cleared after each block.
+
+Look (user, 2026-10-17): Send's proposal cards look like Listen's — amber chips
+(not red), separate cards at scale 1.2, and in Koch the "On the way to" card
+(progress bar, repetitions owed, weak characters as accuracy chips), on the
+start view and the result page. Shared widgets in `widgets/unlock_outlook_card.dart`
+(`WeakCharChips`, `WeakCharsCard`, `UnlockOutlookCard`); Listen still has its own
+copies of the chips/outlook code (same rules, to be merged later).

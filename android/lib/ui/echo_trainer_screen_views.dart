@@ -156,9 +156,7 @@ extension _EchoViews on _EchoTrainerScreenState {
   // the Start button when there is room) and scrolls on small phones instead
   // of overflowing.
   Widget _buildIdle(AppColors c) {
-    String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
-    final weak = _startWeakChars();
-    final mixups = _startMixups();
+    final cards = _proposalCards(c, _startWeakChars(), _startMixups());
     return LayoutBuilder(
       builder: (context, box) => SingleChildScrollView(
         child: ConstrainedBox(
@@ -169,15 +167,10 @@ extension _EchoViews on _EchoTrainerScreenState {
             children: [
               Column(children: [
                 const KeyAdapterHint(),
-                if (weak.isNotEmpty || mixups.isNotEmpty)
+                if (cards.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: AppCard(
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
-                        if (weak.isNotEmpty) _weakCharsBlock(c, weak, cs),
-                        if (mixups.isNotEmpty) _mixupBlock(mixups),
-                      ]),
-                    ),
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                    child: Column(children: cards),
                   ),
               ]),
               Padding(

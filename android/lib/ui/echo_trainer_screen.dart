@@ -30,6 +30,7 @@ import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/mixup_boost_chips.dart';
+import 'widgets/unlock_outlook_card.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
@@ -111,6 +112,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _callRegionOpt   = 0;
   bool _callCommonOnly  = true;
   int  _outputCase      = 0;   // 0=lower, 1=UPPER — display only
+  int _unlockOccurrences = 20;
   double _highThreshold = 0.9; // upper success threshold: what counts as a weak character
   // "Random"/"Zufall" and "Adapt. Rand." echo a GROUP of characters, not a
   // single one — matches fetchNewWord()'s RANDOMS/KOCH_ADAPTIVE cases in
@@ -312,6 +314,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
       _outputCase      = (p.getInt('outputCase') ?? 0).clamp(0, 1);
       _highThreshold   = (p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99) / 100;
+      _unlockOccurrences = p.getInt('adaptiveUnlockOccurrences') ?? 20;
       _groupLength     = pf.getInt('groupLength')    ?? 5;
       _groupLengthMax  = (pf.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMin   = (pf.getInt('wordLengthMin') ?? 0).clamp(0, 8);
@@ -669,56 +672,60 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             style: TextStyle(fontSize: 11, color: c.textMuted)),
       ));
     }
-    if (s.weakChars.isNotEmpty) rows.add(_weakCharsBlock(c, s.weakChars, cs));
-    if (_mixups.isNotEmpty) rows.add(_mixupBlock(_mixups));
+    final cards = _proposalCards(c, s.weakChars, _mixups, unlockNow: s.unlockNext);
+    if (cards.isNotEmpty) rows.insertAll(0, [...cards, const SizedBox(height: 16)]);
     if (rows.isNotEmpty) rows.add(const Divider());
     return rows;
   }
 
-  // Tappable weak characters (leave one out of the boost / take it back in),
-  // shared by the result page and the start view.
-  Widget _weakCharsBlock(AppColors c, Map<String, double> weak, String Function(String) cs) =>
-      Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Column(children: [
-          Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 11, color: c.textMuted)),
-          const SizedBox(height: 6),
-          Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
-            for (final e in weak.entries)
-              InkWell(
-                onTap: () => setState(() {
-                  if (!_excludedBoost.remove(e.key)) _excludedBoost.add(e.key);
-                }),
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: _excludedBoost.contains(e.key) ? c.surfaceAlt : c.danger.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: _excludedBoost.contains(e.key) ? c.border : c.danger.withValues(alpha: 0.4)),
-                  ),
-                  child: Text('${cs(e.key)}  ${(e.value * 100).round()}%',
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-                          color: _excludedBoost.contains(e.key) ? c.textMuted : c.danger)),
-                ),
-              ),
-          ]),
-        ]),
-      );
-
-  Widget _mixupBlock(List<MixupTrend> mixups) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: MixupBoostChips(
-          pairs: mixups,
-          excluded: _excludedMixups,
-          outputCase: _outputCase,
-          onToggle: (p) => setState(() {
-            if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
-          }),
-        ),
-      );
+  // The proposal cards of Listen's start/result view, same look: weak
+  // characters (amber chips), recurring mix-up pairs, and in Koch the "On the
+  // way to" card, which then hosts the weak characters itself. Shared by the
+  // start view and the result page (#107).
+  List<Widget> _proposalCards(AppColors c, Map<String, double> weak, List<MixupTrend> mixups,
+      {bool unlockNow = false}) {
+    String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
+    void toggle(String ch) => setState(() {
+          if (!_excludedBoost.remove(ch)) _excludedBoost.add(ch);
+        });
+    final outlook = _boostApplies && !unlockNow && _kochLevel < _activeKochChars.length;
+    final hosted = outlook && weak.isNotEmpty;
+    final cards = <Widget>[
+      if (weak.isNotEmpty && !hosted)
+        WeakCharsCard(
+            chips: WeakCharChips(
+                weak: weak, excluded: _excludedBoost, display: cs, onToggle: toggle, scale: 1.2)),
+      if (mixups.isNotEmpty)
+        SizedBox(
+            width: double.infinity,
+            child: AppCard(
+                child: MixupBoostChips(
+                    pairs: mixups,
+                    excluded: _excludedMixups,
+                    outputCase: _outputCase,
+                    scale: 1.2,
+                    onToggle: (p) => setState(() {
+                          if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+                        })))),
+      if (outlook)
+        UnlockOutlookCard(
+            next: cs(_activeKochChars[_kochLevel]),
+            chars: kochActiveChars(_kochLevel, _activeKochChars),
+            stats: _charStats.stats,
+            thresholds: _echoEngine?.thresholds ??
+                AdaptiveCopyThresholds(highThreshold: _highThreshold, unlockOccurrences: _unlockOccurrences),
+            display: cs,
+            weak: weak,
+            excluded: _excludedBoost,
+            onToggle: toggle),
+    ];
+    return [
+      for (var i = 0; i < cards.length; i++) ...[
+        if (i > 0) const SizedBox(height: 16),
+        cards[i],
+      ],
+    ];
+  }
 
   @override
   void dispose() {
