@@ -86,6 +86,11 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _typeAttempts = 2;
   bool _typeLearn = false;
   bool _typeHaptic = true;
+  // Call sign options (global keys: one value for Listen and Send, formerly in
+  // the global settings).
+  int _callLengthOpt = 0;
+  int _callRegionOpt = 0;
+  bool _callCommonOnly = true;
   // Echo flow prefs (global keys, as in Settings before).
   int _echoThinkTime = 8;
   int _echoRepeats = 3;
@@ -143,6 +148,9 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _typeAttempts = (prof.getInt('typeAttempts') ?? 2).clamp(1, 3);
       _typeLearn = (prof.getInt('typeOnWrong') ?? 0) == 1;
       _typeHaptic = (prof.getInt('typeHaptic') ?? 1) == 1;
+      _callLengthOpt = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
+      _callRegionOpt = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
+      _callCommonOnly = p.getBool('callCommonOnly') ?? true;
       _echoThinkTime = p.getInt('echoThinkTime') ?? 8;
       _echoRepeats = (p.getInt('echoRepeats') ?? 3).clamp(0, 7);
       _echoDisplay = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
@@ -527,6 +535,35 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               _setInt('abbrevLengthMin', _abbrevLengthMin);
               _setInt('abbrevLengthMax', _abbrevLengthMax);
             }),
+      // Call signs: own content, or inside Mixed with all characters.
+      if (k == ContentKind.calls || (k == ContentKind.mixed && _choice.set == CharSet.all)) ...[
+        SegmentRow(
+          label: Strings.t('settings_call_length'),
+          options: [Strings.t('opt_unlim_short'), '3', '4', '5', '6'],
+          selected: _callLengthOpt,
+          onChanged: (v) {
+            setState(() => _callLengthOpt = v);
+            _p?.setInt('callLengthOpt', v);
+          },
+        ),
+        SegmentRow(
+          label: Strings.t('settings_call_region'),
+          options: [Strings.t('opt_all_cap'), 'EU', 'NA', 'SA', 'AF', 'AS', 'OC', 'VK/ZL'],
+          selected: _callRegionOpt,
+          onChanged: (v) {
+            setState(() => _callRegionOpt = v);
+            _p?.setInt('callRegionOpt', v);
+          },
+        ),
+        ToggleRow(
+          label: Strings.t('settings_common_prefixes_only'),
+          value: _callCommonOnly,
+          onChanged: (v) {
+            setState(() => _callCommonOnly = v);
+            _p?.setBool('callCommonOnly', v);
+          },
+        ),
+      ],
     ];
     final cards = <Widget>[
       for (var i = 0; i < rows.length; i++) ...[

@@ -803,6 +803,9 @@ to: …" tells you which combination you are setting up.
 | Word language | Which word list is drawn from (with **Words** and **Mixed**): English or German. Both lists are weighted by frequency: common words come up more often than rare ones. The German list has no umlauts and no ß | **English** / German |
 | Word length (min–max) | Only words within this length range (with **Words** and **Mixed**); the open ends mean no limit | 1–**all** (1–8, **all**) |
 | Abbreviation length (min–max) | Only abbreviations within this length range (with **Abbreviations** and **Mixed**); the open ends mean no limit | 2–**all** (2–6, **all**) |
+| Max call sign length | Only with **Call signs**, and with **Mixed** (All characters): maximum length of the call signs. One value for Listen and Send | **Unlim.** / 3 / 4 / 5 / 6 |
+| Region | Same, only call signs from this region | **All** / EU / NA / SA / AF / AS / OC / VK/ZL |
+| Common prefixes only | Same, only frequently heard prefixes instead of all possible ones. Call signs follow a weighted prefix table, as on the Morserino | Off / **On** |
 | Groups per block / Words per block | Number of groups (with **Random**) or words in a block | 1–50 (**10**) |
 
 ### Flow
@@ -973,8 +976,8 @@ apply to the Send profile. There are two differences:
   you more time to begin your answer. The **Spacing** section has only the
   character spacing here; the answer pause is in the **Echo Trainer** section
   and does not depend on it.
-- **Word selection** also uses the call sign settings from the global
-  settings (see [Call signs](#call-signs)).
+- **Word selection** shows the same call sign settings as in Listen (one value
+  for both).
 
 In addition there is the **Echo Trainer** section:
 
@@ -2158,7 +2161,7 @@ Key it back, and it is sent after a word pause, or at once with **Send**.
   own answers: you can change the speed with − and + during the game.
 
 The call signs come from the same generator as in the other modes and follow
-your call sign settings (region, common prefixes only). There is no high score
+the call sign settings from the ⚙ sheet of Listen or Send (region, common prefixes only). There is no high score
 list, as in the firmware. When the game ends, you see score, defended and
 dropped callers, accuracy and best streak.
 
@@ -2580,7 +2583,7 @@ key contacts into **key presses**:
 
 Older phones with micro-USB need a USB OTG adapter.
 
-**Settings → vband Morse Key** has a short hint with two links that open both of
+**Settings → USB CW adapter** has a short hint with two links that open both of
 the above in your browser: the ready-made vband adapter and the instructions
 for the homemade one.
 
@@ -2589,7 +2592,7 @@ for the homemade one.
 This tells the app which key your adapter sends for dit and which for dah:
 
 1. Plug in the adapter.
-2. Go to **Settings → vband Morse Key → Learn dit/dah keys**.
+2. Go to **Settings → USB CW adapter → Learn dit/dah keys**.
 3. When "Press Dit key …" appears, press the **dit key**. When "Press Dah
    key …" appears, press the **dah key**.
 4. "Saved" confirms it. The detected keys are listed under **Dit** and
@@ -2621,9 +2624,9 @@ change.
 ::: {.shots .three}
 ![Settings: Appearance, General, Keyer](img/en/settings1.png)
 
-![Audio output and call signs](img/en/settings2.png)
+![Audio output](img/en/settings2.png)
 
-![vband Morse Key, key events, Info](img/en/settings3.png)
+![USB CW adapter, key events, Info](img/en/settings3.png)
 :::
 
 ## Appearance
@@ -2743,6 +2746,11 @@ word gaps. If you key more slowly, longer pauses are allowed automatically.
 - WiFi Trx sends the measured speed along. The Echo Trainer statistics store
   it as your sending speed.
 
+## USB CW adapter and Analyze key events
+
+See [Learning the dit and dah keys](#learning-the-dit-and-dah-keys) and
+[Analyze key events](#analyze-key-events).
+
 ## Audio output
 
 | Setting | Meaning | Values |
@@ -2750,25 +2758,6 @@ word gaps. If you key more slowly, longer pauses are allowed automatically.
 | Active | Shows where the sound is going right now | – |
 | Output | **Automatic** follows whatever is currently plugged in or connected. The other options fix the output. Only outputs that are currently available are offered | **Automatic** / Speaker / Wired/USB / Bluetooth |
 | Bluetooth hint when keying | Shows a hint above the keys when the sound plays over Bluetooth (delay about 100–250 ms) | on (default) / off |
-
-## Call signs
-
-These are the settings for random call signs in the **Call signs** content
-(with All characters).
-
-| Setting | Meaning | Values |
-|---|---|---|
-| Max call sign length | Maximum call sign length | **Unlim.** / 3 / 4 / 5 / 6 |
-| Region | Only call signs from this region | **All** / EU / NA / SA / AF / AS / OC / VK/ZL |
-| Common prefixes only | Only frequently heard prefixes instead of all possible ones | Off / **On** |
-
-Call signs follow a weighted prefix table, as on the Morserino. Frequently
-heard countries come up more often.
-
-## vband Morse Key and Analyze key events
-
-See [Learning the dit and dah keys](#learning-the-dit-and-dah-keys) and
-[Analyze key events](#analyze-key-events).
 
 ## Info: version and build
 

@@ -819,7 +819,7 @@ class Strings {
     'settings_hide_statusbar': ['Statusleiste ausblenden', 'Hide status bar'],
     'settings_bluelight_strength': ['Filterstärke', 'Filter strength'],
     'settings_output_case': ['Schreibweise', 'Letter case'],
-    'settings_call_signs': ['Rufzeichen', 'Call signs'],
+    'settings_usb_cw_adapter': ['USB-CW-Adapter', 'USB CW adapter'],
     'settings_call_length': ['Max. Rufzeichenlänge', 'Max call sign length'],
     'settings_call_region': ['Region', 'Region'],
     'settings_koch_sequence': ['Koch-Reihenfolge', 'Koch sequence'],

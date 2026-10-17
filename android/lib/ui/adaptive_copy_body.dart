@@ -481,6 +481,11 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     return ordinal == 0 || ordinal == 4;
   }
 
+  // Call sign options from the ⚙ sheet (global keys, shared with Send), read
+  // when a block starts.
+  int _callLengthOpt = 0, _callRegionOpt = 0;
+  bool _callCommonOnly = true;
+
   Future<String> _fetchGroup() async {
     final ordinal = widget.contentModeOrdinals[widget.contentModeIndex];
     final result = await _genChannel.invokeMethod('getNextContent', {
@@ -498,6 +503,12 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       // echo_trainer_screen.dart's kochMode branch — harmless for modes
       // that don't consume it.
       if (ordinal != 0 && ordinal != 4) 'abbrevLengthMax': widget.abbrevLengthMax,
+      // Call signs (content "Call signs" and "Mixed" with all characters).
+      if (ordinal == 2 || ordinal == 3) ...{
+        'callLengthOpt': _callLengthOpt,
+        'callRegionOpt': _callRegionOpt,
+        'callCommonOnly': _callCommonOnly,
+      },
     });
     // Groups are shown and graded per character, so a "<KA>" prosign token
     // from Random Groups is sent as the plain letters K A here.
@@ -591,6 +602,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     setState(() => _preparing = false);
 
     final p = await SharedPreferences.getInstance();
+    _callLengthOpt = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
+    _callRegionOpt = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
+    _callCommonOnly = p.getBool('callCommonOnly') ?? true;
     // Sync tempo/spacing/tone before sending — nothing else does this for
     // us (CLAUDE.md rule: shared singleton engine, every screen must push
     // its own config on entry).
