@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'widgets/setting_rows.dart';
+import 'widgets/tempo_spacing_section.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
@@ -31,6 +32,7 @@ import 'widgets/app_ui.dart';
 import 'widgets/mixup_boost_chips.dart';
 import 'widgets/boost_summary.dart';
 import 'widgets/fit_or_compact.dart';
+import 'widgets/unlock_outlook_card.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
@@ -112,6 +114,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _callRegionOpt   = 0;
   bool _callCommonOnly  = true;
   int  _outputCase      = 0;   // 0=lower, 1=UPPER — display only
+  int _unlockOccurrences = 20;
   double _highThreshold = 0.9; // upper success threshold: what counts as a weak character
   // "Random"/"Zufall" and "Adapt. Rand." echo a GROUP of characters, not a
   // single one — matches fetchNewWord()'s RANDOMS/KOCH_ADAPTIVE cases in
@@ -153,10 +156,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _interCharSpace = 28;
   int  _interWordSpace = 40;
   // Widening cap for block suggestions: spacing as loaded/set in the sheet.
-  int  _capInterChar = 28, _capInterWord = 40;
+  int  _capInterChar = 28;
   EchoSuggestions? _suggestions;
   // Proposals shown on the result page. Accepting has no effect yet (6d).
-  int? _pendWpm, _pendAnswer, _pendIC, _pendIW;
+  int? _pendWpm, _pendAnswer, _pendIC;
   bool _accUnlock = true, _accWpm = true, _accSpacing = true, _accAnswer = false;
   final Set<String> _excludedBoost = {};
   // Recurring mix-ups offered for the same boost (#102), pairs left out by the user.
@@ -182,8 +185,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   String get _targetPlain => _target.replaceAll(RegExp('[<>]'), '');
   String _attempt = '';
 
-  int _correct = 0;
-  int _total   = 0;
   // "repeats" in m32_v6.ino: how many times the CURRENT word has been
   // presented (first play counts as 1) — compared against Echo Repeats to
   // decide whether to replay it again or give up and reveal it.
@@ -290,7 +291,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
       _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
       _capInterChar = _interCharSpace;
-      _capInterWord = _interWordSpace;
       _practiceChars  = parsePracticeChars(pf.getString('practiceChars') ?? '');
       _boostLevel     = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
       _choice         = CharsetChoice.load(pf);
@@ -314,6 +314,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
       _outputCase      = (p.getInt('outputCase') ?? 0).clamp(0, 1);
       _highThreshold   = (p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99) / 100;
+      _unlockOccurrences = p.getInt('adaptiveUnlockOccurrences') ?? 20;
       _groupLength     = pf.getInt('groupLength')    ?? 5;
       _groupLengthMax  = (pf.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMin   = (pf.getInt('wordLengthMin') ?? 0).clamp(0, 8);
@@ -384,19 +385,23 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   // Char-based content only: weak characters and mix-up pairs need a char set
   // (Koch lesson · Random, where the boost works).
-  bool get _boostApplies => _koch && _choice.content == ContentKind.random;
+  bool get _boostApplies => _choice.set != CharSet.practice && _choice.content == ContentKind.random;
+
+  // The characters a boosted draw can pick from: the active Koch set, or with
+  // all characters those seen so far (as in Listen).
+  List<String> get _boostCandidates =>
+      _koch ? kochActiveChars(_kochLevel, _activeKochChars) : _charStats.stats.keys.toList();
 
   // The proposals of the start view (#107), same rules as the result page:
   // weak characters from the lifetime EMA, recurring mix-up pairs from the log.
   Map<String, double> _startWeakChars() => !_boostApplies
       ? const {}
-      : weakCharsLifetime(_charStats, kochActiveChars(_kochLevel, _activeKochChars),
+      : weakCharsLifetime(_charStats, _boostCandidates,
           threshold: weakCharErrorThreshold(_echoEngine?.thresholds.highThreshold ?? _highThreshold));
 
   List<MixupTrend> _startMixups() => !_boostApplies
       ? const []
-      : suggestedMixups(_charStats.days, DateTime.now(),
-          candidates: kochActiveChars(_kochLevel, _activeKochChars));
+      : suggestedMixups(_charStats.days, DateTime.now(), candidates: _boostCandidates);
 
   // Weak characters plus both characters of the mix-up pairs still ticked;
   // one set, so a character in both is not boosted any harder.
@@ -430,7 +435,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     );
     await _charStats.load(p);
     // Char-based content only: unlock check and weak chars need a char set.
-    final charContent = _koch && _choice.content == ContentKind.random;
+    final charContent = _boostApplies;
     final s = evaluateEchoBlock(
       _echoEngine!,
       EchoSuggestionInput(
@@ -438,12 +443,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         wpm: _wpm,
         answerWpmMax: _answerWpmMax,
         interCharSpace: _interCharSpace,
-        interWordSpace: _interWordSpace,
         maxInterCharSpace: max(_capInterChar, _interCharSpace),
-        maxInterWordSpace: max(_capInterWord, _interWordSpace),
         kochLevel: _koch ? _kochLevel : 0,
         kochTotal: _koch ? _activeKochChars.length : 0,
-        activeChars: charContent ? kochActiveChars(_kochLevel, _activeKochChars) : const [],
+        activeChars: charContent ? _boostCandidates : const [],
         stats: _charStats,
         straightKey: _keyerMode == 4,
       ),
@@ -471,14 +474,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _pendWpm = s.newWpm;
     _pendAnswer = s.newAnswerWpmMax;
     _pendIC = s.newInterChar;
-    _pendIW = s.newInterWord;
     _accUnlock = _accWpm = _accSpacing = true;
     _accAnswer = false;
     _excludedBoost.clear();
     _excludedMixups.clear();
     _mixups = charContent
-        ? suggestedMixups(_charStats.days, DateTime.now(),
-            candidates: kochActiveChars(_kochLevel, _activeKochChars))
+        ? suggestedMixups(_charStats.days, DateTime.now(), candidates: _boostCandidates)
         : const [];
   }
 
@@ -500,11 +501,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _wpm = _pendWpm!;
       PracticeClock.instance.milestone(MilestoneKind.wpmEcho, _wpm, onlyIfHigher: true);
     }
-    if (_pendIC != null && _pendIW != null && _accSpacing) {
+    if (_pendIC != null && _accSpacing) {
       _interCharSpace = _pendIC!;
-      _interWordSpace = _pendIW!;
       await pf.setInt('interCharSpace', _interCharSpace);
-      await pf.setInt('interWordSpace', _interWordSpace);
     }
     if (_pendAnswer != null && _accAnswer) {
       _answerWpmMax = _pendAnswer!;
@@ -516,7 +515,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // one set, so a character in both is not boosted any harder.
     _boostChars = boost ? _chosenBoost(s.weakChars.keys, _mixups) : [];
     _suggestions = null;
-    _pendWpm = _pendAnswer = _pendIC = _pendIW = null;
+    _pendWpm = _pendAnswer = _pendIC = null;
   }
 
   // Plays the proposed new Koch char twice, in place (like Adaptive Copy).
@@ -557,50 +556,66 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await p.setInt('echoAnswerWpmMax', _answerWpmMax);
   }
 
-  // Give speed 0 means "same as hearing"; stepping up to the hearing speed
-  // goes back to that, stepping down from it starts at hearing speed - 1.
-  void _stepGiveWpm(int d) {
-    final eff = _answerWpmMax == 0 ? _wpm : min(_answerWpmMax, _wpm);
-    if (_wpm <= kGiveWpmMin) {
-      _setGiveWpm(0);
-      return;
-    }
-    final n = (eff + d).clamp(kGiveWpmMin, _wpm);
-    _setGiveWpm(n >= _wpm ? 0 : n);
+  // Manual spacing change (idle / result card). Like a manual tempo change it
+  // overrides the matching suggestion of the finished block.
+  Future<void> _setSpacing(int ic, int iw) async {
+    // The answer pause (iw) is not on this screen and stays untouched.
+    setState(() {
+      _interCharSpace = ic;
+      _pendIC = null;
+    });
+    final pf = await TrainingProfile.open(TrainingProfile.echo);
+    await pf.setInt('interCharSpace', _interCharSpace);
   }
 
-  Widget _tempoStepper(AppColors c, String label, String value,
-      VoidCallback? onMinus, VoidCallback? onPlus) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Text(label, style: TextStyle(fontSize: 12, color: c.textMuted)),
-      IconButton(
-          icon: const Icon(Icons.remove_circle_outline), color: c.accent,
-          visualDensity: VisualDensity.compact, onPressed: onMinus),
-      SizedBox(width: 62, child: Text(value, textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 13, color: c.accent))),
-      IconButton(
-          icon: const Icon(Icons.add_circle_outline), color: c.accent,
-          visualDensity: VisualDensity.compact, onPressed: onPlus),
-    ]);
+  // Geben speed above Hören and its spacing: the spacing belongs to the
+  // hearing (prompt) speed directly below, not to the give speed. The leftmost
+  // notch (kGiveWpmMin - 1) means "same as Hören". Straight key: the speed is
+  // measured from the keying, so the slider is disabled and just follows it.
+  Widget _giveSlider() {
+    final straight = _keyerMode == 4;
+    return LabeledSlider(
+      label: Strings.t('block_give'),
+      display: straight
+          ? '$_measuredWpm WPM'
+          : _answerWpmMax == 0
+              ? Strings.t('settings_answer_wpm_same')
+              : '$_answerWpmMax WPM',
+      value: (straight
+              ? _measuredWpm.clamp(kGiveWpmMin - 1, 60)
+              : (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax))
+          .toDouble(),
+      min: kGiveWpmMin - 1.0,
+      max: 60,
+      divisions: 61 - kGiveWpmMin,
+      dense: true,
+      showUndo: false,
+      onChanged: straight
+          ? null
+          : (v) => _setGiveWpm(v < kGiveWpmMin ? 0 : v.round()),
+    );
   }
 
-  Widget _buildTempoControls(AppColors c) {
-    return Wrap(alignment: WrapAlignment.center, spacing: 8, children: [
-      _tempoStepper(c, Strings.t('block_hear'), '$_wpm WPM',
-          () => _setHearWpm(_wpm - 1), () => _setHearWpm(_wpm + 1)),
-      // Straight key: the Geben speed is measured, so the stepper is disabled.
-      if (_keyerMode == 4)
-        _tempoStepper(c, Strings.t('block_give'), '$_measuredWpm WPM', null, null)
-      else
-        _tempoStepper(c, Strings.t('block_give'),
-            _answerWpmMax == 0 ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax WPM',
-            () => _stepGiveWpm(-1), () => _stepGiveWpm(1)),
-    ]);
-  }
+  // The same tempo + spacing block as in Hören and Verstehen
+  // (TempoSpacingSection), with the give slider on top. Shown on the start
+  // and result screens, never while a block runs.
+  Widget _controlsCard() => SettingsCard(children: [
+        TempoSpacingSection(
+          leading: _giveSlider(),
+          speedLabel: Strings.t('block_hear'),
+          wpm: _wpm,
+          interChar: _interCharSpace,
+          interWord: _interWordSpace,
+          compact: true,
+          showWordGap: false,
+          showUndo: false,
+          onWpm: _setHearWpm,
+          onSpacing: _setSpacing,
+        ),
+      ]);
 
   void _stepSpacing(int d) => setState(() {
         _pendIC = (_pendIC! + d).clamp(3, max(_capInterChar, _interCharSpace));
-        _pendIW = (_pendIW! + d).clamp(7, max(_capInterWord, _interWordSpace));
       });
 
   List<Widget> _buildSuggestionRows(AppColors c, double width, String Function(String) cs) {
@@ -628,7 +643,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         onIncrement: _accWpm ? () => setState(() => _pendWpm = min(_wpm + 5, _pendWpm! + 1)) : null,
       ));
     }
-    if (_pendIC != null && _pendIW != null) {
+    if (_pendIC != null) {
       final tighter = _pendIC! < _interCharSpace;
       rows.add(SuggestionRow(
         width: width,
@@ -636,9 +651,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         onToggle: (v) => setState(() => _accSpacing = v),
         label: '${Strings.t(tighter ? 'ac_spacing_up' : 'ac_spacing_down')}: '
             '$_interCharSpace→${_accSpacing ? _pendIC : _interCharSpace} '
-            '(${ditsToSeconds(_accSpacing ? _pendIC! : _interCharSpace, _wpm)}) / '
-            '$_interWordSpace→${_accSpacing ? _pendIW : _interWordSpace} '
-            '(${ditsToSeconds(_accSpacing ? _pendIW! : _interWordSpace, _wpm)})',
+            '(${ditsToSeconds(_accSpacing ? _pendIC! : _interCharSpace, _wpm)})',
         onDecrement: _accSpacing ? () => _stepSpacing(-1) : null,
         onIncrement: _accSpacing ? () => _stepSpacing(1) : null,
       ));
@@ -662,63 +675,65 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             style: TextStyle(fontSize: 11, color: c.textMuted)),
       ));
     }
-    if (s.weakChars.isNotEmpty) rows.add(_weakCharsBlock(c, s.weakChars, cs));
-    if (_mixups.isNotEmpty) rows.add(_mixupBlock(_mixups));
-    if (rows.isNotEmpty) rows.add(const Divider());
+    final cards = _proposalCards(c, s.weakChars, _mixups, unlockNow: s.unlockNext);
+    if (cards.isNotEmpty) rows.insertAll(0, [...cards, const SizedBox(height: 16)]);
     return rows;
   }
 
-  // Tappable weak characters (leave one out of the boost / take it back in),
-  // shared by the result page and the start view.
-  Widget _weakCharsBlock(AppColors c, Map<String, double> weak, String Function(String) cs,
-          {VoidCallback? onChanged}) =>
-      Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Column(children: [
-          Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 11, color: c.textMuted)),
-          const SizedBox(height: 6),
-          Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
-            for (final e in weak.entries)
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    if (!_excludedBoost.remove(e.key)) _excludedBoost.add(e.key);
-                  });
-                  onChanged?.call();
-                },
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: _excludedBoost.contains(e.key) ? c.surfaceAlt : c.danger.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: _excludedBoost.contains(e.key) ? c.border : c.danger.withValues(alpha: 0.4)),
-                  ),
-                  child: Text('${cs(e.key)}  ${(e.value * 100).round()}%',
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-                          color: _excludedBoost.contains(e.key) ? c.textMuted : c.danger)),
-                ),
-              ),
-          ]),
-        ]),
-      );
-
-  Widget _mixupBlock(List<MixupTrend> mixups, {VoidCallback? onChanged}) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: MixupBoostChips(
-          pairs: mixups,
-          excluded: _excludedMixups,
-          outputCase: _outputCase,
-          onToggle: (p) {
-            setState(() {
-              if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
-            });
-            onChanged?.call();
-          },
-        ),
-      );
+  // The proposal cards of Listen's start/result view, same look: weak
+  // characters (amber chips), recurring mix-up pairs, and in Koch the "On the
+  // way to" card, which then hosts the weak characters itself. Shared by the
+  // start view and the result page (#107).
+  List<Widget> _proposalCards(AppColors c, Map<String, double> weak, List<MixupTrend> mixups,
+      {bool unlockNow = false, bool includeOutlook = true, VoidCallback? onChanged}) {
+    String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
+    void toggle(String ch) {
+      setState(() {
+        if (!_excludedBoost.remove(ch)) _excludedBoost.add(ch);
+      });
+      onChanged?.call();
+    }
+    final outlook = includeOutlook && _boostApplies && _koch && !unlockNow && _kochLevel < _activeKochChars.length;
+    final hosted = outlook && weak.isNotEmpty;
+    final cards = <Widget>[
+      if (weak.isNotEmpty && !hosted)
+        WeakCharsCard(
+            chips: WeakCharChips(
+                weak: weak, excluded: _excludedBoost, display: cs, onToggle: toggle, scale: 1.2)),
+      if (mixups.isNotEmpty)
+        SizedBox(
+            width: double.infinity,
+            child: AppCard(
+                child: MixupBoostChips(
+                    pairs: mixups,
+                    excluded: _excludedMixups,
+                    outputCase: _outputCase,
+                    scale: 1.2,
+                    onToggle: (p) {
+                      setState(() {
+                        if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+                      });
+                      onChanged?.call();
+                    }))),
+      if (outlook)
+        UnlockOutlookCard(
+            next: cs(_activeKochChars[_kochLevel]),
+            chars: kochActiveChars(_kochLevel, _activeKochChars),
+            stats: _charStats.stats,
+            thresholds: _echoEngine?.thresholds ??
+                AdaptiveCopyThresholds(highThreshold: _highThreshold, unlockOccurrences: _unlockOccurrences),
+            display: cs,
+            weak: weak,
+            excluded: _excludedBoost,
+            onToggle: toggle),
+    ];
+    return [
+      for (var i = 0; i < cards.length; i++) ...[
+        if (i > 0) const SizedBox(height: 16),
+        cards[i],
+      ],
+    ];
+  }
 
   @override
   void dispose() {
@@ -775,7 +790,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (_state != _State.idle) return;   // guard against a double-tap racing two sessions
     // The noise stands for the whole block, also while keying, until the result page.
     InterferenceProfile.requestAmbient(this);
-    _correct = 0; _total = 0; _wordCounter = 0;
+    _wordCounter = 0;
     _blockResults.clear();
     BreakReminder.dismiss();
     _blockPairs.clear();
@@ -956,8 +971,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     _decoder.flush();
 
-    _total++;
-
     final ok = _attempt.trim().toUpperCase() == _targetPlain.toUpperCase();
     if (_repeats == 1) _firstAttempt = _attempt.trim();
     if (_repeats == 1) _applyBlockFeedback(_targetPlain, _attempt);
@@ -967,7 +980,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     if (ok) {
       _recordWord(_repeats == 1 ? WordOutcome.first : WordOutcome.afterRepeat);
-      _correct++;
       Timer(const Duration(milliseconds: 1200), () {
         if (mounted && _sessionActive) _advance();
       });
@@ -1094,6 +1106,16 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         ),
         actions: [
             const InterferenceButton(),
+          // While a block runs, Stop sits here (where the stats and settings
+          // icons are hidden anyway) so the touch paddles can be the last
+          // element at the bottom, as in Keyer, WiFi Trx, QSO bot and games.
+          if (_state != _State.idle)
+            TextButton.icon(
+              onPressed: _stopSession,
+              icon: Icon(Icons.stop_rounded, color: c.warning),
+              label: Text(Strings.t('stop').toUpperCase(),
+                  style: TextStyle(color: c.warning, fontWeight: FontWeight.bold)),
+            ),
           if (_state == _State.idle)
             IconButton(
               icon: Icon(Icons.bar_chart_outlined, color: c.textMuted),
@@ -1159,35 +1181,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                   builder: (context, fontSize) => _buildPracticeView(c, fontSize),
                 )),
 
-          // ── Stats bar ────────────────────────────────────────────────────
-          if (_total > 0) _StatsBar(correct: _correct, total: _total,
-              answerWpm: (_answerWpmMax > 0 && _answerWpm < _currentWpm) ? _answerWpm : null),
-
-          // ── Status label ─────────────────────────────────────────────────
-          _StatusLabel(state: _state, preparing: _preparing),
-
-          // ── Sliders ──────────────────────────────────────────────────────
-          if (_state == _State.idle)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(children: [
-              SliderRow(label: Strings.t('block_hear'), labelWidth: 56, valueWidth: 112, value: _wpm.toDouble(),
-                  display: '$_wpm (eff. ${(50 * _wpm / (31 + 4 * _interCharSpace + _interWordSpace)).round()})',
-                  min: TrainingProfile.minWpm.toDouble(), max: 60,
-                  divisions: 60 - TrainingProfile.minWpm,
-                  onChanged: (v) { setState(() => _wpm = v.round()); _savePrefs(); }),
-              // Leftmost notch (kGiveWpmMin - 1) = "same as Hören".
-              if (_keyerMode == 4) _straightGiveRow()
-              else
-              SliderRow(label: Strings.t('block_give'), labelWidth: 56, valueWidth: 112,
-                  value: (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax).toDouble(),
-                  min: kGiveWpmMin - 1.0, max: 60, divisions: 61 - kGiveWpmMin,
-                  display: _answerWpmMax == 0
-                      ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax',
-                  onChanged: (v) => _setGiveWpm(v < kGiveWpmMin ? 0 : v.round())),
-            ]),
-          ),
-
           ],
           if (!_showResult) ...[
           // Straight key: Geben speed (measured), also while answering.
@@ -1196,33 +1189,36 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: _straightGiveRow(),
             ),
-          // ── Touch paddle ─────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-            child: _keyerMode == 4
-                ? StraightKeyPaddle(onDown: _ditDown, onUp: _ditUp)
-                : IambicPaddles(onDitDown: _ditDown, onDitUp: _ditUp,
-                    onDahDown: _dahDown, onDahUp: _dahUp),
-          ),
-
-          // ── Start / Stop ─────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity, height: 56,
-              child: AppButton(
-                height: 56,
-                // Material icons, not ▶/■ glyphs: Android renders ▶ as an
-                // orange emoji.
-                icon: (_state == _State.idle) ? Icons.play_arrow_rounded : Icons.stop_rounded,
-                label: (_state == _State.idle)
-                    ? Strings.t('start').toUpperCase()
-                    : Strings.t('stop').toUpperCase(),
-                color: (_state != _State.idle) ? c.warning : c.accent,
-                onTap: (_state == _State.idle) ? _startFromIdle : _stopSession,
+          // ── Start (idle only; Stop is in the app bar) ────────────────────
+          if (_state == _State.idle)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
+                width: double.infinity, height: 56,
+                child: AppButton(
+                  height: 56,
+                  // Material icons, not ▶ glyphs: Android renders ▶ as an
+                  // orange emoji.
+                  icon: Icons.play_arrow_rounded,
+                  label: Strings.t('start').toUpperCase(),
+                  color: c.accent,
+                  onTap: _startFromIdle,
+                ),
               ),
             ),
-          ),
+
+          // ── Touch paddle: the last element while a block runs, like in the
+          // other keying screens. No function on the start screen, see also
+          // the external-interface idea in #95. ─────────────────────────────
+          if (_state != _State.idle) ...[
+            const SizedBox(height: 12),
+            if (_keyerMode == 4)
+              StraightKeyPaddle(onDown: _ditDown, onUp: _ditUp)
+            else
+              IambicPaddles(onDitDown: _ditDown, onDitUp: _ditUp,
+                  onDahDown: _dahDown, onDahUp: _dahUp),
+            const SizedBox(height: 16),
+          ],
           ],
         ],
       ),

@@ -11,7 +11,6 @@ EchoSuggestionInput input({
   CharStatsStore? stats,
   int answerMax = 0,
   int ic = 10,
-  int iw = 20,
   bool straight = false,
 }) =>
     EchoSuggestionInput(
@@ -19,9 +18,7 @@ EchoSuggestionInput input({
       wpm: 20,
       answerWpmMax: answerMax,
       interCharSpace: ic,
-      interWordSpace: iw,
       maxInterCharSpace: 10,
-      maxInterWordSpace: 20,
       kochLevel: kochLevel,
       kochTotal: kochTotal,
       activeChars: active,
@@ -38,7 +35,6 @@ void main() {
     expect(evaluateEchoBlock(e, input(firstTry: good)).newInterChar, isNull);
     final s = evaluateEchoBlock(e, input(firstTry: good));
     expect(s.newInterChar, 9);
-    expect(s.newInterWord, 19);
   });
 
   test('open Koch chars block tempo rise but not widening', () {
@@ -48,8 +44,8 @@ void main() {
     expect(s.newInterChar, isNull);
     expect(s.newWpm, isNull);
     final e2 = AdaptiveCopyEngine();
-    evaluateEchoBlock(e2, input(firstTry: bad, ic: 8, iw: 15, kochLevel: 5, kochTotal: 40));
-    final w = evaluateEchoBlock(e2, input(firstTry: bad, ic: 8, iw: 15, kochLevel: 5, kochTotal: 40));
+    evaluateEchoBlock(e2, input(firstTry: bad, ic: 8, kochLevel: 5, kochTotal: 40));
+    final w = evaluateEchoBlock(e2, input(firstTry: bad, ic: 8, kochLevel: 5, kochTotal: 40));
     expect(w.newInterChar, 9);
   });
 
@@ -60,8 +56,8 @@ void main() {
 
   test('speed rises only at char speed and without open chars', () {
     final e = AdaptiveCopyEngine();
-    evaluateEchoBlock(e, input(firstTry: good, ic: 3, iw: 7));
-    final s = evaluateEchoBlock(e, input(firstTry: good, ic: 3, iw: 7));
+    evaluateEchoBlock(e, input(firstTry: good, ic: 3));
+    final s = evaluateEchoBlock(e, input(firstTry: good, ic: 3));
     expect(s.newWpm, 21);
   });
 
@@ -101,10 +97,9 @@ void main() {
   test('straight key: no Gebe-Tempo or spacing proposals', () {
     final e = AdaptiveCopyEngine();
     for (var n = 0; n < 4; n++) {
-      final s = evaluateEchoBlock(e, input(firstTry: good, answerMax: 15, ic: 8, iw: 15, straight: true));
+      final s = evaluateEchoBlock(e, input(firstTry: good, answerMax: 15, ic: 8, straight: true));
       expect(s.newAnswerWpmMax, isNull);
       expect(s.newInterChar, isNull);
-      expect(s.newInterWord, isNull);
     }
   });
 
