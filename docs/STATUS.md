@@ -29,6 +29,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
+- `hear_char_detail.png` (DE+EN): the detail view of Listen now shows a "Mix-ups" section (#92).
 - `settings1.png` (DE+EN): the Keyer card has a new row "Hide touch keys when an adapter is detected" (#95).
 - Hören ⚙ sheet, Abstände section: new note under the sliders (word gap only applies to paper mode).
 - Hören start and result screens (paper and typing) and the Sätze, Mini-QSO and Q-Groups setup screens: new shared tempo + spacing block (`hear_result.png`, `*_setup.png`, Hören start view); effective speed now in brackets behind the WPM.
@@ -42,6 +43,8 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 ## v1.7.1 (maintenance release, in progress)
 `main` holds everything (version 1.7.1+8): fidelity audit fixes, review-gate fixes, updated libraries (Dependabot round of 2026-10-12 merged incl. `audio_session` 0.2.4, Gradle 9.8.1, AGP 9.4.1). Tried on the test phone: audio, keyer, settings, links, microphone decoder. **Next**: `v1.7.1-beta1` as GitHub pre-release for Sia (notes: `docs/release-notes-v1.7.1.md`), then the release itself (`tools/build_release.sh v1.7.1`, tag, APK + AAB; the manual PDF stays at v1.7.0, only text changed). Recurring checks and alerts: `docs/PROJECT.md` "Recurring maintenance". Engine config per screen: `android/test/engine_config_test.dart` (DECISIONS); a shared config helper instead of per-screen copies is issue #18.
 
+## #92 Listen mix-ups (branch `claude/listen-mixups-92`, not built or tested)
+Written in a cloud session without Flutter: `flutter analyze`, `flutter test` (new: `copy_grading_test.dart`, `recordMixup` group in `char_stats_test.dart`) and an on-device check in Listen typing mode (mix-up shows in the character detail; paper mode shows none) are still to do. Follow-ups: #101 (trends), #102 (practice suggestions).
 **#95 (hide touch keys with an adapter): implemented, not yet built or tested.** Written without a Flutter SDK, so `flutter analyze`/`flutter test` have not run. Next: analyze, test, debug build, install on the test phone and check with a real adapter: learn the keys with it (Settings → vband Morse Key), unplug, replug → touch keys vanish at once; also test the fallback by keying without relearning; hint X, hint tap → Settings, unplug → keys return. Open: does the descriptor of the adapters in use (vband, DIY) look sane? Check with the key diagnostics. Then commit with `Closes #95` once asked.
 
 ## Release note to include (next release)

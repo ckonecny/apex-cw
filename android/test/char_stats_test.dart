@@ -153,6 +153,54 @@ void main() {
     expect(d.avgWpm, isNull);
   });
 
+  group('recordMixup (#92)', () {
+    test('books the total and today, leaves weights and rates alone', () {
+      final store = CharStatsStore(CharStatsStore.hear);
+      store.now = () => DateTime(2026, 10, 1);
+      store.recordMixup('K>R');
+      store.recordMixup('K>R');
+      store.recordMixup('A>–');
+      expect(store.pairs, {'K>R': 2, 'A>–': 1});
+      expect(store.days['2026-10-01']!.pairs, {'K>R': 2, 'A>–': 1});
+      expect(store.stats, isEmpty);
+      expect(store.days['2026-10-01']!.attempts, 0);
+    });
+
+    test('recordWord (Geben) feeds the day bucket as well', () {
+      final store = CharStatsStore(CharStatsStore.echo);
+      store.now = () => DateTime(2026, 10, 1);
+      store.recordWord('CAT', 'CXT');
+      expect(store.pairs, {'A>X': 1});
+      expect(store.days['2026-10-01']!.pairs, {'A>X': 1});
+    });
+
+    test('per-day mix-ups survive save/load, tracks stay separate', () async {
+      SharedPreferences.setMockInitialValues({});
+      final p = await SharedPreferences.getInstance();
+      final hear = CharStatsStore(CharStatsStore.hear);
+      hear.now = () => DateTime(2026, 10, 1);
+      hear.recordMixup('K>R');
+      await hear.save(p);
+      hear.now = () => DateTime(2026, 10, 2);
+      hear.recordMixup('K>R');
+      await hear.save(p);
+      final back = CharStatsStore(CharStatsStore.hear);
+      await back.load(p);
+      expect(back.pairs, {'K>R': 2});
+      expect(back.days['2026-10-01']!.pairs, {'K>R': 1});
+      expect(back.days['2026-10-02']!.pairs, {'K>R': 1});
+      final echo = CharStatsStore(CharStatsStore.echo);
+      await echo.load(p);
+      expect(echo.pairs, isEmpty);
+    });
+
+    test('days saved before the mix-up log load with none', () {
+      final d = DayStat.fromJson({'a': 4, 'e': 1, 'ws': 80, 'wm': 20, 'c': <String, dynamic>{}});
+      expect(d.pairs, isEmpty);
+      expect(d.toJson().containsKey('p'), isFalse);
+    });
+  });
+
   test('weak-char threshold follows the upper success threshold, clamped 2-12 %', () {
     expect(weakCharErrorThreshold(0.90), closeTo(0.10, 1e-9));
     expect(weakCharErrorThreshold(0.95), closeTo(0.05, 1e-9));

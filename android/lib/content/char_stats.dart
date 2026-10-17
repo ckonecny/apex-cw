@@ -76,6 +76,9 @@ class DayStat {
   int ws = 0;
   int wm = 0;
   final Map<String, List<int>> chars = {};
+  // Mix-ups of this day, "T>G" → count (same pairs as CharStatsStore.pairs, #92).
+  // Feeds the trend view; days from before this existed simply have none.
+  final Map<String, int> pairs = {};
 
   DayStat();
 
@@ -88,10 +91,13 @@ class DayStat {
       final l = (v as List).cast<int>();
       chars[k] = [l[0], l[1]];
     });
+    (j['p'] as Map<String, dynamic>? ?? const {}).forEach((k, v) => pairs[k] = v as int);
   }
 
-  Map<String, dynamic> toJson() =>
-      {'a': attempts, 'e': errors, 'ws': ws, 'wm': wm, 'c': chars};
+  Map<String, dynamic> toJson() => {
+        'a': attempts, 'e': errors, 'ws': ws, 'wm': wm, 'c': chars,
+        if (pairs.isNotEmpty) 'p': pairs,
+      };
 
   double? get rate => attempts == 0 ? null : (attempts - errors) / attempts;
   double? get avgWpm => attempts == 0 || ws == 0 ? null : ws / attempts;
@@ -135,6 +141,15 @@ class CharStatsStore {
     final c = d.chars.putIfAbsent(char, () => [0, 0]);
     c[0]++;
     if (!correct) c[1]++;
+  }
+
+  // Books one mix-up "T>G" (first wrong char of a first attempt): into the
+  // total and into today's bucket for the trend. Display only — weights, EMA
+  // and history are not touched (#92).
+  void recordMixup(String pair) {
+    pairs[pair] = (pairs[pair] ?? 0) + 1;
+    final d = days.putIfAbsent(dayKey(now()), () => DayStat());
+    d.pairs[pair] = (d.pairs[pair] ?? 0) + 1;
   }
 
   List<MapEntry<String, int>> topPairs([int n = 10]) {
@@ -261,7 +276,7 @@ class CharStatsStore {
       return null;
     }
     final pair = '${t[failed]}>${failed < r.length ? r[failed] : '–'}';
-    if (t[failed].trim().isNotEmpty) pairs[pair] = (pairs[pair] ?? 0) + 1;
+    if (t[failed].trim().isNotEmpty) recordMixup(pair);
     for (var i = 0; i < failed; i++) { bump(t[i], correct: true); }
     bump(t[failed], correct: false, weight: 4);
     if (failed > 0 && t[failed - 1] != t[failed]) bump(t[failed - 1], weight: 2);

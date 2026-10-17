@@ -89,7 +89,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
 
   Future<void> _openDetail(String ch, CharStat stat, bool ready) =>
       showCharStatSheet(context,
-          ch: ch, stat: stat, isHear: _isHear, ready: ready,
+          ch: ch, stat: stat, ready: ready,
           unlockOccurrences: _unlockOccurrences, highThreshold: _highThreshold,
           outputCase: _outputCase, pairs: _store.pairs, days: _store.days,
           onListen: () => _listen(ch));
