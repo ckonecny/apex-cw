@@ -96,6 +96,8 @@ class UnlockOutlookCard extends StatelessWidget {
   final Map<String, double> weak;
   final Set<String> excluded;
   final void Function(String) onToggle;
+  // Title and bar only (when space is tight).
+  final bool compact;
   const UnlockOutlookCard(
       {super.key,
       required this.next,
@@ -105,7 +107,8 @@ class UnlockOutlookCard extends StatelessWidget {
       required this.display,
       required this.weak,
       required this.excluded,
-      required this.onToggle});
+      required this.onToggle,
+      this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -157,11 +160,11 @@ class UnlockOutlookCard extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: AppCard(
-        padding: const EdgeInsets.all(14),
+        padding: compact ? const EdgeInsets.symmetric(horizontal: 14, vertical: 10) : const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(Strings.t('ac_outlook_title').replaceFirst('{ch}', next),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: c.textPrimary)),
-          const SizedBox(height: 10),
+          SizedBox(height: compact ? 8 : 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
@@ -171,13 +174,13 @@ class UnlockOutlookCard extends StatelessWidget {
               valueColor: AlwaysStoppedAnimation(c.accent),
             ),
           ),
-          if (owed.isNotEmpty) ...[
+          if (!compact && owed.isNotEmpty) ...[
             const SizedBox(height: 10),
             Text(Strings.t('ac_outlook_attempts'), style: label),
             const SizedBox(height: 6),
             chips([for (final x in owed) '${display(x.key)} ${x.value}']),
           ],
-          if (weak.isNotEmpty) ...[
+          if (!compact && weak.isNotEmpty) ...[
             const SizedBox(height: 10),
             Text(
                 Strings.t('ac_outlook_accuracy_boost')

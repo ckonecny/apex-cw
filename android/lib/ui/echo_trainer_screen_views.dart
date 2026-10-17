@@ -149,20 +149,26 @@ extension _EchoViews on _EchoTrainerScreenState {
             ),
             builder: (compact) => Column(children: [
               const KeyAdapterHint(),
-              if (weak.isNotEmpty || mixups.isNotEmpty)
+              if (weak.isNotEmpty || mixups.isNotEmpty || (_boostApplies && _koch))
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                   child: compact
-                      ? BoostSummaryRow(
-                          chars: [
-                            for (final ch in weak.keys)
-                              if (!_excludedBoost.contains(ch)) cs(ch),
-                          ],
-                          pairs: mixups.where((m) => !_excludedMixups.contains(m.pair)).length,
-                          onTap: () => showBoostSheet(context,
-                              cards: (refresh) => _proposalCards(c, weak, mixups,
-                                  includeOutlook: false, onChanged: refresh)),
-                        )
+                      ? Column(children: [
+                          if (weak.isNotEmpty || mixups.isNotEmpty)
+                            BoostSummaryRow(
+                              chars: [
+                                for (final ch in weak.keys)
+                                  if (!_excludedBoost.contains(ch)) cs(ch),
+                              ],
+                              pairs: mixups.where((m) => !_excludedMixups.contains(m.pair)).length,
+                              onTap: () => showBoostSheet(context,
+                                  cards: (refresh) => _proposalCards(c, weak, mixups,
+                                      includeOutlook: false, onChanged: refresh)),
+                            ),
+                          // Like Listen: the "On the way to" bar stays.
+                          if (weak.isNotEmpty || mixups.isNotEmpty) const SizedBox(height: 12),
+                          ..._proposalCards(c, weak, mixups, compactOutlook: true),
+                        ])
                       : Column(children: _proposalCards(c, weak, mixups)),
                 ),
             ]),

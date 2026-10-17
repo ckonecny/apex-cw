@@ -685,7 +685,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // way to" card, which then hosts the weak characters itself. Shared by the
   // start view and the result page (#107).
   List<Widget> _proposalCards(AppColors c, Map<String, double> weak, List<MixupTrend> mixups,
-      {bool unlockNow = false, bool includeOutlook = true, VoidCallback? onChanged}) {
+      {bool unlockNow = false, bool includeOutlook = true, bool compactOutlook = false, VoidCallback? onChanged}) {
     String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
     void toggle(String ch) {
       setState(() {
@@ -694,13 +694,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       onChanged?.call();
     }
     final outlook = includeOutlook && _boostApplies && _koch && !unlockNow && _kochLevel < _activeKochChars.length;
-    final hosted = outlook && weak.isNotEmpty;
+    final hosted = outlook && weak.isNotEmpty && !compactOutlook;
     final cards = <Widget>[
-      if (weak.isNotEmpty && !hosted)
+      if (weak.isNotEmpty && !hosted && !compactOutlook)
         WeakCharsCard(
             chips: WeakCharChips(
                 weak: weak, excluded: _excludedBoost, display: cs, onToggle: toggle, scale: 1.2)),
-      if (mixups.isNotEmpty)
+      if (mixups.isNotEmpty && !compactOutlook)
         SizedBox(
             width: double.infinity,
             child: AppCard(
@@ -725,7 +725,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             display: cs,
             weak: weak,
             excluded: _excludedBoost,
-            onToggle: toggle),
+            onToggle: toggle,
+            compact: compactOutlook),
     ];
     return [
       for (var i = 0; i < cards.length; i++) ...[
