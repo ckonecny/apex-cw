@@ -7,9 +7,9 @@ import 'practice_log.dart';
 const kGoalChoices = [5, 10, 15, 20, 30, 60];
 const kDefaultGoalMinutes = 10;
 
-/// Spaced goal (#33): number of sessions per day (0 = off), each at least
-/// [kLongSessionSeconds] long and at least [kSessionPause] after the end of
-/// the previous counted one.
+/// Spaced goal (#33): number of sessions per day (0 = off). Each session
+/// credits at most goal / n of the daily goal; practice starting less than
+/// [kSessionPause] after the end of the previous one belongs to that one.
 const kSessionChoices = [3, 5];
 const kSessionPause = Duration(minutes: 15);
 
@@ -62,28 +62,29 @@ class GoalStatus {
   /// Practice seconds of the current week (Mon–Sun).
   final int weekSeconds;
 
-  /// Spaced goal: sessions wanted (0 = off) and counted today.
+  /// Spaced goal: sessions wanted (0 = off) and sessions that reached their
+  /// share today.
   final int sessionsGoal;
   final int sessionsDone;
 
-  /// Spaced goal: wait until the next session counts (zero = can start now);
-  /// null when off or all sessions are done.
+  /// Seconds that count towards the goal: all of today's practice, or with
+  /// the spaced goal at most goal / n per session.
+  final int creditSeconds;
+
+  /// Spaced goal: time until practice counts again, while the current session
+  /// has reached its share; null otherwise.
   final Duration? nextIn;
 
   const GoalStatus(this.todaySeconds, this.goalSeconds, this.streak, this.week,
-      this.todayIndex, this.weekSeconds,
+      this.todayIndex, this.weekSeconds, this.creditSeconds,
       {this.sessionsGoal = 0, this.sessionsDone = 0, this.nextIn});
 
-  bool get sessionsMet => sessionsDone >= sessionsGoal;
-  bool get met => todaySeconds >= goalSeconds && sessionsMet;
-  double get progress {
-    final time = todaySeconds / goalSeconds;
-    final spread = sessionsGoal == 0 ? 1.0 : sessionsDone / sessionsGoal;
-    return (time < spread ? time : spread).clamp(0.0, 1.0);
-  }
+  bool get met => creditSeconds >= goalSeconds;
+  double get progress => (creditSeconds / goalSeconds).clamp(0.0, 1.0);
 
   int get minutesToday => todaySeconds ~/ 60;
-  int get minutesLeft => ((goalSeconds - todaySeconds) / 60).ceil().clamp(0, 9999);
+  int get creditMinutes => creditSeconds ~/ 60;
+  int get minutesLeft => ((goalSeconds - creditSeconds) / 60).ceil().clamp(0, 9999);
 }
 
 DateTime _dateOf(String key) {
@@ -94,9 +95,9 @@ DateTime _dateOf(String key) {
 String _keyOf(DateTime utcDate) => '${utcDate.year.toString().padLeft(4, '0')}-'
     '${utcDate.month.toString().padLeft(2, '0')}-${utcDate.day.toString().padLeft(2, '0')}';
 
-/// The sessions of one day that count for the spaced goal, oldest first:
-/// at least [kLongSessionSeconds] long and starting at least [kSessionPause]
-/// after the end of the previous counted one.
+/// The sessions of one day that count as "spread" for the achievement, oldest
+/// first: at least [kLongSessionSeconds] long and starting at least
+/// [kSessionPause] after the end of the previous counted one.
 List<PracticeSession> countedSessions(Iterable<PracticeSession> day) {
   final list = day.toList()..sort((a, b) => a.start.compareTo(b.start));
   final out = <PracticeSession>[];
@@ -106,6 +107,39 @@ List<PracticeSession> countedSessions(Iterable<PracticeSession> day) {
     out.add(s);
   }
   return out;
+}
+
+/// One slot of the spaced goal: sessions that start less than [kSessionPause]
+/// after the end of the previous one are merged.
+class SpreadSlot {
+  int seconds;
+  DateTime end;
+  SpreadSlot(this.seconds, this.end);
+}
+
+List<SpreadSlot> spreadSlots(Iterable<PracticeSession> day) {
+  final list = day.toList()..sort((a, b) => a.start.compareTo(b.start));
+  final out = <SpreadSlot>[];
+  for (final s in list) {
+    if (out.isNotEmpty && s.startTime.isBefore(out.last.end.add(kSessionPause))) {
+      out.last.seconds += s.seconds;
+      if (s.endTime.isAfter(out.last.end)) out.last.end = s.endTime;
+    } else {
+      out.add(SpreadSlot(s.seconds, s.endTime));
+    }
+  }
+  return out;
+}
+
+/// Seconds of [day] that count for the spaced goal: each slot credits at most
+/// goal / [n]; the sum is capped at the goal.
+int spreadCredit(Iterable<PracticeSession> day, int goalSeconds, int n) {
+  final cap = goalSeconds ~/ n;
+  var sum = 0;
+  for (final slot in spreadSlots(day)) {
+    sum += slot.seconds < cap ? slot.seconds : cap;
+  }
+  return sum < goalSeconds ? sum : goalSeconds;
 }
 
 DateTime _mondayOf(DateTime d) => d.subtract(Duration(days: d.weekday - 1));
@@ -124,12 +158,10 @@ GoalStatus goalStatus(PracticeLog log, DailyGoalSettings s, DateTime now) {
     }
   }
   // A day without session entries (dropped from the log) counts by time alone.
-  bool spread(String k) =>
-      s.sessions == 0 || !byDay.containsKey(k) || countedSessions(byDay[k]!).length >= s.sessions;
-  bool met(DateTime d) {
-    final k = _keyOf(d);
-    return log.dayOf(k).seconds >= goal && spread(k);
-  }
+  int credit(String k) => s.sessions == 0 || !byDay.containsKey(k)
+      ? log.dayOf(k).seconds
+      : spreadCredit(byDay[k]!, goal, s.sessions);
+  bool met(DateTime d) => credit(_keyOf(d)) >= goal;
 
   final earliest = log.days.keys.isEmpty ? todayKey : (log.days.keys.toList()..sort()).first;
   var streak = 0;
@@ -173,12 +205,16 @@ GoalStatus goalStatus(PracticeLog log, DailyGoalSettings s, DateTime now) {
                     ? DotState.frozen
                     : DotState.missed);
   }
-  final counted = s.sessions == 0 ? <PracticeSession>[] : countedSessions(byDay[todayKey] ?? const []);
+  final slots = s.sessions == 0 ? <SpreadSlot>[] : spreadSlots(byDay[todayKey] ?? const []);
+  final cap = s.sessions == 0 ? 0 : goal ~/ s.sessions;
   Duration? nextIn;
-  if (s.sessions > 0 && counted.length < s.sessions) {
-    final due = counted.isEmpty ? now : counted.last.endTime.add(kSessionPause);
-    nextIn = due.isAfter(now) ? due.difference(now) : Duration.zero;
+  if (slots.isNotEmpty && slots.last.seconds >= cap && credit(todayKey) < goal) {
+    final due = slots.last.end.add(kSessionPause);
+    if (due.isAfter(now)) nextIn = due.difference(now);
   }
   return GoalStatus(log.dayOf(todayKey).seconds, goal, streak, week, todayIndex, weekSeconds,
-      sessionsGoal: s.sessions, sessionsDone: counted.length, nextIn: nextIn);
+      credit(todayKey),
+      sessionsGoal: s.sessions,
+      sessionsDone: slots.where((x) => x.seconds >= cap).length,
+      nextIn: nextIn);
 }

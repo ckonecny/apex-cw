@@ -2226,5 +2226,21 @@ scroll anyway and are unchanged. Considered and rejected: a collapsible card
 (scroll within scroll).
 Both now measure the tempo block below the cards too (`FitOrCompact(below: …)`), so the cards go compact as soon as cards + tempo block would not fit; in the sheet the Send cards are the same weak-character/mix-up cards (the "On the way to" card is not part of the compact variant).
 
+## 2026-10-13: Spaced goal credits a share per session (replaces #33 rule)
+The old rule (a session counts from 5 min, 15 min after the previous counted
+one; ring = lesser of time and sessions) punished spreading: 15 x 1 min gave
+0 %, and time in too-close sessions was wasted for the session count.
+- **New rule:** with `goal.sessions` = n, practice is grouped into slots
+  (`spreadSlots`: a session starting less than `kSessionPause` = 15 min after
+  the end of the previous one joins its slot). Each slot credits at most
+  goal / n (`spreadCredit`); the sum, capped at the goal, is the day's credit.
+  Day met = credit >= goal. Ring, streak, week dots and reminder all use it
+  (`GoalStatus.creditSeconds`); n = 0 keeps the plain total.
+- **Card:** ring shows credited minutes; `nextIn` is set only while the current
+  slot has reached its share and the 15 min pause is running.
+- **Unchanged:** `countedSessions` and the "Spread out" achievement (3 sessions
+  of >= 5 min, independent of the setting).
+- Past days without session entries still count by time alone.
+
 ## Group length from 1 (2026-10-17)
 The random-group length slider now starts at 1 (was 2), so single characters can be drilled on their own (1–1), also mixed into longer groups (e.g. 1–3). Changed in the settings sheet, `CwGenerator.randomCharGroup` and Send's adaptive draw (`_pickAdaptiveGroup`); stored values stay valid. The firmware has no such range at all (app extension, see "min–max range sliders").
