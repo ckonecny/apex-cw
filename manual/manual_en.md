@@ -121,7 +121,7 @@ themes with their own palette: Amber with warm yellows, Red (night vision) with
 muted red, which disturbs dark adaptation the least, Green like a phosphor
 terminal, Warm grey with a soft, low-contrast brown-grey, and Navy & orange
 with a blue-black ground, silver text and an orange accent (only orange and
-silver tones, like a smartwatch face). There is also a **Blue light filter**
+silver tones, like a smartwatch face; all menu icons are orange). There is also a **Blue light filter**
 you can switch on: it tints the whole app warm (in light and dark) at a
 strength you set. All of it takes effect immediately.
 
@@ -1209,7 +1209,8 @@ through), or to include it again.
   every result page. In the next block they are boosted at the *Moderate*
   level, with up to 3 draws per character (see [Practice set](#practice-set-settings)).
   This only applies to random groups (Koch lesson or All characters ·
-  Random), not to words. If you have your own practice set characters and
+  Random). With words, abbreviations, mixed and the practice set the boost has
+  no effect, so the app does not show the weak characters there at all. If you have your own practice set characters and
   **Boost practice set** switched on, they are added, and the higher level applies
   (so Strong for all of them if you chose Strong).
 - **Send:** the weak characters appear on the result page when you practice
@@ -2423,12 +2424,13 @@ decoding, so it always matches what you hear.
 ## Character chart
 
 The character chart lists every character of the app with its code, grouped
-into **Letters**, **Digits**, **Punctuation** and **Prosigns** (SK, KN, KA, AS,
+into **Letters**, **Umlauts and CH** (Ä, Ö, Ü, CH), **Digits**, **Punctuation** and **Prosigns** (SK, KN, KA, AS,
 VE, BK). Each code is drawn as dots and dashes.
 
 Tap a character: it sounds at your pitch, and its dots and dashes light up as
 they sound. The speed starts at the value from the Listen training; **−** and
-**+** change it for this view only. Set the pitch under Settings → General.
+**+** change it for this view only. Set the pitch under Settings → General. CH is a historic extra character;
+tapping it shows a note to always send it as the two letters C and H.
 
 ::: {.shots .one}
 ![Character chart: a character lights up while it plays](img/en/chart.png)
@@ -2554,7 +2556,8 @@ key contacts into **key presses**:
 - **Homemade:** any small USB HID device that reports the dit and dah
   contacts as two different keys works. A ready-to-build example is
   [diy-vband-adapter](https://github.com/ckonecny/diy-vband-adapter). It is a
-  Seeed XIAO SAMD21 with a 3.5 mm jack that sends the same keys as the vband
+  small adapter built from a microcontroller board with a 3.5 mm jack (several
+  boards are supported) that sends the same keys as the vband
   adapter. It plugs straight into the phone with a USB-C cable.
 
 Older phones with micro-USB need a USB OTG adapter.

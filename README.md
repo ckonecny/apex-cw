@@ -237,8 +237,9 @@ small USB (or USB‑OTG) adapter that turns key contacts into keystrokes:
   that reports the dit and dah key contacts as two separate keystrokes.
   A ready-to-build example is
   **[diy-vband-adapter](https://github.com/ckonecny/diy-vband-adapter)**:
-  a Seeed XIAO SAMD21 plus a 3.5 mm jack, sending the same keys as the vband
-  adapter; it connects to the phone with a USB‑C ↔ USB‑C cable.
+  a small adapter built from a microcontroller board plus a 3.5 mm jack (several
+  boards are supported), sending the same keys as the vband adapter; it
+  connects to the phone with a USB‑C ↔ USB‑C cable.
 
 Whichever adapter you use, open **Settings → Learn dit/dah keys** and press
 each key once — the app learns whatever two keys your adapter happens to

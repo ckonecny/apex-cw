@@ -1159,6 +1159,9 @@ built like the games hub (the tile widget is now the shared `HubCard` in
   lighting as in the tree (rule 2 config push, `<XX>` for prosigns, elementOn/
   Off events). Portrait only (no landscape exception needed). Tile order is
   fixed in the screen; the codes come from the table, so they cannot diverge.
+  Section "Umlauts and CH" (Ä Ö Ü CH) added so every character of the Morse
+  tree is in the chart (CH shows the tree's obsolete-note). ; ! " ' stay out:
+  not in the tree and the generator has no codes for them.
 
 ## Home: free modes grouped one level down (2026-09-29, user request)
 The home screen scrolled with its eight cards and the scroll bar was
@@ -2108,3 +2111,13 @@ Fixed in `MicInput.kt`: a failing `AudioRecord.read()` (negative return: microph
 
 ## Engine config test per screen (2026-10-12)
 Rule 2 (the native engines are shared singletons, every screen pushes its own config) was only enforced by reading code. `android/test/engine_config_test.dart` opens the screens with recording channel mocks and distinctive, non-default preferences (wpm 23, Iambic mode 3, pitch 777, CurtisB 60/30, ACS 2, tone softness 2) and expects the matching `setWpm/setMode/setCurtisBTiming/setAcs/setFreq/setEnvelopeMs` calls, and for generator screens speed plus both spacings. A mutation check (removing `setCurtisBTiming` from `radio_cave_screen.dart`) makes it fail as intended. Covered: keyer, qso_bot, wifi_trx, radio_cave, invaders, memory_chain, pileup (keyer on entry); head_copy, q_groups, mini_qso (generator on entry); morse_chart, morse_tree (single characters); char_practice (two phases: the keyer speed is pushed right before the answer, by design). Not covered: echo, exam, exam_send, generator (Geben), morsel, adventure, decoder, which push their config when a session starts behind a button; they would need a scripted interaction per screen. No gap was found on entry. The Kotlin side already protects one dependency: `setInterWordSpace` resets the straight-key word gap, so a screen must send `setStraightWordGap` after it (echo and adventure do). Stage 2 (one shared `pushAll` instead of per-screen copies) is not done; decide after the next quarterly scan.
+
+## Weak-character card only where the boost works (2026-10-16)
+The native boost (`practiceChars` + `boostLevel`) acts only on random character
+groups (content mode 0). In a Koch lesson with words, abbreviations or mixed
+(of which only a third are groups) it did nothing, yet the weak-characters card
+and its include/exclude chips were shown. `_boostApplies` in
+`adaptive_copy_body.dart` is now `contentMode == 0`, in a Koch lesson as well;
+elsewhere there are no weak characters, no chips and no boost push, so the
+draw is never changed silently. Mixed was left out deliberately (partial
+effect, not predictable for the user). Manual DE+EN updated.

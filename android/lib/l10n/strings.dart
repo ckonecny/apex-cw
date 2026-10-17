@@ -377,6 +377,7 @@ class Strings {
     'chart_hint': ['Hören, wie ein Zeichen klingt, und den Code mitlesen', 'Hear a character and follow its code'],
     'chart_intro': ['Tippe auf ein Zeichen: Es klingt mit deiner Tonhöhe, und die Punkte und Striche leuchten auf, während sie erklingen.', 'Tap a character: it sounds at your pitch, and its dots and dashes light up as they sound.'],
     'chart_letters': ['Buchstaben', 'Letters'],
+    'chart_national': ['Umlaute und CH', 'Umlauts and CH'],
     'chart_digits': ['Ziffern', 'Digits'],
     'chart_signs': ['Satzzeichen', 'Punctuation'],
     'chart_prosigns': ['Prosigns', 'Prosigns'],

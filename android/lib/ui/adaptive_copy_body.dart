@@ -319,6 +319,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     if (old.kochLevel == widget.kochLevel &&
         old.kochLesson == widget.kochLesson &&
         old.contentModeIndex == widget.contentModeIndex &&
+        old.contentModeOrdinals[old.contentModeIndex] ==
+            widget.contentModeOrdinals[widget.contentModeIndex] &&
         listEquals(old.activeKochChars, widget.activeKochChars)) {
       return;
     }
@@ -329,10 +331,12 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // Populates _weakChars from lifetime stats right away, so the idle/start
   // screen's panel (and the boost it drives) is available from the very
   // first block, not only after _finishBlock() has run once.
-  // The native boost only works on random groups (Koch lesson or all
-  // characters); the practice-set pool and words are not boosted.
-  bool get _boostApplies =>
-      widget.kochLesson || widget.contentModeOrdinals[widget.contentModeIndex] == 0;
+  // The native boost only works on random character groups (content mode 0,
+  // in a Koch lesson or over all characters). Words, abbreviations, mixed
+  // (only a third are groups) and the practice-set pool are not boosted, so
+  // there neither the weak-characters card nor its chips are shown and the
+  // draw is never changed.
+  bool get _boostApplies => widget.contentModeOrdinals[widget.contentModeIndex] == 0;
 
   Map<String, double> _weakCharsNow() {
     if (!_boostApplies) return {};

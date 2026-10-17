@@ -124,7 +124,7 @@ sind dunkle Schemata mit eigener Farbpalette: Bernstein mit warmen Gelbtönen,
 Rot (Nachtsicht) mit gedämpftem Rot, das die Dunkeladaption der Augen am
 wenigsten stört, Grün wie ein Phosphor-Terminal, Warmgrau mit weichem,
 kontrastarmem Braungrau und Marine & Orange mit blauschwarzem Grund, silbernem
-Text und orangem Akzent (nur Orange- und Silbertöne, wie ein Smartwatch-Zifferblatt).
+Text und orangem Akzent (nur Orange- und Silbertöne, wie ein Smartwatch-Zifferblatt; alle Menü-Symbole sind orange).
 Dazu gibt es einen zuschaltbaren **Blaulichtfilter**, der die ganze App warm
 einfärbt (in Hell und Dunkel) und dessen Stärke du einstellst. Alles wirkt sofort.
 
@@ -1243,7 +1243,8 @@ mehrere Blöcke und Sitzungen.
   jeder Ergebnisseite. Im nächsten Block werden sie mit der Stufe *Mäßig*
   verstärkt (bis zu 3 Würfe pro Zeichen, siehe
   [Übungsset](#uebungsset-einstellungen)). Das gilt nur für Zufallsgruppen (Koch-Lektion
-  oder Alle Zeichen · Zufall), nicht für Wörter. Hast du im Übungsset
+  oder Alle Zeichen · Zufall). Bei Wörtern, Abkürzungen, Gemischt und Übungsset
+  wirkt die Verstärkung nicht; dort zeigt die App die schwachen Zeichen gar nicht erst an. Hast du im Übungsset
   eigene Zeichen und **Übungsset bevorzugen** eingestellt, kommen diese dazu; es gilt
   dann die höhere Stufe (Stark also für alle, wenn du Stark gewählt hast).
 - **Geben:** Die schwachen Zeichen erscheinen auf der Ergebnisseite, wenn du
@@ -2506,13 +2507,15 @@ und decodiert. Er stimmt also immer mit dem überein, was du hörst.
 ## Zeichentabelle
 
 Die Zeichentabelle listet alle Zeichen der App mit ihrem Code, gruppiert in
-**Buchstaben**, **Ziffern**, **Satzzeichen** und **Prosigns** (SK, KN, KA, AS,
+**Buchstaben**, **Umlaute und CH** (Ä, Ö, Ü, CH), **Ziffern**, **Satzzeichen** und **Prosigns** (SK, KN, KA, AS,
 VE, BK). Jeder Code ist als Punkte und Striche gezeichnet.
 
 Tippe auf ein Zeichen: Es klingt mit deiner Tonhöhe, und seine Punkte und
 Striche leuchten auf, während sie erklingen. Das Tempo startet mit dem Wert aus
 dem Training Hören; mit **−** und **+** änderst du es nur für diese Ansicht.
-Die Tonhöhe stellst du unter Einstellungen → Allgemein ein.
+Die Tonhöhe stellst du unter Einstellungen → Allgemein ein. CH ist ein
+historisches Zusatzzeichen; beim Antippen erscheint ein Hinweis, es immer als
+zwei Buchstaben C und H zu senden.
 
 ::: {.shots .one}
 ![Zeichentabelle: ein Zeichen leuchtet beim Abspielen](img/de/chart.png)
@@ -2640,7 +2643,8 @@ der die Tastenkontakte in **Tastendrücke** übersetzt:
 - **Selbstgebaut:** Jedes kleine USB-HID-Gerät, das Dit- und Dah-Kontakt als
   zwei verschiedene Tasten meldet. Ein fertiges Beispiel zum Nachbauen ist
   [diy-vband-adapter](https://github.com/ckonecny/diy-vband-adapter): ein
-  Seeed XIAO SAMD21 mit 3,5-mm-Buchse, der dieselben Tasten sendet wie der
+  kleiner Adapter aus einem Mikrocontroller-Board mit 3,5-mm-Buchse (mehrere
+  Boards werden unterstützt), der dieselben Tasten sendet wie der
   vband-Adapter. Er wird mit einem USB-C-Kabel direkt ans Handy gesteckt.
 
 Ältere Handys mit Micro-USB brauchen einen USB-OTG-Adapter.
