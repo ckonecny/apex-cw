@@ -9,31 +9,43 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   // away, not only from the second block onward.
   Widget _buildIdle(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
+      // The tempo + spacing card sits at the bottom of the scrolling area
+      // (directly above the start buttons when there is room) and scrolls
+      // with the rest on small phones instead of overflowing.
       return SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: constraints.maxHeight),
-          child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Center(
             // Full "on the way to" card when the screen has room for it,
             // compact (bar only) just when the full one would need scrolling.
             child: _FitOrCompact(
               availableHeight: constraints.maxHeight - 32,
               builder: (compact) => Column(mainAxisSize: MainAxisSize.min, children: [
-                _buildSpacingControl(context, scale: 1.2),
-                if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact)) ...[
-                  const SizedBox(height: 16),
+                if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
                   _buildWeakCharsSection(context, scale: 1.2),
-                ],
                 if (_mixups.isNotEmpty && !compact) ...[
-                  const SizedBox(height: 16),
+                  if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
+                    const SizedBox(height: 16),
                   _buildMixupSection(context, scale: 1.2),
                 ],
                 if (_buildUnlockOutlook(context, compact: compact) case final outlook?) ...[
-                  const SizedBox(height: 12),
+                  if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
+                    const SizedBox(height: 12),
                   outlook,
                 ],
               ]),
             ),
+                ),
+              ),
+              if (widget.controls != null) widget.controls!,
+            ],
           ),
         ),
       );
@@ -111,40 +123,6 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                 onToggle: (p) => _update(() {
                       if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
                     }))));
-  }
-
-  // Manual spacing control, requested to be visible at every summary and at
-  // the start ("bitte bei jeder zusammenfassung und auch zu beginn den
-  // block zum anpassen der pausen einblenden") — separate from the engine's
-  // own accept/reject spacing suggestion on the result screen: this one
-  // always shows and lets the user nudge the pause directly, any time.
-  // Bounds match the Settings sliders (interCharSpace/interWordSpace), not
-  // _startInterCharSpace/_startInterWordSpace — those only cap how far the
-  // *engine* is allowed to auto-widen, not a manual override.
-  void _adjustSpacing(int delta) {
-    final ic = (widget.interCharSpace + delta).clamp(3, 45);
-    final iw = (widget.interWordSpace + delta).clamp(6, 105);
-    if (ic == widget.interCharSpace && iw == widget.interWordSpace) return;
-    widget.onSpacingChanged?.call(ic, iw);
-  }
-
-  Widget _buildSpacingControl(BuildContext context, {double scale = 1}) {
-    final c = AppColors.of(context);
-    return SizedBox(width: double.infinity, child: AppCard(child: Row(children: [
-      Expanded(child: Text(Strings.t('ac_spacing_control_title'),
-          style: TextStyle(fontSize: 11 * scale, color: c.textMuted))),
-      _TapTarget(onTap: () => _adjustSpacing(-1),
-          child: Icon(Icons.remove, size: 20, color: c.accent)),
-      SizedBox(
-        width: 60 * scale,
-        child: Text('${widget.interCharSpace}/${widget.interWordSpace}',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15 * scale,
-                fontWeight: FontWeight.bold, color: c.accent)),
-      ),
-      _TapTarget(onTap: () => _adjustSpacing(1),
-          child: Icon(Icons.add, size: 20, color: c.accent)),
-    ])));
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -564,8 +542,6 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                       .replaceFirst('{arrow}', _trend!.arrow),
                   style: TextStyle(fontSize: 13, color: c.textMuted)),
             ],
-            const SizedBox(height: 20),
-            _buildSpacingControl(context, scale: 1.2),
             if (weak.isNotEmpty && !_outlookHostsWeakChars(false)) ...[
               const SizedBox(height: 20),
               _buildWeakCharsSection(context, scale: 1.2),
@@ -588,6 +564,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
           ]),
         ),
       ),
+      if (widget.controls != null) widget.controls!,
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Row(children: [
