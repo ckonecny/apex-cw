@@ -2225,3 +2225,6 @@ scroll anyway and are unchanged. Considered and rejected: a collapsible card
 (opens into the same lack of space) and a card with its own scroll area
 (scroll within scroll).
 Both now measure the tempo block below the cards too (`FitOrCompact(below: …)`), so the cards go compact as soon as cards + tempo block would not fit; in the sheet the Send cards are the same weak-character/mix-up cards (the "On the way to" card is not part of the compact variant).
+
+## Group length from 1 (2026-10-17)
+The random-group length slider now starts at 1 (was 2), so single characters can be drilled on their own (1–1), also mixed into longer groups (e.g. 1–3). Changed in the settings sheet, `CwGenerator.randomCharGroup` and Send's adaptive draw (`_pickAdaptiveGroup`); stored values stay valid. The firmware has no such range at all (app extension, see "min–max range sliders").

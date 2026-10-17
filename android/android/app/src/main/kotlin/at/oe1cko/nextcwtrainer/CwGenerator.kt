@@ -382,7 +382,7 @@ class CwGenerator(
     }
 
     private fun randomCharGroup(): String {
-        val len = drawGroupLength(groupLength.coerceIn(2, 8), groupLengthMax)
+        val len = drawGroupLength(groupLength.coerceIn(1, 8), groupLengthMax)
         return if (kochActive) randomKochChars(len) else randomPoolChars(len)
     }
 

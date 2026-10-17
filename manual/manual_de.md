@@ -822,7 +822,7 @@ Zeile „Gilt für: …“ zeigt, für welche Kombination du gerade einstellst.
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Zeichen für Gruppen | Nur bei **Alle Zeichen · Zufall**: aus welchen Zeichenklassen gezogen wird | **Alle** / Buchstaben / Ziffern / Satzzeichen / Prosigns / Buchst.+Ziff. / Ziff.+Satzz. / Satzz.+Prosigns / Buchst.+Ziff.+Satzz. / Ziff.+Satzz.+Prosigns |
-| Gruppenlänge (min–max) | Zeichen pro Zufallsgruppe (bei **Zufall** und **Gemischt**). Bereichsregler: bei min = max (z. B. 5–5) sind alle Gruppen gleich lang; bei min < max (z. B. 2–7) bekommt jede Gruppe eine zufällige Länge, du weißt beim Hören also nicht, ob die Gruppe schon zu Ende ist | 2–8 (**5–5**) |
+| Gruppenlänge (min–max) | Zeichen pro Zufallsgruppe (bei **Zufall** und **Gemischt**). Bereichsregler: bei min = max (z. B. 5–5) sind alle Gruppen gleich lang; bei min < max (z. B. 2–7) bekommt jede Gruppe eine zufällige Länge, du weißt beim Hören also nicht, ob die Gruppe schon zu Ende ist | 1–8 (**5–5**); mit 1–1 übst du einzelne Zeichen |
 | Wortsprache | Aus welcher Wortliste gezogen wird (bei **Wörter** und **Gemischt**): Englisch oder Deutsch. Beide Listen sind nach Häufigkeit gewichtet: häufige Wörter kommen öfter vor als seltene. Die deutsche Liste enthält keine Umlaute und kein ß | **Englisch** / Deutsch |
 | Wortlänge (min–max) | Nur Wörter in diesem Längenbereich (bei **Wörter** und **Gemischt**); die offenen Enden bedeuten keine Grenze | 1–**alle** (1–8, **alle**) |
 | Abkürzungslänge (min–max) | Nur Abkürzungen in diesem Längenbereich (bei **Abkürzungen** und **Gemischt**); die offenen Enden bedeuten keine Grenze | 2–**alle** (2–6, **alle**) |

@@ -366,7 +366,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // getRandomChars(posRandomLength, OPT_KOCH_ADAPTIVE) in m32_v6.ino.
   // Length drawn per group between the min and max setting.
   String _pickAdaptiveGroup() {
-    final lo = _groupLength.clamp(2, 8);
+    final lo = _groupLength.clamp(1, 8);
     final hi = _groupLengthMax.clamp(lo, 8);
     final len = lo + _random.nextInt(hi - lo + 1);
     return List.generate(len, (_) => _pickAdaptiveChar()).join();
