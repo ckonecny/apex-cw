@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'widgets/setting_rows.dart';
+import 'widgets/tempo_spacing_section.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
@@ -151,10 +152,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _interCharSpace = 28;
   int  _interWordSpace = 40;
   // Widening cap for block suggestions: spacing as loaded/set in the sheet.
-  int  _capInterChar = 28, _capInterWord = 40;
+  int  _capInterChar = 28;
   EchoSuggestions? _suggestions;
   // Proposals shown on the result page. Accepting has no effect yet (6d).
-  int? _pendWpm, _pendAnswer, _pendIC, _pendIW;
+  int? _pendWpm, _pendAnswer, _pendIC;
   bool _accUnlock = true, _accWpm = true, _accSpacing = true, _accAnswer = false;
   final Set<String> _excludedBoost = {};
   // Recurring mix-ups offered for the same boost (#102), pairs left out by the user.
@@ -288,7 +289,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
       _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
       _capInterChar = _interCharSpace;
-      _capInterWord = _interWordSpace;
       _practiceChars  = parsePracticeChars(pf.getString('practiceChars') ?? '');
       _boostLevel     = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
       _choice         = CharsetChoice.load(pf);
@@ -436,9 +436,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         wpm: _wpm,
         answerWpmMax: _answerWpmMax,
         interCharSpace: _interCharSpace,
-        interWordSpace: _interWordSpace,
         maxInterCharSpace: max(_capInterChar, _interCharSpace),
-        maxInterWordSpace: max(_capInterWord, _interWordSpace),
         kochLevel: _koch ? _kochLevel : 0,
         kochTotal: _koch ? _activeKochChars.length : 0,
         activeChars: charContent ? kochActiveChars(_kochLevel, _activeKochChars) : const [],
@@ -469,7 +467,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _pendWpm = s.newWpm;
     _pendAnswer = s.newAnswerWpmMax;
     _pendIC = s.newInterChar;
-    _pendIW = s.newInterWord;
     _accUnlock = _accWpm = _accSpacing = true;
     _accAnswer = false;
     _excludedBoost.clear();
@@ -498,11 +495,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _wpm = _pendWpm!;
       PracticeClock.instance.milestone(MilestoneKind.wpmEcho, _wpm, onlyIfHigher: true);
     }
-    if (_pendIC != null && _pendIW != null && _accSpacing) {
+    if (_pendIC != null && _accSpacing) {
       _interCharSpace = _pendIC!;
-      _interWordSpace = _pendIW!;
       await pf.setInt('interCharSpace', _interCharSpace);
-      await pf.setInt('interWordSpace', _interWordSpace);
     }
     if (_pendAnswer != null && _accAnswer) {
       _answerWpmMax = _pendAnswer!;
@@ -514,7 +509,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // one set, so a character in both is not boosted any harder.
     _boostChars = boost ? _chosenBoost(s.weakChars.keys, _mixups) : [];
     _suggestions = null;
-    _pendWpm = _pendAnswer = _pendIC = _pendIW = null;
+    _pendWpm = _pendAnswer = _pendIC = null;
   }
 
   // Plays the proposed new Koch char twice, in place (like Adaptive Copy).
@@ -555,50 +550,66 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await p.setInt('echoAnswerWpmMax', _answerWpmMax);
   }
 
-  // Give speed 0 means "same as hearing"; stepping up to the hearing speed
-  // goes back to that, stepping down from it starts at hearing speed - 1.
-  void _stepGiveWpm(int d) {
-    final eff = _answerWpmMax == 0 ? _wpm : min(_answerWpmMax, _wpm);
-    if (_wpm <= kGiveWpmMin) {
-      _setGiveWpm(0);
-      return;
-    }
-    final n = (eff + d).clamp(kGiveWpmMin, _wpm);
-    _setGiveWpm(n >= _wpm ? 0 : n);
+  // Manual spacing change (idle / result card). Like a manual tempo change it
+  // overrides the matching suggestion of the finished block.
+  Future<void> _setSpacing(int ic, int iw) async {
+    // The answer pause (iw) is not on this screen and stays untouched.
+    setState(() {
+      _interCharSpace = ic;
+      _pendIC = null;
+    });
+    final pf = await TrainingProfile.open(TrainingProfile.echo);
+    await pf.setInt('interCharSpace', _interCharSpace);
   }
 
-  Widget _tempoStepper(AppColors c, String label, String value,
-      VoidCallback? onMinus, VoidCallback? onPlus) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Text(label, style: TextStyle(fontSize: 12, color: c.textMuted)),
-      IconButton(
-          icon: const Icon(Icons.remove_circle_outline), color: c.accent,
-          visualDensity: VisualDensity.compact, onPressed: onMinus),
-      SizedBox(width: 62, child: Text(value, textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 13, color: c.accent))),
-      IconButton(
-          icon: const Icon(Icons.add_circle_outline), color: c.accent,
-          visualDensity: VisualDensity.compact, onPressed: onPlus),
-    ]);
+  // Geben speed above Hören and its spacing: the spacing belongs to the
+  // hearing (prompt) speed directly below, not to the give speed. The leftmost
+  // notch (kGiveWpmMin - 1) means "same as Hören". Straight key: the speed is
+  // measured from the keying, so the slider is disabled and just follows it.
+  Widget _giveSlider() {
+    final straight = _keyerMode == 4;
+    return LabeledSlider(
+      label: Strings.t('block_give'),
+      display: straight
+          ? '$_measuredWpm WPM'
+          : _answerWpmMax == 0
+              ? Strings.t('settings_answer_wpm_same')
+              : '$_answerWpmMax WPM',
+      value: (straight
+              ? _measuredWpm.clamp(kGiveWpmMin - 1, 60)
+              : (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax))
+          .toDouble(),
+      min: kGiveWpmMin - 1.0,
+      max: 60,
+      divisions: 61 - kGiveWpmMin,
+      dense: true,
+      showUndo: false,
+      onChanged: straight
+          ? null
+          : (v) => _setGiveWpm(v < kGiveWpmMin ? 0 : v.round()),
+    );
   }
 
-  Widget _buildTempoControls(AppColors c) {
-    return Wrap(alignment: WrapAlignment.center, spacing: 8, children: [
-      _tempoStepper(c, Strings.t('block_hear'), '$_wpm WPM',
-          () => _setHearWpm(_wpm - 1), () => _setHearWpm(_wpm + 1)),
-      // Straight key: the Geben speed is measured, so the stepper is disabled.
-      if (_keyerMode == 4)
-        _tempoStepper(c, Strings.t('block_give'), '$_measuredWpm WPM', null, null)
-      else
-        _tempoStepper(c, Strings.t('block_give'),
-            _answerWpmMax == 0 ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax WPM',
-            () => _stepGiveWpm(-1), () => _stepGiveWpm(1)),
-    ]);
-  }
+  // The same tempo + spacing block as in Hören and Verstehen
+  // (TempoSpacingSection), with the give slider on top. Shown on the start
+  // and result screens, never while a block runs.
+  Widget _controlsCard() => SettingsCard(children: [
+        TempoSpacingSection(
+          leading: _giveSlider(),
+          speedLabel: Strings.t('block_hear'),
+          wpm: _wpm,
+          interChar: _interCharSpace,
+          interWord: _interWordSpace,
+          compact: true,
+          showWordGap: false,
+          showUndo: false,
+          onWpm: _setHearWpm,
+          onSpacing: _setSpacing,
+        ),
+      ]);
 
   void _stepSpacing(int d) => setState(() {
         _pendIC = (_pendIC! + d).clamp(3, max(_capInterChar, _interCharSpace));
-        _pendIW = (_pendIW! + d).clamp(7, max(_capInterWord, _interWordSpace));
       });
 
   List<Widget> _buildSuggestionRows(AppColors c, double width, String Function(String) cs) {
@@ -626,7 +637,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         onIncrement: _accWpm ? () => setState(() => _pendWpm = min(_wpm + 5, _pendWpm! + 1)) : null,
       ));
     }
-    if (_pendIC != null && _pendIW != null) {
+    if (_pendIC != null) {
       final tighter = _pendIC! < _interCharSpace;
       rows.add(SuggestionRow(
         width: width,
@@ -634,9 +645,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         onToggle: (v) => setState(() => _accSpacing = v),
         label: '${Strings.t(tighter ? 'ac_spacing_up' : 'ac_spacing_down')}: '
             '$_interCharSpace→${_accSpacing ? _pendIC : _interCharSpace} '
-            '(${ditsToSeconds(_accSpacing ? _pendIC! : _interCharSpace, _wpm)}) / '
-            '$_interWordSpace→${_accSpacing ? _pendIW : _interWordSpace} '
-            '(${ditsToSeconds(_accSpacing ? _pendIW! : _interWordSpace, _wpm)})',
+            '(${ditsToSeconds(_accSpacing ? _pendIC! : _interCharSpace, _wpm)})',
         onDecrement: _accSpacing ? () => _stepSpacing(-1) : null,
         onIncrement: _accSpacing ? () => _stepSpacing(1) : null,
       ));
@@ -1085,6 +1094,16 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         ),
         actions: [
             const InterferenceButton(),
+          // While a block runs, Stop sits here (where the stats and settings
+          // icons are hidden anyway) so the touch paddles can be the last
+          // element at the bottom, as in Keyer, WiFi Trx, QSO bot and games.
+          if (_state != _State.idle)
+            TextButton.icon(
+              onPressed: _stopSession,
+              icon: Icon(Icons.stop_rounded, color: c.warning),
+              label: Text(Strings.t('stop').toUpperCase(),
+                  style: TextStyle(color: c.warning, fontWeight: FontWeight.bold)),
+            ),
           if (_state == _State.idle)
             IconButton(
               icon: Icon(Icons.bar_chart_outlined, color: c.textMuted),
@@ -1151,33 +1170,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                 )),
 
           // ── Stats bar ────────────────────────────────────────────────────
-          if (_total > 0) _StatsBar(correct: _correct, total: _total,
+          // Only while a block runs: after Stop the start screen stays clean.
+          if (_total > 0 && _state != _State.idle) _StatsBar(correct: _correct, total: _total,
               answerWpm: (_answerWpmMax > 0 && _answerWpm < _currentWpm) ? _answerWpm : null),
 
           // ── Status label ─────────────────────────────────────────────────
           _StatusLabel(state: _state, preparing: _preparing),
-
-          // ── Sliders ──────────────────────────────────────────────────────
-          if (_state == _State.idle)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(children: [
-              SliderRow(label: Strings.t('block_hear'), labelWidth: 56, valueWidth: 112, value: _wpm.toDouble(),
-                  display: '$_wpm (eff. ${(50 * _wpm / (31 + 4 * _interCharSpace + _interWordSpace)).round()})',
-                  min: TrainingProfile.minWpm.toDouble(), max: 60,
-                  divisions: 60 - TrainingProfile.minWpm,
-                  onChanged: (v) { setState(() => _wpm = v.round()); _savePrefs(); }),
-              // Leftmost notch (kGiveWpmMin - 1) = "same as Hören".
-              if (_keyerMode == 4) _straightGiveRow()
-              else
-              SliderRow(label: Strings.t('block_give'), labelWidth: 56, valueWidth: 112,
-                  value: (_answerWpmMax == 0 ? kGiveWpmMin - 1 : _answerWpmMax).toDouble(),
-                  min: kGiveWpmMin - 1.0, max: 60, divisions: 61 - kGiveWpmMin,
-                  display: _answerWpmMax == 0
-                      ? Strings.t('settings_answer_wpm_same') : '$_answerWpmMax',
-                  onChanged: (v) => _setGiveWpm(v < kGiveWpmMin ? 0 : v.round())),
-            ]),
-          ),
 
           ],
           if (!_showResult) ...[
@@ -1187,33 +1185,36 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: _straightGiveRow(),
             ),
-          // ── Touch paddle ─────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-            child: _keyerMode == 4
-                ? StraightKeyPaddle(onDown: _ditDown, onUp: _ditUp)
-                : IambicPaddles(onDitDown: _ditDown, onDitUp: _ditUp,
-                    onDahDown: _dahDown, onDahUp: _dahUp),
-          ),
-
-          // ── Start / Stop ─────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity, height: 56,
-              child: AppButton(
-                height: 56,
-                // Material icons, not ▶/■ glyphs: Android renders ▶ as an
-                // orange emoji.
-                icon: (_state == _State.idle) ? Icons.play_arrow_rounded : Icons.stop_rounded,
-                label: (_state == _State.idle)
-                    ? Strings.t('start').toUpperCase()
-                    : Strings.t('stop').toUpperCase(),
-                color: (_state != _State.idle) ? c.warning : c.accent,
-                onTap: (_state == _State.idle) ? _startFromIdle : _stopSession,
+          // ── Start (idle only; Stop is in the app bar) ────────────────────
+          if (_state == _State.idle)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
+                width: double.infinity, height: 56,
+                child: AppButton(
+                  height: 56,
+                  // Material icons, not ▶ glyphs: Android renders ▶ as an
+                  // orange emoji.
+                  icon: Icons.play_arrow_rounded,
+                  label: Strings.t('start').toUpperCase(),
+                  color: c.accent,
+                  onTap: _startFromIdle,
+                ),
               ),
             ),
-          ),
+
+          // ── Touch paddle: the last element while a block runs, like in the
+          // other keying screens. No function on the start screen, see also
+          // the external-interface idea in #95. ─────────────────────────────
+          if (_state != _State.idle) ...[
+            const SizedBox(height: 12),
+            if (_keyerMode == 4)
+              StraightKeyPaddle(onDown: _ditDown, onUp: _ditUp)
+            else
+              IambicPaddles(onDitDown: _ditDown, onDitUp: _ditUp,
+                  onDahDown: _dahDown, onDahUp: _dahUp),
+            const SizedBox(height: 16),
+          ],
           ],
         ],
       ),

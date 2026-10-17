@@ -31,23 +31,25 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 ## Manual: pending for next release
 - `hear_char_detail.png`, `echo_char_detail.png` (DE+EN): the detail view shows a "Mix-ups" section (Listen, #92) and now trend arrows plus a weekly mix-up curve (#101).
 - New shot (DE+EN): the "Trends" tab of the character statistics, e.g. `hear_trends.png`, `echo_trends.png` (#101); the segmented button above all statistics shots now has three segments (`hear_stats.png`, `echo_stats.png`, `hear_progress*.png`, `echo_progress.png`).
+- `settings1.png` (DE+EN): the Keyer card has a new row "Hide touch keys when an adapter is detected" (#95).
+- Hören ⚙ sheet, Abstände section: new note under the sliders (word gap only applies to paper mode).
+- Hören start and result screens (paper and typing) and the Sätze, Mini-QSO and Q-Groups setup screens: new shared tempo + spacing block (`hear_result.png`, `*_setup.png`, Hören start view); effective speed now in brackets behind the WPM.
+- Geben start and result screens: same block with the give slider on top, no touch paddles on the start screen, result buttons side by side, Stop in the app bar and paddles at the very bottom while a block runs (`echo_start.png`, `echo_answer.png`, Geben result).
+- `hear_start.png` (DE+EN): the weak-characters card now appears only with random character groups (not Koch words/abbreviations/mixed); check that the shot still shows it.
+- `chart.png` (DE+EN): new section "Umlauts and CH" in the character chart.
+- `echo_sheet.png` (DE+EN): Send ⚙ sheet, Echo Trainer section now has Denkzeit/Antwortpause with help lines; Abstände has only the character spacing.
+- `settings2.png`, `settings3.png` (DE+EN): sections moved (USB CW adapter + key events below Keyer, call signs gone from the global settings); `hear_sheet2.png` (Word selection with call sign rows, content Call signs) in both languages.
 - `hear_start.png`, `hear_result.png`, `echo_result*.png` (DE+EN): a card "Recurring mix-ups: practice these?" appears next to the weak characters once pairs recur (#102).
 - `echo_start.png` (DE+EN): with Koch · Random, the start view now shows the weak characters and mix-up pairs card (#107).
 
 ## v1.7.1 (maintenance release, in progress)
 `main` holds everything (version 1.7.1+8): fidelity audit fixes, review-gate fixes, updated libraries (Dependabot round of 2026-10-12 merged incl. `audio_session` 0.2.4, Gradle 9.8.1, AGP 9.4.1). Tried on the test phone: audio, keyer, settings, links, microphone decoder. **Next**: `v1.7.1-beta1` as GitHub pre-release for Sia (notes: `docs/release-notes-v1.7.1.md`), then the release itself (`tools/build_release.sh v1.7.1`, tag, APK + AAB; the manual PDF stays at v1.7.0, only text changed). Recurring checks and alerts: `docs/PROJECT.md` "Recurring maintenance". Engine config per screen: `android/test/engine_config_test.dart` (DECISIONS); a shared config helper instead of per-screen copies is issue #18.
 
-## #92 Listen mix-ups (branch `claude/listen-mixups-92`, not built or tested)
-Written in a cloud session without Flutter: `flutter analyze`, `flutter test` (new: `copy_grading_test.dart`, `recordMixup` group in `char_stats_test.dart`) and an on-device check in Listen typing mode (mix-up shows in the character detail; paper mode shows none) are still to do. 
+## #102 Mix-up practice suggestion (PR #106 merged, phone check by the user pending, days to weeks)
+To check on the phone: with recurring mix-ups the card shows in Listen (start + result, typing mode, random groups) and Send (result, Koch random); tapping a pair strikes it through; the next block favours both characters. Rule and thresholds: DECISIONS "Mix-up practice suggestion".
 
-## #101 Mix-up trends (branch `claude/mixup-trends-101`, built on #92, not built or tested)
-Also written without Flutter. To do on the Mac: `flutter analyze`, `flutter test` (new `mixup_trend_test.dart`, overflow entries `mixup_trends*`), then on the phone: practise Listen typing mode and Send for a while, check the "Trends" tab (empty state "Trend ab …" first; later groups and arrows) and the detail view. Tune thresholds in `classifyMixup` if needed (DECISIONS).
-
-## #102 Mix-up practice suggestion (branch `claude/mixup-suggest-102`, built on #101, not built or tested)
-Written without Flutter. To do: `flutter analyze`, `flutter test` (new `mixup_suggest_test.dart`, overflow entry `mixup_boost_chips`), then on the phone: with recurring mix-ups the card shows in Listen (start + result, typing mode, random groups) and Send (result, Koch random); tapping a pair strikes it through; the next block favours both characters. Rule and thresholds: DECISIONS "Mix-up practice suggestion".
-
-## #107 Send start view (branch `claude/send-start-weak-107`, built on #102, not built or tested)
-Written without Flutter. To do: `flutter analyze`, `flutter test`, then on the phone: Send · Koch · Random with some weak characters shows the card on the start view; START boosts the first block with what is ticked; words/callsigns show no card.
+## #107 Send start view (PR #108)
+To check on the phone: Send · Koch · Random with some weak characters shows the card on the start view; START boosts the first block with what is ticked; words/callsigns show no card.
 
 ## Release note to include (next release)
 Letter and word gaps were one dit too short in all earlier versions (now 3/7 dits at the default spacing), so everything sounds slightly slower. Keyer modes, audio stream locking and the microphone decoder were fixed too (DECISIONS "Keyer audit" etc.). Native tests: `./gradlew :app:testDebugUnitTest` in `android/android` and `tools/run_native_cpp_tests.sh` (CI job `native-test`); locally Gradle needs `JAVA_HOME` of Android Studio's JBR.

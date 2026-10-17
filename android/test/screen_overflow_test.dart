@@ -30,6 +30,7 @@ import 'package:next_cw_trainer/content/mixup_suggest.dart';
 import 'package:next_cw_trainer/ui/widgets/mixup_boost_chips.dart';
 import 'package:next_cw_trainer/ui/widgets/mixup_trend_view.dart';
 import 'package:next_cw_trainer/ui/widgets/mistake_lesson.dart';
+import 'package:next_cw_trainer/ui/widgets/paddle_widgets.dart';
 import 'package:next_cw_trainer/ui/learn_screen.dart';
 import 'package:next_cw_trainer/ui/links_screen.dart';
 import 'package:next_cw_trainer/ui/memory_chain_screen.dart';
@@ -114,6 +115,9 @@ void main() {
     'mistake_lesson': () => Scaffold(
         body: SingleChildScrollView(child: MistakeLesson(
             word: 'quarantine7?', active: 3, display: (c) => c.toUpperCase()))),
+    // Line shown instead of the touch keys when a key adapter is detected (#95).
+    'key_adapter_hidden_hint': () => const Scaffold(
+        body: Column(children: [KeyAdapterHiddenHint()])),
     'memory_chain': () => const MemoryChainScreen(),
     'morsel': () => const MorselScreen(),
     'qso_bot': () => const QsoBotScreen(),

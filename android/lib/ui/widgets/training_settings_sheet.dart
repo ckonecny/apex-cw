@@ -86,6 +86,11 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _typeAttempts = 2;
   bool _typeLearn = false;
   bool _typeHaptic = true;
+  // Call sign options (global keys: one value for Listen and Send, formerly in
+  // the global settings).
+  int _callLengthOpt = 0;
+  int _callRegionOpt = 0;
+  bool _callCommonOnly = true;
   // Echo flow prefs (global keys, as in Settings before).
   int _echoThinkTime = 8;
   int _echoRepeats = 3;
@@ -143,6 +148,9 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _typeAttempts = (prof.getInt('typeAttempts') ?? 2).clamp(1, 3);
       _typeLearn = (prof.getInt('typeOnWrong') ?? 0) == 1;
       _typeHaptic = (prof.getInt('typeHaptic') ?? 1) == 1;
+      _callLengthOpt = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
+      _callRegionOpt = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
+      _callCommonOnly = p.getBool('callCommonOnly') ?? true;
       _echoThinkTime = p.getInt('echoThinkTime') ?? 8;
       _echoRepeats = (p.getInt('echoRepeats') ?? 3).clamp(0, 7);
       _echoDisplay = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
@@ -226,11 +234,14 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               final newChar = v.round();
               setState(() {
                 _interCharSpace = newChar;
-                if (_interWordSpace < newChar) _interWordSpace = newChar.clamp(6, 105);
+                if (widget.profile != TrainingProfile.echo && _interWordSpace < newChar) {
+                  _interWordSpace = newChar.clamp(6, 105);
+                }
               });
               _setInt('interCharSpace', _interCharSpace);
               _setInt('interWordSpace', _interWordSpace);
             }),
+        if (widget.profile != TrainingProfile.echo) ...[
         const SettingsDivider(),
         LabeledSlider(
             label: Strings.t('settings_word_spacing'), value: _interWordSpace.toDouble(),
@@ -239,7 +250,12 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               setState(() => _interWordSpace = v.round().clamp(_interCharSpace, 105));
               _setInt('interWordSpace', _interWordSpace);
             }),
+        ],
       ]),
+      // The sheet is shared by paper and typing mode and opened before the
+      // mode is chosen, so the word gap stays editable and gets a note.
+      if (widget.profile == TrainingProfile.hear)
+        _hint(Strings.t('settings_word_spacing_hear_note')),
       const SizedBox(height: 24),
     ];
   }
@@ -519,6 +535,35 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               _setInt('abbrevLengthMin', _abbrevLengthMin);
               _setInt('abbrevLengthMax', _abbrevLengthMax);
             }),
+      // Call signs: own content, or inside Mixed with all characters.
+      if (k == ContentKind.calls || (k == ContentKind.mixed && _choice.set == CharSet.all)) ...[
+        SegmentRow(
+          label: Strings.t('settings_call_length'),
+          options: [Strings.t('opt_unlim_short'), '3', '4', '5', '6'],
+          selected: _callLengthOpt,
+          onChanged: (v) {
+            setState(() => _callLengthOpt = v);
+            _p?.setInt('callLengthOpt', v);
+          },
+        ),
+        SegmentRow(
+          label: Strings.t('settings_call_region'),
+          options: [Strings.t('opt_all_cap'), 'EU', 'NA', 'SA', 'AF', 'AS', 'OC', 'VK/ZL'],
+          selected: _callRegionOpt,
+          onChanged: (v) {
+            setState(() => _callRegionOpt = v);
+            _p?.setInt('callRegionOpt', v);
+          },
+        ),
+        ToggleRow(
+          label: Strings.t('settings_common_prefixes_only'),
+          value: _callCommonOnly,
+          onChanged: (v) {
+            setState(() => _callCommonOnly = v);
+            _p?.setBool('callCommonOnly', v);
+          },
+        ),
+      ],
     ];
     final cards = <Widget>[
       for (var i = 0; i < rows.length; i++) ...[
@@ -555,11 +600,33 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       SettingsCard(children: [
         LabeledSlider(
             label: Strings.t('settings_think_time'), value: _echoThinkTime.toDouble(),
-            min: 1, max: 20, divisions: 19, display: '${_echoThinkTime}s',
+            min: 0, max: 20, divisions: 20, display: '${_echoThinkTime}s',
             onChanged: (v) {
               setState(() => _echoThinkTime = v.round());
               _p?.setInt('echoThinkTime', _echoThinkTime);
             }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
+          child: Text(Strings.t('settings_think_time_help'),
+              style: TextStyle(fontSize: 12, color: c.textMuted)),
+        ),
+        const SettingsDivider(),
+        // Not the word gap of the other profiles: never played, it only sets
+        // when the answer counts (DECISIONS "Answer pause"). Independent of
+        // the character spacing.
+        LabeledSlider(
+            label: Strings.t('settings_answer_pause'), value: _interWordSpace.toDouble(),
+            min: 6, max: 105, divisions: 99,
+            display: '${_dits(_interWordSpace)} · ${ditsToSeconds(_interWordSpace, _wpm)} @\u00A0$_wpm\u00A0WPM',
+            onChanged: (v) {
+              setState(() => _interWordSpace = v.round());
+              _setInt('interWordSpace', _interWordSpace);
+            }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
+          child: Text(Strings.t('settings_answer_pause_help'),
+              style: TextStyle(fontSize: 12, color: c.textMuted)),
+        ),
         const SettingsDivider(),
         LabeledSlider(
             label: Strings.t('settings_repeats'), value: _echoRepeats.toDouble(),

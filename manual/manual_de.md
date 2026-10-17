@@ -124,7 +124,7 @@ sind dunkle Schemata mit eigener Farbpalette: Bernstein mit warmen Gelbtönen,
 Rot (Nachtsicht) mit gedämpftem Rot, das die Dunkeladaption der Augen am
 wenigsten stört, Grün wie ein Phosphor-Terminal, Warmgrau mit weichem,
 kontrastarmem Braungrau und Marine & Orange mit blauschwarzem Grund, silbernem
-Text und orangem Akzent (nur Orange- und Silbertöne, wie ein Smartwatch-Zifferblatt).
+Text und orangem Akzent (nur Orange- und Silbertöne, wie ein Smartwatch-Zifferblatt; alle Menü-Symbole sind orange).
 Dazu gibt es einen zuschaltbaren **Blaulichtfilter**, der die ganze App warm
 einfärbt (in Hell und Dunkel) und dessen Stärke du einstellst. Alles wirkt sofort.
 
@@ -199,6 +199,15 @@ ankommen. Die App zeigt es als **eff.** (effektive WPM) an:
 Beispiel: 20 WPM mit 28/40 Dits ergibt 50 × 20 / (31 + 112 + 40) ≈ 5 WPM.
 Die Zeichen klingen also nach 20 WPM, aber du hast Zeit wie bei 5 WPM. Mit
 3/7 Dits sind beide Werte gleich.
+
+Beim Mitschreiben mit der **Bildschirmtastatur** (Tippen) wartet die App nach
+jedem Wort auf dich, der Wortabstand spielt also keine Rolle. Dann zählt nur
+der Zeichenabstand; der Wortabstand wird mit den normalen 7 Dits angesetzt:
+
+  eff. WPM = 50 × WPM / (31 + 4 × Zeichenabstand + 7)
+
+Bei Zeichenabstand 3 ist der Wert gleich den WPM. Auf der Startansicht, wo du
+Papier oder Tippen noch nicht gewählt hast, rechnet die Anzeige wie bei Papier.
 
 ## Die Koch-Methode
 
@@ -299,8 +308,8 @@ nicht alles an einem Tag üben.
   Zeichen nicht spielen, sonst fängst du an, Punkte und Striche zu zählen.
 - **Abstände:** **28 / 40 Dits**, die Voreinstellung. Mit 20 WPM ergibt das ein
   effektives Tempo von rund 5 WPM (siehe
-  [Effektives Tempo](#effektives-tempo)). Die App zeigt es unter den Reglern
-  an. Fällt dir das zu schwer, kannst du die Abstände im ⚙-Blatt noch weiter
+  [Effektives Tempo](#effektives-tempo)). Die App zeigt es in Klammern hinter
+  dem Tempo an, zum Beispiel „20 WPM (eff. 5)“. Fällt dir das zu schwer, kannst du die Abstände im ⚙-Blatt noch weiter
   vergrößern (bis 45 / 105 Dits).
 - Im ⚙-Blatt unter **Wortauswahl** kannst du **Gruppenlänge** auf 3–3 stellen,
   wenn dir Fünfergruppen am Anfang zu lang sind.
@@ -434,8 +443,8 @@ Zeichentempo (20 WPM). Das ändert sich jetzt, in dieser Reihenfolge:
    sind (oder du mit **Alle Zeichen** übst), schlägt die App nach zwei guten
    Blöcken in Folge kürzere Pausen vor, je einen Dit pro Schritt, bis zu den
    normalen 3 / 7 Dits (siehe [Pausen und Tempo](#pausen-und-tempo)). Du kannst
-   das auch selbst tun: **Abstand Zeichen/Wort** auf der Startansicht und der
-   Ergebnisseite.
+   das auch selbst tun: mit **Zeichenabstand** und **Wortabstand** in der Karte
+   unter der Übungsfläche.
 2. **Erst dann das Tempo erhöhen.** Sind die Pausen bei 3 / 7, schlägt die App
    +1 WPM vor, wenn es gut läuft. Kleine Schritte, keine Sprünge.
 3. **Läuft es schlecht, geht es zurück.** Fällt die Block-EMA unter die untere
@@ -572,9 +581,12 @@ wurden. Beim Übungsset gibt es nur den Inhalt **Zufall**.
 
 ## Tempo
 
-Der Regler **WPM** unter der Übungsfläche stellt das Zeichentempo ein (10 bis 60
-WPM). Die Pausen stellst du im ⚙-Blatt unter **Abstände** ein oder direkt auf
-der Start- und Ergebnisseite mit **Abstand Zeichen/Wort**.
+Unter der Übungsfläche steht eine Karte mit **Tempo** (Zeichentempo, 10 bis 60
+WPM, dahinter in Klammern das effektive Tempo), **Zeichenabstand** und
+**Wortabstand**. Sie ist dieselbe wie in Sätze, Mini-QSO und Q-Gruppen. Du siehst
+sie auf der Startansicht und im Ergebnis, nicht während ein Block läuft und
+nicht in „Gesendet“ (auch nicht bei der Markierung einzelner Wörter). Die Pausen kannst du auch
+im ⚙-Blatt unter **Abstände** einstellen.
 
 ## Ein Block im Ablauf
 
@@ -720,10 +732,12 @@ Die Ergebnisseite zeigt von oben nach unten:
 - **Trefferquote** in Prozent (Anteil richtig mitgeschriebener Zeichen) –
   grün ab 90 %, gelb ab 70 %, darunter rot – und „*x* von *y* richtig“.
 - Die **Trend**-Zeile, ab dem sechsten Block (siehe [Trend](#trend)). Tempo,
-  effektives Tempo und Abstände stehen im WPM-Regler und bei **Abstand Zeichen/Wort**.
-- **Abstand Zeichen/Wort** – mit − und + änderst du Zeichenabstand und Wortabstand
-  gemeinsam um je 1 Dit. Das gilt sofort und unabhängig von den
-  Vorschlägen.
+  effektives Tempo und Abstände stehen unten in der Karte über den
+  Schaltflächen (so auch auf der Startansicht).
+- Die **Karte Tempo und Abstände** (nicht in der Ergebnisliste): mit − und +
+  änderst du **Zeichenabstand** und **Wortabstand** um je 1 Dit, mit dem Regler
+  das Tempo. Das gilt sofort und unabhängig von den Vorschlägen. Hast du
+  **Tippen** gestartet, fehlt der Wortabstand, weil er dort ohne Wirkung ist.
 - **Schwache Zeichen** – die Zeichen, die dir auf Dauer die meisten Fehler
   machen, mit ihrer Fehlerquote (siehe
   [Schwache Zeichen](#schwache-zeichen)).
@@ -796,6 +810,10 @@ einzelne auf.
 Der Wortabstand kann nie kleiner sein als der Zeichenabstand: Schiebst du den
 Zeichenabstand darüber hinaus, wird der Wortabstand mitgezogen.
 
+Der Wortabstand wirkt nur im Papier-Modus. Im Tipp-Modus wartet die App nach
+jedem Wort auf deine Eingabe, dort zählt nur der Zeichenabstand. Das ⚙-Blatt
+weist unter den Reglern darauf hin.
+
 ### Wortauswahl
 
 Es erscheinen nur die Einstellungen, die zum gewählten Inhalt passen. Die
@@ -808,6 +826,9 @@ Zeile „Gilt für: …“ zeigt, für welche Kombination du gerade einstellst.
 | Wortsprache | Aus welcher Wortliste gezogen wird (bei **Wörter** und **Gemischt**): Englisch oder Deutsch. Beide Listen sind nach Häufigkeit gewichtet: häufige Wörter kommen öfter vor als seltene. Die deutsche Liste enthält keine Umlaute und kein ß | **Englisch** / Deutsch |
 | Wortlänge (min–max) | Nur Wörter in diesem Längenbereich (bei **Wörter** und **Gemischt**); die offenen Enden bedeuten keine Grenze | 1–**alle** (1–8, **alle**) |
 | Abkürzungslänge (min–max) | Nur Abkürzungen in diesem Längenbereich (bei **Abkürzungen** und **Gemischt**); die offenen Enden bedeuten keine Grenze | 2–**alle** (2–6, **alle**) |
+| Max. Rufzeichenlänge | Nur bei **Rufzeichen** und bei **Gemischt** (Alle Zeichen): maximale Länge der Rufzeichen. Ein Wert für Hören und Geben | **Unbegr.** / 3 / 4 / 5 / 6 |
+| Region | Ebenso: nur Rufzeichen aus dieser Region | **Alle** / EU / NA / SA / AF / AS / OC / VK/ZL |
+| Nur gängige Präfixe | Ebenso: nur häufig gehörte Präfixe statt aller möglichen. Die Rufzeichen folgen einer gewichteten Präfix-Tabelle wie beim Morserino | Aus / **Ein** |
 | Gruppen pro Block / Wörter pro Block | Anzahl der Gruppen (bei **Zufall**) bzw. Wörter in einem Block | 1–50 (**10**) |
 
 ### Ablauf
@@ -866,6 +887,13 @@ Unten liegen die Dit-/Dah-Tasten bzw. die Handtaste und **Start**.
 ![Während der Antwort: Vorgabe (Vorgabe = Beides), Versuch und Tempo](img/de/echo_answer.png)
 :::
 
+Auf der **Startansicht** steht unten dieselbe Karte **Tempo und Abstände** wie auf
+der Ergebnisseite. Das Tempo für **Geben** steht oben (die unterste Stufe heißt
+„wie Hören“; bei der Handtaste zeigt der Regler nur das gemessene Tempo), darunter
+das Tempo für **Hören** mit den Abständen. Die Touch-Paddles erscheinen erst,
+wenn der Block läuft, und stehen dann ganz unten wie in den anderen Tast-Bildschirmen.
+Der Block lässt sich mit **Stopp** oben rechts oder mit dem Zurück-Pfeil beenden.
+
 ## Ein Wort im Ablauf
 
 1. Nach **Start** wartet die App 2 Sekunden, dann spielt sie das erste Wort.
@@ -873,12 +901,13 @@ Unten liegen die Dit-/Dah-Tasten bzw. die Handtaste und **Start**.
    Halbton versetzt (einstellbar, **Tonversatz**), damit du Vorgabe und
    Antwort unterscheiden kannst.
 3. **Wann du anfangen musst:** Du hast ab dem Ende der Vorgabe etwa
-   1,4 Sekunden plus eine Zeichenpause plus ein Drittel der Wortpause plus die
-   **Denkzeit** (Voreinstellung 8 s) Zeit, um mit der Antwort **zu beginnen**.
+   1,4 Sekunden plus eine Zeichenpause plus ein Drittel der **Antwortpause**
+   plus die **Denkzeit** (Voreinstellung 8 s) Zeit, um mit der Antwort **zu beginnen**.
    Kommt bis dahin nichts, gilt das Wort als falsch.
 4. **Wann die Antwort endet:** Sobald du angefangen hast, gilt die Denkzeit
-   nicht mehr. Die Antwort ist abgeschlossen, sobald du eine Wortpause von
-   7 Dits machst (im Antwort-Tempo).
+   nicht mehr. Die Antwort ist abgeschlossen, sobald du nach einem Zeichen
+   lange genug pausierst (Formel unter
+   [Einstellungen im ⚙-Blatt](#einstellungen-geben)), im Antwort-Tempo.
 5. **Korrigieren:** Gibst du `<err>` (acht Dits) oder viermal hintereinander
    `e`, wird deine bisherige Antwort gelöscht und du fängst neu an. Ausnahme:
    Wenn das Wort selbst an dieser Stelle mit einem weiteren `e` weitergeht,
@@ -922,20 +951,23 @@ Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
   - **◐ nach Wiederholung** – erst nach einer Wiederholung richtig,
   - **○ falsch** – auch nach allen Wiederholungen nicht geschafft.
 - Die **Statuszeile**: Lektion und der [Trend](#trend) (die Tempi stehen in
-  den Reglern darunter).
+  der Karte darunter).
 - **Verwechslungen** – welche Zeichen du in diesem Block verwechselt hast, als
   „Soll → Gegeben“, z. B. `p → w`. Ein `–` heißt, dass an dieser Stelle nichts
   kam.
-- Die Tempo-Regler **Hören** und **Geben** – eine Änderung hier ersetzt den
-  passenden Vorschlag.
+- Die Karte **Tempo und Abstände** (unten, über den Schaltflächen): Regler
+  **Geben** und **Hören** (mit dem effektiven Tempo in Klammern) sowie
+  **Zeichenabstand**. Die Antwortpause steht nicht hier, sondern im ⚙-Blatt;
+  das effektive Tempo rechnet sie mit dem normalen Wert 7. Der Abstand gehört zum Hören-Tempo
+  direkt darüber. Eine Änderung hier ersetzt den passenden Vorschlag.
 - **Vorschläge** und **Schwache Zeichen** (siehe
   [Der adaptive Modus](#der-adaptive-modus)).
 - Die Liste aller Wörter des Blocks: das Soll-Wort fett, darunter dein
   **erster** Versuch, das erste falsche Zeichen rot hervorgehoben (ein `_`
   heißt, dass an dieser Stelle nichts kam).
 
-**Nächster Block** übernimmt die angehakten Vorschläge, verstärkt die
-angehakten schwachen Zeichen im nächsten Block und startet ihn. **Beenden**
+**Nächster Block** (rechts) übernimmt die angehakten Vorschläge, verstärkt die
+angehakten schwachen Zeichen im nächsten Block und startet ihn. **Beenden** (links)
 übernimmt die angehakten Vorschläge ohne Verstärkung und kehrt zur
 Startansicht zurück.
 
@@ -957,27 +989,30 @@ aber für das Profil von Geben. Zwei Unterschiede:
   so lange pausierst:
 
   ```
-  2 × Zeichenabstand + 1 + Wortabstand / 8   (Dits im Gebetempo)
+  2 × Zeichenabstand + 1 + Antwortpause / 8   (Dits im Gebetempo)
   ```
 
-  Mit der Handtaste sind es Wortabstand + 1 Dits, gemessen an deinem eigenen
+  Mit der Handtaste sind es Antwortpause + 1 Dits, gemessen an deinem eigenen
   Tempo (bis 30 WPM; darüber gelten die kürzeren Abstände der Handtaste).
   Beispiel: Zeichenabstand
-  28, Wortabstand 40, Gebetempo 18 WPM ergibt 62 Dits, also rund 4 s. So
+  28, Antwortpause 40, Gebetempo 18 WPM ergibt 62 Dits, also rund 4 s. So
   lange darfst du auch zwischen den Zeichen einer Gruppe überlegen, und so
   lange wartet die App nach dem letzten Zeichen, bevor sie bewertet. Ist dir
   das zu großzügig oder zu träge, stell den Zeichenabstand kleiner; der
-  Normalabstand 3 / 7 ergibt 8 Dits. Verkürzt die Adaptiv-Funktion die
-  Abstände, wird auch die Antwort strenger. Längere Abstände verlängern
-  außerdem die Zeit, in der du mit der Antwort beginnen darfst.
-- Bei **Wortauswahl** gelten zusätzlich die Rufzeichen-Einstellungen aus den
-  globalen Einstellungen (siehe [Rufzeichen](#rufzeichen)).
+  Normalabstand 3 / 7 ergibt 8 Dits. Verkürzt die Adaptiv-Funktion den
+  Zeichenabstand, wird auch die Antwort strenger. Ein längerer Zeichenabstand
+  verlängert außerdem die Zeit, in der du mit der Antwort beginnen darfst.
+  Der Abschnitt **Abstände** enthält hier nur den Zeichenabstand; die
+  Antwortpause steht im Abschnitt **Echo Trainer** und hängt nicht von ihm ab.
+- **Wortauswahl** zeigt dieselben Rufzeichen-Einstellungen wie Hören (ein Wert
+  für beide).
 
 Dazu kommt der Abschnitt **Echo Trainer**:
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Denkzeit | Zusätzliche Zeit, um mit der Antwort zu **beginnen** | 1–20 s (**8 s**) |
+| Denkzeit | Zusätzliche Zeit nach dem gespielten Wort, um mit der Antwort zu **beginnen** (z. B. zum Kopfkopieren). Gilt nur bis zu deinem ersten Zeichen | 0–20 s (**8 s**) |
+| Antwortpause | Stille nach deinem letzten Zeichen, bis die Antwort zählt (Formel oben). Wird nie gespielt und ist vom Zeichenabstand unabhängig. Verlängert außerdem die Zeit zum Anfangen ein wenig (ein Drittel davon) | 6–105 Dits (**40**) |
 | Wiederholungen | Wie oft ein falsch beantwortetes Wort erneut gespielt wird, bevor die App es auflöst. „Endlos“ wiederholt, bis es stimmt | 0–6 (**3**), Endlos |
 | Vorgabe | Wie die Vorgabe kommt: **Ton** = nur hören; **Anzeige** = nur lesen, ohne Ton; **Beides** = hören und nach dem Abspielen lesen | **Ton** / Anzeige / Beides |
 | Gebetempo (max.) | Höchstes Antwort-Tempo, siehe [Gebetempo](#gebetempo) | **wie Hören**, 10–50 WPM |
@@ -1133,7 +1168,8 @@ Haken entfernst, bleibst du in der aktuellen Lektion.
 Die App verändert immer zuerst die **Pausen**, erst dann das Tempo:
 
 - **Verkürzen:** Zeichenabstand und Wortabstand werden je um 1 Dit kürzer,
-  bis hinunter zu den normalen 3 / 7 Dits.
+  bis hinunter zu den normalen 3 / 7 Dits. In Geben ändert sich nur der
+  Zeichenabstand; die Antwortpause bleibt, wie du sie eingestellt hast.
 - **Tempo erhöhen:** Erst wenn die Pausen bereits bei 3 / 7 Dits angekommen
   sind, schlägt die App **+1 WPM** vor.
 - **Verlängern:** Zeichenabstand und Wortabstand werden je um 1 Dit länger –
@@ -1143,7 +1179,9 @@ Die App verändert immer zuerst die **Pausen**, erst dann das Tempo:
 Beim Mitschreiben mit der **Bildschirmtastatur** ändert die App nur den
 **Zeichenabstand**; der Wortabstand bleibt, weil die App dort ohnehin nach jedem
 Wort auf dich wartet. Die Pausen gelten dann als normal, sobald der
-Zeichenabstand bei 3 Dits ist.
+Zeichenabstand bei 3 Dits ist. Aus demselben Grund zeigt die Karte **Tempo und
+Abstände** nach dem Start von **Tippen** nur noch den Zeichenabstand, und
+im ⚙-Blatt steht beim Wortabstand ein Hinweis, dass er nur für **Papier** gilt.
 
 **Solange du die Koch-Reihenfolge noch durcharbeitest, verkürzt die App die
 Pausen nicht und erhöht auch das Tempo nicht.** Du sollst dich auf neue Zeichen
@@ -1156,7 +1194,7 @@ ist dagegen immer möglich. Verkürzen und Tempo erhöhen kommen erst, wenn
 Auch in dem Block, in dem ein neues Zeichen dazukommt, gibt es kein
 Verkürzen und keine Tempoerhöhung.
 
-Mit **Abstand Zeichen/Wort** (Hören) bzw. den Tempo-Reglern (Geben) kannst du
+Mit der Karte **Tempo und Abstände** (Hören) bzw. den Tempo-Reglern (Geben) kannst du
 jederzeit selbst eingreifen, unabhängig von diesen Regeln.
 
 ### Gebetempo bei Geben
@@ -1214,7 +1252,8 @@ mehrere Blöcke und Sitzungen.
   jeder Ergebnisseite. Im nächsten Block werden sie mit der Stufe *Mäßig*
   verstärkt (bis zu 3 Würfe pro Zeichen, siehe
   [Übungsset](#uebungsset-einstellungen)). Das gilt nur für Zufallsgruppen (Koch-Lektion
-  oder Alle Zeichen · Zufall), nicht für Wörter. Hast du im Übungsset
+  oder Alle Zeichen · Zufall). Bei Wörtern, Abkürzungen, Gemischt und Übungsset
+  wirkt die Verstärkung nicht; dort zeigt die App die schwachen Zeichen gar nicht erst an. Hast du im Übungsset
   eigene Zeichen und **Übungsset bevorzugen** eingestellt, kommen diese dazu; es gilt
   dann die höhere Stufe (Stark also für alle, wenn du Stark gewählt hast).
 - **Geben:** Die schwachen Zeichen erscheinen auf der Startansicht und auf der
@@ -1944,8 +1983,8 @@ bleibt bis zur Auswertung verdeckt.
 unabhängig von der App-Sprache), die **Stufe** (1, 2 oder 3 Sätze) und das
 **Tempo** sowie **Zeichenabstand** und **Wortabstand** (in Dits, mit der Zeit
 in Sekunden darunter). Die Werte gelten nur für Sätze; beim ersten Öffnen
-übernimmt die App sie aus **Hören**, danach laufen sie getrennt. Unter den Abständen steht das **effektive Tempo** in
-WPM, das sich aus Tempo und beiden Abständen ergibt (Formel unter
+übernimmt die App sie aus **Hören**, danach laufen sie getrennt. Das **effektive Tempo** steht in Klammern hinter dem
+Tempo, es ergibt sich aus Tempo und beiden Abständen (Formel unter
 [Effektives Tempo](#effektives-tempo)). Unter dem Start steht die Trefferquote der letzten Runden.
 
 ::: {.shots .one}
@@ -1997,8 +2036,8 @@ nach Häufigkeit geordnet, und jede Stufe nimmt die seltenere dazu: Stufe 1 hat
 die 8 häufigsten, Stufe 2 insgesamt 16, Stufe 3 alle 24; unter der Auswahl
 steht, was die Stufe bedeutet), die **Fragen pro Runde** (5 oder 10), **Tempo**,
 **Zeichenabstand** und **Wortabstand**. Die Werte gelten nur für Q-Gruppen;
-beim ersten Öffnen übernimmt die App sie aus **Hören**. Unter den Abständen
-steht das **effektive Tempo**, unter dem Start die Trefferquote der letzten
+beim ersten Öffnen übernimmt die App sie aus **Hören**. Das **effektive Tempo**
+steht in Klammern hinter dem Tempo, unter dem Start die Trefferquote der letzten
 Runden. **Spickzettel** öffnet die Liste aller Gruppen.
 
 ::: {.shots .one}
@@ -2052,7 +2091,7 @@ die Fragen.
 von der App-Sprache), die **Stufe** (1, 2 oder 3; unter der Auswahl steht, was
 die Stufe bedeutet), **Tempo**, **Zeichenabstand** und **Wortabstand**. Die
 Werte gelten nur für Mini-QSO; beim ersten Öffnen übernimmt die App sie aus
-**Hören**. Unter den Abständen steht das **effektive Tempo**, unter dem Start
+**Hören**. Das **effektive Tempo** steht in Klammern hinter dem Tempo, unter dem Start
 die Trefferquote der letzten Runden.
 
 ::: {.shots .one}
@@ -2237,7 +2276,7 @@ abgeschickt wird nach einer Wortpause oder sofort mit **Senden**.
   änderst du während des Spiels mit − und +.
 
 Die Rufzeichen stammen aus demselben Generator wie in den anderen Übungen und
-folgen deinen Rufzeichen-Einstellungen (Region, nur häufige Präfixe). Eine
+folgen den Rufzeichen-Einstellungen aus dem ⚙-Blatt von Hören oder Geben (Region, nur häufige Präfixe). Eine
 Bestenliste gibt es wie in der Firmware nicht. Am Ende siehst du Punkte,
 verteidigte und verlorene Anrufer, Trefferquote und beste Serie.
 
@@ -2525,13 +2564,15 @@ und decodiert. Er stimmt also immer mit dem überein, was du hörst.
 ## Zeichentabelle
 
 Die Zeichentabelle listet alle Zeichen der App mit ihrem Code, gruppiert in
-**Buchstaben**, **Ziffern**, **Satzzeichen** und **Prosigns** (SK, KN, KA, AS,
+**Buchstaben**, **Umlaute und CH** (Ä, Ö, Ü, CH), **Ziffern**, **Satzzeichen** und **Prosigns** (SK, KN, KA, AS,
 VE, BK). Jeder Code ist als Punkte und Striche gezeichnet.
 
 Tippe auf ein Zeichen: Es klingt mit deiner Tonhöhe, und seine Punkte und
 Striche leuchten auf, während sie erklingen. Das Tempo startet mit dem Wert aus
 dem Training Hören; mit **−** und **+** änderst du es nur für diese Ansicht.
-Die Tonhöhe stellst du unter Einstellungen → Allgemein ein.
+Die Tonhöhe stellst du unter Einstellungen → Allgemein ein. CH ist ein
+historisches Zusatzzeichen; beim Antippen erscheint ein Hinweis, es immer als
+zwei Buchstaben C und H zu senden.
 
 ::: {.shots .one}
 ![Zeichentabelle: ein Zeichen leuchtet beim Abspielen](img/de/chart.png)
@@ -2649,6 +2690,20 @@ In allen Modi, in denen du tastest, erscheinen unten zwei Flächen: **DIT**
 (links) und **DAH** (rechts). Im Keyer-Modus **Straight** ist es eine einzige
 Fläche **KEY**, die so lange Ton gibt, wie du sie drückst.
 
+**Touch-Tasten ausblenden.** Wer mit einer echten Taste am Adapter tastet,
+braucht die Touch-Tasten nicht. Schalte dazu **Einstellungen → Keyer →
+Touch-Tasten ausblenden, wenn Adapter erkannt** ein. Beim
+[Anlernen der Dit-/Dah-Tasten](#dit-dah-tasten-anlernen) merkt sich die App
+auch deinen Adapter und erkennt ihn danach schon beim Einstecken. Ohne
+Anlernen am Adapter (oder bei einem früher angelernten) erkennt sie ihn, sobald
+du mit ihm das erste Mal Dit oder Dah gibst. Eine normale USB- oder
+Bluetooth-Tastatur zählt in keinem Fall. Dann verschwinden die Touch-Tasten
+in allen Modi, und an ihrer Stelle steht ein kleiner Hinweis. Mit dem **X**
+blendest du ihn aus, bis ein Adapter das nächste Mal erkannt wird; ein Tipp auf
+den Hinweis öffnet die Einstellung. Ziehst du den Adapter ab, erscheinen die
+Touch-Tasten wieder. Der Tipp „Echte Morsetaste ist besser“ erscheint dann
+nicht mehr.
+
 ## Echte Morsetaste oder Handtaste
 
 Ein Handy hat keinen Morsetasten-Eingang. Du brauchst einen kleinen USB-Adapter,
@@ -2665,7 +2720,7 @@ der die Tastenkontakte in **Tastendrücke** übersetzt:
 
 Ältere Handys mit Micro-USB brauchen einen USB-OTG-Adapter.
 
-**Einstellungen → vband Morse Key** hat einen kurzen Hinweis mit zwei Links, die beides im
+**Einstellungen → USB-CW-Adapter** hat einen kurzen Hinweis mit zwei Links, die beides im
 Browser öffnen: den fertigen vband-Adapter und die Bauanleitung für den
 Selbstbau-Adapter.
 
@@ -2675,7 +2730,7 @@ Damit die App weiß, welche Taste dein Adapter für Dit und welche für Dah
 sendet:
 
 1. Adapter einstecken.
-2. **Einstellungen → vband Morse Key → Dit-/Dah-Tasten anlernen**.
+2. **Einstellungen → USB-CW-Adapter → Dit-/Dah-Tasten anlernen**.
 3. Wenn „Dit-Taste drücken …“ erscheint, die **Dit-Taste** drücken; bei
    „Dah-Taste drücken …“ die **Dah-Taste**.
 4. „Gespeichert“ bestätigt das. Die erkannten Tasten stehen unter **Dit** und
@@ -2708,9 +2763,9 @@ wenn du beim Scrollen versehentlich ein Bedienelement berührt hast. Eine neuere
 ::: {.shots .three}
 ![Einstellungen: Darstellung, Allgemein, Keyer](img/de/settings1.png)
 
-![Audioausgabe und Rufzeichen](img/de/settings2.png)
+![Audioausgabe](img/de/settings2.png)
 
-![vband Morse Key, Key-Events, Info](img/de/settings3.png)
+![USB-CW-Adapter, Key-Events, Info](img/de/settings3.png)
 :::
 
 ## Darstellung
@@ -2790,6 +2845,7 @@ Diese Einstellungen gelten überall, wo du tastest.
 |---|---|---|
 | Modus | Wie der Keyer die Tasten auswertet (siehe unten) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
 | Bildschirm-Paddles vertauschen | Setzt bei den beiden Touch-Tasten **Dah** nach links und **Dit** nach rechts. Wirkt nur auf die Tasten am Bildschirm, nicht auf die Tasten eines Adapters (die bleiben, wie du sie angelernt hast, siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen)). Bei Straight nicht angezeigt | **Aus** / An |
+| Touch-Tasten ausblenden, wenn Adapter erkannt | Blendet die Touch-Tasten in allen Modi aus, sobald ein Adapter mit Dit oder Dah getastet hat; stattdessen steht ein Hinweis, der sich mit X schließen lässt (siehe [Touch-Keyer](#touch-keyer)) | **Aus** / An |
 | CurtisB Dit-Timing | Nur Iambic B: ab wie viel Prozent eines Dits ein Druck auf die andere Taste schon gespeichert wird | 0–100 % in 5er-Schritten (**75 %**) |
 | CurtisB Dah-Timing | Dasselbe für Dahs | 0–100 % in 5er-Schritten (**45 %**) |
 | Auto-Zeichenabstand | Erzwingt eine Mindestpause zwischen Zeichen, damit sie nicht zusammenlaufen. Bei Straight nicht verfügbar | **Aus** / 2 / 3 / 4 Dits |
@@ -2832,6 +2888,11 @@ Pausen zugelassen.
 - WiFi Trx sendet das gemessene Tempo mit. Die Statistik beim Echo Trainer
   speichert es als dein Gebetempo.
 
+## USB-CW-Adapter und Key-Events analysieren
+
+Siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen) und
+[Key-Events analysieren](#key-events-analysieren).
+
 ## Audioausgabe
 
 | Einstellung | Bedeutung | Werte |
@@ -2839,25 +2900,6 @@ Pausen zugelassen.
 | Aktiv | Zeigt, wohin der Ton gerade geht | – |
 | Ausgabe | **Automatisch** folgt dem, was gerade angesteckt oder verbunden ist. Die anderen Optionen legen die Ausgabe fest. Es werden nur Ausgaben angeboten, die gerade verfügbar sind | **Automatisch** / Lautsprecher / Kabel/USB / Bluetooth |
 | Bluetooth-Hinweis beim Geben | Zeigt über den Tasten einen Hinweis, wenn der Ton über Bluetooth läuft (Verzögerung ca. 100–250 ms) | an (Standard) / aus |
-
-## Rufzeichen
-
-Einstellungen für zufällige Rufzeichen im Inhalt **Rufzeichen** (bei Alle
-Zeichen).
-
-| Einstellung | Bedeutung | Werte |
-|---|---|---|
-| Max. Rufzeichenlänge | Maximale Länge der Rufzeichen | **Unbegr.** / 3 / 4 / 5 / 6 |
-| Region | Nur Rufzeichen aus dieser Region | **Alle** / EU / NA / SA / AF / AS / OC / VK/ZL |
-| Nur gängige Präfixe | Nur häufig gehörte Präfixe statt aller möglichen | Aus / **Ein** |
-
-Die Rufzeichen folgen einer gewichteten Präfix-Tabelle wie beim Morserino.
-Häufig gehörte Länder kommen öfter vor.
-
-## vband Morsetaste und Key-Events analysieren
-
-Siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen) und
-[Key-Events analysieren](#key-events-analysieren).
 
 ## Info: Version und Build
 
@@ -2976,7 +3018,7 @@ zuletzt Fehler hatte. Siehe
 
 **Die Pausen werden nie kürzer.**
 Das ist Absicht, solange du die Koch-Reihenfolge durcharbeitest (siehe
-[Pausen und Tempo](#pausen-und-tempo)). Mit **Abstand Zeichen/Wort** kannst du sie
+[Pausen und Tempo](#pausen-und-tempo)). Mit der Karte **Tempo und Abstände** kannst du sie
 jederzeit selbst verkürzen.
 
 **Der Decoder schreibt nur Unsinn.**
