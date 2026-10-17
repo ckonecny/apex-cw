@@ -313,6 +313,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     if (old.kochLevel == widget.kochLevel &&
         old.kochLesson == widget.kochLesson &&
         old.contentModeIndex == widget.contentModeIndex &&
+        old.contentModeOrdinals[old.contentModeIndex] ==
+            widget.contentModeOrdinals[widget.contentModeIndex] &&
         listEquals(old.activeKochChars, widget.activeKochChars)) {
       return;
     }
