@@ -2206,8 +2206,7 @@ Look (user, 2026-10-17): Send's proposal cards look like Listen's — amber chip
 (not red), separate cards at scale 1.2, and in Koch the "On the way to" card
 (progress bar, repetitions owed, weak characters as accuracy chips), on the
 start view and the result page. Shared widgets in `widgets/unlock_outlook_card.dart`
-(`WeakCharChips`, `WeakCharsCard`, `UnlockOutlookCard`); Listen still has its own
-copies of the chips/outlook code (same rules, to be merged later).
+(`WeakCharChips`, `WeakCharsCard`, `UnlockOutlookCard`), used by Listen and Send alike.
 Also with "all characters" · Random (candidates = characters seen so far, as in
 Listen); the "On the way to" card stays Koch-only.
 Running view (user, 2026-10-17): Send's block view follows Listen's typing view — header with content/Koch lesson, one dot per word (green first try, amber after repeat, red failed, ring = current), "Group n / t · WPM", one status pill (attempt, listening, sending, right, wrong), the word in letter-spaced mono with a coloured line. The old stats bar and status line are gone (the dots carry the result; the result page has the numbers).
