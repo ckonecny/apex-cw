@@ -2142,3 +2142,21 @@ and its include/exclude chips were shown. `_boostApplies` in
 elsewhere there are no weak characters, no chips and no boost push, so the
 draw is never changed silently. Mixed was left out deliberately (partial
 effect, not predictable for the user). Manual DE+EN updated.
+
+## 2026-10-17: Settings restructure — USB CW adapter, call signs in the ⚙ sheets
+- **Global settings order:** ... Keyer, then **USB CW adapter** (was "vband Morse
+  Key"; the learned dit/dah keys and the hint with the adapter links) and
+  **Analyze key events** directly below it, then Audio output, Info. They belong
+  together with the keyer.
+- **Call signs left the global settings.** Max length, region and "common
+  prefixes only" now sit in the ⚙ sheet of **Listen and Send**, section "Word
+  selection", shown for the content "Call signs" and for "Mixed" with all
+  characters (the only places call signs are drawn). The keys stay global
+  (`callLengthOpt`, `callRegionOpt`, `callCommonOnly`): one value for both
+  trainings, no per-profile copy (decided with the user). Pile-up, Memory chain
+  and QSO bot read the same keys but no longer have a control of their own.
+- **Fix found on the way:** Listen (`adaptive_copy_body.dart`) never passed the
+  call sign options to `getNextContent`, so the global settings had no effect
+  there (native defaults: unlimited, all regions, not "common only"). It reads
+  them when a block starts now.
+

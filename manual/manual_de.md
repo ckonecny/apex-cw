@@ -826,6 +826,9 @@ Zeile „Gilt für: …“ zeigt, für welche Kombination du gerade einstellst.
 | Wortsprache | Aus welcher Wortliste gezogen wird (bei **Wörter** und **Gemischt**): Englisch oder Deutsch. Beide Listen sind nach Häufigkeit gewichtet: häufige Wörter kommen öfter vor als seltene. Die deutsche Liste enthält keine Umlaute und kein ß | **Englisch** / Deutsch |
 | Wortlänge (min–max) | Nur Wörter in diesem Längenbereich (bei **Wörter** und **Gemischt**); die offenen Enden bedeuten keine Grenze | 1–**alle** (1–8, **alle**) |
 | Abkürzungslänge (min–max) | Nur Abkürzungen in diesem Längenbereich (bei **Abkürzungen** und **Gemischt**); die offenen Enden bedeuten keine Grenze | 2–**alle** (2–6, **alle**) |
+| Max. Rufzeichenlänge | Nur bei **Rufzeichen** und bei **Gemischt** (Alle Zeichen): maximale Länge der Rufzeichen. Ein Wert für Hören und Geben | **Unbegr.** / 3 / 4 / 5 / 6 |
+| Region | Ebenso: nur Rufzeichen aus dieser Region | **Alle** / EU / NA / SA / AF / AS / OC / VK/ZL |
+| Nur gängige Präfixe | Ebenso: nur häufig gehörte Präfixe statt aller möglichen. Die Rufzeichen folgen einer gewichteten Präfix-Tabelle wie beim Morserino | Aus / **Ein** |
 | Gruppen pro Block / Wörter pro Block | Anzahl der Gruppen (bei **Zufall**) bzw. Wörter in einem Block | 1–50 (**10**) |
 
 ### Ablauf
@@ -1001,8 +1004,8 @@ aber für das Profil von Geben. Zwei Unterschiede:
   verlängert außerdem die Zeit, in der du mit der Antwort beginnen darfst.
   Der Abschnitt **Abstände** enthält hier nur den Zeichenabstand; die
   Antwortpause steht im Abschnitt **Echo Trainer** und hängt nicht von ihm ab.
-- Bei **Wortauswahl** gelten zusätzlich die Rufzeichen-Einstellungen aus den
-  globalen Einstellungen (siehe [Rufzeichen](#rufzeichen)).
+- **Wortauswahl** zeigt dieselben Rufzeichen-Einstellungen wie Hören (ein Wert
+  für beide).
 
 Dazu kommt der Abschnitt **Echo Trainer**:
 
@@ -2225,7 +2228,7 @@ abgeschickt wird nach einer Wortpause oder sofort mit **Senden**.
   änderst du während des Spiels mit − und +.
 
 Die Rufzeichen stammen aus demselben Generator wie in den anderen Übungen und
-folgen deinen Rufzeichen-Einstellungen (Region, nur häufige Präfixe). Eine
+folgen den Rufzeichen-Einstellungen aus dem ⚙-Blatt von Hören oder Geben (Region, nur häufige Präfixe). Eine
 Bestenliste gibt es wie in der Firmware nicht. Am Ende siehst du Punkte,
 verteidigte und verlorene Anrufer, Trefferquote und beste Serie.
 
@@ -2669,7 +2672,7 @@ der die Tastenkontakte in **Tastendrücke** übersetzt:
 
 Ältere Handys mit Micro-USB brauchen einen USB-OTG-Adapter.
 
-**Einstellungen → vband Morse Key** hat einen kurzen Hinweis mit zwei Links, die beides im
+**Einstellungen → USB-CW-Adapter** hat einen kurzen Hinweis mit zwei Links, die beides im
 Browser öffnen: den fertigen vband-Adapter und die Bauanleitung für den
 Selbstbau-Adapter.
 
@@ -2679,7 +2682,7 @@ Damit die App weiß, welche Taste dein Adapter für Dit und welche für Dah
 sendet:
 
 1. Adapter einstecken.
-2. **Einstellungen → vband Morse Key → Dit-/Dah-Tasten anlernen**.
+2. **Einstellungen → USB-CW-Adapter → Dit-/Dah-Tasten anlernen**.
 3. Wenn „Dit-Taste drücken …“ erscheint, die **Dit-Taste** drücken; bei
    „Dah-Taste drücken …“ die **Dah-Taste**.
 4. „Gespeichert“ bestätigt das. Die erkannten Tasten stehen unter **Dit** und
@@ -2712,9 +2715,9 @@ wenn du beim Scrollen versehentlich ein Bedienelement berührt hast. Eine neuere
 ::: {.shots .three}
 ![Einstellungen: Darstellung, Allgemein, Keyer](img/de/settings1.png)
 
-![Audioausgabe und Rufzeichen](img/de/settings2.png)
+![Audioausgabe](img/de/settings2.png)
 
-![vband Morse Key, Key-Events, Info](img/de/settings3.png)
+![USB-CW-Adapter, Key-Events, Info](img/de/settings3.png)
 :::
 
 ## Darstellung
@@ -2837,6 +2840,11 @@ Pausen zugelassen.
 - WiFi Trx sendet das gemessene Tempo mit. Die Statistik beim Echo Trainer
   speichert es als dein Gebetempo.
 
+## USB-CW-Adapter und Key-Events analysieren
+
+Siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen) und
+[Key-Events analysieren](#key-events-analysieren).
+
 ## Audioausgabe
 
 | Einstellung | Bedeutung | Werte |
@@ -2844,25 +2852,6 @@ Pausen zugelassen.
 | Aktiv | Zeigt, wohin der Ton gerade geht | – |
 | Ausgabe | **Automatisch** folgt dem, was gerade angesteckt oder verbunden ist. Die anderen Optionen legen die Ausgabe fest. Es werden nur Ausgaben angeboten, die gerade verfügbar sind | **Automatisch** / Lautsprecher / Kabel/USB / Bluetooth |
 | Bluetooth-Hinweis beim Geben | Zeigt über den Tasten einen Hinweis, wenn der Ton über Bluetooth läuft (Verzögerung ca. 100–250 ms) | an (Standard) / aus |
-
-## Rufzeichen
-
-Einstellungen für zufällige Rufzeichen im Inhalt **Rufzeichen** (bei Alle
-Zeichen).
-
-| Einstellung | Bedeutung | Werte |
-|---|---|---|
-| Max. Rufzeichenlänge | Maximale Länge der Rufzeichen | **Unbegr.** / 3 / 4 / 5 / 6 |
-| Region | Nur Rufzeichen aus dieser Region | **Alle** / EU / NA / SA / AF / AS / OC / VK/ZL |
-| Nur gängige Präfixe | Nur häufig gehörte Präfixe statt aller möglichen | Aus / **Ein** |
-
-Die Rufzeichen folgen einer gewichteten Präfix-Tabelle wie beim Morserino.
-Häufig gehörte Länder kommen öfter vor.
-
-## vband Morsetaste und Key-Events analysieren
-
-Siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen) und
-[Key-Events analysieren](#key-events-analysieren).
 
 ## Info: Version und Build
 

@@ -81,13 +81,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // randomOption: which alphabet subset "Zufallszeichen" draws from when NOT
   // in Koch mode (matches M32 "Random Groups" / posRandomOption exactly).
 
-  // ── Rufzeichen ────────────────────────────────────────────────────────────
-  // callLengthOpt: 0=Unlimited,1="3",2="4",3="5",4="6" (M32 "Length Calls")
-  int  _callLengthOpt = 0;
-  // callRegionOpt: 0=All,1=EU,2=NA,3=SA,4=AF,5=AS,6=OC,7=VK/ZL (M32 "Calls Region")
-  int  _callRegionOpt = 0;
-  bool _callCommonOnly = true;  // M32 default: "Common only"
-
   // ── Echo Trainer ───────────────────────────────────────────────────────────
   // M32 "Echo Repeats": 0-6 = that many replays after a wrong/missed answer
   // before the word is revealed and the trainer moves on; 7 = "Forever"
@@ -174,9 +167,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // clamp() guards against stale values from the old 1..8 multiplier scale
       // genDisplayMode/echoDisplayMode: new int-valued keys (old genDisplay/echoPrompt
       // keys were bool — renamed to avoid a SharedPreferences type-cast crash on upgrade)
-      _callLengthOpt   = (p.getInt('callLengthOpt') ?? 0).clamp(0, 4);
-      _callRegionOpt   = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
-      _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
       // Capped below 100: the per-char EMA error rate only decays toward 0
       // asymptotically and a single historical error (ever, since it's never
       // reset) keeps it from hitting exact 0 again — a 100% threshold is a
@@ -194,9 +184,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setInt('curtisBDahTiming', _curtisBDahTiming);
     await p.setInt('acs',            _acs);
     await p.setInt('straightStartWpm', _straightStartWpm);
-    await p.setInt('callLengthOpt',   _callLengthOpt);
-    await p.setInt('callRegionOpt',   _callRegionOpt);
-    await p.setBool('callCommonOnly', _callCommonOnly);
   }
 
   void _saveLive() => _save();  // called on every interactive change
@@ -610,58 +597,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           const SizedBox(height: 24),
 
-          // ── Audioausgabe ─────────────────────────────────────────────────────
-          SettingsSectionHeader(Strings.t('settings_audio_output'), key: _audioKey),
-          const SizedBox(height: 4),
-          Text(Strings.t('settings_audio_output_desc'),
-              style: TextStyle(fontSize: 11, color: c.textFaint)),
-          const SizedBox(height: 12),
-          SettingsCard(children: [
-            SegmentRow(
-              label: Strings.t('settings_audio_output_active').replaceFirst('{val}', _localizedActiveLabel()),
-              options: _outputKindsAvailable.map(_outputKindLabel).toList(),
-              selected: _outputKindsAvailable.indexOf(_outputKindPref).clamp(0, _outputKindsAvailable.length - 1),
-              onChanged: (i) => _applyOutputKind(_outputKindsAvailable[i]),
-            ),
-            const SettingsDivider(),
-            ValueListenableBuilder<bool>(
-              valueListenable: BluetoothHint.enabled,
-              builder: (context, on, _) => ToggleRow(
-                label: Strings.t('settings_bt_latency_hint'),
-                value: on,
-                onChanged: BluetoothHint.setEnabled,
-              ),
-            ),
-          ]),
-
-          const SizedBox(height: 24),
-
-          // ── Rufzeichen ───────────────────────────────────────────────────────
-          SettingsSectionHeader(Strings.t('settings_call_signs')),
-          const SizedBox(height: 12),
-          SettingsCard(children: [
-            SegmentRow(
-              label: Strings.t('settings_call_length'),
-              options: [Strings.t('opt_unlim_short'), '3', '4', '5', '6'],
-              selected: _callLengthOpt,
-              onChanged: (v) { setState(() => _callLengthOpt = v); _saveLive(); },
-            ),
-            const SettingsDivider(),
-            SegmentRow(
-              label: Strings.t('settings_call_region'),
-              options: [Strings.t('opt_all_cap'), 'EU', 'NA', 'SA', 'AF', 'AS', 'OC', 'VK/ZL'],
-              selected: _callRegionOpt,
-              onChanged: (v) { setState(() => _callRegionOpt = v); _saveLive(); },
-            ),
-            const SettingsDivider(),
-            ToggleRow(label: Strings.t('settings_common_prefixes_only'), value: _callCommonOnly,
-                onChanged: (v) { setState(() => _callCommonOnly = v); _saveLive(); }),
-          ]),
-
-          const SizedBox(height: 24),
-
-          // ── vband Morse Key ───────────────────────────────────────────────────
-          SettingsSectionHeader('vband Morse Key'),
+          // ── USB CW adapter ────────────────────────────────────────────────────
+          SettingsSectionHeader(Strings.t('settings_usb_cw_adapter')),
           const SizedBox(height: 12),
           SettingsCard(children: [
             _InfoRow(label: 'Dit', value: _ditDesc),
@@ -712,6 +649,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ],
+          const SizedBox(height: 24),
+
+          // ── Audioausgabe ─────────────────────────────────────────────────────
+          SettingsSectionHeader(Strings.t('settings_audio_output'), key: _audioKey),
+          const SizedBox(height: 4),
+          Text(Strings.t('settings_audio_output_desc'),
+              style: TextStyle(fontSize: 11, color: c.textFaint)),
+          const SizedBox(height: 12),
+          SettingsCard(children: [
+            SegmentRow(
+              label: Strings.t('settings_audio_output_active').replaceFirst('{val}', _localizedActiveLabel()),
+              options: _outputKindsAvailable.map(_outputKindLabel).toList(),
+              selected: _outputKindsAvailable.indexOf(_outputKindPref).clamp(0, _outputKindsAvailable.length - 1),
+              onChanged: (i) => _applyOutputKind(_outputKindsAvailable[i]),
+            ),
+            const SettingsDivider(),
+            ValueListenableBuilder<bool>(
+              valueListenable: BluetoothHint.enabled,
+              builder: (context, on, _) => ToggleRow(
+                label: Strings.t('settings_bt_latency_hint'),
+                value: on,
+                onChanged: BluetoothHint.setEnabled,
+              ),
+            ),
+          ]),
+
           const SizedBox(height: 24),
 
           // ── Info ───────────────────────────────────────────────────────────
