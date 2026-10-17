@@ -2241,3 +2241,6 @@ one; ring = lesser of time and sessions) punished spreading: 15 x 1 min gave
 - **Unchanged:** `countedSessions` and the "Spread out" achievement (3 sessions
   of >= 5 min, independent of the setting).
 - Past days without session entries still count by time alone.
+
+## Group length from 1 (2026-10-17)
+The random-group length slider now starts at 1 (was 2), so single characters can be drilled on their own (1–1), also mixed into longer groups (e.g. 1–3). Changed in the settings sheet, `CwGenerator.randomCharGroup` and Send's adaptive draw (`_pickAdaptiveGroup`); stored values stay valid. The firmware has no such range at all (app extension, see "min–max range sliders").

@@ -799,7 +799,7 @@ to: …" tells you which combination you are setting up.
 | Setting | Meaning | Values |
 |---|---|---|
 | Group characters | Only with **All characters · Random**: which character classes are drawn from | **All** / Letters / Digits / Punctuation / Prosigns / Letters+Digits / Digits+Punct. / Punct.+Prosigns / Letters+Digits+Punct. / Digits+Punct.+Prosigns |
-| Group length (min–max) | Characters per random group (with **Random** and **Mixed**). A range slider: with min = max (e.g. 5–5) all groups are equally long; with min < max (e.g. 2–7) each group gets a random length, so you can't tell while listening whether a group is over | 2–8 (**5–5**) |
+| Group length (min–max) | Characters per random group (with **Random** and **Mixed**). A range slider: with min = max (e.g. 5–5) all groups are equally long; with min < max (e.g. 2–7) each group gets a random length, so you can't tell while listening whether a group is over | 1–8 (**5–5**); with 1–1 you practise single characters |
 | Word language | Which word list is drawn from (with **Words** and **Mixed**): English or German. Both lists are weighted by frequency: common words come up more often than rare ones. The German list has no umlauts and no ß | **English** / German |
 | Word length (min–max) | Only words within this length range (with **Words** and **Mixed**); the open ends mean no limit | 1–**all** (1–8, **all**) |
 | Abbreviation length (min–max) | Only abbreviations within this length range (with **Abbreviations** and **Mixed**); the open ends mean no limit | 2–**all** (2–6, **all**) |

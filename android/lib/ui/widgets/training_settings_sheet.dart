@@ -136,7 +136,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               ? (p.getInt('wpm') ?? 20)
               : TrainingProfile.clampWpm(prof.getInt('wpm') ?? p.getInt('wpm'));
       _randomOption = (prof.getInt('randomOption') ?? 0).clamp(0, _randomOptionKeys.length - 1);
-      _groupLength = (prof.getInt('groupLength') ?? 5).clamp(2, 8);
+      _groupLength = (prof.getInt('groupLength') ?? 5).clamp(1, 8);
       _groupLengthMax = (prof.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);
       _wordLengthMin = (prof.getInt('wordLengthMin') ?? 0).clamp(0, 8);
@@ -478,7 +478,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         LabeledRangeSlider(
             label: Strings.t('settings_group_length'),
             values: RangeValues(_groupLength.toDouble(), _groupLengthMax.toDouble()),
-            min: 2, max: 8, divisions: 6,
+            min: 1, max: 8, divisions: 7,
             display: _rangeText(_groupLength, _groupLengthMax),
             onChanged: (v) {
               setState(() {
