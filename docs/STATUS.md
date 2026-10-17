@@ -29,6 +29,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
+- `hear_start.png` (DE+EN): the weak-characters card now appears only with random character groups (not Koch words/abbreviations/mixed); check that the shot still shows it.
 - `chart.png` (DE+EN): new section "Umlauts and CH" in the character chart.
 
 ## v1.7.1 (maintenance release, in progress)
