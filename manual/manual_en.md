@@ -1226,8 +1226,26 @@ through), or to include it again.
   **Koch lesson · Random**. With **Next block**, the ticked characters come up
   twice as often in the next block. The boost lasts exactly one block.
 
-### Weighting in Send
+### Practising recurring mix-ups
 
+In addition to the weak characters, the app suggests mix-ups that keep
+recurring (e.g. K → R). The suggestions appear where the weak characters do
+(Listen: start view and result page, Send: result page) and only where the boost
+works (random groups). There are at most three pairs. A pair is suggested when
+
+- the mix-up is **rising** or **new** (see the *Trends* tab of the character statistics), or
+- it is simply **frequent**: at least 3 times in the last 14 days and in at least
+  10 % of the attempts at the played character. So a permanently bad pair is
+  suggested before there is enough data for a trend.
+
+Falling or vanished mix-ups are not suggested. **Tap a pair** to leave it out
+(struck through) or take it in again. Both characters of the pair then come up
+more often in the next block, with the same boost as the weak characters. The
+characters are **merged**: a character that is weak and in two pairs is boosted
+only once, the weights do not add up. Listen and Send count separately; in Listen
+only typing-mode blocks count.
+
+### Weighting in Send
 In **Send · Koch lesson · Random** the app also draws the characters by
 weight. On the Morserino this is called "Adaptive Random". Every character has
 a weight between 1 and 20, and the higher it is, the more often the character

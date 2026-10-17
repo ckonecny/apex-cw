@@ -17,6 +17,8 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
 import '../content/char_stats.dart';
+import '../content/mixup_suggest.dart';
+import '../content/mixup_trend.dart';
 import '../content/training_profile.dart';
 import '../content/cw_content.dart' show kochActiveChars, parsePracticeChars;
 import '../content/adaptive_copy_engine.dart';
@@ -26,6 +28,7 @@ import 'widgets/char_playback_overlay.dart';
 import 'widgets/mistake_lesson.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
+import 'widgets/mixup_boost_chips.dart';
 import '../util/char_color.dart';
 import '../util/interference_profile.dart';
 import '../l10n/strings.dart';
@@ -229,6 +232,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // it's included in the boosted draw for the next block — the "eingreifen
   // in die vorgeschlagenen Zeichen" override (docs/ADAPTIVE-COPY.md).
   Map<String, double> _weakChars = {};
+  // Recurring mix-ups offered for a boost (#102), minus the pairs the user
+  // left out; their characters join the weak ones in the same boosted draw.
+  List<MixupTrend> _mixups = [];
+  final Set<String> _excludedMixups = {};
   final Set<String> _excludedBoostChars = {};
   // wpm actually pushed to the generator for the in-flight block — set by
   // _startBlock(), independent of widget.wpm so a just-accepted override
@@ -324,8 +331,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         listEquals(old.activeKochChars, widget.activeKochChars)) {
       return;
     }
-    _weakChars = _weakCharsNow();
-    _excludedBoostChars.removeWhere((ch) => !_weakChars.containsKey(ch));
+    _refreshBoost();
   }
 
   // Populates _weakChars from lifetime stats right away, so the idle/start
@@ -338,11 +344,27 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // draw is never changed.
   bool get _boostApplies => widget.contentModeOrdinals[widget.contentModeIndex] == 0;
 
+  // The characters a boosted draw can pick from.
+  List<String> get _boostCandidates => widget.kochLesson
+      ? kochActiveChars(widget.kochLevel, widget.activeKochChars)
+      : _charStats.stats.keys.toList();
+
+  // Recurring mix-ups among the drawable characters (#102).
+  List<MixupTrend> _mixupsNow() => !_boostApplies
+      ? const []
+      : suggestedMixups(_charStats.days, DateTime.now(), candidates: _boostCandidates);
+
+  // Refreshes both boost proposals; exclusions of what fell off are dropped.
+  void _refreshBoost() {
+    _weakChars = _weakCharsNow();
+    _mixups = _mixupsNow();
+    _excludedBoostChars.removeWhere((ch) => !_weakChars.containsKey(ch));
+    _excludedMixups.removeWhere((p) => !_mixups.any((t) => t.pair == p));
+  }
+
   Map<String, double> _weakCharsNow() {
     if (!_boostApplies) return {};
-    final chars = widget.kochLesson
-        ? kochActiveChars(widget.kochLevel, widget.activeKochChars)
-        : _charStats.stats.keys.toList();
+    final chars = _boostCandidates;
     final high = (_engine?.thresholds ?? _startThresholds)?.highThreshold ??
         const AdaptiveCopyThresholds().highThreshold;
     if (widget.kochLesson) {
@@ -368,8 +390,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     setState(() {
       _outputCase = (p.getInt('outputCase') ?? 0).clamp(0, 1);
       _startThresholds = _thresholdsFrom(p);
-      _weakChars = _weakCharsNow();
-      _excludedBoostChars.removeWhere((ch) => !_weakChars.containsKey(ch));
+      _refreshBoost();
     });
   }
 
@@ -625,9 +646,13 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // boosted across several following blocks (lifetime EMA-based, not
     // cleared after one block), so a gentler per-block rate spread over
     // that whole stretch is enough without dominating any single block.
-    final boostChars = _weakChars.keys
-        .where((ch) => !_excludedBoostChars.contains(ch))
-        .toList();
+    // Weak characters plus both characters of the mix-up pairs still ticked;
+    // one set, so a character in several places is not boosted any harder.
+    final boostChars = {
+      ..._weakChars.keys.where((ch) => !_excludedBoostChars.contains(ch)),
+      ...mixupBoostChars(
+          _mixups.where((t) => !_excludedMixups.contains(t.pair)), _boostCandidates),
+    }.toList();
     if (_boostApplies) {
       final pf = await TrainingProfile.open(TrainingProfile.hear);
       final ownChars = parsePracticeChars(pf.getString('practiceChars') ?? '');
@@ -1068,8 +1093,6 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       wpmBefore = widget.wpm;
       newWpm = widget.wpm + 1;
     }
-    final weakChars = _weakCharsNow();
-
     if (!mounted) return;
     setState(() {
       _resultCorrect = correct;
@@ -1086,11 +1109,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _acceptCharSpeed = true;
       _acceptSpacing = true;
       _acceptUnlock = true;
-      _weakChars = weakChars;
       // Excluding a char only makes sense while it's actually on the list —
-      // drop stale exclusions for chars that fell off (e.g. its EMA
-      // recovered below threshold since the user last excluded it).
-      _excludedBoostChars.removeWhere((ch) => !weakChars.containsKey(ch));
+      // stale exclusions are dropped (e.g. its EMA recovered since).
+      _refreshBoost();
       _phase = _Phase.result;
     });
   }

@@ -1261,6 +1261,27 @@ mehrere Blöcke und Sitzungen.
   angehakten Zeichen im nächsten Block doppelt so oft. Die Verstärkung gilt
   genau einen Block.
 
+### Häufige Verwechslungen üben
+
+Zusätzlich zu den schwachen Zeichen schlägt die App Verwechslungen vor, die sich
+häufen (z. B. K → R). Die Vorschläge stehen am selben Ort wie die schwachen
+Zeichen (Hören: Startansicht und Ergebnisseite, Geben: Ergebnisseite) und gelten nur,
+wo auch die Verstärkung wirkt (Zufallsgruppen). Es sind höchstens drei Paare.
+Ein Paar wird vorgeschlagen, wenn
+
+- die Verwechslung **steigt** oder **neu** ist (siehe Reiter *Trends* der Zeichenstatistik), oder
+- sie schlicht **häufig** ist: in den letzten 14 Tagen mindestens 3-mal und bei
+  mindestens 10 % der Versuche an dem gespielten Zeichen. So wird auch ein
+  dauerhaft schlechtes Paar vorgeschlagen, bevor genug Daten für einen Trend da sind.
+
+Fallende oder verschwundene Verwechslungen werden nicht vorgeschlagen. **Tippe ein
+Paar an**, um es auszunehmen (durchgestrichen) oder wieder aufzunehmen. Beide
+Zeichen des Paars kommen dann im nächsten Block öfter dran, mit derselben
+Verstärkung wie die schwachen Zeichen. Die Zeichen werden **zusammengelegt**: Ein
+Zeichen, das schwach ist und in zwei Paaren vorkommt, wird nur einmal verstärkt,
+die Gewichte addieren sich nicht. Hören und Geben zählen getrennt; in Hören zählen
+nur Blöcke im Tippmodus.
+
 ### Gewichtung bei Geben
 
 Bei **Geben · Koch-Lektion · Zufall** zieht die App die Zeichen zusätzlich

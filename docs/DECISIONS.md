@@ -2144,6 +2144,24 @@ Pure function `mixupTrends()` in `content/mixup_trend.dart`, on `CharStatsStore.
 - Listen counts only the first wrong character per word but every wrong character counts as an attempt error, so Listen rates sit lower than the character's error rate. That is consistent over time, which is all a trend needs.
 - **No back-fill**: before #92 nothing was logged per day. `mixupTrendStart` = first day with logged mix-ups + 2 windows; until then the tab shows "Trend from …" with a progress bar instead of an empty area.
 - Display: third tab "Trends" in the character statistics (grouped: up/new, down/gone, same, too few collapsed; row = pair, arrow, rate, previous, 6-week sparkline, count); in the character detail each pair gets its arrow and a 12-week curve (`ProgressBucket.pairRate`, same weekly buckets as the hit-rate curve; weeks with < 5 attempts stay gaps). Reverse pairs (K>R, R>K) stay separate: hearing and sending them have different causes. #102 (practice suggestions) will use `mixupTrends()` too.
+## Mix-up practice suggestion (2026-10-16, #102)
+Supersedes "mix-ups never influence what is drawn" (#92): they still never do
+silently, but they are now offered as a proposal next to the weak characters.
+- **Reuse, not a new exercise.** The pair's two characters join the existing
+  boosted draw (Listen: `setPracticeChars` + boost level 1; Send: weight ×2 for
+  one block). Weak characters and pair characters form **one set** — a character
+  in several places is boosted once, weights never add up (user decision).
+- **Rule** (`content/mixup_suggest.dart`, `suggestedMixups`): a pair is offered if
+  its #101 trend is up or new, or if it is simply frequent (recent window ≥ 3
+  mix-ups, ≥ 15 attempts, rate ≥ 10 %), so a permanently bad pair is offered
+  before four weeks of data exist. Falling and vanished pairs never; left-out
+  ('–') and identical pairs never; at most 3 pairs, worst rate first. Only pairs
+  whose played character can be drawn (Koch active set / seen characters).
+  Thresholds are judgement values, tunable in one place.
+- **Same scope as the weak characters**: only where the boost works (random
+  groups); Listen counts typing-mode blocks only (no mix-ups in paper mode).
+- Tapping a pair leaves it out (struck through), as for weak characters; the
+  choice is per result page and not stored.
 ## 2026-10-15: Hide touch keys when a key adapter is detected (#95)
 Detection is by use, not by presence: `MainActivity.noteKeyAdapter()` registers a physical (non-virtual) `InputDevice` the first time it sends a learned dit/dah key, and an `InputDeviceListener` drops it on unplug. A plain USB/Bluetooth keyboard never counts, so there are no false positives; the cost is that the touch keys stay until the first keypress. Presence-based detection (any external keyboard-type device) was rejected: it cannot tell an adapter from a keyboard. On top of that, "Learn dit/dah keys" stores the `InputDevice.descriptor` of the device both keys came from (pref `paddle_adapter_descriptor`, only if both came from the same physical device; learning on the on-screen keyboard clears it). A device with that descriptor counts as detected at plug-in (`onInputDeviceAdded`) and at app start, with no keypress. Detection by use stays as the fallback for adapters learned before this change and is never stored, so a keyboard that happens to type the default dit/dah characters is not remembered. `KeyAdapterState` (pref `hideSoftKeysOnAdapter`, default off) holds detected/enabled/dismissed; the hiding sits in the two shared widgets `IambicPaddles` and `StraightKeyPaddle`, so every Send screen follows. The notice has no setting of its own (a second switch would only confuse); its X lasts until the next detection. The Bluetooth latency warning stays visible with hidden paddles (it matters for real keys too); the one-time key tip (#58) is hidden while an adapter is detected. Hardware keys never went through the widgets (`dispatchKeyEvent`), so hiding changes nothing for keying.
 
