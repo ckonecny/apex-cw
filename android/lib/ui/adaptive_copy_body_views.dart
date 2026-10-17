@@ -51,66 +51,28 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   }
 
   // The tappable include/exclude chips, hosted either by the weak-characters
-  // card or (Koch, when it fits) by the unlock card's accuracy row.
-  Widget _buildWeakChips(BuildContext context,
-      {double scale = 1,
-      WrapAlignment alignment = WrapAlignment.center,
-      bool showAccuracy = false,
-      bool small = false,
-      VoidCallback? onChanged}) {
-    final c = AppColors.of(context);
-    final radius = small ? 12.0 : 20.0;
-    return Wrap(spacing: small ? 6 : 8, runSpacing: small ? 6 : 8, alignment: alignment,
-        children: _weakChars.entries.map((e) {
-          final included = !_excludedBoostChars.contains(e.key);
-          return InkWell(
-            onTap: () {
-              _update(() {
-                if (included) {
-                  _excludedBoostChars.add(e.key);
-                } else {
-                  _excludedBoostChars.remove(e.key);
-                }
-              });
-              onChanged?.call();
-            },
-            borderRadius: BorderRadius.circular(radius),
-            child: Container(
-              padding: small
-                  ? const EdgeInsets.symmetric(horizontal: 8, vertical: 3)
-                  : const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: included ? c.warning.withValues(alpha: 0.15) : c.surfaceAlt,
-                borderRadius: BorderRadius.circular(radius),
-                border: Border.all(
-                    color: included ? c.warning.withValues(alpha: 0.5) : c.border),
-              ),
-              child: Text('${_displayChar(e.key)}  ${((showAccuracy ? 1 - e.value : e.value) * 100).round()}%',
-                  style: TextStyle(fontFamily: 'CwMono', fontSize: 13 * scale,
-                      color: included ? c.warning : c.textMuted,
-                      decoration: included ? null : TextDecoration.lineThrough)),
-            ),
-          );
-        }).toList(),
-      );
+  // card or (Koch, when it fits) by the unlock card's accuracy row; shared
+  // widgets with Send (widgets/unlock_outlook_card.dart).
+  void _toggleWeakChar(String ch, VoidCallback? onChanged) {
+    _update(() {
+      if (!_excludedBoostChars.remove(ch)) _excludedBoostChars.add(ch);
+    });
+    onChanged?.call();
   }
 
-  // Weak-character chips, tappable to include/exclude from the boosted
-  // draw — shared between the idle/start screen (boosts the next block
-  // about to start) and the result screen (boosts the block after that
-  // one), see docs/ADAPTIVE-COPY.md.
-  // scale bumps text size for the result screen ("der komplette text beim
-  // resultat screen könnte ruhig größer sein") without also growing this
-  // section where it's reused on the idle screen.
+  // Weak-character card, tappable to include/exclude from the boosted draw —
+  // shared between the idle/start screen (boosts the next block about to
+  // start) and the result screen (boosts the block after that one), see
+  // docs/ADAPTIVE-COPY.md. scale bumps text size for the result screen.
   Widget _buildWeakCharsSection(BuildContext context,
       {double scale = 1, VoidCallback? onChanged}) {
-    final c = AppColors.of(context);
-    return SizedBox(width: double.infinity, child: AppCard(child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 11 * scale, color: c.textMuted)),
-      const SizedBox(height: 8),
-      _buildWeakChips(context, scale: scale, onChanged: onChanged),
-    ])));
+    return WeakCharsCard(
+        chips: WeakCharChips(
+            weak: _weakChars,
+            excluded: _excludedBoostChars,
+            display: _displayChar,
+            onToggle: (ch) => _toggleWeakChar(ch, onChanged),
+            scale: scale));
   }
 
   // Recurring mix-ups, tappable to leave a pair out of the boosted draw (#102).
@@ -618,93 +580,16 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
 
   Widget? _buildUnlockOutlook(BuildContext context, {bool compact = false}) {
     if (!_outlookAvailable) return null;
-    final c = AppColors.of(context);
-    final th = (_engine?.thresholds ?? _startThresholds)!;
-    final chars = kochActiveChars(widget.kochLevel, widget.activeKochChars);
-    final needAttempts = <String, int>{};
-    final lowAcc = <String, int>{};
-    var doneAttempts = 0, wantAttempts = 0;
-    for (final ch in chars) {
-      final st = _charStats.stats[ch] ?? CharStat();
-      final acc = 1 - st.emaErrorRate;
-      if (st.attempts < th.unlockOccurrences) {
-        doneAttempts += st.attempts;
-        wantAttempts += th.unlockOccurrences;
-        needAttempts[ch] = th.unlockOccurrences - st.attempts;
-      } else if (acc < th.highThreshold) {
-        lowAcc[ch] = (acc * 100).round();
-      }
-    }
-    // Bar = repetitions still owed, summed over the chars that lack them;
-    // if only accuracy is missing, it shows accuracy vs. threshold.
-    double progress;
-    if (wantAttempts > 0) {
-      progress = doneAttempts / wantAttempts;
-    } else {
-      final worst = lowAcc.values.fold<int>(100, (m, v) => v < m ? v : m);
-      progress = (worst / 100 / th.highThreshold).clamp(0.0, 1.0);
-    }
-    final next = _displayChar(widget.activeKochChars[widget.kochLevel]);
-    // One chip per character, so an entry never breaks across lines; most
-    // repetitions owed / lowest accuracy first, capped so a bad block
-    // doesn't turn the card into a wall.
-    const maxChips = 10;
-    Widget chips(List<String> items) {
-      final shown = items.take(maxChips).toList();
-      return Wrap(spacing: 6, runSpacing: 6, children: [
-        for (final t in shown) Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          decoration: BoxDecoration(color: c.surfaceAlt,
-              borderRadius: BorderRadius.circular(12), border: Border.all(color: c.border)),
-          child: Text(t, style: TextStyle(fontFamily: 'CwMono', fontSize: 13, color: c.textPrimary)),
-        ),
-        if (items.length > maxChips) Padding(
-          padding: const EdgeInsets.symmetric(vertical: 3),
-          child: Text(Strings.t('ac_outlook_more').replaceFirst('{n}', '${items.length - maxChips}'),
-              style: TextStyle(fontSize: 13, color: c.textMuted)),
-        ),
-      ]);
-    }
-    final sections = <(String, List<String>)>[];
-    if (needAttempts.isNotEmpty) {
-      final e = needAttempts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-      sections.add((Strings.t('ac_outlook_attempts'),
-          [for (final x in e) '${_displayChar(x.key)} ${x.value}']));
-    }
-    final mono = TextStyle(fontSize: 13, color: c.textMuted);
-    return SizedBox(
-      width: double.infinity,
-      child: AppCard(
-        padding: compact ? const EdgeInsets.symmetric(horizontal: 14, vertical: 10) : const EdgeInsets.all(14),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(Strings.t('ac_outlook_title').replaceFirst('{ch}', next),
-              style: TextStyle(fontSize: 14,
-                  fontWeight: FontWeight.bold, color: c.textPrimary)),
-          SizedBox(height: compact ? 8 : 10),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 8,
-              backgroundColor: c.background,
-              valueColor: AlwaysStoppedAnimation(c.accent),
-            ),
-          ),
-          if (!compact) for (final (label, items) in sections) ...[
-            const SizedBox(height: 10),
-            Text(label, style: mono),
-            const SizedBox(height: 6),
-            chips(items),
-          ],
-          if (!compact && _weakChars.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Text(Strings.t('ac_outlook_accuracy_boost')
-                .replaceFirst('{pct}', '${(th.highThreshold * 100).round()}'), style: mono),
-            const SizedBox(height: 6),
-            _buildWeakChips(context, alignment: WrapAlignment.start, showAccuracy: true, small: true),
-          ],
-        ]),
-      ),
+    return UnlockOutlookCard(
+      next: _displayChar(widget.activeKochChars[widget.kochLevel]),
+      chars: kochActiveChars(widget.kochLevel, widget.activeKochChars),
+      stats: _charStats.stats,
+      thresholds: (_engine?.thresholds ?? _startThresholds)!,
+      display: _displayChar,
+      weak: _weakChars,
+      excluded: _excludedBoostChars,
+      onToggle: (ch) => _toggleWeakChar(ch, null),
+      compact: compact,
     );
   }
 
