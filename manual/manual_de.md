@@ -898,12 +898,13 @@ Der Block lässt sich mit **Stopp** oben rechts oder mit dem Zurück-Pfeil beend
    Halbton versetzt (einstellbar, **Tonversatz**), damit du Vorgabe und
    Antwort unterscheiden kannst.
 3. **Wann du anfangen musst:** Du hast ab dem Ende der Vorgabe etwa
-   1,4 Sekunden plus eine Zeichenpause plus ein Drittel der Wortpause plus die
-   **Denkzeit** (Voreinstellung 8 s) Zeit, um mit der Antwort **zu beginnen**.
+   1,4 Sekunden plus eine Zeichenpause plus ein Drittel der **Antwortpause**
+   plus die **Denkzeit** (Voreinstellung 8 s) Zeit, um mit der Antwort **zu beginnen**.
    Kommt bis dahin nichts, gilt das Wort als falsch.
 4. **Wann die Antwort endet:** Sobald du angefangen hast, gilt die Denkzeit
-   nicht mehr. Die Antwort ist abgeschlossen, sobald du eine Wortpause von
-   7 Dits machst (im Antwort-Tempo).
+   nicht mehr. Die Antwort ist abgeschlossen, sobald du nach einem Zeichen
+   lange genug pausierst (Formel unter
+   [Einstellungen im ⚙-Blatt](#einstellungen-geben)), im Antwort-Tempo.
 5. **Korrigieren:** Gibst du `<err>` (acht Dits) oder viermal hintereinander
    `e`, wird deine bisherige Antwort gelöscht und du fängst neu an. Ausnahme:
    Wenn das Wort selbst an dieser Stelle mit einem weiteren `e` weitergeht,
@@ -953,7 +954,8 @@ Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
   kam.
 - Die Karte **Tempo und Abstände** (unten, über den Schaltflächen): Regler
   **Geben** und **Hören** (mit dem effektiven Tempo in Klammern) sowie
-  **Zeichenabstand** und **Wortabstand**. Die Abstände gehören zum Hören-Tempo
+  **Zeichenabstand**. Die Antwortpause steht nicht hier, sondern im ⚙-Blatt;
+  das effektive Tempo rechnet sie mit dem normalen Wert 7. Der Abstand gehört zum Hören-Tempo
   direkt darüber. Eine Änderung hier ersetzt den passenden Vorschlag.
 - **Vorschläge** und **Schwache Zeichen** (siehe
   [Der adaptive Modus](#der-adaptive-modus)).
@@ -984,19 +986,21 @@ aber für das Profil von Geben. Zwei Unterschiede:
   so lange pausierst:
 
   ```
-  2 × Zeichenabstand + 1 + Wortabstand / 8   (Dits im Gebetempo)
+  2 × Zeichenabstand + 1 + Antwortpause / 8   (Dits im Gebetempo)
   ```
 
-  Mit der Handtaste sind es Wortabstand + 1 Dits, gemessen an deinem eigenen
+  Mit der Handtaste sind es Antwortpause + 1 Dits, gemessen an deinem eigenen
   Tempo (bis 30 WPM; darüber gelten die kürzeren Abstände der Handtaste).
   Beispiel: Zeichenabstand
-  28, Wortabstand 40, Gebetempo 18 WPM ergibt 62 Dits, also rund 4 s. So
+  28, Antwortpause 40, Gebetempo 18 WPM ergibt 62 Dits, also rund 4 s. So
   lange darfst du auch zwischen den Zeichen einer Gruppe überlegen, und so
   lange wartet die App nach dem letzten Zeichen, bevor sie bewertet. Ist dir
   das zu großzügig oder zu träge, stell den Zeichenabstand kleiner; der
-  Normalabstand 3 / 7 ergibt 8 Dits. Verkürzt die Adaptiv-Funktion die
-  Abstände, wird auch die Antwort strenger. Längere Abstände verlängern
-  außerdem die Zeit, in der du mit der Antwort beginnen darfst.
+  Normalabstand 3 / 7 ergibt 8 Dits. Verkürzt die Adaptiv-Funktion den
+  Zeichenabstand, wird auch die Antwort strenger. Ein längerer Zeichenabstand
+  verlängert außerdem die Zeit, in der du mit der Antwort beginnen darfst.
+  Der Abschnitt **Abstände** enthält hier nur den Zeichenabstand; die
+  Antwortpause steht im Abschnitt **Echo Trainer** und hängt nicht von ihm ab.
 - Bei **Wortauswahl** gelten zusätzlich die Rufzeichen-Einstellungen aus den
   globalen Einstellungen (siehe [Rufzeichen](#rufzeichen)).
 
@@ -1004,7 +1008,8 @@ Dazu kommt der Abschnitt **Echo Trainer**:
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Denkzeit | Zusätzliche Zeit, um mit der Antwort zu **beginnen** | 1–20 s (**8 s**) |
+| Denkzeit | Zusätzliche Zeit nach dem gespielten Wort, um mit der Antwort zu **beginnen** (z. B. zum Kopfkopieren). Gilt nur bis zu deinem ersten Zeichen | 0–20 s (**8 s**) |
+| Antwortpause | Stille nach deinem letzten Zeichen, bis die Antwort zählt (Formel oben). Wird nie gespielt und ist vom Zeichenabstand unabhängig. Verlängert außerdem die Zeit zum Anfangen ein wenig (ein Drittel davon) | 6–105 Dits (**40**) |
 | Wiederholungen | Wie oft ein falsch beantwortetes Wort erneut gespielt wird, bevor die App es auflöst. „Endlos“ wiederholt, bis es stimmt | 0–6 (**3**), Endlos |
 | Vorgabe | Wie die Vorgabe kommt: **Ton** = nur hören; **Anzeige** = nur lesen, ohne Ton; **Beides** = hören und nach dem Abspielen lesen | **Ton** / Anzeige / Beides |
 | Gebetempo (max.) | Höchstes Antwort-Tempo, siehe [Gebetempo](#gebetempo) | **wie Hören**, 10–50 WPM |
@@ -1160,7 +1165,8 @@ Haken entfernst, bleibst du in der aktuellen Lektion.
 Die App verändert immer zuerst die **Pausen**, erst dann das Tempo:
 
 - **Verkürzen:** Zeichenabstand und Wortabstand werden je um 1 Dit kürzer,
-  bis hinunter zu den normalen 3 / 7 Dits.
+  bis hinunter zu den normalen 3 / 7 Dits. In Geben ändert sich nur der
+  Zeichenabstand; die Antwortpause bleibt, wie du sie eingestellt hast.
 - **Tempo erhöhen:** Erst wenn die Pausen bereits bei 3 / 7 Dits angekommen
   sind, schlägt die App **+1 WPM** vor.
 - **Verlängern:** Zeichenabstand und Wortabstand werden je um 1 Dit länger –

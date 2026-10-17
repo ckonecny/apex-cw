@@ -148,10 +148,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _interCharSpace = 28;
   int  _interWordSpace = 40;
   // Widening cap for block suggestions: spacing as loaded/set in the sheet.
-  int  _capInterChar = 28, _capInterWord = 40;
+  int  _capInterChar = 28;
   EchoSuggestions? _suggestions;
   // Proposals shown on the result page. Accepting has no effect yet (6d).
-  int? _pendWpm, _pendAnswer, _pendIC, _pendIW;
+  int? _pendWpm, _pendAnswer, _pendIC;
   bool _accUnlock = true, _accWpm = true, _accSpacing = true, _accAnswer = false;
   final Set<String> _excludedBoost = {};
   bool _previewing = false;
@@ -282,7 +282,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
       _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
       _capInterChar = _interCharSpace;
-      _capInterWord = _interWordSpace;
       _practiceChars  = parsePracticeChars(pf.getString('practiceChars') ?? '');
       _boostLevel     = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
       _choice         = CharsetChoice.load(pf);
@@ -397,9 +396,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         wpm: _wpm,
         answerWpmMax: _answerWpmMax,
         interCharSpace: _interCharSpace,
-        interWordSpace: _interWordSpace,
         maxInterCharSpace: max(_capInterChar, _interCharSpace),
-        maxInterWordSpace: max(_capInterWord, _interWordSpace),
         kochLevel: _koch ? _kochLevel : 0,
         kochTotal: _koch ? _activeKochChars.length : 0,
         activeChars: charContent ? kochActiveChars(_kochLevel, _activeKochChars) : const [],
@@ -430,7 +427,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _pendWpm = s.newWpm;
     _pendAnswer = s.newAnswerWpmMax;
     _pendIC = s.newInterChar;
-    _pendIW = s.newInterWord;
     _accUnlock = _accWpm = _accSpacing = true;
     _accAnswer = false;
     _excludedBoost.clear();
@@ -454,11 +450,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _wpm = _pendWpm!;
       PracticeClock.instance.milestone(MilestoneKind.wpmEcho, _wpm, onlyIfHigher: true);
     }
-    if (_pendIC != null && _pendIW != null && _accSpacing) {
+    if (_pendIC != null && _accSpacing) {
       _interCharSpace = _pendIC!;
-      _interWordSpace = _pendIW!;
       await pf.setInt('interCharSpace', _interCharSpace);
-      await pf.setInt('interWordSpace', _interWordSpace);
     }
     if (_pendAnswer != null && _accAnswer) {
       _answerWpmMax = _pendAnswer!;
@@ -470,7 +464,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         ? s.weakChars.keys.where((ch) => !_excludedBoost.contains(ch)).toList()
         : [];
     _suggestions = null;
-    _pendWpm = _pendAnswer = _pendIC = _pendIW = null;
+    _pendWpm = _pendAnswer = _pendIC = null;
   }
 
   // Plays the proposed new Koch char twice, in place (like Adaptive Copy).
@@ -514,14 +508,13 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Manual spacing change (idle / result card). Like a manual tempo change it
   // overrides the matching suggestion of the finished block.
   Future<void> _setSpacing(int ic, int iw) async {
+    // The answer pause (iw) is not on this screen and stays untouched.
     setState(() {
       _interCharSpace = ic;
-      _interWordSpace = iw;
-      _pendIC = _pendIW = null;
+      _pendIC = null;
     });
     final pf = await TrainingProfile.open(TrainingProfile.echo);
     await pf.setInt('interCharSpace', _interCharSpace);
-    await pf.setInt('interWordSpace', _interWordSpace);
   }
 
   // Geben speed above Hören and its spacing: the spacing belongs to the
@@ -563,6 +556,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           interChar: _interCharSpace,
           interWord: _interWordSpace,
           compact: true,
+          showWordGap: false,
           showUndo: false,
           onWpm: _setHearWpm,
           onSpacing: _setSpacing,
@@ -571,7 +565,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   void _stepSpacing(int d) => setState(() {
         _pendIC = (_pendIC! + d).clamp(3, max(_capInterChar, _interCharSpace));
-        _pendIW = (_pendIW! + d).clamp(7, max(_capInterWord, _interWordSpace));
       });
 
   List<Widget> _buildSuggestionRows(AppColors c, double width, String Function(String) cs) {
@@ -599,7 +592,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         onIncrement: _accWpm ? () => setState(() => _pendWpm = min(_wpm + 5, _pendWpm! + 1)) : null,
       ));
     }
-    if (_pendIC != null && _pendIW != null) {
+    if (_pendIC != null) {
       final tighter = _pendIC! < _interCharSpace;
       rows.add(SuggestionRow(
         width: width,
@@ -607,9 +600,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         onToggle: (v) => setState(() => _accSpacing = v),
         label: '${Strings.t(tighter ? 'ac_spacing_up' : 'ac_spacing_down')}: '
             '$_interCharSpace→${_accSpacing ? _pendIC : _interCharSpace} '
-            '(${ditsToSeconds(_accSpacing ? _pendIC! : _interCharSpace, _wpm)}) / '
-            '$_interWordSpace→${_accSpacing ? _pendIW : _interWordSpace} '
-            '(${ditsToSeconds(_accSpacing ? _pendIW! : _interWordSpace, _wpm)})',
+            '(${ditsToSeconds(_accSpacing ? _pendIC! : _interCharSpace, _wpm)})',
         onDecrement: _accSpacing ? () => _stepSpacing(-1) : null,
         onIncrement: _accSpacing ? () => _stepSpacing(1) : null,
       ));
@@ -1118,7 +1109,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                 )),
 
           // ── Stats bar ────────────────────────────────────────────────────
-          if (_total > 0) _StatsBar(correct: _correct, total: _total,
+          // Only while a block runs: after Stop the start screen stays clean.
+          if (_total > 0 && _state != _State.idle) _StatsBar(correct: _correct, total: _total,
               answerWpm: (_answerWpmMax > 0 && _answerWpm < _currentWpm) ? _answerWpm : null),
 
           // ── Status label ─────────────────────────────────────────────────

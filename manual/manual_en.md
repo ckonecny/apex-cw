@@ -873,12 +873,13 @@ back arrow.
    tone so you can tell prompt and answer apart. This is the **Tone shift**
    setting.
 3. **When you have to start:** from the end of the prompt you have about
-   1.4 seconds, plus one character pause, plus a third of the word pause, plus
-   the **Think time** (default 8 s) to **begin** your answer. If nothing
+   1.4 seconds, plus one character pause, plus a third of the **answer pause**,
+   plus the **Think time** (default 8 s) to **begin** your answer. If nothing
    comes by then, the word counts as wrong.
 4. **When the answer ends:** once you have started, the think time no longer
-   applies. The answer is complete as soon as you leave a 7-dit word pause, at
-   sending speed.
+   applies. The answer is complete as soon as you pause long enough after a
+   character (formula under [Settings in the ⚙ sheet](#settings-send)),
+   at sending speed.
 5. **Correcting:** key `<err>` (eight dits) or four `e` in a row to clear
    your answer so far and start again. The exception is when the word itself
    continues with another `e` at that point. Then the `e` counts as a normal
@@ -926,7 +927,8 @@ After the last word of a block the result page appears:
   → given", for example `p → w`. A `–` means nothing came at that position.
 - The **speed and spacing** card (at the bottom, above the buttons): sliders
   **Send** and **Listen** (with the effective speed in brackets), plus
-  **Character spacing** and **Word spacing**. The spacing belongs to the
+  **Character spacing**. The answer pause is not on this screen but in the ⚙
+  sheet; the effective speed counts it at the normal 7. The spacing belongs to the
   Listen speed directly above it. A change here replaces the matching
   suggestion.
 - **Suggestions** and **Weak characters** (see
@@ -957,18 +959,20 @@ apply to the Send profile. There are two differences:
   after a character:
 
   ```
-  2 × character spacing + 1 + word spacing / 8   (dits at the answer speed)
+  2 × character spacing + 1 + answer pause / 8   (dits at the answer speed)
   ```
 
-  With a straight key it is word spacing + 1 dits, measured at your own speed
+  With a straight key it is answer pause + 1 dits, measured at your own speed
   (up to 30 WPM; above that the shorter straight-key gaps apply). Example: character
-  spacing 28, word spacing 40, answer speed 18 WPM gives 62 dits, about 4 s.
+  spacing 28, answer pause 40, answer speed 18 WPM gives 62 dits, about 4 s.
   That is how long you may pause between the characters of a group, and how
   long the app waits after the last character before it scores. If that is
   too lenient or too slow for you, lower the character spacing; the normal
-  3 / 7 gives 8 dits. When the adaptive feature shortens the spacing, the
-  answer gets stricter too. Longer spacing also gives you more time to begin
-  your answer.
+  3 / 7 gives 8 dits. When the adaptive feature shortens the character
+  spacing, the answer gets stricter too. A longer character spacing also gives
+  you more time to begin your answer. The **Spacing** section has only the
+  character spacing here; the answer pause is in the **Echo Trainer** section
+  and does not depend on it.
 - **Word selection** also uses the call sign settings from the global
   settings (see [Call signs](#call-signs)).
 
@@ -976,7 +980,8 @@ In addition there is the **Echo Trainer** section:
 
 | Setting | Meaning | Values |
 |---|---|---|
-| Think time | Extra time to **begin** your answer | 1–20 s (**8 s**) |
+| Think time | Extra time after the played word to **begin** your answer (for example for head copy). It only applies until your first character | 0–20 s (**8 s**) |
+| Answer pause | Silence after your last character before the answer counts (formula above). It is never played and independent of the character spacing. Also extends the time to begin a little (a third of it) | 6–105 dits (**40**) |
 | Repeats | How often a wrongly answered word is played again before the app reveals it. "Forever" repeats until you get it right | 0–6 (**3**), Forever |
 | Prompt | How the prompt is given. **Sound** means you only hear it. **Display** means you only read it, with no audio. **Both** means you hear it and then read it once it has played | **Sound** / Display / Both |
 | Sending speed (max) | Highest speed for your answer, see [Sending speed](#sending-speed) | **same as prompt**, 10–50 WPM |
@@ -1128,7 +1133,8 @@ lesson.
 The app always changes the **pauses** first, and only then the speed:
 
 - **Shorten:** character spacing and word spacing each get 1 dit shorter, down to
-  the normal 3 / 7 dits.
+  the normal 3 / 7 dits. In Send only the character spacing changes; the
+  answer pause stays as you set it.
 - **Raise the speed:** only once the pauses are already at 3 / 7 dits does
   the app suggest **+1 WPM**.
 - **Lengthen:** character spacing and word spacing each get 1 dit longer, but

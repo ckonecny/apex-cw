@@ -21,9 +21,11 @@ class EchoSuggestionInput {
   final List<bool> firstTry;
   final int wpm; // Hör-Tempo
   final int answerWpmMax; // Gebe-Tempo cap, 0 = same as Hören
-  final int interCharSpace, interWordSpace;
+  // Only the character spacing: the answer pause is the user's own setting
+  // and is never changed by a suggestion.
+  final int interCharSpace;
   // Upper bound for widening (spacing at session start).
-  final int maxInterCharSpace, maxInterWordSpace;
+  final int maxInterCharSpace;
   // Koch content only; otherwise kochLevel = kochTotal = 0.
   final int kochLevel, kochTotal;
   // Characters the block could have used, for unlock check and weak chars.
@@ -39,9 +41,7 @@ class EchoSuggestionInput {
     required this.wpm,
     required this.answerWpmMax,
     required this.interCharSpace,
-    required this.interWordSpace,
     required this.maxInterCharSpace,
-    required this.maxInterWordSpace,
     required this.kochLevel,
     required this.kochTotal,
     required this.activeChars,
@@ -54,7 +54,7 @@ class EchoSuggestions {
   final double blockRate; // first-try rate of this block, 0..1
   final double blockEma;
   final bool unlockNext;
-  final int? newInterChar, newInterWord; // tighten or widen (see before)
+  final int? newInterChar; // tighten or widen (see before)
   final int? newWpm; // Hör-Tempo +1
   final int? newAnswerWpmMax; // Gebe-Tempo +1
   final Map<String, double> weakChars;
@@ -64,7 +64,6 @@ class EchoSuggestions {
     required this.blockEma,
     required this.unlockNext,
     this.newInterChar,
-    this.newInterWord,
     this.newWpm,
     this.newAnswerWpmMax,
     this.weakChars = const {},
@@ -78,7 +77,7 @@ class EchoSuggestions {
 EchoSuggestions evaluateEchoBlock(AdaptiveCopyEngine engine, EchoSuggestionInput i) {
   final n = i.firstTry.length;
   final rate = n == 0 ? 0.0 : i.firstTry.where((r) => r).length / n;
-  final spacingAtCharSpeed = i.interCharSpace <= 3 && i.interWordSpace <= 7;
+  final spacingAtCharSpeed = i.interCharSpace <= 3;
   final decision = engine.recordBlock(i.firstTry, spacingAtCharSpeed: spacingAtCharSpeed);
 
   final koch = i.kochTotal > 0;
@@ -89,15 +88,13 @@ EchoSuggestions evaluateEchoBlock(AdaptiveCopyEngine engine, EchoSuggestionInput
   // this block (decision 2); widening / slowing down is never blocked.
   final mayRise = !unlock && !kochOpen;
 
-  int? ic, iw;
+  int? ic;
   if (decision.spacingStep == TempoStep.up && mayRise) {
     ic = (i.interCharSpace - 1).clamp(3, i.maxInterCharSpace);
-    iw = (i.interWordSpace - 1).clamp(7, i.maxInterWordSpace);
   } else if (decision.spacingStep == TempoStep.down) {
     ic = (i.interCharSpace + 1).clamp(3, i.maxInterCharSpace);
-    iw = (i.interWordSpace + 1).clamp(7, i.maxInterWordSpace);
   }
-  if (ic == i.interCharSpace && iw == i.interWordSpace || i.straightKey) { ic = null; iw = null; }
+  if (ic == i.interCharSpace || i.straightKey) ic = null;
 
   final newWpm = (decision.charSpeedStep == TempoStep.up && mayRise) ? i.wpm + 1 : null;
 
@@ -122,7 +119,6 @@ EchoSuggestions evaluateEchoBlock(AdaptiveCopyEngine engine, EchoSuggestionInput
     blockEma: engine.blockEma,
     unlockNext: unlock,
     newInterChar: ic,
-    newInterWord: iw,
     newWpm: newWpm,
     newAnswerWpmMax: newAnswer,
     weakChars: weak,

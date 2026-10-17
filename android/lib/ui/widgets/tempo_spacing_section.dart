@@ -14,6 +14,9 @@ import 'setting_rows.dart';
 /// [speedLabel] replaces "Tempo" where there are two speeds ("Hören"). The
 /// spacing rows always belong to the speed directly above them.
 ///
+/// [showWordGap] false (Geben: the answer pause lives in the ⚙ sheet): no
+/// word-gap row, and "eff." counts the gap at the normal 7 dits.
+///
 /// [typing] (Hören on the on-screen keyboard): the app waits after every word,
 /// so only the character spacing is shown and counts for "eff." (see
 /// [effectiveWpm]). [compact] uses denser sliders and rows, for screens where
@@ -23,7 +26,7 @@ import 'setting_rows.dart';
 /// "Changed … Undo" snackbar of the slider (it would cover buttons below).
 class TempoSpacingSection extends StatelessWidget {
   final int wpm, interChar, interWord;
-  final bool typing, compact, showUndo;
+  final bool typing, compact, showUndo, showWordGap;
   final Widget? leading;
   final String? speedLabel;
   final ValueChanged<int> onWpm;
@@ -37,6 +40,7 @@ class TempoSpacingSection extends StatelessWidget {
     required this.onWpm,
     required this.onSpacing,
     this.typing = false,
+    this.showWordGap = true,
     this.compact = false,
     this.showUndo = true,
     this.leading,
@@ -45,7 +49,7 @@ class TempoSpacingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eff = effectiveWpm(wpm, interChar, interWord, typing: typing);
+    final eff = effectiveWpm(wpm, interChar, interWord, typing: typing || !showWordGap);
     // Compact + short screen: the sub line goes first when height is tight.
     final showSub = !compact || MediaQuery.sizeOf(context).height >= 700;
     return Column(mainAxisSize: MainAxisSize.min, children: [
@@ -76,7 +80,7 @@ class TempoSpacingSection extends StatelessWidget {
                 ? () => onSpacing(interChar + 1, interWord < interChar + 1 ? interChar + 1 : interWord)
                 : null,
           ),
-          if (!typing)
+          if (!typing && showWordGap)
             _StepRow(
               label: Strings.t('settings_word_spacing'),
               value: '$interWord',

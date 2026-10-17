@@ -826,6 +826,24 @@ confirmed by the user on 2026-09-27:
   char gap 3 (`effectiveWpm(..., typing: true)` in `content/effective_wpm.dart`,
   tested). Paper mode and the start screen (mode not chosen yet, two start
   buttons) count both gaps.
+- **Send: "Answer pause" instead of "Word spacing" (2026-10-17):** in Send
+  (profile `echo`) one word is played at a time, so the word gap is never
+  heard; it only sets the answer window (start deadline: IW/3, end of the
+  answer: IW/8, straight key: IW + 1, see `echo_timing.dart`) and feeds the
+  spacing suggestions. The slider is therefore called "Antwortpause"/"Answer
+  pause" and lives only in the ⚙ sheet, section "Echo Trainer", right after
+  the think time, each with a help line (what they do, which phase). The
+  practice screen shows only character spacing and the two speeds
+  (`TempoSpacingSection(showWordGap: false)`; `eff.` counts the gap at the
+  normal 7, like typing mode). **Decoupled from the character spacing
+  (2026-10-17):** no "never below char gap" lock and no pulling along in Send;
+  the paddle path still uses `max(pause, IC + 4)` inside (firmware), the
+  straight key uses pause + 1 directly. Adaptive suggestions in Send change
+  only the character spacing (`EchoSuggestions.newInterWord` is gone);
+  "spacing at char speed" (the WPM may rise) now means char gap <= 3 alone.
+  The key `interWordSpace` and the timing formulas are unchanged. Think time
+  slider now starts at 0 (firmware range 0-20; the 1 was an unrecorded port
+  deviation).
 - **Tempo + spacing block, one component (2026-10-14):** `TempoSpacingSection`
   (`widgets/tempo_spacing_section.dart`, inside a `SettingsCard`) is the one
   look for speed and pauses: "Tempo" slider with the effective speed in

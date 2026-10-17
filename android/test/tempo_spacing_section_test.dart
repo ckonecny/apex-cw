@@ -6,6 +6,7 @@ import 'package:next_cw_trainer/ui/widgets/tempo_spacing_section.dart';
 
 Widget _host({
   bool typing = false,
+  bool showWordGap = true,
   bool compact = false,
   void Function(int, int)? onSpacing,
   int interChar = 19,
@@ -20,6 +21,7 @@ Widget _host({
               interChar: interChar,
               interWord: interWord,
               typing: typing,
+              showWordGap: showWordGap,
               compact: compact,
               onWpm: (_) {},
               onSpacing: onSpacing ?? (_, _) {},
@@ -46,6 +48,14 @@ void main() {
     expect(find.text('Zeichenabstand'), findsOneWidget);
     expect(find.text('Wortabstand'), findsNothing);
     // 50 * 20 / (31 + 4 * 19 + 7) = 8.77 -> 9
+    expect(find.text('20 WPM (eff. 9)'), findsOneWidget);
+  });
+
+  testWidgets('send: no word-gap row, eff. counts the gap at 7', (tester) async {
+    await tester.pumpWidget(_host(showWordGap: false));
+    expect(find.text('Zeichenabstand'), findsOneWidget);
+    expect(find.text('Wortabstand'), findsNothing);
+    expect(find.text('Antwortpause'), findsNothing);
     expect(find.text('20 WPM (eff. 9)'), findsOneWidget);
   });
 
