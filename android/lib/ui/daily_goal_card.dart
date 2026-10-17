@@ -15,15 +15,11 @@ String goalStreakText(int n) => n <= 0
 String goalSubtitle(GoalStatus g) {
   if (g.met) return Strings.t('goal_done');
   final wait = g.nextIn;
-  // Spaced goal: while sessions are still missing, say when the next one counts
-  // (and, while the time goal is still open, how many minutes are left).
+  // Spaced goal: once the current session has reached its share, say when
+  // practice counts again.
   if (wait != null) {
     final m = (wait.inSeconds / 60).ceil();
-    final timeLeft = g.minutesLeft > 0 && g.todaySeconds > 0;
-    final key = timeLeft
-        ? (m == 0 ? 'goal_left_now' : 'goal_left_wait')
-        : (m == 0 ? 'goal_sess_now' : 'goal_sess_wait');
-    return Strings.t(key).replaceFirst('{m}', '$m').replaceFirst('{n}', '${g.minutesLeft}');
+    return Strings.t('goal_left_wait').replaceFirst('{m}', '$m').replaceFirst('{n}', '${g.minutesLeft}');
   }
   return g.todaySeconds == 0 && g.streak == 0
       ? Strings.t('goal_hint').replaceFirst('{n}', '${g.goalSeconds ~/ 60}')
@@ -57,10 +53,10 @@ class GoalRing extends StatelessWidget {
             children: [
               status.met
                   ? Icon(Icons.check, color: c.accent, size: size * 0.3)
-                  : Text('${status.sessionsGoal > 0 ? status.sessionsDone : status.minutesToday}', style: TextStyle(
+                  : Text('${status.creditMinutes}', style: TextStyle(
                       fontSize: size * 0.27, color: c.textPrimary)),
               Text(Strings.t('goal_of_min').replaceFirst('{n}',
-                  '${status.sessionsGoal > 0 ? status.sessionsGoal : status.goalSeconds ~/ 60}'),
+                  '${status.goalSeconds ~/ 60}'),
                   style: TextStyle(fontSize: size * 0.14, color: c.textMuted)),
             ],
           )),
@@ -172,8 +168,7 @@ class DailyGoalCard extends StatelessWidget {
                 ? Column(mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start, children: [
                     streak,
-                    Text('${status.sessionsGoal > 0 ? '${status.sessionsDone}/${status.sessionsGoal} · ' : ''}'
-                        '${status.minutesToday} / ${status.goalSeconds ~/ 60} min',
+                    Text('${status.creditMinutes} / ${status.goalSeconds ~/ 60} min',
                         style: TextStyle(fontSize: 12, color: c.textMuted)),
                   ])
                 : Column(mainAxisAlignment: MainAxisAlignment.center,

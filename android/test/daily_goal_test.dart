@@ -98,19 +98,50 @@ void main() {
       expect(countedSessions([a, sess(8, 20, 6)]).length, 1);
     });
 
-    test('goal needs time and sessions; next one is announced', () {
+    test('each session credits at most goal / n', () {
       final l = PracticeLog();
-      l.days['2026-10-07'] = PracticeDay()..seconds = 12 * 60;
+      // 10 min goal, 3 sessions: cap 200 s each.
       l.sessions.addAll([sess(8, 0, 6), sess(8, 40, 6)]);
+      l.days['2026-10-07'] = PracticeDay()..seconds = 12 * 60;
       var g = goalStatus(l, spaced, DateTime(2026, 10, 7, 8, 50));
+      expect(g.creditSeconds, 400);
       expect(g.sessionsDone, 2);
       expect(g.met, isFalse);
-      expect(g.nextIn, const Duration(minutes: 11));
-      expect(g.progress, closeTo(2 / 3, 1e-9));
-      l.sessions.add(sess(9, 10, 5));
+      expect(g.progress, closeTo(400 / 600, 1e-9));
+      l.sessions.add(sess(9, 10, 1));
       g = goalStatus(l, spaced, DateTime(2026, 10, 7, 9, 20));
+      expect(g.creditSeconds, 460);
+      l.sessions.add(sess(10, 0, 3));
+      g = goalStatus(l, spaced, DateTime(2026, 10, 7, 10, 10));
+      expect(g.creditSeconds, 600);
       expect(g.met, isTrue);
-      expect(g.nextIn, isNull);
+    });
+
+    test('many short sessions add up; one long one does not', () {
+      final many = PracticeLog();
+      for (var i = 0; i < 10; i++) {
+        many.sessions.add(sess(8 + i, 0, 1));
+      }
+      many.days['2026-10-07'] = PracticeDay()..seconds = 600;
+      expect(goalStatus(many, spaced, DateTime(2026, 10, 7, 20)).met, isTrue);
+
+      final one = PracticeLog();
+      one.sessions.add(sess(8, 0, 45));
+      one.days['2026-10-07'] = PracticeDay()..seconds = 45 * 60;
+      final g = goalStatus(one, spaced, DateTime(2026, 10, 7, 20));
+      expect(g.creditSeconds, 200);
+      expect(g.met, isFalse);
+    });
+
+    test('practice within 15 min of the previous session belongs to it', () {
+      final l = PracticeLog();
+      // 08:00-08:04 and 08:10-08:14 merge into one slot (8 min, capped 200 s).
+      l.sessions.addAll([sess(8, 0, 4), sess(8, 10, 4)]);
+      l.days['2026-10-07'] = PracticeDay()..seconds = 480;
+      final g = goalStatus(l, spaced, DateTime(2026, 10, 7, 8, 16));
+      expect(g.creditSeconds, 200);
+      expect(g.sessionsDone, 1);
+      expect(g.nextIn, const Duration(minutes: 13));
     });
 
     test('off: sessions are ignored', () {
