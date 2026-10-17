@@ -2193,8 +2193,8 @@ effect, not predictable for the user). Manual DE+EN updated.
   them when a block starts now.
 
 ## Send: proposals on the start view too (2026-10-16, #107)
-Weak characters and mix-up pairs now also show on Send's start view (Random in
-Random only), as in Listen. They are computed in the build from the stats
+Weak characters and mix-up pairs now also show on Send's start view (Random,
+Koch or all characters), as in Listen. They are computed in the build from the stats
 already in memory (`_startWeakChars`, `_startMixups`, same rules and thresholds
 as the result page); START boosts the first block with what stays ticked
 (`_startFromIdle` → `_chosenBoost`). The boost still lasts exactly one block
