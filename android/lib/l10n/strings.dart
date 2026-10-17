@@ -96,7 +96,10 @@ class Strings {
     'settings_acs': ['Auto-Zeichenabstand', 'Auto character spacing'],
     'settings_spacing': ['Abstände', 'Spacing'],
     'settings_word_spacing_desc': ['Pause nach dem letzten Zeichen, ab der ein Leerzeichen gesendet wird, in Dit-Längen (normal = 7). Der Zeichenabstand wirkt beim Tasten nicht, wie am Morserino.', 'Pause after the last element before a space is sent, in dit lengths (normal = 7). Character spacing has no effect when keying, as on the Morserino.'],
-    'settings_spacing_desc_echo': ['Abstand in Dit-Längen beim Abspielen (normal = 3 / 7). Gilt auch für deine Antwort, wie am Morserino: Sie ist erst beendet nach einer Pause von 2 × Zeichenabstand + 1 + Wortabstand / 8 Dits (Handtaste: Wortabstand + 1), im Gebetempo. Kleinere Werte = strenger, größere = mehr Zeit zwischen den Zeichen. Größere Werte verlängern auch die Zeit, in der du mit der Antwort beginnen darfst.', 'Spacing in dit lengths during playback (normal = 3 / 7). Also applies to your answer, as on the Morserino: it only counts as finished after a pause of 2 × character spacing + 1 + word spacing / 8 dits (straight key: word spacing + 1), at the answer speed. Smaller values are stricter, larger ones give you more time between characters. Larger values also extend the time you have to start answering.'],
+    'settings_spacing_desc_echo': ['Zeichenabstand in Dit-Längen beim Abspielen (normal = 3). Er gilt auch für deine Antwort: Je größer, desto länger darfst du zwischen den Zeichen pausieren, und desto mehr Zeit hast du zum Anfangen. Die Antwortpause steht weiter unten bei „Echo Trainer“.', 'Character spacing in dit lengths during playback (normal = 3). It also applies to your answer: the larger it is, the longer you may pause between characters, and the more time you have to start. The answer pause is further down under "Echo Trainer".'],
+    'settings_answer_pause': ['Antwortpause', 'Answer pause'],
+    'settings_think_time_help': ['Zusätzliche Zeit nach dem gespielten Wort, um mit deiner Antwort zu beginnen (z. B. zum Kopfkopieren). Sie gilt nur bis zu deinem ersten Zeichen; danach zählt die Antwortpause.', 'Extra time after the played word to begin your answer (e.g. for head copy). It only applies until your first character; after that the answer pause counts.'],
+    'settings_answer_pause_help': ['Stille nach deinem letzten Zeichen, bis die Antwort zählt: Paddle 2 × Zeichenabstand + 1 + Antwortpause / 8 Dits, Handtaste Antwortpause + 1 Dits. Sie verlängert außerdem die Zeit zum Anfangen ein wenig (ein Drittel davon). Wird nicht gespielt.', 'Silence after your last character before the answer counts: paddle 2 × character spacing + 1 + answer pause / 8 dits, straight key answer pause + 1 dits. It also extends the time to start a little (a third of it). It is never played.'],
     'settings_spacing_desc': ['Abstand in Dit-Längen, wie am Morserino (normal = 3 / 7)', 'Spacing in dit lengths, as on the Morserino (normal = 3 / 7)'],
     'settings_audio_output': ['Audioausgabe', 'Audio output'],
     'settings_audio_output_desc': ['Wird automatisch erkannt, wenn USB- oder Bluetooth-Geräte an-/abgesteckt werden.', 'Detected automatically as USB or Bluetooth devices connect and disconnect.'],
@@ -296,7 +299,6 @@ class Strings {
     'hc_level_2': ['2 Sätze', '2 sentences'],
     'hc_level_3': ['3 Sätze', '3 sentences'],
     'hc_speed': ['Tempo', 'Speed'],
-    'hc_effective': ['Effektiv: {e} WPM', 'Effective: {e} WPM'],
     'hc_start': ['Runde starten', 'Start round'],
     'hc_recent': ['Letzte Runden: {p} % richtig', 'Recent rounds: {p}% right'],
     'hc_no_rounds': ['Noch keine Runde gespielt', 'No round played yet'],
@@ -695,7 +697,7 @@ class Strings {
     'ac_outlook_more': ['+{n} weitere', '+{n} more'],
     'ac_char_unlocked': ['Neues Zeichen freigeschaltet', 'New character unlocked'],
     'ac_suggestions_title': ['VORSCHLÄGE · ANTIPPEN ZUM ÄNDERN', 'SUGGESTIONS · TAP TO TOGGLE'],
-    'ac_spacing_control_title': ['Abstand Zeichen/Wort', 'Spacing char/word'],
+    'settings_word_spacing_hear_note': ['Der Wortabstand wirkt nur im Papier-Modus. Im Tipp-Modus wartet die App nach jedem Wort auf deine Eingabe; dort zählt nur der Zeichenabstand.', 'Word spacing only applies in paper mode. In typing mode the app waits for your input after each word; only the character spacing counts there.'],
 
     // ── Adaptive Mode settings ───────────────────────────────────────────
     'settings_koch_sequence_desc': ['Gilt für alle Trainings, die die Koch-Methode nutzen (auch Geben und der adaptive Modus).', 'Applies to every training that uses the Koch method (Send and the adaptive mode too).'],

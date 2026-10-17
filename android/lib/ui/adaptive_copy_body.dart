@@ -109,6 +109,11 @@ class AdaptiveCopyBody extends StatefulWidget {
   // true while the typing keyboard is on screen — the parent hides its WPM
   // slider then, to leave room for the keys.
   final ValueChanged<bool>? onKeyboardChanged;
+  // Tempo + spacing card, shown by the body at the bottom of its scrolling
+  // start area and above its buttons on the result screen (same order
+  // everywhere: card, then buttons). Not while a block runs, on "Gesendet" or
+  // on the word marking screen.
+  final Widget? controls;
   final AdaptiveCopyController? controller;
   // Profile's practice set: the keyboard's active keys for that charset.
   final String practiceChars;
@@ -139,6 +144,7 @@ class AdaptiveCopyBody extends StatefulWidget {
     this.onSpacingChanged,
     this.onActiveChanged,
     this.onKeyboardChanged,
+    this.controls,
     this.controller,
     this.practiceChars = '',
   });
@@ -1004,7 +1010,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     // sequence characters unlocked yet) — user feedback 2026-09-22: pausing
     // reduction pressure on top of still-being-introduced-to-new-characters
     // felt like a constant nag. The manual spacing +/- control
-    // (_buildSpacingControl) is untouched by this — it's independent of the
+    // (TempoSpacingSection) is untouched by this — it's independent of the
     // engine's proposals and still lets the user tighten by hand any time.
     // Once the full sequence is unlocked, the (now hysteresis-gated, see
     // AdaptiveCopyThresholds.spacingUpConsecutiveBlocks) tighten/speed-up
