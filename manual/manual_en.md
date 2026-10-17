@@ -121,7 +121,7 @@ themes with their own palette: Amber with warm yellows, Red (night vision) with
 muted red, which disturbs dark adaptation the least, Green like a phosphor
 terminal, Warm grey with a soft, low-contrast brown-grey, and Navy & orange
 with a blue-black ground, silver text and an orange accent (only orange and
-silver tones, like a smartwatch face). There is also a **Blue light filter**
+silver tones, like a smartwatch face; all menu icons are orange). There is also a **Blue light filter**
 you can switch on: it tints the whole app warm (in light and dark) at a
 strength you set. All of it takes effect immediately.
 
@@ -2390,12 +2390,13 @@ decoding, so it always matches what you hear.
 ## Character chart
 
 The character chart lists every character of the app with its code, grouped
-into **Letters**, **Digits**, **Punctuation** and **Prosigns** (SK, KN, KA, AS,
+into **Letters**, **Umlauts and CH** (Ä, Ö, Ü, CH), **Digits**, **Punctuation** and **Prosigns** (SK, KN, KA, AS,
 VE, BK). Each code is drawn as dots and dashes.
 
 Tap a character: it sounds at your pitch, and its dots and dashes light up as
 they sound. The speed starts at the value from the Listen training; **−** and
-**+** change it for this view only. Set the pitch under Settings → General.
+**+** change it for this view only. Set the pitch under Settings → General. CH is a historic extra character;
+tapping it shows a note to always send it as the two letters C and H.
 
 ::: {.shots .one}
 ![Character chart: a character lights up while it plays](img/en/chart.png)

@@ -34,6 +34,7 @@ class _MorseChartScreenState extends State<MorseChartScreen> {
 
   static final _letters =
       List.generate(26, (i) => String.fromCharCode(65 + i));
+  static const _national = ['Ä', 'Ö', 'Ü', 'CH'];
   static const _digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   static const _signs = ['.', ',', '?', '/', '-', '=', '+', '@', ':'];
   static const _prosigns = ['SK', 'KN', 'KA', 'AS', 'VE', 'BK'];
@@ -189,6 +190,13 @@ class _MorseChartScreenState extends State<MorseChartScreen> {
             const SizedBox(height: 4),
             Align(alignment: Alignment.centerRight, child: _speed(c)),
             _section(c, 'chart_letters', _letters),
+            _section(c, 'chart_national', _national),
+            if (_ch == 'CH')
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(Strings.t('tree_ch_note'), style: TextStyle(
+                    fontSize: 11, color: c.textMuted)),
+              ),
             _section(c, 'chart_digits', _digits),
             _section(c, 'chart_signs', _signs),
             _section(c, 'chart_prosigns', _prosigns),
