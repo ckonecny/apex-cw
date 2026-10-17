@@ -30,6 +30,7 @@ import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/mixup_boost_chips.dart';
+import 'widgets/unlock_outlook_card.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
@@ -111,6 +112,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _callRegionOpt   = 0;
   bool _callCommonOnly  = true;
   int  _outputCase      = 0;   // 0=lower, 1=UPPER — display only
+  int _unlockOccurrences = 20;
+  double _highThreshold = 0.9; // upper success threshold: what counts as a weak character
   // "Random"/"Zufall" and "Adapt. Rand." echo a GROUP of characters, not a
   // single one — matches fetchNewWord()'s RANDOMS/KOCH_ADAPTIVE cases in
   // m32_v6.ino, both getRandomChars(posRandomLength, ...): the same shared
@@ -180,8 +183,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   String get _targetPlain => _target.replaceAll(RegExp('[<>]'), '');
   String _attempt = '';
 
-  int _correct = 0;
-  int _total   = 0;
   // "repeats" in m32_v6.ino: how many times the CURRENT word has been
   // presented (first play counts as 1) — compared against Echo Repeats to
   // decide whether to replay it again or give up and reveal it.
@@ -310,6 +311,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _callRegionOpt   = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
       _outputCase      = (p.getInt('outputCase') ?? 0).clamp(0, 1);
+      _highThreshold   = (p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99) / 100;
+      _unlockOccurrences = p.getInt('adaptiveUnlockOccurrences') ?? 20;
       _groupLength     = pf.getInt('groupLength')    ?? 5;
       _groupLengthMax  = (pf.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMin   = (pf.getInt('wordLengthMin') ?? 0).clamp(0, 8);
@@ -378,6 +381,42 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _charStats.save(p);
   }
 
+  // Char-based content only: weak characters and mix-up pairs need a char set
+  // (Koch lesson · Random, where the boost works).
+  bool get _boostApplies => _choice.set != CharSet.practice && _choice.content == ContentKind.random;
+
+  // The characters a boosted draw can pick from: the active Koch set, or with
+  // all characters those seen so far (as in Listen).
+  List<String> get _boostCandidates =>
+      _koch ? kochActiveChars(_kochLevel, _activeKochChars) : _charStats.stats.keys.toList();
+
+  // The proposals of the start view (#107), same rules as the result page:
+  // weak characters from the lifetime EMA, recurring mix-up pairs from the log.
+  Map<String, double> _startWeakChars() => !_boostApplies
+      ? const {}
+      : weakCharsLifetime(_charStats, _boostCandidates,
+          threshold: weakCharErrorThreshold(_echoEngine?.thresholds.highThreshold ?? _highThreshold));
+
+  List<MixupTrend> _startMixups() => !_boostApplies
+      ? const []
+      : suggestedMixups(_charStats.days, DateTime.now(), candidates: _boostCandidates);
+
+  // Weak characters plus both characters of the mix-up pairs still ticked;
+  // one set, so a character in both is not boosted any harder.
+  List<String> _chosenBoost(Iterable<String> weak, Iterable<MixupTrend> mixups) => {
+        ...weak.where((ch) => !_excludedBoost.contains(ch)),
+        ...mixupBoostChars(mixups.where((t) => !_excludedMixups.contains(t.pair)),
+            kochActiveChars(_kochLevel, _activeKochChars)),
+      }.toList();
+
+  // START on the idle view: the ticked proposals boost this first block (the
+  // result page's "next block" sets its own boost in _applyAccepted).
+  Future<void> _startFromIdle() async {
+    if (_state != _State.idle) return;
+    _boostChars = _chosenBoost(_startWeakChars().keys, _startMixups());
+    await _startSession();
+  }
+
   // Block end: feed the first-try results to the adaptive engine and keep
   // the proposals for the result page (docs/archive/training/P6). Nothing is applied.
   Future<void> _computeSuggestions() async {
@@ -394,7 +433,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     );
     await _charStats.load(p);
     // Char-based content only: unlock check and weak chars need a char set.
-    final charContent = _koch && _choice.content == ContentKind.random;
+    final charContent = _boostApplies;
     final s = evaluateEchoBlock(
       _echoEngine!,
       EchoSuggestionInput(
@@ -405,7 +444,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         maxInterCharSpace: max(_capInterChar, _interCharSpace),
         kochLevel: _koch ? _kochLevel : 0,
         kochTotal: _koch ? _activeKochChars.length : 0,
-        activeChars: charContent ? kochActiveChars(_kochLevel, _activeKochChars) : const [],
+        activeChars: charContent ? _boostCandidates : const [],
         stats: _charStats,
         straightKey: _keyerMode == 4,
       ),
@@ -438,8 +477,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _excludedBoost.clear();
     _excludedMixups.clear();
     _mixups = charContent
-        ? suggestedMixups(_charStats.days, DateTime.now(),
-            candidates: kochActiveChars(_kochLevel, _activeKochChars))
+        ? suggestedMixups(_charStats.days, DateTime.now(), candidates: _boostCandidates)
         : const [];
   }
 
@@ -473,13 +511,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _savePrefs();
     // Weak characters plus both characters of the mix-up pairs still ticked;
     // one set, so a character in both is not boosted any harder.
-    _boostChars = boost
-        ? {
-            ...s.weakChars.keys.where((ch) => !_excludedBoost.contains(ch)),
-            ...mixupBoostChars(_mixups.where((t) => !_excludedMixups.contains(t.pair)),
-                kochActiveChars(_kochLevel, _activeKochChars)),
-          }.toList()
-        : [];
+    _boostChars = boost ? _chosenBoost(s.weakChars.keys, _mixups) : [];
     _suggestions = null;
     _pendWpm = _pendAnswer = _pendIC = null;
   }
@@ -641,52 +673,58 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             style: TextStyle(fontSize: 11, color: c.textMuted)),
       ));
     }
-    if (s.weakChars.isNotEmpty) {
-      rows.add(Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Column(children: [
-          Text(Strings.t('ac_weak_chars'), textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 11, color: c.textMuted)),
-          const SizedBox(height: 6),
-          Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
-            for (final e in s.weakChars.entries)
-              InkWell(
-                onTap: () => setState(() {
-                  if (!_excludedBoost.remove(e.key)) _excludedBoost.add(e.key);
-                }),
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: _excludedBoost.contains(e.key) ? c.surfaceAlt : c.danger.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: _excludedBoost.contains(e.key) ? c.border : c.danger.withValues(alpha: 0.4)),
-                  ),
-                  child: Text('${cs(e.key)}  ${(e.value * 100).round()}%',
-                      style: TextStyle(fontFamily: 'CwMono', fontSize: 13,
-                          color: _excludedBoost.contains(e.key) ? c.textMuted : c.danger)),
-                ),
-              ),
-          ]),
-        ]),
-      ));
-    }
-    if (_mixups.isNotEmpty) {
-      rows.add(Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: MixupBoostChips(
-          pairs: _mixups,
-          excluded: _excludedMixups,
-          outputCase: _outputCase,
-          onToggle: (p) => setState(() {
-            if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
-          }),
-        ),
-      ));
-    }
-    if (rows.isNotEmpty) rows.add(const Divider());
+    final cards = _proposalCards(c, s.weakChars, _mixups, unlockNow: s.unlockNext);
+    if (cards.isNotEmpty) rows.insertAll(0, [...cards, const SizedBox(height: 16)]);
     return rows;
+  }
+
+  // The proposal cards of Listen's start/result view, same look: weak
+  // characters (amber chips), recurring mix-up pairs, and in Koch the "On the
+  // way to" card, which then hosts the weak characters itself. Shared by the
+  // start view and the result page (#107).
+  List<Widget> _proposalCards(AppColors c, Map<String, double> weak, List<MixupTrend> mixups,
+      {bool unlockNow = false}) {
+    String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
+    void toggle(String ch) => setState(() {
+          if (!_excludedBoost.remove(ch)) _excludedBoost.add(ch);
+        });
+    final outlook = _boostApplies && _koch && !unlockNow && _kochLevel < _activeKochChars.length;
+    final hosted = outlook && weak.isNotEmpty;
+    final cards = <Widget>[
+      if (weak.isNotEmpty && !hosted)
+        WeakCharsCard(
+            chips: WeakCharChips(
+                weak: weak, excluded: _excludedBoost, display: cs, onToggle: toggle, scale: 1.2)),
+      if (mixups.isNotEmpty)
+        SizedBox(
+            width: double.infinity,
+            child: AppCard(
+                child: MixupBoostChips(
+                    pairs: mixups,
+                    excluded: _excludedMixups,
+                    outputCase: _outputCase,
+                    scale: 1.2,
+                    onToggle: (p) => setState(() {
+                          if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+                        })))),
+      if (outlook)
+        UnlockOutlookCard(
+            next: cs(_activeKochChars[_kochLevel]),
+            chars: kochActiveChars(_kochLevel, _activeKochChars),
+            stats: _charStats.stats,
+            thresholds: _echoEngine?.thresholds ??
+                AdaptiveCopyThresholds(highThreshold: _highThreshold, unlockOccurrences: _unlockOccurrences),
+            display: cs,
+            weak: weak,
+            excluded: _excludedBoost,
+            onToggle: toggle),
+    ];
+    return [
+      for (var i = 0; i < cards.length; i++) ...[
+        if (i > 0) const SizedBox(height: 16),
+        cards[i],
+      ],
+    ];
   }
 
   @override
@@ -744,7 +782,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (_state != _State.idle) return;   // guard against a double-tap racing two sessions
     // The noise stands for the whole block, also while keying, until the result page.
     InterferenceProfile.requestAmbient(this);
-    _correct = 0; _total = 0; _wordCounter = 0;
+    _wordCounter = 0;
     _blockResults.clear();
     BreakReminder.dismiss();
     _blockPairs.clear();
@@ -925,8 +963,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     _decoder.flush();
 
-    _total++;
-
     final ok = _attempt.trim().toUpperCase() == _targetPlain.toUpperCase();
     if (_repeats == 1) _firstAttempt = _attempt.trim();
     if (_repeats == 1) _applyBlockFeedback(_targetPlain, _attempt);
@@ -936,7 +972,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     if (ok) {
       _recordWord(_repeats == 1 ? WordOutcome.first : WordOutcome.afterRepeat);
-      _correct++;
       Timer(const Duration(milliseconds: 1200), () {
         if (mounted && _sessionActive) _advance();
       });
@@ -1138,14 +1173,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                   builder: (context, fontSize) => _buildPracticeView(c, fontSize),
                 )),
 
-          // ── Stats bar ────────────────────────────────────────────────────
-          // Only while a block runs: after Stop the start screen stays clean.
-          if (_total > 0 && _state != _State.idle) _StatsBar(correct: _correct, total: _total,
-              answerWpm: (_answerWpmMax > 0 && _answerWpm < _currentWpm) ? _answerWpm : null),
-
-          // ── Status label ─────────────────────────────────────────────────
-          _StatusLabel(state: _state, preparing: _preparing),
-
           ],
           if (!_showResult) ...[
           // Straight key: Geben speed (measured), also while answering.
@@ -1167,7 +1194,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                   icon: Icons.play_arrow_rounded,
                   label: Strings.t('start').toUpperCase(),
                   color: c.accent,
-                  onTap: _startSession,
+                  onTap: _startFromIdle,
                 ),
               ),
             ),

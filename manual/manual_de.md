@@ -945,16 +945,8 @@ deaktiviert und zeigt das gemessene Tempo.
 Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
 
 - **Trefferquote** – Anteil der Wörter, die beim **ersten Versuch** richtig
-  waren (Farben wie bei Hören).
-- Daneben die Aufteilung:
-  - **● richtig** – beim ersten Versuch richtig,
-  - **◐ nach Wiederholung** – erst nach einer Wiederholung richtig,
-  - **○ falsch** – auch nach allen Wiederholungen nicht geschafft.
-- Die **Statuszeile**: Lektion und der [Trend](#trend) (die Tempi stehen in
-  der Karte darunter).
-- **Verwechslungen** – welche Zeichen du in diesem Block verwechselt hast, als
-  „Soll → Gegeben“, z. B. `p → w`. Ein `–` heißt, dass an dieser Stelle nichts
-  kam.
+  waren (Farben wie bei Hören), darunter „x von y richtig“ und der
+  [Trend](#trend). Wie bei Hören gibt es keine Liste der einzelnen Wörter.
 - Die Karte **Tempo und Abstände** (unten, über den Schaltflächen): Regler
   **Geben** und **Hören** (mit dem effektiven Tempo in Klammern) sowie
   **Zeichenabstand**. Die Antwortpause steht nicht hier, sondern im ⚙-Blatt;
@@ -962,9 +954,6 @@ Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
   direkt darüber. Eine Änderung hier ersetzt den passenden Vorschlag.
 - **Vorschläge** und **Schwache Zeichen** (siehe
   [Der adaptive Modus](#der-adaptive-modus)).
-- Die Liste aller Wörter des Blocks: das Soll-Wort fett, darunter dein
-  **erster** Versuch, das erste falsche Zeichen rot hervorgehoben (ein `_`
-  heißt, dass an dieser Stelle nichts kam).
 
 **Nächster Block** (rechts) übernimmt die angehakten Vorschläge, verstärkt die
 angehakten schwachen Zeichen im nächsten Block und startet ihn. **Beenden** (links)
@@ -972,7 +961,7 @@ angehakten schwachen Zeichen im nächsten Block und startet ihn. **Beenden** (li
 Startansicht zurück.
 
 ::: {.shots}
-![Ergebnisseite: Aufteilung, Verwechslungen, schwache Zeichen, erste Versuche](img/de/echo_result.png)
+![Ergebnisseite: Trefferquote, schwache Zeichen, Vorschläge](img/de/echo_result.png)
 
 ![Ein Vorschlag (hier: Gebetempo erhöhen), angehakt](img/de/echo_result2.png)
 :::
@@ -1256,16 +1245,16 @@ mehrere Blöcke und Sitzungen.
   wirkt die Verstärkung nicht; dort zeigt die App die schwachen Zeichen gar nicht erst an. Hast du im Übungsset
   eigene Zeichen und **Übungsset bevorzugen** eingestellt, kommen diese dazu; es gilt
   dann die höhere Stufe (Stark also für alle, wenn du Stark gewählt hast).
-- **Geben:** Die schwachen Zeichen erscheinen auf der Ergebnisseite, wenn du
-  **Koch-Lektion · Zufall** übst. Mit **Nächster Block** kommen die
-  angehakten Zeichen im nächsten Block doppelt so oft. Die Verstärkung gilt
-  genau einen Block.
+- **Geben:** Die schwachen Zeichen erscheinen auf der Startansicht und auf der
+  Ergebnisseite, wenn du **Zufall** (Koch-Lektion oder alle Zeichen) übst. Mit **Start** bzw.
+  **Nächster Block** kommen die angehakten Zeichen im folgenden Block doppelt so
+  oft. Die Verstärkung gilt genau einen Block; danach wird neu berechnet.
 
 ### Häufige Verwechslungen üben
 
 Zusätzlich zu den schwachen Zeichen schlägt die App Verwechslungen vor, die sich
 häufen (z. B. K → R). Die Vorschläge stehen am selben Ort wie die schwachen
-Zeichen (Hören: Startansicht und Ergebnisseite, Geben: Ergebnisseite) und gelten nur,
+Zeichen (jeweils Startansicht und Ergebnisseite) und gelten nur,
 wo auch die Verstärkung wirkt (Zufallsgruppen). Es sind höchstens drei Paare.
 Ein Paar wird vorgeschlagen, wenn
 

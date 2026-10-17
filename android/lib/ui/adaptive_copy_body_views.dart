@@ -15,19 +15,15 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       return SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: constraints.maxHeight),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Center(
-            // Full "on the way to" card when the screen has room for it,
-            // compact (bar only) just when the full one would need scrolling.
-            child: _FitOrCompact(
-              availableHeight: constraints.maxHeight - 32,
-              builder: (compact) => Column(mainAxisSize: MainAxisSize.min, children: [
+          constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
+          // The card is judged against the room left above the tempo block, so
+          // the two never need scrolling when the compact card would fit.
+          child: _FitOrCompact(
+            availableHeight: constraints.maxHeight - 32,
+            below: widget.controls,
+            builder: (compact) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
                 if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
                   _buildWeakCharsSection(context, scale: 1.2),
                 if (_mixups.isNotEmpty && !compact) ...[
@@ -42,10 +38,6 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                 ],
               ]),
             ),
-                ),
-              ),
-              if (widget.controls != null) widget.controls!,
-            ],
           ),
         ),
       );
@@ -750,8 +742,9 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
 // choice adapts to font scale, orientation and content without a guess.
 class _FitOrCompact extends StatefulWidget {
   final double availableHeight;
+  final Widget? below; // the tempo block under the card, always full size
   final Widget Function(bool compact) builder;
-  const _FitOrCompact({required this.availableHeight, required this.builder});
+  const _FitOrCompact({required this.availableHeight, required this.builder, this.below});
 
   @override
   State<_FitOrCompact> createState() => _FitOrCompactState();
@@ -759,22 +752,33 @@ class _FitOrCompact extends StatefulWidget {
 
 class _FitOrCompactState extends State<_FitOrCompact> {
   final _fullKey = GlobalKey();
+  final _belowKey = GlobalKey();
   bool _compact = false;
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final h = _fullKey.currentContext?.size?.height;
+      final below = _belowKey.currentContext?.size?.height ?? 0;
       if (!mounted || h == null) return;
-      final compact = h > widget.availableHeight;
+      final compact = h + below + 12 > widget.availableHeight;
       if (compact != _compact) setState(() => _compact = compact);
     });
-    return Stack(children: [
-      Positioned(
-        left: 0, right: 0, top: 0,
-        child: Offstage(child: KeyedSubtree(key: _fullKey, child: widget.builder(false))),
-      ),
-      widget.builder(_compact),
-    ]);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Center(
+          child: Stack(children: [
+            Positioned(
+              left: 0, right: 0, top: 0,
+              child: Offstage(child: KeyedSubtree(key: _fullKey, child: widget.builder(false))),
+            ),
+            widget.builder(_compact),
+          ]),
+        ),
+        if (widget.below != null) KeyedSubtree(key: _belowKey, child: widget.below!),
+      ],
+    );
   }
 }

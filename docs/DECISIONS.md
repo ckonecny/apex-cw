@@ -2192,3 +2192,23 @@ effect, not predictable for the user). Manual DE+EN updated.
   there (native defaults: unlimited, all regions, not "common only"). It reads
   them when a block starts now.
 
+## Send: proposals on the start view too (2026-10-16, #107)
+Weak characters and mix-up pairs now also show on Send's start view (Random,
+Koch or all characters), as in Listen. They are computed in the build from the stats
+already in memory (`_startWeakChars`, `_startMixups`, same rules and thresholds
+as the result page); START boosts the first block with what stays ticked
+(`_startFromIdle` → `_chosenBoost`). The boost still lasts exactly one block
+(Send's weight ×2 is per block); the next block comes from the result page as
+before. The ticks (`_excludedBoost`, `_excludedMixups`) are shared by both
+views and cleared after each block.
+
+Look (user, 2026-10-17): Send's proposal cards look like Listen's — amber chips
+(not red), separate cards at scale 1.2, and in Koch the "On the way to" card
+(progress bar, repetitions owed, weak characters as accuracy chips), on the
+start view and the result page. Shared widgets in `widgets/unlock_outlook_card.dart`
+(`WeakCharChips`, `WeakCharsCard`, `UnlockOutlookCard`); Listen still has its own
+copies of the chips/outlook code (same rules, to be merged later).
+Also with "all characters" · Random (candidates = characters seen so far, as in
+Listen); the "On the way to" card stays Koch-only.
+Running view (user, 2026-10-17): Send's block view follows Listen's typing view — header with content/Koch lesson, one dot per word (green first try, amber after repeat, red failed, ring = current), "Group n / t · WPM", one status pill (attempt, listening, sending, right, wrong), the word in letter-spaced mono with a coloured line. The old stats bar and status line are gone (the dots carry the result; the result page has the numbers).
+Result page (user, 2026-10-17): Send's block summary follows Listen's — percentage, "x of y correct", trend, proposal cards, suggestions, tempo card, buttons. The breakdown (right/after repeat/wrong), the mix-up line of the block and the word list with the first attempts are gone; the mix-ups still go to the statistics and the character detail.
