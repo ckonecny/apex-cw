@@ -133,6 +133,7 @@ class Strings {
     'settings_bt_latency_hint': ['Bluetooth-Hinweis beim Geben', 'Bluetooth hint when keying'],
     'settings_group_length': ['Gruppenlänge (min–max)', 'Group length (min–max)'],
     'words_pool_approx': ['ca. {n}', '~{n}'],
+    'words_pool_none': ['keine passenden', 'none fit'],
     'settings_word_language': ['Wortsprache', 'Word language'],
     'settings_word_language_en': ['Englisch', 'English'],
     'settings_word_language_de': ['Deutsch', 'German'],

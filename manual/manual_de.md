@@ -528,7 +528,7 @@ Oben auf der Startansicht wählst du zwei Dinge:
 | Inhalt | Bedeutung | Verfügbar bei |
 |---|---|---|
 | **Zufall** | Gruppen aus zufälligen Zeichen | allen |
-| **Wörter** | Häufige Wörter (Englisch oder Deutsch, nach Häufigkeit gewichtet). Auf dem Chip steht grob, wie viele verschiedene Wörter zur Auswahl stehen (z. B. „ca. 190“): abhängig von Sprache, Wortlänge und bei Koch von den freigeschalteten Zeichen | Koch, Alle |
+| **Wörter** | Häufige Wörter (Englisch oder Deutsch, nach Häufigkeit gewichtet). Auf dem Chip steht grob, wie viele verschiedene Wörter zur Auswahl stehen (z. B. „ca. 190“, oder „keine passenden“, wenn nichts passt): abhängig von Sprache, Wortlänge und bei Koch von den freigeschalteten Zeichen | Koch, Alle |
 | **Abkürzungen** | Übliche CW-Abkürzungen | Koch, Alle |
 | **Rufzeichen** | Zufällige, realistische Rufzeichen | Alle |
 | **Gemischt** | Mit Koch: Wörter, Abkürzungen und Gruppen gemischt. Mit allen Zeichen: Wörter, Abkürzungen, Rufzeichen und einzelne Satzzeichen oder Prosigns, wie beim Morserino | Koch, Alle |

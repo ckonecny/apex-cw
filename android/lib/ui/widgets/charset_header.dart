@@ -96,6 +96,8 @@ class CharsetHeader extends StatelessWidget {
           ? {for (final ch in kochSequence.take(kochLevel)) ch.toLowerCase()}
           : null,
     );
+    // Nothing fits the unlocked characters yet: say so instead of "ca. 0".
+    if (n == 0) return '$label · ${Strings.t('words_pool_none')}';
     return '$label · ${Strings.t('words_pool_approx').replaceFirst('{n}', '${WordPool.roughly(n)}')}';
   }
 
