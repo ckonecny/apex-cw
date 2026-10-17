@@ -183,8 +183,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   String get _targetPlain => _target.replaceAll(RegExp('[<>]'), '');
   String _attempt = '';
 
-  int _correct = 0;
-  int _total   = 0;
   // "repeats" in m32_v6.ino: how many times the CURRENT word has been
   // presented (first play counts as 1) — compared against Echo Repeats to
   // decide whether to replay it again or give up and reveal it.
@@ -785,7 +783,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (_state != _State.idle) return;   // guard against a double-tap racing two sessions
     // The noise stands for the whole block, also while keying, until the result page.
     InterferenceProfile.requestAmbient(this);
-    _correct = 0; _total = 0; _wordCounter = 0;
+    _wordCounter = 0;
     _blockResults.clear();
     BreakReminder.dismiss();
     _blockPairs.clear();
@@ -966,8 +964,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     _decoder.flush();
 
-    _total++;
-
     final ok = _attempt.trim().toUpperCase() == _targetPlain.toUpperCase();
     if (_repeats == 1) _firstAttempt = _attempt.trim();
     if (_repeats == 1) _applyBlockFeedback(_targetPlain, _attempt);
@@ -977,7 +973,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
     if (ok) {
       _recordWord(_repeats == 1 ? WordOutcome.first : WordOutcome.afterRepeat);
-      _correct++;
       Timer(const Duration(milliseconds: 1200), () {
         if (mounted && _sessionActive) _advance();
       });
@@ -1178,14 +1173,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                   maxSize: 72,
                   builder: (context, fontSize) => _buildPracticeView(c, fontSize),
                 )),
-
-          // ── Stats bar ────────────────────────────────────────────────────
-          // Only while a block runs: after Stop the start screen stays clean.
-          if (_total > 0 && _state != _State.idle) _StatsBar(correct: _correct, total: _total,
-              answerWpm: (_answerWpmMax > 0 && _answerWpm < _currentWpm) ? _answerWpm : null),
-
-          // ── Status label ─────────────────────────────────────────────────
-          _StatusLabel(state: _state, preparing: _preparing),
 
           ],
           if (!_showResult) ...[
