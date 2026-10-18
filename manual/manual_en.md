@@ -2439,6 +2439,12 @@ change applies only to this screen. While the character sounds, the path from
 the top lights up element by element: dit or dah is highlighted exactly when
 you hear it. Below the tree the code is shown once more as dits and dahs.
 
+**With an external key** you walk the tree yourself: a dit moves one step to
+the left, a dah one step to the right, and the node reached lights up. If you
+pause for a moment, the node reached stays lit and you start again at the
+top. A step with no branch also starts over. The key must be learned in
+Settings → Keyer; the touch keys play no role here.
+
 **Note on CH (– – – –):** the character at the bottom right (four dahs) is a
 historic national extra character, once common in German- and
 Scandinavian-speaking countries. It is obsolete in international radio today.
