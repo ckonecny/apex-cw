@@ -44,6 +44,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 
 - `settings3.png` (DE+EN): USB CW adapter card shows the adapter name/USB id with the active/inactive key symbol.
 - `echo_result.png`, `echo_result2.png`, `echo_answer.png` (DE+EN): Send result page and running view now look like Listen (no word list, no mix-up line, status pill, dots) (#107).
+- Koch lesson screens (#72): the character tile rows (`hear_start.png`, `echo_start.png`, DE+EN) now end with the six prosign tiles (SK AS KN KA VE BK); `settings_koch*` if the sequence list is shown.
 - Many screenshots with an app bar (#116): new keyer symbol; Send result page: "." and "-" on the buttons with a key detected. `echo_start.png` (DE+EN): with Koch · Random, the start view now shows the weak characters and mix-up pairs card (#107).
 - New shots (DE+EN), e.g. `hear_start_compact.png`, `hear_boost_sheet.png`: the compact row and its sheet when space is tight (#109).
 

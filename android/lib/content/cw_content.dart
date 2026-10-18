@@ -1,59 +1,60 @@
 // Koch character order and content helpers (mirrors CwGenerator.kt).
 //
-// Koch Sequence: the M32/LCWO/CW Academy/LICW orders below are the exact
-// "plain" (45-char) portion of MorsePreferences.h's morserinoKochChars/
-// lcwoKochChars/cwacKochChars/licwAllKochChars — verified against the
-// upstream firmware source, not reconstructed from memory. The firmware
-// appends 6 more prosign codes (K,S,N,A,E,B → <sk> <as> <kn> ... ) after
-// these 45; the app doesn't support prosigns as individually orderable
-// Koch characters yet, so those 6 are left out here (tracked in the
-// portation canvas).
+// Koch Sequence: the M32/LCWO/CW Academy/LICW orders below are the firmware's
+// own strings (MorsePreferences.h: morserinoKochChars/lcwoKochChars/
+// cwacKochChars/licwAllKochChars), taken over verbatim and tokenised by
+// [_kochTokens] — 45 plain characters plus the 6 prosigns the firmware marks
+// with upper-case letters. A lesson step is one token, so a prosign is a
+// two-letter entry ('KA', rule 3 in CLAUDE.md) in a list of single characters.
 
-const kochSeqM32 = [
-  'M','K','R','S','U','A','P','T','L','O','W','I','.',
-  'N','J','E','F','0','Y','V',',','G','5','/','Q','9',
-  'Z','H','3','8','B','?','4','2','7','C','1','D','6','X','-','=','+','@',':',
+// Firmware marker letter -> prosign (m32_v6.ino CWchars: S=<as>, A=<ka>,
+// N=<kn>, K=<sk>, E=<ve>, B=<bk>).
+const _prosignMarker = {
+  'S': 'AS', 'A': 'KA', 'N': 'KN', 'K': 'SK', 'E': 'VE', 'B': 'BK',
+};
+
+List<String> _kochTokens(String fw) => [
+  for (final c in fw.split(''))
+    _prosignMarker[c] ?? c.toUpperCase(),
 ];
-const kochSeqLcwo = [
-  'K','M','U','R','E','S','N','A','P','T','L','W','I','.','J','Z','=','F',
-  'O','Y',',','V','G','5','/','Q','9','2','H','3','8','B','?','4','7','C',
-  '1','D','6','0','X','-','+','@',':',
-];
-const kochSeqCwAcademy = [
-  'T','E','A','N','O','I','S','1','4','R','H','D','L','2','5','U','C','M',
-  'W','3','6','?','F','Y',',','P','G','Q','7','9','/','B','V','+','K','J',
-  '8','0','=','X','Z','.','-','@',':',
-];
+
+/// True for a lesson token that is a prosign ('KA', ...), not one character.
+bool isProsignToken(String t) => t.length > 1;
+
+/// How a lesson token goes to the native generator: prosigns bracketed
+/// (`<KA>`), because a bare letter pair would play as two letters.
+String kochPlayText(String t) => t.length > 1 ? '<${t.toUpperCase()}>' : t.toUpperCase();
+
+final kochSeqM32 = _kochTokens('mkrsuaptlowi.njef0yv,g5/q9zh38b?427c1d6x-=K+SNAEB@:');
+final kochSeqLcwo = _kochTokens('kmuresnaptlwi.jz=foy,vg5/q92h38b?47c1d60x-K+ASNEB@:');
+final kochSeqCwAcademy = _kochTokens('teanois14rhdl25ucmw36?fy,pgq79/bv+kj80=xzBK.-ASNE@:');
+
 // Full LICW curriculum source (MorsePreferences.h's licwAllKochChars), the
-// basis for the carousel rotation below. Uppercase K/A/S/N/E/B here are
-// prosign codes (<sk> <ka> <kn> ...), not the letters — same convention as
-// CWchars in m32_v6.ino.
+// basis for the carousel rotation below.
 const _licwAllKochChars = 'reatinpgslcdhofuwbkmy59,qxv73?+K=16.zj/28B40-ASNE@:';
 
 // LICW Carousel "Entry Point" (posCarouselStart, 0-13): ports
 // Koch::setupLICWkochChars() exactly — start<6 rotates an 18-char "BC1"
-// window, start>=6 rotates the full 44-char "BC2" window. The 6 prosign
-// markers embedded in _licwAllKochChars are dropped (this app doesn't support
-// prosigns as individually orderable Koch characters yet — see the portation
-// canvas), and "-@:" (never covered by any carousel window; MorsePreferences.
-// cpp caps the rotation at 44 chars) is appended for parity with kochSeqLicw
-// so levels above the carousel's own range still have somewhere to grow.
+// window, start>=6 rotates the full 44-char "BC2" window, by character index
+// over the string with its prosign markers (so the BC2 window carries <sk>
+// and <bk>, like the firmware's). "-@:" (never covered by any carousel
+// window; MorsePreferences.cpp caps the rotation at 44 chars) is appended so
+// levels above the carousel's own range still have somewhere to grow.
 List<String> licwCarouselChars(int start) {
-  const prosigns = {'K', 'A', 'S', 'N', 'E', 'B'};
+  final all = _kochTokens(_licwAllKochChars);
   final s = start.clamp(0, 13);
-  final buf = StringBuffer();
+  final out = <String>[];
   if (s < 6) {
     final segLen = 18 - 3 * s;
-    buf.write(_licwAllKochChars.substring(3 * s, 3 * s + segLen));
-    if (s > 0) buf.write(_licwAllKochChars.substring(0, 3 * s));
+    out.addAll(all.sublist(3 * s, 3 * s + segLen));
+    if (s > 0) out.addAll(all.sublist(0, 3 * s));
   } else {
-    buf.write(_licwAllKochChars.substring(0, 18));
+    out.addAll(all.sublist(0, 18));
     final segLen = 44 - 3 * s;
-    buf.write(_licwAllKochChars.substring(3 * s, 3 * s + segLen));
-    if (s > 6) buf.write(_licwAllKochChars.substring(18, 18 + (3 * s - 18)));
+    out.addAll(all.sublist(3 * s, 3 * s + segLen));
+    if (s > 6) out.addAll(all.sublist(18, 18 + (3 * s - 18)));
   }
-  final rotated = buf.toString().split('').where((c) => !prosigns.contains(c)).join();
-  return ('${rotated.toUpperCase()}-@:').split('');
+  return [...out, '-', '@', ':'];
 }
 
 // seq: 0=M32, 1=LCWO, 2=CW Academy, 3=LICW, 4=Custom (matches M32 "Koch Sequence")
@@ -64,12 +65,7 @@ List<String> kochSequenceChars(int seq, String customChars, {int licwCarouselSta
     case 2: return kochSeqCwAcademy;
     case 3: return licwCarouselChars(licwCarouselStart);
     case 4:
-      final seen = <String>{};
-      final out = <String>[];
-      for (final c in customChars.toUpperCase().split('')) {
-        if (c.trim().isEmpty) continue;
-        if (seen.add(c)) out.add(c);
-      }
+      final out = parseCharTokens(customChars);
       return out.isEmpty ? kochSeqM32 : out;
     default: return kochSeqM32;
   }
@@ -77,7 +73,7 @@ List<String> kochSequenceChars(int seq, String customChars, {int licwCarouselSta
 
 // Backward-compatible default (M32 native order) for call sites that don't
 // yet carry a Koch Sequence preference of their own.
-const kochChars = kochSeqM32;
+final kochChars = kochSeqM32;
 
 // Returns the active character set for a given Koch level (2-based).
 List<String> kochActiveChars(int level, [List<String>? sequence]) {
@@ -85,15 +81,66 @@ List<String> kochActiveChars(int level, [List<String>? sequence]) {
   return seq.take(level.clamp(2, seq.length)).toList();
 }
 
-// Practice Set: parses a user-entered string into an ordered, de-duplicated
-// char list — same rule as Koch's Custom Chars (order doesn't matter here,
-// but duplicates would just skew nothing usefully).
-List<String> parsePracticeChars(String input) {
+// Parses a user-entered character string (Custom Koch chars, Practice Set)
+// into an ordered, de-duplicated token list. A prosign is typed in angle
+// brackets, `<KA>` (CLAUDE.md rule 3); anything else is one character per
+// token, upper-cased. Whitespace is ignored.
+final _prosignInput = RegExp(r'<(AS|KA|KN|SK|VE|BK)>', caseSensitive: false);
+
+List<String> parseCharTokens(String input) {
   final seen = <String>{};
   final out = <String>[];
-  for (final c in input.toUpperCase().split('')) {
-    if (c.trim().isEmpty) continue;
-    if (seen.add(c)) out.add(c);
+  var i = 0;
+  while (i < input.length) {
+    final m = _prosignInput.matchAsPrefix(input, i);
+    final String t;
+    if (m != null) {
+      t = m.group(1)!.toUpperCase();
+      i = m.end;
+    } else {
+      t = input[i].toUpperCase();
+      i++;
+    }
+    if (t.trim().isEmpty || t == '<' || t == '>') continue;   // half-typed <KA
+    if (seen.add(t)) out.add(t);
   }
   return out;
 }
+
+/// Inverse of [parseCharTokens]: prosign tokens bracketed again.
+String joinCharTokens(Iterable<String> tokens) =>
+    tokens.map((t) => t.length > 1 ? '<$t>' : t).join();
+
+// Practice Set: same rule as Koch's Custom Chars (order doesn't matter here,
+// but duplicates would just skew nothing usefully).
+List<String> parsePracticeChars(String input) => parseCharTokens(input);
+
+// Hören's typing flow works per character (alignment, grading, cursor,
+// backspace). So that a prosign stays ONE unit there, a group carries it as a
+// single private-use code point; these map between that form, the token
+// ('KA') and the text the generator plays ('<KA>').
+const _prosignGlyph = {
+  'AS': '\uE000', 'KA': '\uE001', 'KN': '\uE002',
+  'SK': '\uE003', 'VE': '\uE004', 'BK': '\uE005',
+};
+final _glyphToken = {for (final e in _prosignGlyph.entries) e.value: e.key};
+
+/// `AB<KA>C` -> `AB\uE001C`.
+String prosignsToGlyphs(String s) =>
+    s.replaceAllMapped(RegExp('<(AS|KA|KN|SK|VE|BK)>', caseSensitive: false),
+        (m) => _prosignGlyph[m.group(1)!.toUpperCase()]!);
+
+/// `AB\uE001C` -> `AB<KA>C`, the text for the generator.
+String glyphsToPlayText(String s) => s.split('').map((c) {
+      final t = _glyphToken[c];
+      return t == null ? c : '<$t>';
+    }).join();
+
+/// The lesson token of one character of a glyph string ('KA' for a prosign
+/// glyph, otherwise the character itself).
+String glyphToken(String ch) => _glyphToken[ch] ?? ch;
+
+/// The glyph for a keyboard key: 'KA' -> prosign glyph, 'A' -> 'A'.
+String keyGlyph(String k) => _prosignGlyph[k.toUpperCase()] ?? k;
+
+bool isProsignGlyph(String ch) => _glyphToken.containsKey(ch);

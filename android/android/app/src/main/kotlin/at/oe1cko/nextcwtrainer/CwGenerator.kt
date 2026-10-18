@@ -109,14 +109,15 @@ class CwGenerator(
     @Volatile private var pendingRepeat = false
 
     // ── Koch order — settable from Dart (Koch Sequence: M32/LCWO/CW Academy/
-    // LICW/Custom). Defaults to the M32 native order, 45 chars, verified
-    // against MorsePreferences.h's morserinoKochChars (the plain portion,
-    // before its 6-char prosign tail — prosigns aren't individually
-    // orderable Koch characters here yet).
+    // LICW/Custom). Defaults to the M32 native order, 51 entries, verified
+    // against MorsePreferences.h's morserinoKochChars. A prosign lesson step is
+    // a bracketed token ("<KA>"), the same form randomCharsAlphabet uses, so
+    // joining the drawn entries into a group plays it as one prosign.
     @Volatile var kochChars: List<String> = listOf(
         "M","K","R","S","U","A","P","T","L","O","W","I",".",
         "N","J","E","F","0","Y","V",",","G","5","/","Q","9",
-        "Z","H","3","8","B","?","4","2","7","C","1","D","6","X","-","=","+","@",":"
+        "Z","H","3","8","B","?","4","2","7","C","1","D","6","X","-","=",
+        "<SK>","+","<AS>","<KN>","<KA>","<VE>","<BK>","@",":"
     )
 
     // ── Morse code table ──────────────────────────────────────────────────────

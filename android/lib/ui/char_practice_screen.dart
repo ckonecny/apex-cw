@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../content/cw_content.dart' show kochPlayText;
 import '../content/echo_suggestions.dart';
 import '../content/training_profile.dart';
 import '../keyer/morse_decoder.dart';
@@ -177,7 +178,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
     await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});
     await _genChannel.invokeMethod('setWpm', _wpm).catchError((_) {});
     _playDone = Completer<void>();
-    await _genChannel.invokeMethod('playOne', widget.ch.toUpperCase());
+    await _genChannel.invokeMethod('playOne', kochPlayText(widget.ch));
     await _playDone!.future.timeout(const Duration(seconds: 10), onTimeout: () {});
     if (!mounted) return;
     final shifted = switch (_toneShift) {

@@ -172,7 +172,7 @@ class _InvadersScreenState extends State<InvadersScreen>
         licwCarouselStart: (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13));
     // The Koch lesson set for sending (koch.getCharSet() in the firmware).
     _koch = (echo.getInt('kochLevel') ?? 5).clamp(2, seq.length);
-    _pool = kochActiveChars(_koch, seq);
+    _pool = [for (final c in kochActiveChars(_koch, seq)) if (!isProsignToken(c)) c];
     _wpm = (p.getInt('wpm') ?? 20).clamp(5, 60);
     _keyerMode = p.getInt('keyerMode') ?? 0;
     _measuredWpm = (p.getInt('straightStartWpm') ?? 15).clamp(5, 40);

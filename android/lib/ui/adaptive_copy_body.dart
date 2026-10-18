@@ -20,7 +20,9 @@ import '../content/char_stats.dart';
 import '../content/mixup_suggest.dart';
 import '../content/mixup_trend.dart';
 import '../content/training_profile.dart';
-import '../content/cw_content.dart' show kochActiveChars, parsePracticeChars;
+import '../content/cw_content.dart'
+    show glyphToken, glyphsToPlayText, isProsignGlyph, keyGlyph, kochActiveChars,
+        parsePracticeChars, prosignsToGlyphs;
 import '../content/adaptive_copy_engine.dart';
 import '../content/copy_grading.dart';
 import 'widgets/cw_keyboard.dart';
@@ -181,7 +183,11 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // setting (generator_screen.dart); content/comparisons stay uppercase
   // internally.
   int _outputCase = 0;
-  String _displayChar(String ch) => _outputCase == 1 ? ch.toUpperCase() : ch.toLowerCase();
+  String _displayChar(String ch) {
+    final t = glyphToken(ch);
+    final s = t == ch ? ch : '<$t>';   // a prosign reads as one unit
+    return _outputCase == 1 ? s.toUpperCase() : s.toLowerCase();
+  }
 
   final CharStatsStore _charStats = CharStatsStore();
   AdaptiveCopyEngine? _engine;
@@ -535,8 +541,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       },
     });
     // Groups are shown and graded per character, so a "<KA>" prosign token
-    // from Random Groups is sent as the plain letters K A here.
-    return ((result as String?) ?? '').replaceAll(RegExp('[<>]'), '').toUpperCase();
+    // is one glyph in the text (cw_content.dart prosignsToGlyphs).
+    return prosignsToGlyphs(((result as String?) ?? '').toUpperCase());
   }
 
   void _onGenEvent(dynamic raw) {
@@ -703,7 +709,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
 
       final completer = Completer<void>();
       _doneCompleter = completer;
-      await _genChannel.invokeMethod('playOne', group);
+      await _genChannel.invokeMethod('playOne', glyphsToPlayText(group));
       await completer.future;
       if (!_sessionActive) return;
 
@@ -715,7 +721,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         if (!_sessionActive) return;
         final again = Completer<void>();
         _doneCompleter = again;
-        await _genChannel.invokeMethod('playOne', group);
+        await _genChannel.invokeMethod('playOne', glyphsToPlayText(group));
         await again.future;
         if (!_sessionActive) return;
       }
@@ -843,7 +849,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     if (!mounted || !_sessionActive) return;
     final done = Completer<void>();
     _doneCompleter = done;
-    await _genChannel.invokeMethod('playOne', word);
+    await _genChannel.invokeMethod('playOne', glyphsToPlayText(word));
     await done.future;
     if (!mounted) return;
     await Future.delayed(const Duration(milliseconds: 1800));
@@ -874,7 +880,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     setState(() => _playing = true);
     final done = Completer<void>();
     _doneCompleter = done;
-    await _genChannel.invokeMethod('playOne', word);
+    await _genChannel.invokeMethod('playOne', glyphsToPlayText(word));
     await Future.any([done.future, gate.future]);
     if (mounted) setState(() => _playing = false);
     _maybeScheduleCheck();
@@ -909,7 +915,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   void _onKey(String k) {
     if (_typeState != _TypeState.input && _typeState != _TypeState.correct) return;
     if (_input.length >= 16) return;
-    setState(() => _input += k);
+    setState(() => _input += keyGlyph(k));
     if (_typeState == _TypeState.input) _maybeScheduleCheck();
   }
 
@@ -953,11 +959,11 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     } else {
       base = _randomAlphabet;
     }
-    // Prosigns play as their two letters in Hören (see _fetchGroup()), so
-    // they are typed as letters; the target's own chars are always typeable.
+    // A prosign step is typed with its prosign key; the target's own
+    // characters are always typeable.
     return {
-      for (final ch in base) ...ch.toUpperCase().split(''),
-      ..._target.split(''),
+      for (final ch in base) ch.toUpperCase(),
+      ..._target.split('').map(glyphToken),
     };
   }
 
@@ -1002,14 +1008,16 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         total++;
         if (!wrong) correct++;
         results.add(!wrong);
-        _charStats.record(group[i], !wrong, block: _blockNumber);
+        _charStats.record(glyphToken(group[i]), !wrong, block: _blockNumber);
       }
       // Typing mode: the first attempt shows what was heard instead (#92).
       // Passed (null) says nothing about what was heard; paper mode neither.
       if (_typing && g < _typedAttempts.length && _typedAttempts[g].isNotEmpty) {
         final typed = _typedAttempts[g].first;
         final pair = typed == null ? null : firstMixup(group, typed);
-        if (pair != null) _charStats.recordMixup(pair);
+        if (pair != null && !pair.split('').any(isProsignGlyph)) {
+          _charStats.recordMixup(pair);
+        }
       }
     }
     await _charStats.save(p);

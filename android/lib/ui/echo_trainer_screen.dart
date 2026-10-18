@@ -501,7 +501,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     try {
       await _toneChannel.invokeMethod('setFreq', _pitch).catchError((_) {});
       for (var i = 0; i < 2; i++) {
-        await _playSignal(ch);
+        await _playSignal(kochPlayText(ch));
         if (i == 0) await Future.delayed(const Duration(milliseconds: 500));
       }
     } finally {
@@ -1165,7 +1165,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                 kochSequence: _activeKochChars,
                 onKochLevelChanged: (v) { setState(() => _kochLevel = v); _savePrefs(); },
                 outputCase: _outputCase,
-                practiceChars: _practiceChars.join(),
+                practiceChars: joinCharTokens(_practiceChars),
                 onPracticeCharsChanged: (v) async {
                   setState(() => _practiceChars = parsePracticeChars(v));
                   final pf = await TrainingProfile.open(TrainingProfile.echo);

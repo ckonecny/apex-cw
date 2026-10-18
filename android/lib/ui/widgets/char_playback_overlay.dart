@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../content/cw_content.dart' show glyphToken, kochPlayText;
 import '../../keyer/morse_decoder.dart';
 import '../../theme/app_colors.dart';
 import '../../util/char_color.dart';
@@ -22,7 +23,7 @@ final Map<String, String> _patterns = {
 };
 
 /// Dit/dah pattern ('.'/'-') of a single character, '' if unknown.
-String morsePattern(String ch) => _patterns[ch.toUpperCase()] ?? '';
+String morsePattern(String ch) => _patterns[glyphToken(ch).toUpperCase()] ?? '';
 
 /// Tap on a Koch character in Hören or Geben (Sia's suggestion, 2026-09-27):
 /// dims the screen and shows a tile with the character and its code. Each
@@ -265,7 +266,7 @@ Future<void> playCharThrice(
   try {
     for (var i = 0; i < 3 && !_cancelled; i++) {
       _wake = Completer<void>();
-      await _genChannel.invokeMethod('playOne', ch.toUpperCase());
+      await _genChannel.invokeMethod('playOne', kochPlayText(ch));
       await _wake!.future.timeout(
         const Duration(seconds: 10),
         onTimeout: () {},
