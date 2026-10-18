@@ -70,11 +70,38 @@ class _KeyerStatusButtonState extends State<KeyerStatusButton> {
     return ValueListenableBuilder<bool>(
       valueListenable: KeyAdapterState.detected,
       builder: (context, detected, _) => IconButton(
-        icon: Icon(Icons.settings_input_component_outlined, color: detected ? c.accent : c.textFaint),
+        icon: CustomPaint(
+          size: const Size(26, 26),
+          painter: _StraightKeyPainter(detected ? c.accent : c.textFaint),
+        ),
         tooltip: Strings.t(detected ? 'keyer_btn_detected' : 'keyer_btn_none'),
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (_) => const SettingsScreen(scrollToKeyer: true))),
       ),
     );
   }
+}
+
+/// A straight key in side view: base, post, lever and knob (drawn on a 48 grid).
+class _StraightKeyPainter extends CustomPainter {
+  final Color color;
+  _StraightKeyPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 48, size.height / 48);
+    final stroke = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.2
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(5, 36, 38, 6), const Radius.circular(1.5)), stroke);
+    canvas.drawRect(const Rect.fromLTWH(20, 29, 8, 7), stroke);
+    canvas.drawLine(const Offset(9, 27), const Offset(41, 23), stroke);
+    canvas.drawCircle(const Offset(10, 19), 5, stroke);
+  }
+
+  @override
+  bool shouldRepaint(_StraightKeyPainter old) => old.color != color;
 }
