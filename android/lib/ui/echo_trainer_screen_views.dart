@@ -102,21 +102,14 @@ extension _EchoViews on _EchoTrainerScreenState {
             primary: false,
             label: Strings.t('block_end'),
             color: c.accent,
-            onTap: () async {
-              await _applyAccepted(boost: false);
-              if (mounted) _update(() => _showResult = false);
-            },
+            onTap: _finishBlock,
           )),
           const SizedBox(width: 12),
           Expanded(child: AppButton(
             height: 56,
             label: Strings.t('block_next'),
             color: c.accent,
-            onTap: () async {
-              await _applyAccepted(boost: true);
-              if (mounted) _update(() {});
-              await _startSession();
-            },
+            onTap: _nextBlock,
           )),
         ]),
         ])),
@@ -149,6 +142,7 @@ extension _EchoViews on _EchoTrainerScreenState {
             ),
             builder: (compact) => Column(children: [
               const KeyAdapterHint(),
+              const KeyAdapterDetectedNote(),
               if (weak.isNotEmpty || mixups.isNotEmpty || (_boostApplies && _koch))
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),

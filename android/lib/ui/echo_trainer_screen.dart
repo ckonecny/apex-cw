@@ -72,9 +72,6 @@ class EchoTrainerScreen extends StatefulWidget {
 }
 
 class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
-  // setState for the view extension in echo_trainer_screen_views.dart.
-  void _update(VoidCallback fn) => setState(fn);
-
   static const _genChannel    = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
   static const _genEvents     = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
   static const _keyerChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
@@ -213,6 +210,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Timer? _silenceTimer;
   StreamSubscription? _genSub;
   StreamSubscription? _symbolSub;
+  // Result page: the physical key chooses (dah = next block, dit = finish), #116.
+  StreamSubscription? _paddleSub;
 
 
   // Echo Think T., as in the firmware after its 2026-09-15 fix (origin/master
@@ -328,6 +327,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _genChannel.invokeMethod('setKochChars', _activeKochChars);
     await _charStats.load(p);
     if (mounted) setState(() {});
+    if (mounted && _state == _State.idle && !_showResult) _startIdleKeyer();
   }
 
   // Long press on a chip: select it (as a tap would), then open the settings
@@ -717,6 +717,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _silenceTimer?.cancel();
     _genSub?.cancel();
     _symbolSub?.cancel();
+    _paddleSub?.cancel();
+    _genChannel.invokeMethod('setPaddleChoice', false);
     _wpmSub?.cancel();
     _genChannel.invokeMethod('stop');
     _keyerChannel.invokeMethod('stop');
@@ -762,6 +764,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   Future<void> _startSession() async {
     if (_state != _State.idle) return;   // guard against a double-tap racing two sessions
+    _keyerChannel.invokeMethod('stop');   // the start view's keyer (#116)
     // The noise stands for the whole block, also while keying, until the result page.
     InterferenceProfile.requestAmbient(this);
     _wordCounter = 0;
@@ -819,7 +822,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
     _genChannel.invokeMethod('stop');
     _keyerChannel.invokeMethod('stop');
-    if (mounted) setState(() => _state = _State.idle);
+    if (mounted) {
+      setState(() => _state = _State.idle);
+      _startIdleKeyer();
+    }
   }
 
   /// Plays a marker string (start "VVV`<KA>`" / end "+") via the native playOne()
@@ -887,17 +893,71 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
   }
 
+  int get _answerPitch => switch (_toneShift) {
+        1 => (_pitch * 18 / 17).round(),
+        2 => (_pitch * 17 / 18).round(),
+        _ => _pitch,
+      };
+
+  // Start view: the keyer runs so a real key can be tried out before the block
+  // starts (#116) — same config as while answering (rule 2).
+  Future<void> _startIdleKeyer() async {
+    await _keyerChannel.invokeMethod('setMode', _keyerMode).catchError((_) {});
+    await _keyerChannel.invokeMethod('setCurtisBTiming',
+        {'dit': _curtisBDitTiming, 'dah': _curtisBDahTiming}).catchError((_) {});
+    await _keyerChannel.invokeMethod('setAcs', _acs).catchError((_) {});
+    await _toneChannel.invokeMethod('setEnvelopeMs', (_toneSoftness + 1).toDouble()).catchError((_) {});
+    await _toneChannel.invokeMethod('setFreq', _answerPitch).catchError((_) {});
+    await _applyAnswerConfig();
+    // The screen may have moved on while the config was pushed.
+    if (mounted && _state == _State.idle && !_showResult) {
+      await _keyerChannel.invokeMethod('start').catchError((_) {});
+    }
+  }
+
+  // Result page: dah = next block, dit = finish. The native side routes the
+  // learned dit/dah keys here instead of the keyer (setPaddleChoice).
+  void _listenResultPaddles() {
+    _paddleSub?.cancel();
+    _genChannel.invokeMethod('setPaddleChoice', true).catchError((_) {});
+    _paddleSub = _genEvents.receiveBroadcastStream().listen((raw) {
+      final ev = raw as Map;
+      if (ev['type'] != 'paddle' || !_showResult) return;
+      ev['value'] == 'dit' ? _finishBlock() : _nextBlock();
+    });
+  }
+
+  void _stopResultPaddles() {
+    _paddleSub?.cancel();
+    _paddleSub = null;
+    _genChannel.invokeMethod('setPaddleChoice', false).catchError((_) {});
+  }
+
+  /// Result page "Finish": apply what is ticked, back to the start view.
+  Future<void> _finishBlock() async {
+    if (!_showResult) return;
+    _stopResultPaddles();
+    await _applyAccepted(boost: false);
+    if (!mounted) return;
+    setState(() => _showResult = false);
+    _startIdleKeyer();
+  }
+
+  /// Result page "Next block": apply with boost and start the next one.
+  Future<void> _nextBlock() async {
+    if (!_showResult) return;
+    _stopResultPaddles();
+    await _applyAccepted(boost: true);
+    if (mounted) setState(() {});
+    await _startSession();
+  }
+
   void _beginReceive() {
     // Tone Shift (M32 "Tone Shift"): shift the operator's own echoed-answer
     // sidetone up/down one half-tone from the target word's playback pitch,
     // so the two are audibly distinguishable — matches MorseDecoder::ON_()/
     // m32_v6.ino's KEY_START, both gated on morseState==echoTrainer there.
-    final shifted = switch (_toneShift) {
-      1 => (_pitch * 18 / 17).round(),
-      2 => (_pitch * 17 / 18).round(),
-      _ => _pitch,
-    };
-    _toneChannel.invokeMethod('setFreq', shifted);
+    _toneChannel.invokeMethod('setFreq', _answerPitch);
     _applyAnswerConfig();
     _keyerChannel.invokeMethod('start');
     setState(() => _state = _State.receiving);
@@ -1008,6 +1068,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _sessionActive = false;
       _genSub?.cancel(); _genSub = null;
       _keyerChannel.invokeMethod('stop');
+      if (mounted) _listenResultPaddles();
       return;
     }
     await _playWord(fresh: true);

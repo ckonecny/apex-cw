@@ -42,7 +42,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - `settings2.png`, `settings3.png` (DE+EN): sections moved (USB CW adapter + key events below Keyer, call signs gone from the global settings); `hear_sheet2.png` (Word selection with call sign rows, content Call signs) in both languages.
 
 - `echo_result.png`, `echo_result2.png`, `echo_answer.png` (DE+EN): Send result page and running view now look like Listen (no word list, no mix-up line, status pill, dots) (#107).
-- `echo_start.png` (DE+EN): with Koch · Random, the start view now shows the weak characters and mix-up pairs card (#107).
+- `echo_start.png` (DE+EN): note "External key detected" when an adapter is detected (#116); and with Koch · Random, the start view now shows the weak characters and mix-up pairs card (#107).
 - New shots (DE+EN), e.g. `hear_start_compact.png`, `hear_boost_sheet.png`: the compact row and its sheet when space is tight (#109).
 
 ## v1.7.1 (maintenance release, in progress)

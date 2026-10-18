@@ -2603,6 +2603,12 @@ their place. The **X** closes it until an adapter is detected the next time;
 tapping the notice opens the setting. When you unplug the adapter, the touch
 keys come back. The "A real Morse key is better" tip no longer appears then.
 
+**Steering Send with the real key.** In Send the key sounds on the start view
+already (with the settings of your answers), so you can try it out before you
+start. A discreet note "External key detected" shows that the adapter was
+recognised. On the result page the key chooses: **dah = Next block**, **dit =
+Finish**.
+
 ## A real Morse key or straight key
 
 A phone has no Morse key input. You need a small USB adapter that turns the

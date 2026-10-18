@@ -2693,6 +2693,12 @@ den Hinweis öffnet die Einstellung. Ziehst du den Adapter ab, erscheinen die
 Touch-Tasten wieder. Der Tipp „Echte Morsetaste ist besser“ erscheint dann
 nicht mehr.
 
+**Mit der echten Taste durch Geben steuern.** Bei Geben tönt die Taste schon auf
+der Startansicht (mit den Einstellungen deiner Antworten), sodass du sie vor dem
+Start ausprobieren kannst. Ein dezenter Hinweis „Externe Taste erkannt“ zeigt, dass
+der Adapter erkannt wurde. Auf der Ergebnisseite wählst du mit der Taste:
+**Dah = Nächster Block**, **Dit = Beenden**.
+
 ## Echte Morsetaste oder Handtaste
 
 Ein Handy hat keinen Morsetasten-Eingang. Du brauchst einen kleinen USB-Adapter,
