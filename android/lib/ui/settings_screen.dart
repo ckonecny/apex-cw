@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'widgets/keyer_status_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -102,6 +103,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // ── Paddle ────────────────────────────────────────────────────────────────
   String _ditDesc = '…';
   String _dahDesc = '…';
+  String _adapterId = '';
+  bool _adapterConnected = false;
   _LearnState _learnState  = _LearnState.idle;
   String _learnMessage = '';
 
@@ -123,6 +126,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _load();
     _loadPaddleDesc();
+    KeyAdapterState.detected.addListener(_loadPaddleDesc);
     _loadOutputDeviceKinds();
     _loadAppVersion();
     _eventSub = _settingsEvents.receiveBroadcastStream().listen(_onSettingsEvent);
@@ -148,6 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void dispose() {
     _eventSub?.cancel();
+    KeyAdapterState.detected.removeListener(_loadPaddleDesc);
     _scroll.dispose();
     _settingsChannel.invokeMethod('cancelLearnPaddle');
     super.dispose();
@@ -205,6 +210,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
       _ditDesc = result['dit'] ?? '?';
       _dahDesc = result['dah'] ?? '?';
+      _adapterId = result['adapter'] ?? '';
+      _adapterConnected = result['connected'] == '1';
     });
     }
   }
@@ -604,6 +611,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _InfoRow(label: 'Dit', value: _ditDesc),
             const SettingsDivider(),
             _InfoRow(label: 'Dah', value: _dahDesc),
+            const SettingsDivider(),
+            _AdapterRow(id: _adapterId, connected: _adapterConnected),
           ]),
           const SizedBox(height: 12),
           if (_learnState == _LearnState.idle)
@@ -736,6 +745,40 @@ class _InfoRow extends StatelessWidget {
           style: TextStyle(fontSize: 13, color: c.textPrimary))),
     ]),
   );
+  }
+}
+
+// The adapter the app knows: lit key and normal text while it is plugged in,
+// dim key and faint text while it is only remembered (inactive).
+class _AdapterRow extends StatelessWidget {
+  final String id;
+  final bool connected;
+  const _AdapterRow({required this.id, required this.connected});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final known = id.isNotEmpty;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(children: [
+        Text(Strings.t('settings_adapter_id'), style: TextStyle(fontSize: 13, color: c.textMuted)),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            if (known) ...[
+              StraightKeyIcon(size: 18, color: connected ? c.accent : c.textFaint),
+              const SizedBox(width: 8),
+            ],
+            Flexible(
+              child: Text(known ? id : Strings.t('settings_adapter_none'),
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 13, color: connected ? c.textPrimary : c.textFaint)),
+            ),
+          ]),
+        ),
+      ]),
+    );
   }
 }
 

@@ -2598,10 +2598,9 @@ keys when an adapter is detected**. When you
 remembers your adapter and recognises it as soon as you plug it in. Without
 teaching on the adapter (or if you taught it earlier), it detects the adapter the
 first time you send a dit or dah with it. An ordinary USB or Bluetooth keyboard
-never counts. The touch keys then disappear in all modes, and a small notice takes
-their place. The **X** closes it until an adapter is detected the next time;
-tapping the notice opens the setting. When you unplug the adapter, the touch
-keys come back. The "A real Morse key is better" tip no longer appears then.
+never counts. The touch keys then disappear in all modes; the keyer symbol in the
+title bar shows that an adapter is detected (see below). When you unplug the
+adapter, the touch keys come back. The "A real Morse key is better" tip no longer appears then.
 
 **The keyer symbol.** The title bar of many screens (Listen, Send, practice,
 games, Morse chart and more) shows a symbol for the external key. It is dimmed
@@ -2641,7 +2640,10 @@ This tells the app which key your adapter sends for dit and which for dah:
 3. When "Press Dit key …" appears, press the **dit key**. When "Press Dah
    key …" appears, press the **dah key**.
 4. "Saved" confirms it. The detected keys are listed under **Dit** and
-   **Dah**.
+   **Dah**; below them, under **Adapter**, the name of the device with its USB id
+   (vendor:product, e.g. `Name (1a86:7523)`). The small key symbol in front
+   is lit while the adapter is plugged in, and dimmed (faint text) when the app only
+   knows it but it is not connected.
 
 So there's no list of supported adapters. The app learns whatever keys your
 adapter sends.
@@ -2750,7 +2752,7 @@ These settings apply wherever you key.
 |---|---|---|
 | Mode | How the keyer reads the keys (see below) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
 | Swap on-screen paddles | Puts **dah** on the left and **dit** on the right of the two touch buttons. Affects only the on-screen buttons, not the keys of an adapter (those stay as you taught them, see [Learning the dit and dah keys](#learning-the-dit-and-dah-keys)). Not shown for Straight | **Off** / On |
-| Hide touch keys when an adapter is detected | Hides the touch keys in all modes once an adapter has sent a dit or dah; a notice takes their place and can be closed with the X (see [Touch keyer](#touch-keyer)) | **Off** / On |
+| Hide touch keys when an adapter is detected | Hides the touch keys in all modes once an adapter has sent a dit or dah; the keyer symbol in the title bar shows that an adapter is detected (see [Touch keyer](#touch-keyer)) | **Off** / On |
 | CurtisB dit timing | Iambic B only: from what percentage of a dit a press on the other key is already stored | 0–100 % in steps of 5 (**75 %**) |
 | CurtisB dah timing | The same for dahs | 0–100 % in steps of 5 (**45 %**) |
 | Auto character spacing | Enforces a minimum pause between characters so they don't run together. Not available for Straight | **Off** / 2 / 3 / 4 dits |

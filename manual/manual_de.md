@@ -2687,9 +2687,8 @@ auch deinen Adapter und erkennt ihn danach schon beim Einstecken. Ohne
 Anlernen am Adapter (oder bei einem früher angelernten) erkennt sie ihn, sobald
 du mit ihm das erste Mal Dit oder Dah gibst. Eine normale USB- oder
 Bluetooth-Tastatur zählt in keinem Fall. Dann verschwinden die Touch-Tasten
-in allen Modi, und an ihrer Stelle steht ein kleiner Hinweis. Mit dem **X**
-blendest du ihn aus, bis ein Adapter das nächste Mal erkannt wird; ein Tipp auf
-den Hinweis öffnet die Einstellung. Ziehst du den Adapter ab, erscheinen die
+in allen Modi; dass ein Adapter erkannt ist, zeigt das Keyer-Symbol in der
+Titelleiste (siehe unten). Ziehst du den Adapter ab, erscheinen die
 Touch-Tasten wieder. Der Tipp „Echte Morsetaste ist besser“ erscheint dann
 nicht mehr.
 
@@ -2733,7 +2732,10 @@ sendet:
 3. Wenn „Dit-Taste drücken …“ erscheint, die **Dit-Taste** drücken; bei
    „Dah-Taste drücken …“ die **Dah-Taste**.
 4. „Gespeichert“ bestätigt das. Die erkannten Tasten stehen unter **Dit** und
-   **Dah**.
+   **Dah**; darunter unter **Adapter** der Name des Geräts mit seiner USB-Kennung
+   (Hersteller:Produkt, z. B. `Name (1a86:7523)`). Das kleine Tasten-Symbol davor leuchtet,
+   solange der Adapter angeschlossen ist, und ist gedimmt (Text blass), wenn die App
+   ihn nur kennt, er aber nicht dran ist.
 
 Es gibt also keine Liste unterstützter Adapter. Die App lernt die Tasten, die
 dein Adapter sendet.
@@ -2844,7 +2846,7 @@ Diese Einstellungen gelten überall, wo du tastest.
 |---|---|---|
 | Modus | Wie der Keyer die Tasten auswertet (siehe unten) | **Iambic A** / Iambic B / Ultimatic / Non-Squeeze / Straight |
 | Bildschirm-Paddles vertauschen | Setzt bei den beiden Touch-Tasten **Dah** nach links und **Dit** nach rechts. Wirkt nur auf die Tasten am Bildschirm, nicht auf die Tasten eines Adapters (die bleiben, wie du sie angelernt hast, siehe [Dit-/Dah-Tasten anlernen](#dit-dah-tasten-anlernen)). Bei Straight nicht angezeigt | **Aus** / An |
-| Touch-Tasten ausblenden, wenn Adapter erkannt | Blendet die Touch-Tasten in allen Modi aus, sobald ein Adapter mit Dit oder Dah getastet hat; stattdessen steht ein Hinweis, der sich mit X schließen lässt (siehe [Touch-Keyer](#touch-keyer)) | **Aus** / An |
+| Touch-Tasten ausblenden, wenn Adapter erkannt | Blendet die Touch-Tasten in allen Modi aus, sobald ein Adapter mit Dit oder Dah getastet hat; das Keyer-Symbol in der Titelleiste zeigt, dass ein Adapter erkannt ist (siehe [Touch-Keyer](#touch-keyer)) | **Aus** / An |
 | CurtisB Dit-Timing | Nur Iambic B: ab wie viel Prozent eines Dits ein Druck auf die andere Taste schon gespeichert wird | 0–100 % in 5er-Schritten (**75 %**) |
 | CurtisB Dah-Timing | Dasselbe für Dahs | 0–100 % in 5er-Schritten (**45 %**) |
 | Auto-Zeichenabstand | Erzwingt eine Mindestpause zwischen Zeichen, damit sie nicht zusammenlaufen. Bei Straight nicht verfügbar | **Aus** / 2 / 3 / 4 Dits |

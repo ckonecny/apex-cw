@@ -21,11 +21,8 @@ class KeyAdapterState {
   /// User setting (Settings → Keyer); default off.
   static final hideEnabled = ValueNotifier<bool>(false);
 
-  /// Hint closed with the X; shown again the next time an adapter is detected.
-  static final dismissed = ValueNotifier<bool>(false);
-
-  /// Rebuild trigger for everything that depends on the three values above.
-  static final listenable = Listenable.merge([detected, hideEnabled, dismissed]);
+  /// Rebuild trigger for everything that depends on the two values above.
+  static final listenable = Listenable.merge([detected, hideEnabled]);
 
   /// The touch paddles are hidden (and the hint takes their place).
   static bool get paddlesHidden => detected.value && hideEnabled.value;
@@ -47,7 +44,6 @@ class KeyAdapterState {
   }
 
   static void setDetected(bool on) {
-    if (on && !detected.value) dismissed.value = false;
     detected.value = on;
   }
 
