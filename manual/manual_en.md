@@ -2603,11 +2603,14 @@ their place. The **X** closes it until an adapter is detected the next time;
 tapping the notice opens the setting. When you unplug the adapter, the touch
 keys come back. The "A real Morse key is better" tip no longer appears then.
 
-**Steering Send with the real key.** In Send the key sounds on the start view
-already (with the settings of your answers), so you can try it out before you
-start. A discreet note "External key detected" shows that the adapter was
-recognised. On the result page the key chooses: **dah = Next block**, **dit =
-Finish**.
+**The keyer symbol.** The title bar of many screens (Listen, Send, practice,
+games, Morse chart and more) shows a symbol for the external key. It is dimmed
+while no adapter is detected and lit once one is. Tapping it opens the keyer
+settings. On screens where you do not key yourself you can also try the key out:
+dit and dah sound there with your Send settings (speed, pitch, keyer mode). It
+stays silent while a block runs. On the result page in Send the key chooses:
+**dah (–) = Next block**, **dit (·) = Finish**; the two buttons then carry a
+"-" or ".".
 
 ## A real Morse key or straight key
 

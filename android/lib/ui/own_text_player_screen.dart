@@ -7,6 +7,7 @@
 // text plays: the generator reads wpm and spacing per element. Progress is
 // saved per text; opening one that was started asks Continue / Restart.
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -443,6 +444,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
             onPressed: () => Navigator.pop(context),
           ),
           actions: [
+            const KeyerStatusButton(sound: true),
             const InterferenceButton(),
             if (_p != null && _s.show != 0)
               IconButton(

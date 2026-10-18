@@ -12,6 +12,7 @@
 // and the "urgency" bonus zone stay exactly as on the device; only the
 // drawing is scaled to the screen.
 import 'dart:async';
+import 'widgets/keyer_status_button.dart';
 import 'dart:convert';
 import 'dart:math';
 
@@ -533,6 +534,7 @@ class _InvadersScreenState extends State<InvadersScreen>
               onPressed: () => Navigator.maybePop(context),
             ),
             actions: [
+              const KeyerStatusButton(sound: false),
               if (_phase == _Phase.playing)
                 IconButton(
                   icon: Icon(Icons.pause, color: c.textMuted),

@@ -13,6 +13,7 @@ import '../util/interference_profile.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 
 /// Interactive character chart: every character of MorseDecoder.table with
 /// its code drawn as dots and dashes, grouped into letters, digits and signs.
@@ -180,7 +181,7 @@ class _MorseChartScreenState extends State<MorseChartScreen> {
             icon: Icon(Icons.arrow_back, color: c.textMuted),
             onPressed: () => Navigator.pop(context),
           ),
-          actions: const [InterferenceButton()],
+          actions: const [KeyerStatusButton(sound: true), InterferenceButton()],
         ),
         body: ListView(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),

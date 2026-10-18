@@ -28,6 +28,7 @@ import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 import 'widgets/paddle_widgets.dart';
 
 enum MazeGame { trailblazer, foxHunt }
@@ -369,7 +370,7 @@ class _MazeGameScreenState extends State<MazeGameScreen> with WidgetsBindingObse
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => Navigator.maybePop(context),
             ),
-            actions: const [InterferenceButton()],
+            actions: const [KeyerStatusButton(sound: false), InterferenceButton()],
           ),
           body: !_ready
               ? Center(child: CircularProgressIndicator(color: c.accent))

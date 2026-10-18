@@ -14,6 +14,7 @@ import '../util/interference_profile.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 
 /// Interactive Morse tree (dichotomic table): a dit goes left, a dah right,
 /// the character sits where its code ends. Drawn from MorseDecoder.table, so
@@ -236,7 +237,7 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
             icon: Icon(Icons.arrow_back, color: c.textMuted),
             onPressed: () => Navigator.pop(context),
           ),
-          actions: const [InterferenceButton()],
+          actions: const [KeyerStatusButton(sound: true), InterferenceButton()],
         ),
         body: landscape
             // Landscape: controls in one slim row, the tree gets the rest.

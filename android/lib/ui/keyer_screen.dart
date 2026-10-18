@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'widgets/keyer_status_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -135,6 +136,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
+          const KeyerStatusButton(sound: false),
           IconButton(
             icon: Icon(Icons.settings, color: c.textMuted),
             tooltip: Strings.t('settings_title'),

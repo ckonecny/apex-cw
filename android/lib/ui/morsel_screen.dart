@@ -8,6 +8,7 @@
 // plus 5 s per guess and 60 s per skipped word.
 import '../util/interference_profile.dart';
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -507,7 +508,7 @@ class _MorselScreenState extends State<MorselScreen> {
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => Navigator.maybePop(context),
             ),
-            actions: const [InterferenceButton()],
+            actions: const [KeyerStatusButton(sound: false), InterferenceButton()],
           ),
           body: !_ready
               ? Center(child: CircularProgressIndicator(color: c.accent))

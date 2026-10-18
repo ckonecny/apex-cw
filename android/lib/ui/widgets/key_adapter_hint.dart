@@ -77,26 +77,3 @@ class _KeyAdapterHintState extends State<KeyAdapterHint> {
     );
   }
 }
-
-/// Discreet note on the Send start view while a key adapter is detected
-/// (#116). The keyer sounds on that view, so the key can be tried out.
-class KeyAdapterDetectedNote extends StatelessWidget {
-  const KeyAdapterDetectedNote({super.key});
-
-  @override
-  Widget build(BuildContext context) => ValueListenableBuilder<bool>(
-      valueListenable: KeyAdapterState.detected,
-      builder: (context, detected, _) {
-        if (!detected) return const SizedBox.shrink();
-        final c = AppColors.of(context);
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Row(children: [
-            Icon(Icons.check_circle_outline, size: 14, color: c.accent),
-            const SizedBox(width: 6),
-            Expanded(child: Text(Strings.t('key_adapter_detected'),
-                style: TextStyle(fontSize: 11, color: c.textMuted))),
-          ]),
-        );
-      });
-}

@@ -26,6 +26,8 @@ import 'widgets/char_playback_overlay.dart';
 
 import 'widgets/paddle_widgets.dart';
 import 'widgets/key_adapter_hint.dart';
+import 'widgets/keyer_status_button.dart';
+import '../util/key_adapter_state.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
@@ -327,7 +329,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _genChannel.invokeMethod('setKochChars', _activeKochChars);
     await _charStats.load(p);
     if (mounted) setState(() {});
-    if (mounted && _state == _State.idle && !_showResult) _startIdleKeyer();
   }
 
   // Long press on a chip: select it (as a tap would), then open the settings
@@ -764,7 +765,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   Future<void> _startSession() async {
     if (_state != _State.idle) return;   // guard against a double-tap racing two sessions
-    _keyerChannel.invokeMethod('stop');   // the start view's keyer (#116)
     // The noise stands for the whole block, also while keying, until the result page.
     InterferenceProfile.requestAmbient(this);
     _wordCounter = 0;
@@ -822,10 +822,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
     _genChannel.invokeMethod('stop');
     _keyerChannel.invokeMethod('stop');
-    if (mounted) {
-      setState(() => _state = _State.idle);
-      _startIdleKeyer();
-    }
+    if (mounted) setState(() => _state = _State.idle);
   }
 
   /// Plays a marker string (start "VVV`<KA>`" / end "+") via the native playOne()
@@ -899,22 +896,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
         _ => _pitch,
       };
 
-  // Start view: the keyer runs so a real key can be tried out before the block
-  // starts (#116) — same config as while answering (rule 2).
-  Future<void> _startIdleKeyer() async {
-    await _keyerChannel.invokeMethod('setMode', _keyerMode).catchError((_) {});
-    await _keyerChannel.invokeMethod('setCurtisBTiming',
-        {'dit': _curtisBDitTiming, 'dah': _curtisBDahTiming}).catchError((_) {});
-    await _keyerChannel.invokeMethod('setAcs', _acs).catchError((_) {});
-    await _toneChannel.invokeMethod('setEnvelopeMs', (_toneSoftness + 1).toDouble()).catchError((_) {});
-    await _toneChannel.invokeMethod('setFreq', _answerPitch).catchError((_) {});
-    await _applyAnswerConfig();
-    // The screen may have moved on while the config was pushed.
-    if (mounted && _state == _State.idle && !_showResult) {
-      await _keyerChannel.invokeMethod('start').catchError((_) {});
-    }
-  }
-
   // Result page: dah = next block, dit = finish. The native side routes the
   // learned dit/dah keys here instead of the keyer (setPaddleChoice).
   void _listenResultPaddles() {
@@ -940,7 +921,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _applyAccepted(boost: false);
     if (!mounted) return;
     setState(() => _showResult = false);
-    _startIdleKeyer();
   }
 
   /// Result page "Next block": apply with boost and start the next one.
@@ -1138,6 +1118,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
+            KeyerStatusButton(sound: _state == _State.idle && !_showResult),
             const InterferenceButton(),
           // While a block runs, Stop sits here (where the stats and settings
           // icons are hidden anyway) so the touch paddles can be the last
