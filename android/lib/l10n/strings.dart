@@ -686,6 +686,7 @@ class Strings {
     'ac_correct_of': ['{c} von {t} richtig', '{c} of {t} correct'],
     'boost_sum_title': ['Gezielt üben', 'Practice focus'],
     'boost_sum_pairs': ['{n} Verwechslungen', '{n} mix-ups'],
+    'boost_sum_pair_one': ['{n} Verwechslung', '{n} mix-up'],
     'boost_sum_none': ['nichts gewählt', 'nothing selected'],
     'boost_sheet_done': ['Fertig', 'Done'],
     'mx_boost_title': ['Häufige Verwechslungen: gezielt üben?', 'Recurring mix-ups: practice these?'],

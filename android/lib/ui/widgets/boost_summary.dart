@@ -21,7 +21,10 @@ class BoostSummaryRow extends StatelessWidget {
     final parts = <String>[
       if (chars.isNotEmpty)
         chars.take(_maxChars).join(' ') + (chars.length > _maxChars ? ' …' : ''),
-      if (pairs > 0) Strings.t('boost_sum_pairs').replaceFirst('{n}', '$pairs'),
+      // No-break space: a line break never separates the number from its word.
+      if (pairs > 0)
+        Strings.t(pairs == 1 ? 'boost_sum_pair_one' : 'boost_sum_pairs')
+            .replaceFirst('{n}', '$pairs').replaceAll(' ', '\u00A0'),
     ];
     final text = parts.isEmpty ? Strings.t('boost_sum_none') : parts.join(' · ');
     return SizedBox(
