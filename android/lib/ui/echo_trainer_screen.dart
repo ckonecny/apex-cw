@@ -1118,7 +1118,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
-            KeyerStatusButton(sound: _state == _State.idle && !_showResult),
+            KeyerStatusButton(sound: _state == _State.idle && !_showResult, wpm: _answerWpm),
             const InterferenceButton(),
           // While a block runs, Stop sits here (where the stats and settings
           // icons are hidden anyway) so the touch paddles can be the last

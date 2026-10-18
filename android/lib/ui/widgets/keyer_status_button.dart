@@ -13,7 +13,11 @@ class KeyerStatusButton extends StatefulWidget {
   /// False while the screen needs the keyer for itself or must stay quiet
   /// (a running block, a screen that keys on its own).
   final bool sound;
-  const KeyerStatusButton({super.key, this.sound = true});
+
+  /// Speed in WPM when the screen has its own Send speed control; follows it
+  /// live. Null = the general Send setting.
+  final int? wpm;
+  const KeyerStatusButton({super.key, this.sound = true, this.wpm});
 
   @override
   State<KeyerStatusButton> createState() => _KeyerStatusButtonState();
@@ -40,6 +44,7 @@ class _KeyerStatusButtonState extends State<KeyerStatusButton> {
   void didUpdateWidget(KeyerStatusButton old) {
     super.didUpdateWidget(old);
     _sync();
+    if (_on && widget.wpm != null && widget.wpm != old.wpm) KeyerTry.setWpm(widget.wpm!);
   }
 
   void _onCover(AnimationStatus _) => _sync();
@@ -49,7 +54,7 @@ class _KeyerStatusButtonState extends State<KeyerStatusButton> {
     final want = widget.sound && !covered;
     if (want == _on) return;
     _on = want;
-    want ? KeyerTry.start() : KeyerTry.stop();
+    want ? KeyerTry.start(wpm: widget.wpm) : KeyerTry.stop();
   }
 
   @override

@@ -7,6 +7,7 @@
 // The shared native generator gets this screen's speed and spacing before every
 // playback (rule 2). Sending (keyer) follows in a later version.
 import 'dart:async';
+import 'widgets/keyer_status_button.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -239,6 +240,7 @@ class _ExamScreenState extends State<ExamScreen> {
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => _phase == _Phase.setup ? Navigator.pop(context) : _toSetup(),
             ),
+            actions: [KeyerStatusButton(sound: _phase == _Phase.setup)],
           ),
           body: !_ready
               ? const SizedBox.shrink()

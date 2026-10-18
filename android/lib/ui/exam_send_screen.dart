@@ -8,6 +8,7 @@
 // The shared native keyer gets this screen's speed, mode and word gap on entry
 // (rule 2) and is stopped on leaving.
 import 'dart:async';
+import 'widgets/keyer_status_button.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -237,6 +238,7 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => _phase == _Phase.ready ? Navigator.pop(context) : _toReady(),
             ),
+            actions: const [KeyerStatusButton(sound: false)],
           ),
           body: !_ready
               ? const SizedBox.shrink()
