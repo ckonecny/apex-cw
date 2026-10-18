@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'widgets/keyer_status_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -611,11 +612,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SettingsDivider(),
             _InfoRow(label: 'Dah', value: _dahDesc),
             const SettingsDivider(),
-            _InfoRow(
-                label: Strings.t('settings_adapter_id'),
-                value: _adapterId.isEmpty
-                    ? Strings.t('settings_adapter_none')
-                    : '$_adapterId${_adapterConnected ? '' : '\n${Strings.t('settings_adapter_not_connected')}'}'),
+            _AdapterRow(id: _adapterId, connected: _adapterConnected),
           ]),
           const SizedBox(height: 12),
           if (_learnState == _LearnState.idle)
@@ -748,6 +745,40 @@ class _InfoRow extends StatelessWidget {
           style: TextStyle(fontSize: 13, color: c.textPrimary))),
     ]),
   );
+  }
+}
+
+// The adapter the app knows: lit key and normal text while it is plugged in,
+// dim key and faint text while it is only remembered (inactive).
+class _AdapterRow extends StatelessWidget {
+  final String id;
+  final bool connected;
+  const _AdapterRow({required this.id, required this.connected});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final known = id.isNotEmpty;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(children: [
+        Text(Strings.t('settings_adapter_id'), style: TextStyle(fontSize: 13, color: c.textMuted)),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            if (known) ...[
+              StraightKeyIcon(size: 18, color: connected ? c.accent : c.textFaint),
+              const SizedBox(width: 8),
+            ],
+            Flexible(
+              child: Text(known ? id : Strings.t('settings_adapter_none'),
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 13, color: connected ? c.textPrimary : c.textFaint)),
+            ),
+          ]),
+        ),
+      ]),
+    );
   }
 }
 

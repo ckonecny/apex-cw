@@ -2733,8 +2733,9 @@ sendet:
    „Dah-Taste drücken …“ die **Dah-Taste**.
 4. „Gespeichert“ bestätigt das. Die erkannten Tasten stehen unter **Dit** und
    **Dah**; darunter unter **Adapter** der Name des Geräts mit seiner USB-Kennung
-   (Hersteller:Produkt, z. B. `Name (1a86:7523)`). Ist der angelernte Adapter
-   gerade nicht angeschlossen, steht dort „angelernt, nicht angeschlossen“.
+   (Hersteller:Produkt, z. B. `Name (1a86:7523)`). Das kleine Tasten-Symbol davor leuchtet,
+   solange der Adapter angeschlossen ist, und ist gedimmt (Text blass), wenn die App
+   ihn nur kennt, er aber nicht dran ist.
 
 Es gibt also keine Liste unterstützter Adapter. Die App lernt die Tasten, die
 dein Adapter sendet.
