@@ -1183,7 +1183,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             ),
 
           if (_showResult) Expanded(child: _buildBlockResult(c)) else ...[
-          if (_sessionActive) _buildBlockProgress(c),
+          if (_sessionActive) _buildBlockProgress(c, headerOnly: _preparing),
           // ── One word at a time: idle hint or practice view ──────────────
           Expanded(child: _state == _State.idle
               ? _buildIdle(c)

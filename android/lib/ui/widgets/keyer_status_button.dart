@@ -72,7 +72,7 @@ class _KeyerStatusButtonState extends State<KeyerStatusButton> {
       builder: (context, detected, _) => IconButton(
         icon: CustomPaint(
           size: const Size(26, 26),
-          painter: _StraightKeyPainter(detected ? c.accent : c.textFaint),
+          painter: StraightKeyPainter(detected ? c.accent : c.textFaint),
         ),
         tooltip: Strings.t(detected ? 'keyer_btn_detected' : 'keyer_btn_none'),
         onPressed: () => Navigator.push(context,
@@ -83,9 +83,9 @@ class _KeyerStatusButtonState extends State<KeyerStatusButton> {
 }
 
 /// A straight key in side view: base, post, lever and knob (drawn on a 48 grid).
-class _StraightKeyPainter extends CustomPainter {
+class StraightKeyPainter extends CustomPainter {
   final Color color;
-  _StraightKeyPainter(this.color);
+  StraightKeyPainter(this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -103,5 +103,16 @@ class _StraightKeyPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_StraightKeyPainter old) => old.color != color;
+  bool shouldRepaint(StraightKeyPainter old) => old.color != color;
+}
+
+/// Small straight key, the Send counterpart of Listen's "playing" symbol.
+class StraightKeyIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+  const StraightKeyIcon({super.key, this.size = 16, required this.color});
+
+  @override
+  Widget build(BuildContext context) =>
+      CustomPaint(size: Size(size, size), painter: StraightKeyPainter(color));
 }

@@ -4,7 +4,7 @@ part of 'echo_trainer_screen.dart';
 extension _EchoViews on _EchoTrainerScreenState {
   // Same header as Listen's block views: content (+ Koch lesson) on the right,
   // one dot per word coloured by how it went, "Group n / t · WPM" below.
-  Widget _buildBlockProgress(AppColors c) {
+  Widget _buildBlockProgress(AppColors c, {bool headerOnly = false}) {
     final n = (_blockResults.length + 1).clamp(1, _blockSize);
     final cur = _blockResults.length;
     final capped = _answerWpmMax > 0 && _answerWpm < _currentWpm;
@@ -19,6 +19,7 @@ extension _EchoViews on _EchoTrainerScreenState {
           ),
         ]),
       ),
+      if (!headerOnly) ...[
       const SizedBox(height: 14),
       Wrap(alignment: WrapAlignment.center, children: List.generate(_blockSize, (i) {
         final done = i < _blockResults.length;
@@ -40,6 +41,7 @@ extension _EchoViews on _EchoTrainerScreenState {
       Text('${Strings.t(_choice.content == ContentKind.random ? 'block_group_of' : 'block_word_of').replaceFirst('{n}', '$n').replaceFirst('{t}', '$_blockSize')}'
           ' · $_currentWpm WPM${capped ? ' → $_answerWpm' : ''}',
           style: TextStyle(fontSize: 13, color: c.textMuted)),
+      ],
     ]);
   }
 
@@ -183,17 +185,21 @@ extension _EchoViews on _EchoTrainerScreenState {
     String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
     final showTarget = _targetVisible || _revealVisible;
     final f = textScaleOf(context);
-    // One status pill in Listen's style (attempt / listening / sending / right / wrong).
+    // Like Listen: while getting ready only that line, large, nothing else.
+    if (_preparing) {
+      return Center(
+        child: Text(Strings.t('get_ready'),
+            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: c.warning)),
+      );
+    }
+    // The pill only for how the word went (attempt / right / wrong); playing and
+    // sending are shown below the line, in Listen's style.
     final (badge, badgeColor) = switch (_state) {
       _State.correct => (Strings.t('echo_status_correct'), c.accent),
       _State.wrong => (Strings.t('echo_status_wrong'), c.danger),
-      _State.playing => _preparing
-          ? (Strings.t('get_ready'), c.warning)
-          : (Strings.t('echo_status_playing'), c.warning),
-      _State.receiving => _repeats > 1
-          ? ('✗ ${Strings.t('echo_attempt').replaceFirst('{n}', '$_repeats').replaceFirst('{max}', _echoRepeats == 7 ? '∞' : '${_echoRepeats + 1}')}', c.danger)
-          : (Strings.t('echo_status_receiving'), c.info),
-      _State.idle => ('', c.textMuted),
+      _State.receiving when _repeats > 1 =>
+        ('✗ ${Strings.t('echo_attempt').replaceFirst('{n}', '$_repeats').replaceFirst('{max}', _echoRepeats == 7 ? '∞' : '${_echoRepeats + 1}')}', c.danger),
+      _ => ('', c.textMuted),
     };
     final underline = switch (_state) {
       _State.correct => c.accent,
@@ -227,6 +233,23 @@ extension _EchoViews on _EchoTrainerScreenState {
                   color: _state == _State.wrong ? c.danger : c.textPrimary)),
           const SizedBox(height: 6),
           Container(width: 200, height: 2, color: underline),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 18 * f,
+            child: switch (_state) {
+              _State.playing => Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.graphic_eq, size: 16, color: c.accent),
+                  const SizedBox(width: 6),
+                  Text(Strings.t('ac_type_playing'), style: TextStyle(fontSize: 12, color: c.accent)),
+                ]),
+              _State.receiving => Row(mainAxisSize: MainAxisSize.min, children: [
+                  StraightKeyIcon(size: 16, color: c.accent),
+                  const SizedBox(width: 6),
+                  Text(Strings.t('echo_status_receiving'), style: TextStyle(fontSize: 12, color: c.accent)),
+                ]),
+              _ => null,
+            },
+          ),
         ]),
       ),
     );
