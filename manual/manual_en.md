@@ -2640,7 +2640,9 @@ This tells the app which key your adapter sends for dit and which for dah:
 3. When "Press Dit key …" appears, press the **dit key**. When "Press Dah
    key …" appears, press the **dah key**.
 4. "Saved" confirms it. The detected keys are listed under **Dit** and
-   **Dah**.
+   **Dah**; below them, under **Adapter**, the name of the device with its USB id
+   (vendor:product, e.g. `Name (1a86:7523)`). If the learned adapter is not
+   plugged in, it says "learned, not connected".
 
 So there's no list of supported adapters. The app learns whatever keys your
 adapter sends.

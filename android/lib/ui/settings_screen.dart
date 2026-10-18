@@ -102,6 +102,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // ── Paddle ────────────────────────────────────────────────────────────────
   String _ditDesc = '…';
   String _dahDesc = '…';
+  String _adapterId = '';
+  bool _adapterConnected = false;
   _LearnState _learnState  = _LearnState.idle;
   String _learnMessage = '';
 
@@ -123,6 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _load();
     _loadPaddleDesc();
+    KeyAdapterState.detected.addListener(_loadPaddleDesc);
     _loadOutputDeviceKinds();
     _loadAppVersion();
     _eventSub = _settingsEvents.receiveBroadcastStream().listen(_onSettingsEvent);
@@ -148,6 +151,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void dispose() {
     _eventSub?.cancel();
+    KeyAdapterState.detected.removeListener(_loadPaddleDesc);
     _scroll.dispose();
     _settingsChannel.invokeMethod('cancelLearnPaddle');
     super.dispose();
@@ -205,6 +209,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
       _ditDesc = result['dit'] ?? '?';
       _dahDesc = result['dah'] ?? '?';
+      _adapterId = result['adapter'] ?? '';
+      _adapterConnected = result['connected'] == '1';
     });
     }
   }
@@ -604,6 +610,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _InfoRow(label: 'Dit', value: _ditDesc),
             const SettingsDivider(),
             _InfoRow(label: 'Dah', value: _dahDesc),
+            const SettingsDivider(),
+            _InfoRow(
+                label: Strings.t('settings_adapter_id'),
+                value: _adapterId.isEmpty
+                    ? Strings.t('settings_adapter_none')
+                    : '$_adapterId${_adapterConnected ? '' : '\n${Strings.t('settings_adapter_not_connected')}'}'),
           ]),
           const SizedBox(height: 12),
           if (_learnState == _LearnState.idle)

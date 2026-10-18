@@ -2732,7 +2732,9 @@ sendet:
 3. Wenn „Dit-Taste drücken …“ erscheint, die **Dit-Taste** drücken; bei
    „Dah-Taste drücken …“ die **Dah-Taste**.
 4. „Gespeichert“ bestätigt das. Die erkannten Tasten stehen unter **Dit** und
-   **Dah**.
+   **Dah**; darunter unter **Adapter** der Name des Geräts mit seiner USB-Kennung
+   (Hersteller:Produkt, z. B. `Name (1a86:7523)`). Ist der angelernte Adapter
+   gerade nicht angeschlossen, steht dort „angelernt, nicht angeschlossen“.
 
 Es gibt also keine Liste unterstützter Adapter. Die App lernt die Tasten, die
 dein Adapter sendet.

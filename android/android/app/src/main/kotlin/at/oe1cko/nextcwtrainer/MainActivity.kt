@@ -90,6 +90,8 @@ class MainActivity : FlutterActivity() {
     // Device that "Learn dit/dah keys" was done on: recognised at plug-in, with
     // no keypress needed. Null until learned on a physical device.
     private var adapterDescriptor: String? = null
+    // Name and USB ids of the learned adapter, for the settings page.
+    private var adapterInfo: String? = null
     private var learnDescriptor: String? = null
     private val inputDeviceListener = object : InputManager.InputDeviceListener {
         override fun onInputDeviceAdded(deviceId: Int) {
@@ -123,6 +125,7 @@ class MainActivity : FlutterActivity() {
         private const val PREF_DIT         = "paddle_dit"
         private const val PREF_DAH         = "paddle_dah"
         private const val PREF_ADAPTER     = "paddle_adapter_descriptor"
+        private const val PREF_ADAPTER_INFO = "paddle_adapter_info"
         private const val MIC_CHANNEL      = "at.oe1cko.nextcwtrainer/cw_mic"
         private const val MIC_PCM_CHANNEL  = "at.oe1cko.nextcwtrainer/cw_mic_pcm"
         private const val REQ_MIC          = 4711
@@ -412,10 +415,17 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SETTINGS_CHANNEL)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
-                    "getPaddleChars" -> result.success(mapOf(
-                        "dit" to charDescription(ditChar),
-                        "dah" to charDescription(dahChar)
-                    ))
+                    "getPaddleChars" -> {
+                        // Adapter id: the one in use right now, else the learned one.
+                        val live = keyAdapterDevices.mapNotNull { InputDevice.getDevice(it) }
+                            .joinToString("\n") { deviceInfo(it) }
+                        result.success(mapOf(
+                            "dit" to charDescription(ditChar),
+                            "dah" to charDescription(dahChar),
+                            "adapter" to live.ifEmpty { adapterInfo ?: "" },
+                            "connected" to (if (live.isNotEmpty()) "1" else "0")
+                        ))
+                    }
                     "startLearnPaddle" -> {
                         learnStep = 1
                         sendLearnEvent("step", "1")  // "Press Dit paddle"
@@ -654,6 +664,7 @@ class MainActivity : FlutterActivity() {
                 if (ch == ditChar) return true  // same key pressed twice — wait for different key
                 // Remember the device only if both keys came from the same one.
                 adapterDescriptor = physicalDescriptor(event).takeIf { it == learnDescriptor }
+                adapterInfo = if (adapterDescriptor != null) event.device?.let { deviceInfo(it) } else null
                 if (adapterDescriptor != null) addKeyAdapter(event.deviceId)
                 dahChar = ch
                 learnStep = 0
@@ -665,6 +676,10 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    // "Name (VID:PID)" of an input device, e.g. "USB CW Adapter (1a86:7523)".
+    private fun deviceInfo(dev: InputDevice): String =
+        "%s (%04x:%04x)".format(dev.name, dev.vendorId, dev.productId)
+
     // ── Persistence ───────────────────────────────────────────────────────────
 
     private fun loadPaddlePrefs() {
@@ -672,6 +687,7 @@ class MainActivity : FlutterActivity() {
         ditChar = prefs.getInt(PREF_DIT, 0xFC)
         dahChar = prefs.getInt(PREF_DAH, 0x2B)
         adapterDescriptor = prefs.getString(PREF_ADAPTER, null)
+        adapterInfo = prefs.getString(PREF_ADAPTER_INFO, null)
     }
 
     private fun savePaddlePrefs() {
@@ -679,6 +695,7 @@ class MainActivity : FlutterActivity() {
             .putInt(PREF_DIT, ditChar)
             .putInt(PREF_DAH, dahChar)
             .putString(PREF_ADAPTER, adapterDescriptor)
+            .putString(PREF_ADAPTER_INFO, adapterInfo)
             .apply()
     }
 
