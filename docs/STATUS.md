@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Latest tagged build: v1.7.0 (2026-10-12; v1.7.1 in progress, see below; tag `v1.7.0` = commit 4fffaa4; exam simulation, learn-from-mistake, word lists, themes, undo bar, focus mode, new logo, DM Sans). Previous: v1.6.0 (2026-10-05), v1.5.0 (2026-10-03); the beta builds v1.6.1-beta1…6 are folded into 1.7.0; older versions in `docs/STATUS-ARCHIVE.md`.
+Latest tagged build: v1.7.0 (2026-10-12; v1.8.0-beta1 in preparation, see below; tag `v1.7.0` = commit 4fffaa4; exam simulation, learn-from-mistake, word lists, themes, undo bar, focus mode, new logo, DM Sans). Previous: v1.6.0 (2026-10-05), v1.5.0 (2026-10-03); the beta builds v1.6.1-beta1…6 are folded into 1.7.0; older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -41,27 +41,17 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - `echo_sheet.png` (DE+EN): Send ⚙ sheet, Echo Trainer section now has Denkzeit/Antwortpause with help lines; Abstände has only the character spacing.
 - `settings2.png`, `settings3.png` (DE+EN): sections moved (USB CW adapter + key events below Keyer, call signs gone from the global settings); `hear_sheet2.png` (Word selection with call sign rows, content Call signs) in both languages.
 
+- `settings3.png` (DE+EN): USB CW adapter card shows the adapter name/USB id with the active/inactive key symbol.
 - `echo_result.png`, `echo_result2.png`, `echo_answer.png` (DE+EN): Send result page and running view now look like Listen (no word list, no mix-up line, status pill, dots) (#107).
 - Many screenshots with an app bar (#116): new keyer symbol; Send result page: "." and "-" on the buttons with a key detected. `echo_start.png` (DE+EN): with Koch · Random, the start view now shows the weak characters and mix-up pairs card (#107).
 - New shots (DE+EN), e.g. `hear_start_compact.png`, `hear_boost_sheet.png`: the compact row and its sheet when space is tight (#109).
 
-## v1.7.1 (maintenance release, in progress)
-`main` holds everything (version 1.7.1+8): fidelity audit fixes, review-gate fixes, updated libraries (Dependabot round of 2026-10-12 merged incl. `audio_session` 0.2.4, Gradle 9.8.1, AGP 9.4.1). Tried on the test phone: audio, keyer, settings, links, microphone decoder. **Next**: `v1.7.1-beta1` as GitHub pre-release for Sia (notes: `docs/release-notes-v1.7.1.md`), then the release itself (`tools/build_release.sh v1.7.1`, tag, APK + AAB; the manual PDF stays at v1.7.0, only text changed). Recurring checks and alerts: `docs/PROJECT.md` "Recurring maintenance". Engine config per screen: `android/test/engine_config_test.dart` (DECISIONS); a shared config helper instead of per-screen copies is issue #18.
+## v1.8.0-beta1 (in preparation, version 1.8.0+9)
+Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: tag/publish `tools/publish_beta.sh v1.8.0-beta1` after merge of the release PR, then the release (`tools/build_release.sh v1.8.0`, APK + AAB; manual HTML/PDF and screenshots only then). Engine config per screen: `android/test/engine_config_test.dart`; shared config helper: issue #18.
 
-## #102 Mix-up practice suggestion (PR #106)
-Written without Flutter. To do: `flutter analyze`, `flutter test` (new `mixup_suggest_test.dart`, overflow entry `mixup_boost_chips`), then on the phone: with recurring mix-ups the card shows in Listen (start + result, typing mode, random groups) and Send (result, Koch random); tapping a pair strikes it through; the next block favours both characters. Rule and thresholds: DECISIONS "Mix-up practice suggestion".
-
-## #107 Send start view (PR #108)
-To check on the phone: Send · Koch · Random with some weak characters shows the card on the start view; START boosts the first block with what is ticked; words/callsigns show no card.
-
-## #109 Compact boost row (PR #110)
-To check on the phone: Listen · Koch with a large system font (or small display) shows one row "Practice focus …" instead of the cards; tap opens the sheet, toggling chips updates the row; with enough room the cards stay inline as before. Same on the Send start view.
-
-## Spaced goal credit (branch `claude/spread-goal-credit`)
-Spaced goal reworked: each session credits at most goal / n (DECISIONS 2026-10-13), manual DE+EN updated, tests green. Pending: check on the test phone, then merge. Screenshots of the daily-goal card/goal screen may change at the next release (ring label now shows credited minutes).
-
-## Release note to include (next release)
-Letter and word gaps were one dit too short in all earlier versions (now 3/7 dits at the default spacing), so everything sounds slightly slower. Keyer modes, audio stream locking and the microphone decoder were fixed too (DECISIONS "Keyer audit" etc.). Native tests: `./gradlew :app:testDebugUnitTest` in `android/android` and `tools/run_native_cpp_tests.sh` (CI job `native-test`); locally Gradle needs `JAVA_HOME` of Android Studio's JBR.
+## Phone tests still open (1.8.0)
+- Mix-up suggestions (#102/#106): over weeks of real use, check that the card appears when pairs recur and that boosting works.
+- Send start view (#107), compact row (#109), spaced goal credit, external key everywhere (#116): tried on the test phone; recheck in the beta.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

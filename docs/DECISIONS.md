@@ -2257,3 +2257,9 @@ Send's running view, step two (user, 2026-10-18): "Get ready" alone, large and a
 
 ## Key adapter: no notice in place of the hidden touch keys (2026-10-18)
 The line "Key detected – touch keys hidden. Tap for the setting." (#95) is gone: with the keyer symbol in the app bar (#116) it only nagged. The touch keys still hide with the setting on and an adapter detected; the Bluetooth warning stays. `KeyAdapterState.dismissed` and the string are removed.
+
+## Settings: adapter id and active/inactive state (2026-10-18)
+`MainActivity.deviceInfo()` stores "name (vid:pid)" at learn time (`paddle_adapter_info`) and `getPaddleChars` returns it with `connected`. The USB CW adapter card shows it in a row with the straight-key symbol: accent = plugged in (`KeyAdapterState.detected`), faint = known but not plugged in. Replaces the text "learned, not connected".
+
+## Release 1.8.0-beta1 (2026-10-18)
+Minor bump instead of 1.7.1: the Listen/Send unification, external-key work and mix-up practice are features. 1.7.1 (maintenance) is folded in; notes in `docs/release-notes-v1.8.0.md`.
