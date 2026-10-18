@@ -2693,6 +2693,16 @@ den Hinweis öffnet die Einstellung. Ziehst du den Adapter ab, erscheinen die
 Touch-Tasten wieder. Der Tipp „Echte Morsetaste ist besser“ erscheint dann
 nicht mehr.
 
+**Das Keyer-Symbol.** In der Titelleiste vieler Bildschirme (Hören, Geben, Üben,
+Spiele, Morsetabelle und mehr) steht ein Symbol für die externe Taste. Es ist
+gedimmt, solange kein Adapter erkannt ist, und leuchtet, sobald einer erkannt
+wurde. Ein Tipp darauf öffnet die Keyer-Einstellungen. Auf Bildschirmen, auf denen
+du nicht selbst tastest, kannst du die Taste damit auch ausprobieren: Dit und Dah
+tönen dort mit deinen Einstellungen für Geben (Tempo, Tonhöhe, Keyer-Modus). Während
+eines Blocks bleibt es still. Auf der Ergebnisseite bei Geben wählst du mit der
+Taste: **Dah (–) = Nächster Block**, **Dit (·) = Beenden**; die beiden Knöpfe tragen
+dann ein „-“ bzw. „.“.
+
 ## Echte Morsetaste oder Handtaste
 
 Ein Handy hat keinen Morsetasten-Eingang. Du brauchst einen kleinen USB-Adapter,

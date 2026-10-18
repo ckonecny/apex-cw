@@ -108,6 +108,8 @@ class Strings {
     'opt_audio_speaker': ['Lautsprecher', 'Speaker'],
     'opt_audio_wired': ['Kabel/USB', 'Wired/USB'],
     'opt_audio_bluetooth': ['Bluetooth', 'Bluetooth'],
+    'keyer_btn_detected': ['Externe Taste erkannt – Keyer-Einstellungen', 'External key detected – keyer settings'],
+    'keyer_btn_none': ['Keine externe Taste erkannt – Keyer-Einstellungen', 'No external key detected – keyer settings'],
     'key_adapter_hint': ['Tipp: Mit einer echten Morsetaste am USB-Adapter geht das Geben viel besser als mit den Touch-Tasten – tippen für die Anleitung.', 'Tip: keying feels much better with a real Morse key on a USB adapter than with the touch keys – tap for the guide.'],
     'bt_latency_hint': ['Bluetooth verzögert deinen Seitenton (ca. 100–250 ms). Zum Geben besser Kabel oder USB – tippen für die Audioausgabe.', 'Bluetooth delays your sidetone (about 100–250 ms). For keying, use a cable or USB – tap for audio output.'],
     'settings_break_hint': ['Pausenhinweis bei steigender Fehlerquote', 'Break hint when the error rate rises'],

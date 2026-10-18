@@ -10,6 +10,7 @@
 // is the chain, revealed letter by letter, call after call, no tolerated
 // error). Separate high-score tables per mode.
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -479,7 +480,7 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => Navigator.maybePop(context),
             ),
-            actions: const [InterferenceButton()],
+            actions: const [KeyerStatusButton(sound: false), InterferenceButton()],
           ),
           body: !_ready
               ? Center(child: CircularProgressIndicator(color: c.accent))

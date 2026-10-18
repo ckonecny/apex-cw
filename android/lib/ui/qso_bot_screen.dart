@@ -1,4 +1,5 @@
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -532,6 +533,7 @@ class _QsoBotScreenState extends State<QsoBotScreen> with WidgetsBindingObserver
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
+            const KeyerStatusButton(sound: false),
             const InterferenceButton(),
           IconButton(
             icon: Icon(Icons.settings, color: c.textMuted),

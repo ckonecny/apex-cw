@@ -1,4 +1,5 @@
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
@@ -390,6 +391,7 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
+            const KeyerStatusButton(sound: false),
             const InterferenceButton(),
           IconButton(
             icon: Icon(Icons.settings, color: c.textMuted),

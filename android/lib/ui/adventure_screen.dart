@@ -6,6 +6,7 @@
 // generator on entry and on every change (rule 2). Every command is
 // autosaved; ↶ undoes up to 20 moves (the original has no UNDO).
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 import 'dart:async';
 import 'dart:math' show max;
 
@@ -772,6 +773,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
             onPressed: () => Navigator.pop(context),
           ),
           actions: [
+            const KeyerStatusButton(sound: false),
             const InterferenceButton(),
             IconButton(
                 tooltip: Strings.t('adv_commands'),

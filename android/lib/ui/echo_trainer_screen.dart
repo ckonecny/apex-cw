@@ -26,6 +26,8 @@ import 'widgets/char_playback_overlay.dart';
 
 import 'widgets/paddle_widgets.dart';
 import 'widgets/key_adapter_hint.dart';
+import 'widgets/keyer_status_button.dart';
+import '../util/key_adapter_state.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
@@ -72,9 +74,6 @@ class EchoTrainerScreen extends StatefulWidget {
 }
 
 class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
-  // setState for the view extension in echo_trainer_screen_views.dart.
-  void _update(VoidCallback fn) => setState(fn);
-
   static const _genChannel    = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
   static const _genEvents     = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
   static const _keyerChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
@@ -213,6 +212,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Timer? _silenceTimer;
   StreamSubscription? _genSub;
   StreamSubscription? _symbolSub;
+  // Result page: the physical key chooses (dah = next block, dit = finish), #116.
+  StreamSubscription? _paddleSub;
 
 
   // Echo Think T., as in the firmware after its 2026-09-15 fix (origin/master
@@ -717,6 +718,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _silenceTimer?.cancel();
     _genSub?.cancel();
     _symbolSub?.cancel();
+    _paddleSub?.cancel();
+    _genChannel.invokeMethod('setPaddleChoice', false);
     _wpmSub?.cancel();
     _genChannel.invokeMethod('stop');
     _keyerChannel.invokeMethod('stop');
@@ -887,17 +890,54 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
   }
 
+  int get _answerPitch => switch (_toneShift) {
+        1 => (_pitch * 18 / 17).round(),
+        2 => (_pitch * 17 / 18).round(),
+        _ => _pitch,
+      };
+
+  // Result page: dah = next block, dit = finish. The native side routes the
+  // learned dit/dah keys here instead of the keyer (setPaddleChoice).
+  void _listenResultPaddles() {
+    _paddleSub?.cancel();
+    _genChannel.invokeMethod('setPaddleChoice', true).catchError((_) {});
+    _paddleSub = _genEvents.receiveBroadcastStream().listen((raw) {
+      final ev = raw as Map;
+      if (ev['type'] != 'paddle' || !_showResult) return;
+      ev['value'] == 'dit' ? _finishBlock() : _nextBlock();
+    });
+  }
+
+  void _stopResultPaddles() {
+    _paddleSub?.cancel();
+    _paddleSub = null;
+    _genChannel.invokeMethod('setPaddleChoice', false).catchError((_) {});
+  }
+
+  /// Result page "Finish": apply what is ticked, back to the start view.
+  Future<void> _finishBlock() async {
+    if (!_showResult) return;
+    _stopResultPaddles();
+    await _applyAccepted(boost: false);
+    if (!mounted) return;
+    setState(() => _showResult = false);
+  }
+
+  /// Result page "Next block": apply with boost and start the next one.
+  Future<void> _nextBlock() async {
+    if (!_showResult) return;
+    _stopResultPaddles();
+    await _applyAccepted(boost: true);
+    if (mounted) setState(() {});
+    await _startSession();
+  }
+
   void _beginReceive() {
     // Tone Shift (M32 "Tone Shift"): shift the operator's own echoed-answer
     // sidetone up/down one half-tone from the target word's playback pitch,
     // so the two are audibly distinguishable — matches MorseDecoder::ON_()/
     // m32_v6.ino's KEY_START, both gated on morseState==echoTrainer there.
-    final shifted = switch (_toneShift) {
-      1 => (_pitch * 18 / 17).round(),
-      2 => (_pitch * 17 / 18).round(),
-      _ => _pitch,
-    };
-    _toneChannel.invokeMethod('setFreq', shifted);
+    _toneChannel.invokeMethod('setFreq', _answerPitch);
     _applyAnswerConfig();
     _keyerChannel.invokeMethod('start');
     setState(() => _state = _State.receiving);
@@ -1008,6 +1048,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _sessionActive = false;
       _genSub?.cancel(); _genSub = null;
       _keyerChannel.invokeMethod('stop');
+      if (mounted) _listenResultPaddles();
       return;
     }
     await _playWord(fresh: true);
@@ -1077,6 +1118,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
+            KeyerStatusButton(sound: _state == _State.idle && !_showResult, wpm: _answerWpm),
             const InterferenceButton(),
           // While a block runs, Stop sits here (where the stats and settings
           // icons are hidden anyway) so the touch paddles can be the last
@@ -1141,7 +1183,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
             ),
 
           if (_showResult) Expanded(child: _buildBlockResult(c)) else ...[
-          if (_sessionActive) _buildBlockProgress(c),
+          if (_sessionActive) _buildBlockProgress(c, headerOnly: _preparing),
           // ── One word at a time: idle hint or practice view ──────────────
           Expanded(child: _state == _State.idle
               ? _buildIdle(c)

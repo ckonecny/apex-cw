@@ -25,6 +25,7 @@ import 'q_groups_sheet_screen.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart' show cwGenEvents;
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 import 'widgets/setting_rows.dart';
 import 'widgets/tempo_spacing_section.dart';
 
@@ -285,7 +286,7 @@ class _QGroupsScreenState extends State<QGroupsScreen> {
                 if (_handleBack()) Navigator.pop(context);
               },
             ),
-            actions: const [InterferenceButton()],
+            actions: const [KeyerStatusButton(sound: true), InterferenceButton()],
           ),
           body: !_ready ? const SizedBox.shrink() : _body(c),
         ),

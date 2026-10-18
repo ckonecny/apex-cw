@@ -15,6 +15,7 @@ import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/setting_rows.dart';
 import 'widgets/slider_row.dart';
@@ -335,7 +336,8 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
-          const InterferenceButton(),
+          const KeyerStatusButton(sound: false),
+            const InterferenceButton(),
           IconButton(
             icon: Icon(Icons.settings, color: c.textMuted),
             onPressed: _openSettings,

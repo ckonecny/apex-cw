@@ -1,4 +1,5 @@
 import 'widgets/interference_button.dart';
+import 'widgets/keyer_status_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -253,6 +254,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
+            KeyerStatusButton(sound: !_practiceActive),
             const InterferenceButton(),
           if (!_practiceActive)
             IconButton(

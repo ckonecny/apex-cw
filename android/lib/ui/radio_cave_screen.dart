@@ -4,6 +4,7 @@
 // (S E W I H) act at once, everything else after a pause of silence.
 // The game is saved after every command.
 import 'dart:async';
+import 'widgets/keyer_status_button.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -314,6 +315,7 @@ class _RadioCaveScreenState extends State<RadioCaveScreen> with WidgetsBindingOb
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => Navigator.maybePop(context),
             ),
+            actions: const [KeyerStatusButton(sound: false)],
           ),
           body: !_ready
               ? Center(child: CircularProgressIndicator(color: c.accent))

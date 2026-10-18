@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'widgets/keyer_status_button.dart';
 import 'widgets/app_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
@@ -93,6 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   letterSpacing: 0.3, color: c.textPrimary,
                   fontVariations: const [FontVariation('wght', 600)])),
           actions: [
+            const KeyerStatusButton(),
             IconButton(
               icon: Icon(Icons.settings, color: c.textMuted),
               onPressed: () => _open(const SettingsScreen()),
