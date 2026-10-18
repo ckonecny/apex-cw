@@ -1271,20 +1271,15 @@ Zeichen, das schwach ist und in zwei Paaren vorkommt, wird nur einmal verstärkt
 die Gewichte addieren sich nicht. Hören und Geben zählen getrennt; in Hören zählen
 nur Blöcke im Tippmodus.
 
-### Gewichtung bei Geben
+### Zeichenauswahl bei Geben
 
-Bei **Geben · Koch-Lektion · Zufall** zieht die App die Zeichen zusätzlich
-gewichtet. Beim Morserino heißt das „Adaptive Random“. Jedes Zeichen hat ein
-Gewicht zwischen 1 und 20; je höher, desto öfter kommt es dran. Nach dem ersten
-Versuch jedes Wortes:
-
-- **Wort ganz richtig:** jedes Zeichen des Wortes −1,
-- **Fehler:** das erste falsche Zeichen +4, seine Nachbarn im Wort je +2
-  (wenn es andere Zeichen sind).
-
-Zeichen, die du falsch gibst, kommen also schnell häufiger, und sie werden
-erst wieder seltener, wenn du sie mehrfach richtig gibst. Das ist nicht immer
-angenehm, aber sehr wirksam.
+Bei **Geben · Koch-Lektion · Zufall** werden die Zeichen genauso gezogen wie bei
+Hören (siehe [Koch-Reihenfolge](#koch-reihenfolge)): zwei von drei Zeichen
+gleichmäßig aus allen aktiven, jedes dritte aus dem letzten Drittel. Schwache
+Zeichen, die du in der Karte **Schwache Zeichen** angehakt lässt, werden im
+nächsten Block bevorzugt. Wie stark, stellst du im ⚙-Blatt unter
+**Übungsset bevorzugen** ein. Ein Fehler wirkt also nicht sofort mitten im
+Block, sondern über die Statistik im nächsten Block, in Hören und Geben gleich.
 
 ## Fortschrittsanzeige „Auf dem Weg zu X“
 

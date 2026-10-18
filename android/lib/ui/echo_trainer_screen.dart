@@ -214,7 +214,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   StreamSubscription? _genSub;
   StreamSubscription? _symbolSub;
 
-  final _random = Random();
 
   // Echo Think T., as in the firmware after its 2026-09-15 fix (origin/master
   // f98a409, docs/DECISIONS.md): only a grace period for STARTING the answer.
@@ -344,32 +343,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await pf.setInt('wpm',       _wpm);
     await pf.setInt('kochLevel', _kochLevel);
     await _choice.save(pf);
-  }
-
-  // Weighted-random single character from the active Koch set — weight
-  // defaults to 1 (never drawn yet / already mastered back down to baseline).
-  String _pickAdaptiveChar() {
-    final active = kochActiveChars(_kochLevel, _activeKochChars);
-    final weights = active
-        .map((c) => _charStats.weightFor(c) * (_boostChars.contains(c) ? 2 : 1))
-        .toList();
-    final total = weights.fold<int>(0, (a, b) => a + b);
-    var r = _random.nextInt(total);
-    for (var i = 0; i < active.length; i++) {
-      if (r < weights[i]) return active[i];
-      r -= weights[i];
-    }
-    return active.last;
-  }
-
-  // "Adapt. Rand." echoes a GROUP, same as Random — matches
-  // getRandomChars(posRandomLength, OPT_KOCH_ADAPTIVE) in m32_v6.ino.
-  // Length drawn per group between the min and max setting.
-  String _pickAdaptiveGroup() {
-    final lo = _groupLength.clamp(1, 8);
-    final hi = _groupLengthMax.clamp(lo, 8);
-    final len = lo + _random.nextInt(hi - lo + 1);
-    return List.generate(len, (_) => _pickAdaptiveChar()).join();
   }
 
   // Block flow: every echo content feeds the Geben track, once per word
@@ -1056,10 +1029,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   Future<String> _fetchTarget() async {
     final e = _choice.engine;
-    // Koch + random: weighted draw by weak chars (former "Adapt. Rand."),
-    // a GROUP like getRandomChars(posRandomLength, ...) in m32_v6.ino.
-    if (_koch && _choice.content == ContentKind.random) return _pickAdaptiveGroup();
-    // Everything else is generated Kotlin-side from the shared content pools.
+    // Everything, Koch random included, is generated Kotlin-side from the
+    // shared content pools, exactly as in Listen (same draw, same boost).
     final result = await _genChannel.invokeMethod('getNextContent', {
       'mode': e.mode,
       'kochLevel': _kochLevel,
