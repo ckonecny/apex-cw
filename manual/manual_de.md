@@ -241,10 +241,13 @@ in der App in spitzen Klammern geschrieben:
 | `<bk>` | Break, Gegenstation ist dran |
 | `<err>` | Fehler: acht Dits (`........`) |
 
-Beim Hören (Blockablauf) werden Prosigns aus **Zeichen für Gruppen** wie zwei
-einzelne Buchstaben angezeigt und bewertet (`<ka>` erscheint als „K A“).
-Beim Mitschreiben mit der Bildschirmtastatur tippst du sie ebenso als zwei
-Buchstaben.
+Beim Hören (Blockablauf) klingt ein Prosign aus den Gruppen (**Zeichen für
+Gruppen**, Koch-Lektion, Übungsset) als ein Zeichen und wird auch als ein
+Zeichen angezeigt und bewertet (`<ka>`). Beim Mitschreiben mit der
+Bildschirmtastatur tippst du es mit der Prosign-Taste (AS, KA, KN, SK, VE, BK;
+sie erscheint, sobald der Zeichenvorrat Prosigns enthält); zwei einzelne
+Buchstaben K und A gelten als falsch. Die Wiederholung „Hör, wie es klingt“
+spielt es ebenfalls als Prosign.
 
 # Einstieg: Morse lernen Schritt für Schritt {#einstieg}
 
@@ -2941,7 +2944,7 @@ wenn dort der Zeichenvorrat **Koch-Lektion** gewählt ist. Sie gilt aber für
 
 | Reihenfolge | Beschreibung |
 |---|---|
-| **M32** | Die Reihenfolge des Morserino-32 (45 Zeichen): `m k r s u a p t l o w i . n j e f 0 y v , g 5 / q 9 z h 3 8 b ? 4 2 7 c 1 d 6 x - = + @ :` |
+| **M32** | Die Reihenfolge des Morserino-32 (51 Schritte): `m k r s u a p t l o w i . n j e f 0 y v , g 5 / q 9 z h 3 8 b ? 4 2 7 c 1 d 6 x - = SK + AS KN KA VE BK @ :` |
 | LCWO | Die Reihenfolge von lcwo.net |
 | CW Academy | Die Reihenfolge der CW Academy (CWops) |
 | LICW | Die Reihenfolge der Long Island CW Club mit **Einstiegspunkt** (siehe unten) |
@@ -2957,7 +2960,18 @@ erkannten Zeichen an. Voreingestellt ist `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p
 die Reihenfolge des YouTube-Morsekurses von „Heinz – just me“
 ([Playlist](https://www.youtube.com/watch?v=WhjCvgC0iHg&list=PLZjVloEmSdLgGGT_exNDoXzmnV-q0zmET)).
 
-Prosigns sind in der App nicht Teil der Koch-Reihenfolgen.
+**Prosigns:** Die Folgen von M32, LCWO, CW Academy und LICW enthalten die
+sechs Prosigns SK, AS, KN, KA, VE und BK genau dort, wo die Firmware sie
+einordnet (meist am Ende). Ein Prosign ist ein eigener Lektionsschritt: Es
+erscheint als Kachel mit zwei Buchstaben, wird als ein Zeichen gespielt
+(nicht als zwei Buchstaben) und kommt in Zufallsgruppen vor. Wörter und
+Abkürzungen enthalten keine Prosigns. In den Spielen (Morsel, Gedächtnis-Kette,
+Labyrinth, Invaders) fehlen sie, weil dort jedes Zeichen in ein Feld passen
+muss. Beim LICW-Karussell gilt die Firmware-Regel: Das Fenster enthält die
+Prosigns, die in seinen 18 bzw. 44 Zeichen liegen (SK und BK); die übrigen
+kommen dort nicht vor. Bei **Eigene** und im **Übungsset** schreibst du ein Prosign in spitzen
+Klammern, z. B. `esn<KA>t<SK>` (erlaubt: AS, KA, KN, SK, VE, BK); es zählt als
+ein Zeichen. Ohne Klammern sind `KA` zwei Buchstaben.
 
 ## Morserino-Begriffe
 

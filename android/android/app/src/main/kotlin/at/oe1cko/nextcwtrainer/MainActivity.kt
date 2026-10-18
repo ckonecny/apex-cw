@@ -360,12 +360,16 @@ class MainActivity : FlutterActivity() {
                     "setKochChars" -> {
                         @Suppress("UNCHECKED_CAST")
                         val chars = call.arguments as? List<String>
-                        if (!chars.isNullOrEmpty()) generator.kochChars = chars
+                        if (!chars.isNullOrEmpty()) generator.kochChars = chars.map {
+                            if (it.length > 1 && !it.startsWith("<")) "<$it>" else it
+                        }
                         result.success(null)
                     }
                     "setPracticeChars" -> {
                         @Suppress("UNCHECKED_CAST")
-                        generator.practiceChars = (call.arguments as? List<String>) ?: emptyList()
+                        generator.practiceChars = ((call.arguments as? List<String>) ?: emptyList()).map {
+                            if (it.length > 1 && !it.startsWith("<")) "<$it>" else it
+                        }
                         result.success(null)
                     }
                     "setBoostLevel" -> {

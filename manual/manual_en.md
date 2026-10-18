@@ -233,9 +233,12 @@ writes them in angle brackets:
 | `<bk>` | Break, over to the other station |
 | `<err>` | Error: eight dits (`........`) |
 
-In Listen (block flow), prosigns from **Group characters** are shown and graded
-as two separate letters: `<ka>` appears as "K A". When copying on the
-on-screen keyboard you type them as two letters as well.
+In Listen (block flow), a prosign from the groups (**Group characters**, Koch
+lesson, practice set) sounds as one character and is shown and graded as one
+character (`<ka>`). When copying on the on-screen keyboard you type it with the
+prosign key (AS, KA, KN, SK, VE, BK; it appears as soon as the character set
+contains prosigns); the two letters K and A count as wrong. The replay "Listen
+to how it sounds" plays it as a prosign too.
 
 # Getting started: learning Morse step by step {#getting-started-guide}
 
@@ -2845,7 +2848,7 @@ trainings and games, though.
 
 | Sequence | Description |
 |---|---|
-| **M32** | The Morserino-32 order (45 characters): `m k r s u a p t l o w i . n j e f 0 y v , g 5 / q 9 z h 3 8 b ? 4 2 7 c 1 d 6 x - = + @ :` |
+| **M32** | The Morserino-32 order (51 steps): `m k r s u a p t l o w i . n j e f 0 y v , g 5 / q 9 z h 3 8 b ? 4 2 7 c 1 d 6 x - = SK + AS KN KA VE BK @ :` |
 | LCWO | The lcwo.net order |
 | CW Academy | The CW Academy (CWops) order |
 | LICW | The Long Island CW Club order with an **entry point** (see below) |
@@ -2861,7 +2864,17 @@ default is `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?`, the order of the YouTube
 Morse course by "Heinz – just me"
 ([playlist](https://www.youtube.com/watch?v=WhjCvgC0iHg&list=PLZjVloEmSdLgGGT_exNDoXzmnV-q0zmET)).
 
-Prosigns are not part of the Koch sequences in the app.
+**Prosigns:** the M32, LCWO, CW Academy and LICW sequences contain the six
+prosigns SK, AS, KN, KA, VE and BK exactly where the firmware puts them
+(mostly at the end). A prosign is a lesson step of its own: it appears as a
+two-letter tile, is played as one character (not as two letters) and turns up
+in random groups. Words and abbreviations contain no prosigns. They are left
+out of the games (Morsel, Memory Chain, Maze, Invaders), where every
+character has to fit into one box. The LICW carousel follows the firmware
+rule: its window holds the prosigns that fall inside its 18 or 44
+characters (SK and BK); the others do not occur there. In **Custom** and in the **practice set** you write a prosign in angle
+brackets, e.g. `esn<KA>t<SK>` (allowed: AS, KA, KN, SK, VE, BK); it counts as
+one character. Without brackets `KA` is two letters.
 
 ## Morserino terms
 

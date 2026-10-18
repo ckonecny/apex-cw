@@ -603,7 +603,7 @@ class Strings {
     'setting_changed': ['Geändert: {name}', 'Changed: {name}'],
     'setting_undo': ['Rückgängig', 'Undo'],
     'settings_saved': ['Gespeichert: {val}', 'Saved: {val}'],
-    'settings_char_hint_default': ['z. B. KMRSUAPTLO …', 'e.g. KMRSUAPTLO …'],
+    'settings_char_hint_default': ['z. B. KMRSUAPTLO <KA> …', 'e.g. KMRSUAPTLO <KA> …'],
 
     // ── Content mode names (CW Generator / Echo Trainer / Koch Trainer) ────
     'mode_random': ['Zufall', 'Random'],
@@ -859,7 +859,7 @@ class Strings {
     'settings_random_chars': ['Zeichen für Gruppen', 'Group characters'],
     'settings_groups_per_block': ['Gruppen pro Block', 'Groups per block'],
     'settings_echo_prompt': ['Vorgabe', 'Prompt'],
-    'settings_example_chars': ['z. B. QXZJ …', 'e.g. QXZJ …'],
+    'settings_example_chars': ['z. B. QXZJ <KA> …', 'e.g. QXZJ <KA> …'],
     'rnd_all': ['Alle', 'All'],
     'rnd_alpha': ['Buchstaben', 'Letters'],
     'rnd_num': ['Ziffern', 'Digits'],

@@ -19,6 +19,11 @@ contains everything from the 1.7.1 maintenance round (firmware audit).
   Koch random characters are drawn by the same rule as in Listen.
 - **Compact start views:** with little room (large font, small display) one
   "Practice focus" row replaces the cards; tapping opens a sheet.
+- **Koch sequences with the prosign tail:** M32, LCWO, CW Academy and LICW now
+  include the six prosigns SK, AS, KN, KA, VE and BK as lessons (51 steps), as on
+  the Morserino. They sound as one prosign, also in tap playback.
+- **Morse tree with the external key:** walk the tree yourself, dit to the left,
+  dah to the right; a pause ends the walk.
 - **Random groups from length 1** to drill single characters.
 - **Character chart** now also lists Ä Ö Ü CH.
 - **Navy & orange theme:** all menu icons orange.
