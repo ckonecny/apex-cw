@@ -2263,3 +2263,6 @@ The line "Key detected – touch keys hidden. Tap for the setting." (#95) is gon
 
 ## Release 1.8.0-beta1 (2026-10-18)
 Minor bump instead of 1.7.1: the Listen/Send unification, external-key work and mix-up practice are features. 1.7.1 (maintenance) is folded in; notes in `docs/release-notes-v1.8.0.md`.
+
+## Morse tree: walk it with the external key (#117, 2026-10-18)
+The tree keeps the keyer running (app bar key button, at the screen's own speed, so holding a paddle repeats and the tempo control applies) and steers by the keyer's symbol stream (`cw_symbols`): `·` goes left, `—` right, a step with no branch restarts at the root. The keyer's character gap (1.5 s fallback timer) ends the walk (the node stays lit, no replay: the sidetone already sounded it). Not `setPaddleChoice` (single events only, no repeat, no sound). Never open a second `receiveBroadcastStream` on `cw_gen_events`: it replaces the first listener and killed the tap highlighting.

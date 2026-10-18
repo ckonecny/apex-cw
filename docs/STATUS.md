@@ -29,6 +29,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
+- `tree_letters.png`, `tree_digits.png` (DE+EN), if they show the intro text: it has a new sentence about walking the tree with an external key (#117).
 - `hear_char_detail.png`, `echo_char_detail.png` (DE+EN): the detail view shows a "Mix-ups" section (Listen, #92) and now trend arrows plus a weekly mix-up curve (#101).
 - New shot (DE+EN): the "Trends" tab of the character statistics, e.g. `hear_trends.png`, `echo_trends.png` (#101); the segmented button above all statistics shots now has three segments (`hear_stats.png`, `echo_stats.png`, `hear_progress*.png`, `echo_progress.png`).
 - `hear_start.png`, `hear_result.png`, `echo_result*.png` (DE+EN): a card "Recurring mix-ups: practice these?" appears next to the weak characters once pairs recur (#102).

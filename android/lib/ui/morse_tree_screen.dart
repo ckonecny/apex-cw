@@ -31,8 +31,8 @@ class MorseTreeScreen extends StatefulWidget {
 
 class _MorseTreeScreenState extends State<MorseTreeScreen> {
   static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
   static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
 
   StreamSubscription? _sub;
   int _wpm = 20;
@@ -44,6 +44,12 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
   final _scroll = ScrollController();
 
   String _path = '';       // code of the character last tapped
+  // External key (#117): the node reached so far; a pause plays it and starts
+  // over at the root.
+  String _keyPath = '';
+  Timer? _keyIdle;
+  StreamSubscription? _paddleSub;
+  static const _keyPause = Duration(milliseconds: 1500);
   int _lit = 0;            // elements 0.._lit-1 have sounded
   bool _sounding = false;
 
@@ -69,9 +75,17 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
     _softness = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
     if (!mounted) return;
     // Rule 2: the shared engine keeps whatever the last screen set.
-    await _keyerChannel.invokeMethod('stop').catchError((_) {});
     await _pushConfig();
     _sub = cwGenEvents.listen(_onGenEvent);
+    // The keyer (started by the app bar key button, at this screen's speed)
+    // sounds the key; its symbols steer the walk. A character gap ends the walk.
+    _paddleSub = _symbolStream.receiveBroadcastStream().listen((sym) {
+      if (sym == '·' || sym == '—') {
+        _onKey(sym == '·' ? '.' : '-');
+      } else if (sym is String && sym.trim().isEmpty) {
+        _finishKeyed();
+      }
+    });
     setState(() => _ready = true);
   }
 
@@ -87,6 +101,8 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
   void dispose() {
     InterferenceProfile.releaseAmbient(this);
     _sub?.cancel();
+    _paddleSub?.cancel();
+    _keyIdle?.cancel();
     _scroll.dispose();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     _genChannel.invokeMethod('stopOne');
@@ -105,6 +121,24 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
       case 'elementOff':
         setState(() => _sounding = false);
     }
+  }
+
+  /// A dit goes left, a dah right; a step with no branch starts over at the
+  /// root. After a pause the character reached is played.
+  void _onKey(String el) {
+    if (!_ready) return;
+    var next = _keyPath + el;
+    if (!_exists(next, _deep ? 5 : 4)) next = el;
+    _keyPath = next;
+    setState(() { _path = next; _lit = next.length; _sounding = false; });
+    _keyIdle?.cancel();
+    _keyIdle = Timer(_keyPause, _finishKeyed);
+  }
+
+  void _finishKeyed() {
+    // The key's own sidetone already sounded it: no replay, the node stays lit.
+    _keyIdle?.cancel();
+    _keyPath = '';
   }
 
   Future<void> _play(String pattern) async {
@@ -237,7 +271,7 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
             icon: Icon(Icons.arrow_back, color: c.textMuted),
             onPressed: () => Navigator.pop(context),
           ),
-          actions: const [KeyerStatusButton(sound: true), InterferenceButton()],
+          actions: [KeyerStatusButton(sound: true, wpm: _wpm), InterferenceButton()],
         ),
         body: landscape
             // Landscape: controls in one slim row, the tree gets the rest.

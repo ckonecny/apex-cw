@@ -2522,6 +2522,13 @@ Während das Zeichen klingt, leuchtet der Weg von oben Element für Element auf:
 Punkt oder Strich ist genau dann hervorgehoben, wenn du ihn hörst. Unter dem
 Baum steht der Code noch einmal als Punkte und Striche.
 
+**Mit einer externen Taste** gehst du den Baum selbst: Ein Punkt führt einen
+Schritt nach links, ein Strich einen Schritt nach rechts, und der erreichte
+Knoten leuchtet auf. Machst du eine kurze Pause, bleibt der erreichte Knoten
+markiert, und du beginnst wieder oben. Auch ein Schritt ohne Ast beginnt von vorn. Die
+Taste muss unter Einstellungen → Tastung angelernt sein; die Touch-Tasten
+spielen hier keine Rolle.
+
 **Hinweis zu CH (– – – –):** Das Zeichen ganz rechts unten (vier Striche) ist
 ein historisches nationales Zusatzzeichen, früher im deutschen und
 skandinavischen Sprachraum üblich. Im heutigen internationalen Funkverkehr ist
