@@ -10,14 +10,15 @@ import '../../util/paddle_layout.dart';
 import '../settings_screen.dart';
 
 // Stands in for the touch keys while a key adapter is detected and hiding is
-// switched on (#95). The Bluetooth warning stays: it matters for real keys too.
+// switched on (#95); the key symbol in the app bar tells the rest. The
+// Bluetooth warning stays: it matters for real keys too.
 class _HiddenPaddles extends StatelessWidget {
   const _HiddenPaddles();
 
   @override
   Widget build(BuildContext context) => const Column(
       mainAxisSize: MainAxisSize.min,
-      children: [BluetoothLatencyHint(), KeyAdapterHiddenHint()]);
+      children: [BluetoothLatencyHint()]);
 }
 
 class IambicPaddles extends StatelessWidget {
@@ -138,46 +139,6 @@ class BluetoothLatencyHint extends StatelessWidget {
             )),
             InkWell(
               onTap: () => BluetoothHint.dismissed.value = true,
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Icon(Icons.close, size: 14, color: c.textFaint),
-              ),
-            ),
-          ]),
-        );
-      },
-    );
-  }
-}
-
-// One discreet line in place of the hidden touch keys (#95). The X closes it
-// until the next time an adapter is detected; tapping it opens the setting.
-class KeyAdapterHiddenHint extends StatelessWidget {
-  const KeyAdapterHiddenHint({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    return ValueListenableBuilder<bool>(
-      valueListenable: KeyAdapterState.dismissed,
-      builder: (context, dismissed, _) {
-        if (dismissed) return const SizedBox.shrink();
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
-          child: Row(children: [
-            Expanded(child: InkWell(
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => const SettingsScreen(scrollToKeyer: true))),
-              child: Row(children: [
-                Icon(Icons.keyboard_hide_outlined, size: 14, color: c.info),
-                const SizedBox(width: 6),
-                Expanded(child: Text(Strings.t('key_adapter_hidden_hint'),
-                    style: TextStyle(fontSize: 11, color: c.textMuted))),
-                Icon(Icons.settings, size: 14, color: c.textFaint),
-              ]),
-            )),
-            InkWell(
-              onTap: () => KeyAdapterState.dismissed.value = true,
               child: Padding(
                 padding: const EdgeInsets.all(4),
                 child: Icon(Icons.close, size: 14, color: c.textFaint),

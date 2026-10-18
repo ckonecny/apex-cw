@@ -9,7 +9,6 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     KeyAdapterState.detected.value = false;
     KeyAdapterState.hideEnabled.value = false;
-    KeyAdapterState.dismissed.value = false;
   });
 
   Widget app(Widget child) => MaterialApp(home: Scaffold(body: child));
@@ -26,38 +25,18 @@ void main() {
     expect(find.text('DAH  —'), findsOneWidget);
   });
 
-  testWidgets('touch keys are replaced by the hint when detected and enabled',
+  testWidgets('touch keys are hidden when detected and enabled, and come back unplugged',
       (t) async {
     await t.pumpWidget(app(paddles()));
     await KeyAdapterState.setHideEnabled(true);
     KeyAdapterState.setDetected(true);
     await t.pump();
     expect(find.text('DIT  ·'), findsNothing);
-    expect(find.byType(KeyAdapterHiddenHint), findsOneWidget);
-    expect(find.byIcon(Icons.close), findsOneWidget);
+    expect(find.text('DAH  —'), findsNothing);
 
-    // Unplugged: the touch keys come back by themselves.
     KeyAdapterState.setDetected(false);
     await t.pump();
     expect(find.text('DIT  ·'), findsOneWidget);
-    expect(find.byIcon(Icons.close), findsNothing);
-  });
-
-  testWidgets('X closes the hint until the next detection', (t) async {
-    await t.pumpWidget(app(paddles()));
-    await KeyAdapterState.setHideEnabled(true);
-    KeyAdapterState.setDetected(true);
-    await t.pump();
-
-    await t.tap(find.byIcon(Icons.close));
-    await t.pump();
-    expect(find.byIcon(Icons.close), findsNothing);
-    expect(find.text('DIT  ·'), findsNothing); // keys stay hidden, only the hint is gone
-
-    KeyAdapterState.setDetected(false);
-    KeyAdapterState.setDetected(true);
-    await t.pump();
-    expect(find.byIcon(Icons.close), findsOneWidget);
   });
 
   testWidgets('straight key is hidden the same way', (t) async {
@@ -65,7 +44,7 @@ void main() {
     await KeyAdapterState.setHideEnabled(true);
     KeyAdapterState.setDetected(true);
     await t.pump();
-    expect(find.byType(KeyAdapterHiddenHint), findsOneWidget);
+    expect(find.byType(PaddleButton), findsNothing);
   });
 
   test('the setting is persisted', () async {

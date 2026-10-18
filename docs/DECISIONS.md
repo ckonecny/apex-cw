@@ -2254,3 +2254,6 @@ Send's Koch · Random used a Dart-side weighted draw from the per-character weig
 - The earlier discreet note "External key detected" on Send's start view is gone; the symbol replaces it.
 - Not done: Morse tree navigation by key (issue #117, later).
 Send's running view, step two (user, 2026-10-18): "Get ready" alone, large and amber, like Listen (the dots are hidden then). While the prompt plays the line below the word shows the Listen symbol with "playing …"; while the answer is keyed it shows a small straight key (`StraightKeyIcon`) with "Sending …". The pill above the word is only for attempt / right / wrong.
+
+## Key adapter: no notice in place of the hidden touch keys (2026-10-18)
+The line "Key detected – touch keys hidden. Tap for the setting." (#95) is gone: with the keyer symbol in the app bar (#116) it only nagged. The touch keys still hide with the setting on and an adapter detected; the Bluetooth warning stays. `KeyAdapterState.dismissed` and the string are removed.
