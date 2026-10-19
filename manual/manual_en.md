@@ -2835,7 +2835,7 @@ sign prefixes, QSO texts) from the Morserino-32 firmware by Willi Kraml,
 OE1WKL, which is also under the GPL-3.0. The source code is on
 [GitHub](https://github.com/ckonecny/apex-cw). The licence page also
 shows the MIT License of Zork I–III, the SIL Open Font License of the fonts
-Anonymous Pro and DM Sans, the zlib licence of the SoLoud audio engine, the CC-BY-SA-4.0 licence of
+Anonymous Pro and DM Sans, the CC-BY-SA-4.0 licence of
 the word lists (derived from the FrequencyWords project),
 and the licences of the Flutter packages the app uses. Zork is a trademark of its owners; the app is not affiliated with
 them, nor with Infocom, Activision or Microsoft.
