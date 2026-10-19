@@ -44,7 +44,8 @@ app is open) report read-only, without committing or merging anything:
   and a merge order, Dependabot/CodeQL/secret alerts, CI state of `main`, a
   quick docs check, whether a release or beta is due.
 - `apex-cw-quarterly-tech-debt`, 2nd of Jan/Apr/Jul/Oct: tech-debt scan,
-  per-screen engine config (rule 2), licences, docs, all test suites.
+  per-screen engine config (rule 2), licences, unused dependencies, docs, all
+  test suites.
 Alerts also arrive by e-mail (GitHub notification settings). Build
 tooling (Gradle, Android Gradle Plugin) updates are merged one group at a time
 and tried on the test phone first.
