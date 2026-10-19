@@ -2932,8 +2932,7 @@ Abkürzungen, Rufzeichen-Präfixe, QSO-Texte) aus der Morserino-32-Firmware von
 Willi Kraml, OE1WKL, die ebenfalls unter der GPL-3.0 steht. Den Quellcode
 findest du auf [GitHub](https://github.com/ckonecny/apex-cw). Die
 Lizenzseite zeigt außerdem die MIT-Lizenz von Zork I–III, die SIL Open Font
-License der Schriften Anonymous Pro und DM Sans, die zlib-Lizenz der
-Audio-Engine SoLoud, die CC-BY-SA-4.0-Lizenz der Wortlisten (abgeleitet aus dem Projekt FrequencyWords) und die Lizenzen der verwendeten Flutter-Pakete. Zork ist eine Marke der jeweiligen Rechteinhaber;
+License der Schriften Anonymous Pro und DM Sans, die CC-BY-SA-4.0-Lizenz der Wortlisten (abgeleitet aus dem Projekt FrequencyWords) und die Lizenzen der verwendeten Flutter-Pakete. Zork ist eine Marke der jeweiligen Rechteinhaber;
 die App ist mit ihnen, Infocom, Activision oder Microsoft nicht verbunden.
 
 ## Koch-Reihenfolge {#koch-reihenfolge}

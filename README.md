@@ -296,8 +296,7 @@ Bundled third-party material keeps its own licence: Zork I–III story files
 Sans (SIL Open Font License 1.1, `android/assets/fonts/OFL-*.txt`), the English
 and German word lists (derived from
 [FrequencyWords](https://github.com/hermitdave/FrequencyWords), CC-BY-SA-4.0,
-`android/assets/words/`), the
-SoLoud audio engine inside `flutter_soloud` (zlib) and the Flutter packages
+`android/assets/words/`) and the Flutter packages
 (MIT/BSD/Apache). All licence texts are shown in the app
 under Settings → Info → Licences.
 

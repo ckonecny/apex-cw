@@ -183,9 +183,11 @@ licence, keep all licence references current): CLAUDE.md rule 11 plus
   (empty today).
 Text heuristics, so the test is a tripwire, not a legal review: a pass
 doesn't replace reading the licence when adding something. Bundled
-sub-libraries a package's LICENSE doesn't mention are checked by hand: SoLoud
-inside flutter_soloud (zlib; decoders public domain/MIT-0) is on the licence
-page as its own entry.
+sub-libraries a package's LICENSE doesn't mention are checked by hand and get
+their own entry on the licence page (none today).
+
+## flutter_soloud removed (2026-10-19)
+The package was in `pubspec.yaml` but imported nowhere (the sound comes from the native engine), yet it built its native audio library into the app and dependabot proposed a major bump (3.5.4 → 5.2.1: Xiph and AAC decoders, build hooks). Removed with its licence entry (README, licence page, manual DE+EN). Same for `provider`, `cupertino_icons` and `audio_session` (declared, never imported; the latter only registered an Android plugin that nothing called). Rule: no dependency without a use; the ones in use are kept current.
 
 ## Default custom Koch sequence: "Heinz – just me" course order
 The Custom Koch Sequence default `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?` is
