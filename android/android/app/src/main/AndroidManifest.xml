@@ -4,6 +4,10 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- Own texts keep playing with the screen off (issues #21, #22): media foreground service + CPU wake lock while a text plays. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <!-- Optional "do not disturb while practising" (issue #55): only used once the user grants DND access. -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
     <application
@@ -39,6 +43,9 @@
                 <data android:mimeType="text/plain"/>
             </intent-filter>
         </activity>
+        <service android:name=".OwnTextPlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"/>
         <receiver android:name=".ReminderReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

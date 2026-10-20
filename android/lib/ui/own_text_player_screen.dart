@@ -22,6 +22,7 @@ import '../owntexts/text_passage.dart';
 import '../theme/app_colors.dart';
 import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
+import '../util/own_text_playback.dart';
 import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart' show cwGenEvents;
@@ -101,9 +102,12 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
   // Playing counts as practice for the practice clock even without touches;
   // each start also keeps it alive across the short gaps between words.
   set _playing(bool v) {
+    final changed = _playingNow != v;
     _playingNow = v;
     PracticeClock.instance.audioPlaying = v;
     if (v) PracticeClock.instance.touch();
+    // Foreground service: keeps the text playing with the screen off (#21).
+    if (changed) OwnTextPlayback.update(title: widget.info.title, playing: v);
   }
   bool _revealed = false;
   final Set<int> _heard = {};
@@ -113,6 +117,10 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
   int? _rangeEnd;
   int _sinceSave = 0;
   StreamSubscription? _genSub;
+  StreamSubscription? _mediaSub;
+  /// Counts starts and pauses; a start waiting in its lead-in gives up when it changes.
+  int _playGen = 0;
+  bool _mediaLeadIn = false;
   final _scroll = ScrollController();
   final _scrollKey = GlobalKey();
 
@@ -121,6 +129,8 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
     super.initState();
     KeepScreenOn.enable();
     PracticeClock.instance.enter('owntext');
+    _mediaSub = OwnTextPlayback.commands.listen(_onMediaCommand);
+    OwnTextPlayback.ensureNotificationPermission();
     _init();
   }
 
@@ -130,6 +140,8 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
     KeepScreenOn.disable();
     PracticeClock.instance.leave();
     _genSub?.cancel();
+    _mediaSub?.cancel();
+    OwnTextPlayback.stop();
     if (_playing) _genChannel.invokeMethod('stopOne');
     _save();
     _scroll.dispose();
@@ -149,6 +161,9 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
       _genSub = cwGenEvents.listen(_onGenEvent);
       final saved = widget.info.pos;
       if (mounted) setState(() => _p = p);
+      // Registers the media session at once, so the headset buttons reach
+      // this player before the first start from the screen (#22).
+      OwnTextPlayback.update(title: widget.info.title, playing: false);
       if (saved > 0 && saved < p.words.length && p.hasAudio) {
         _pos = p.playableFrom(saved);
         _heard.addAll(List.generate(_pos, (i) => i));
@@ -239,7 +254,16 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
     final p = _p;
     if (p == null || !p.hasAudio) return;
     final start = p.playableFrom(from ?? _pos);
+    final gen = ++_playGen;
+    final leadIn = _mediaLeadIn;
+    _mediaLeadIn = false;
     await _genChannel.invokeMethod('stopOne');
+    if (leadIn) {
+      // A Bluetooth headset often plays its own click on a button press and
+      // would swallow the first character; start a moment later.
+      await Future.delayed(const Duration(milliseconds: 1000));
+      if (gen != _playGen || !mounted) return;
+    }
     final (text, order) = p.audioFrom(start, to);
     if (order.isEmpty) {
       InterferenceProfile.releaseAmbient(this);
@@ -293,10 +317,29 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
     }
   }
 
+  /// Lock screen, notification and headset buttons (#22): previous / next
+  /// jump by sentence.
+  void _onMediaCommand(String cmd) {
+    if (_p == null || !mounted) return;
+    if (cmd != 'pause') _mediaLeadIn = true;
+    switch (cmd) {
+      case 'play':
+        if (!_playing) _play();
+      case 'pause':
+        if (_playing) _pause();
+      case 'next':
+        _sentenceForward();
+      case 'prev':
+        _sentenceBack();
+    }
+    _mediaLeadIn = false; // set only for the start this command triggered
+  }
+
   void _togglePlay() => _playing ? _pause() : _play();
 
   /// Stops and goes on from the beginning of the word being played.
   void _pause() {
+    _playGen++;
     InterferenceProfile.releaseAmbient(this);
     final w = _currentWord;
     setState(() {

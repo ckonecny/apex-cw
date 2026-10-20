@@ -1880,6 +1880,16 @@ Speed, spacing and display apply to all texts. Pitch and tone softness come
 from the general [settings](#settings). The display stays on while you are in
 a text.
 
+**Keep listening in the background:** A text that is playing goes on when you
+turn the screen off or switch to another app. While it plays, Android shows a
+notification with **Previous sentence**, **Play/Pause** and **Next sentence**; the
+same buttons appear on the lock screen and on Bluetooth headphones
+(previous/next jump by sentence). The first time, Android asks for permission to
+show notifications – without it the text still plays on, but the notification has
+no buttons. A phone call, another audio app or unplugging the headphones pauses
+the text. Leaving the text with "Back" ends playback. This applies to Own texts
+only, not to the other exercises.
+
 ::: {.shots .one}
 ![⚙ sheet of Own texts](img/en/own_sheet.png)
 :::

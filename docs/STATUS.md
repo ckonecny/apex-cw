@@ -29,6 +29,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
+- Own texts text (DE+EN) now describes background playback (#21/#22); no screenshot changes. Test by hand on the phone (screen off, lock screen, Bluetooth buttons); not yet done.
 - `hear_progress2.png`, `echo_progress.png` (DE+EN): heatmap character labels are now coloured by kind (letter/digit/other).
 - `tree_letters.png`, `tree_digits.png` (DE+EN), if they show the intro text: it has a new sentence about walking the tree with an external key (#117).
 - `hear_char_detail.png`, `echo_char_detail.png` (DE+EN): the detail view shows a "Mix-ups" section (Listen, #92) and now trend arrows plus a weekly mix-up curve (#101).

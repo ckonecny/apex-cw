@@ -130,6 +130,8 @@ class MainActivity : FlutterActivity() {
         private const val MIC_PCM_CHANNEL  = "at.oe1cko.nextcwtrainer/cw_mic_pcm"
         private const val REQ_MIC          = 4711
         private const val REQ_NOTIF        = 4712
+        private const val OWN_PLAYBACK_CHANNEL = "at.oe1cko.nextcwtrainer/own_playback"
+        private const val OWN_PLAYBACK_EV = "at.oe1cko.nextcwtrainer/own_playback_events"
         private const val REMINDER_CHANNEL = "at.oe1cko.nextcwtrainer/reminder"
         private const val SHARE_CHANNEL    = "at.oe1cko.nextcwtrainer/share"
     }
@@ -502,6 +504,37 @@ class MainActivity : FlutterActivity() {
                 }
                 override fun onCancel(args: Any?) { micInput.onPcm = null }
             })
+        // Own texts in the background (issues #21, #22): the Dart player pushes
+        // its state to the foreground service; lock-screen, notification and
+        // headset buttons come back as "play" / "pause" / "next" / "prev".
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, OWN_PLAYBACK_EV)
+            .setStreamHandler(object : EventChannel.StreamHandler {
+                override fun onListen(args: Any?, events: EventChannel.EventSink) {
+                    OwnTextPlayback.onCommand = { cmd -> runOnUiThread { events.success(cmd) } }
+                }
+                override fun onCancel(args: Any?) { OwnTextPlayback.onCommand = null }
+            })
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, OWN_PLAYBACK_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "update" -> {
+                        val playing = call.argument<Boolean>("playing") ?: false
+                        val i = Intent(this, OwnTextPlaybackService::class.java)
+                            .setAction(OwnTextPlaybackService.ACTION_UPDATE)
+                        for (k in listOf("title", "channel", "play", "pause", "next", "prev")) {
+                            i.putExtra(k, call.argument<String>(k) ?: "")
+                        }
+                        i.putExtra("playing", playing)
+                        if (playing) startForegroundService(i) else startService(i)
+                        result.success(null)
+                    }
+                    "stop" -> {
+                        stopService(Intent(this, OwnTextPlaybackService::class.java))
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, REMINDER_CHANNEL)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
@@ -731,6 +764,8 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
+        OwnTextPlayback.onCommand = null
+        stopService(Intent(this, OwnTextPlaybackService::class.java))
         focusMode.restore()
         keyer.stop()
         generator.stop()

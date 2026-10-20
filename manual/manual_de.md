@@ -1938,6 +1938,17 @@ Tempo, Abstände und Anzeige gelten für alle Texte. Tonhöhe und Klangweichheit
 kommen aus den allgemeinen [Einstellungen](#einstellungen). Das Display bleibt
 an, solange du in einem Text bist.
 
+**Im Hintergrund weiterhören:** Ein laufender Text spielt weiter, wenn du den
+Bildschirm ausschaltest oder in eine andere App wechselst. Solange er spielt,
+zeigt Android eine Benachrichtigung mit den Tasten **Vorheriger Satz**,
+**Abspielen/Pause** und **Nächster Satz**; dieselben Tasten gibt es auf dem
+Sperrbildschirm und an Bluetooth-Kopfhörern (vor/zurück springen satzweise).
+Beim ersten Mal fragt Android nach der Erlaubnis für Benachrichtigungen – ohne sie
+läuft der Text trotzdem weiter, aber ohne Tasten in der Benachrichtigung. Ein
+Anruf, eine andere Audio-App oder das Abziehen der Kopfhörer pausiert den Text.
+Verlässt du den Text mit „Zurück“, endet die Wiedergabe. Das gilt nur für
+Eigene Texte, nicht für die anderen Übungen.
+
 ::: {.shots .one}
 ![⚙-Blatt der Eigenen Texte](img/de/own_sheet.png)
 :::
