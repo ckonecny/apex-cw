@@ -24,6 +24,9 @@ contains everything from the 1.7.1 maintenance round (firmware audit).
   the Morserino. They sound as one prosign, also in tap playback.
 - **Morse tree with the external key:** walk the tree yourself, dit to the left,
   dah to the right; a pause ends the walk.
+- **Own texts in the background:** a playing text goes on with the screen off or
+  in another app, with notification, lock-screen and Bluetooth headset controls
+  (previous/next = sentence).
 - **Random groups from length 1** to drill single characters.
 - **Character chart** now also lists Ä Ö Ü CH.
 - **Navy & orange theme:** all menu icons orange.

@@ -378,7 +378,9 @@ Danach geht es Richtung Sätze und Texte:
   sie aus, sobald du die meisten Buchstaben und Ziffern kennst.
 - **[Eigene Texte](#eigene-texte)** (unter **Freie Modi**): Kopiere einen Text,
   der dich interessiert, und höre ihn als Morse. Mit abnehmenden Pausen wird
-  das zu einer guten Übung für den Alltag.
+  das zu einer guten Übung für den Alltag. Der Text läuft auch bei
+  ausgeschaltetem Bildschirm weiter, und du steuerst ihn vom Sperrbildschirm oder
+  per Bluetooth-Kopfhörer.
 - Mit **Alle Zeichen** und **Rufzeichen** übst du, wie Rufzeichen klingen. Das
   ist besonders für Funkamateure nützlich.
 
