@@ -2800,6 +2800,7 @@ wenn du beim Scrollen versehentlich ein Bedienelement berührt hast. Eine neuere
 | Blaulichtfilter | Warmer Farbfilter über der ganzen App (hell und dunkel), schont abends die Augen | **Aus** / An |
 | Filterstärke | Wie stark das Blau gedämpft wird (nur bei aktivem Filter sichtbar) | 10–100 % (**50 %**) |
 | Statusleiste ausblenden | Blendet die Android-Statusleiste (Uhr, Akku) aus, damit sie nicht gegen den Blaulichtfilter absticht; ein Wisch von oben zeigt sie kurz | **Aus** / An |
+| Platz oben nutzen | Nur sichtbar, wenn die Statusleiste ausgeblendet ist. Die Titelzeile rückt in den freigewordenen Streifen neben die Kamera-Aussparung und wird schlanker (kleinere Schrift und Symbole, Titel unabhängig von der Systemschrift, ggf. verkürzt, damit sie nicht hinter der Kamera enden), der Inhalt darunter bekommt mehr Platz. Bei einer breiten Notch, einem Loch in der Ecke oder zu wenig Platz neben der Kamera (sehr schmale Handys) bleibt das normale Layout | **Aus** / An |
 | Sprache | Sprache der App | **Deutsch** / English |
 
 ## Allgemein

@@ -402,7 +402,7 @@ class _PileupScreenState extends State<PileupScreen> with WidgetsBindingObserver
           backgroundColor: c.background,
           appBar: AppBar(
             backgroundColor: c.background,
-            title: appBarTitle(c, 'Fight the Pileup'),
+            title: appBarTitle(c, 'Fight the Pileup', compact: 'Pileup'),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => Navigator.maybePop(context),

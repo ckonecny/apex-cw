@@ -2705,6 +2705,7 @@ change.
 | Blue light filter | Warm colour filter over the whole app (light and dark), easier on the eyes in the evening | **Off** / On |
 | Filter strength | How strongly blue is reduced (only shown while the filter is on) | 10–100 % (**50 %**) |
 | Hide status bar | Hides the Android status bar (clock, battery) so it does not clash with the blue light filter; swiping down from the top shows it briefly | **Off** / On |
+| Use the space at the top | Only shown while the status bar is hidden. The title bar moves up into the freed strip beside the camera cut-out and gets slimmer (smaller text and icons, title independent of the system font size and shortened if needed so it does not end up behind the camera), so the content below gets more room. With a wide notch, a hole in a corner or too little room beside the camera (very narrow phones) the normal layout stays | **Off** / On |
 | Language | App language | **Deutsch** / English |
 
 ## General

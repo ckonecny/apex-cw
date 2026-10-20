@@ -3,6 +3,7 @@ import 'widgets/interference_button.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../theme/theme_controller.dart';
 import 'widgets/setting_rows.dart';
 import 'widgets/tempo_spacing_section.dart';
 import 'package:flutter/services.dart';
@@ -1124,12 +1125,18 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           // icons are hidden anyway) so the touch paddles can be the last
           // element at the bottom, as in Keyer, WiFi Trx, QSO bot and games.
           if (_state != _State.idle)
-            TextButton.icon(
-              onPressed: _stopSession,
-              icon: Icon(Icons.stop_rounded, color: c.warning),
-              label: Text(Strings.t('stop').toUpperCase(),
-                  style: TextStyle(color: c.warning, fontWeight: FontWeight.bold)),
-            ),
+            // Beside a camera cut-out the word does not fit: symbol only.
+            CompactTop.of(context).applied
+                ? IconButton(
+                    onPressed: _stopSession,
+                    tooltip: Strings.t('stop'),
+                    icon: Icon(Icons.stop_rounded, color: c.warning, size: 26))
+                : TextButton.icon(
+                    onPressed: _stopSession,
+                    icon: Icon(Icons.stop_rounded, color: c.warning),
+                    label: Text(Strings.t('stop').toUpperCase(),
+                        style: TextStyle(color: c.warning, fontWeight: FontWeight.bold)),
+                  ),
           if (_state == _State.idle)
             IconButton(
               icon: Icon(Icons.bar_chart_outlined, color: c.textMuted),

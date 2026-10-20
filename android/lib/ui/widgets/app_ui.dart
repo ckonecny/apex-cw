@@ -2,6 +2,7 @@
 // DM Sans titles. Screens use these instead of restyling locally.
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/theme_controller.dart';
 
 const _titleVariations = [FontVariation('wght', 600)];
 
@@ -26,10 +27,66 @@ class NoTextScale extends StatelessWidget {
   Widget build(BuildContext context) => MediaQuery.withNoTextScaling(child: child);
 }
 
-/// App bar title in the modern title font.
-Widget appBarTitle(AppColors c, String text) => Text(text,
-    style: TextStyle(fontFamily: 'DMSans', fontSize: 20,
-        color: c.textPrimary, fontVariations: _titleVariations));
+/// App bar title in the modern title font. In the compact top area
+/// ([CompactTop]) the title ignores the system font size, uses [compact] (a
+/// short variant) when given, and shrinks / ellipsizes so it ends before the
+/// camera cut-out instead of running behind it.
+Widget appBarTitle(AppColors c, String text, {String? compact}) =>
+    _AppBarTitle(text: text, compact: compact, color: c.textPrimary);
+
+class _AppBarTitle extends StatefulWidget {
+  final String text;
+  final String? compact;
+  final Color color;
+  const _AppBarTitle({required this.text, required this.compact, required this.color});
+
+  @override
+  State<_AppBarTitle> createState() => _AppBarTitleState();
+}
+
+class _AppBarTitleState extends State<_AppBarTitle> {
+  static const _maxSize = 17.0, _minSize = 13.0, _gap = 8.0;
+  // Left edge of the title on screen; measured after the first frame
+  // (back arrow present or not), 52 = compact back arrow + spacing.
+  double _left = 52;
+
+  TextStyle _style(double size) => TextStyle(fontFamily: 'DMSans',
+      fontSize: size, color: widget.color, fontVariations: _titleVariations);
+
+  @override
+  Widget build(BuildContext context) {
+    final info = CompactTop.of(context);
+    if (!info.applied) {
+      return Text(widget.text,
+          maxLines: 1, overflow: TextOverflow.ellipsis, style: _style(20));
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final box = context.findRenderObject();
+      if (!mounted || box is! RenderBox || !box.attached) return;
+      final x = box.localToGlobal(Offset.zero).dx;
+      if ((x - _left).abs() > 0.5) setState(() => _left = x);
+    });
+    final text = widget.compact ?? widget.text;
+    final hole = info.holeLeft;
+    var size = _maxSize;
+    double? maxW;
+    if (hole != null && hole > _left) {
+      maxW = hole - _gap - _left;
+      final tp = TextPainter(
+          text: TextSpan(text: text, style: _style(_maxSize)),
+          textDirection: TextDirection.ltr,
+          textScaler: TextScaler.noScaling)..layout();
+      final w = tp.width;
+      tp.dispose();
+      if (w > maxW) size = (_maxSize * maxW / w).clamp(_minSize, _maxSize);
+    }
+    final t = Text(text,
+        maxLines: 1, overflow: TextOverflow.ellipsis,
+        textScaler: TextScaler.noScaling, style: _style(size));
+    return maxW == null ? t : ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxW), child: t);
+  }
+}
 
 /// Flat surface card, no border.
 class AppCard extends StatelessWidget {

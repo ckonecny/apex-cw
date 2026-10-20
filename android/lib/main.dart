@@ -25,6 +25,7 @@ void main() async {
   await ThemeController.load();
   await BlueLightFilter.load();
   await StatusBarMode.load();
+  await CompactTop.load();
   await Strings.load();
   await PaddleLayout.load();
   registerAppLicenses();
@@ -109,7 +110,7 @@ class NextCwTrainerApp extends StatelessWidget {
                 top: false,
                 child: MediaQuery.withClampedTextScaling(
                   maxScaleFactor: kMaxTextScale,
-                  child: child!,
+                  child: CompactTopArea(child: child!),
                 ),
               ),
             );

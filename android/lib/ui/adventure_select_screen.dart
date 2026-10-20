@@ -67,7 +67,7 @@ class _AdventureSelectScreenState extends State<AdventureSelectScreen> {
         backgroundColor: c.background,
         appBar: AppBar(
           backgroundColor: c.background,
-          title: appBarTitle(c, Strings.t('adv_title')),
+          title: appBarTitle(c, Strings.t('adv_title'), compact: Strings.t('adv_title_short')),
           leading: IconButton(icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => Navigator.pop(context)),
         ),

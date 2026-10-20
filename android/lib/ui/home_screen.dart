@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'widgets/keyer_status_button.dart';
 import 'widgets/app_ui.dart';
+import '../theme/theme_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
 import '../content/charset_content.dart';
@@ -89,10 +90,13 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: c.background,
         appBar: AppBar(
           backgroundColor: c.background,
-          title: Text('APEX CW',
-              style: TextStyle(fontFamily: 'DMSans', fontSize: 22,
+          title: Padding(
+              // No back arrow here: keep clear of the rounded display corner.
+              padding: EdgeInsets.only(left: CompactTop.of(context).applied ? 12 : 0),
+              child: Text('APEX CW',
+              style: TextStyle(fontFamily: 'DMSans', fontSize: CompactTop.of(context).applied ? 18 : 22,
                   letterSpacing: 0.3, color: c.textPrimary,
-                  fontVariations: const [FontVariation('wght', 600)])),
+                  fontVariations: const [FontVariation('wght', 600)]))),
           actions: [
             const KeyerStatusButton(),
             IconButton(
