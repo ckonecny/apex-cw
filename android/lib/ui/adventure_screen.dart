@@ -12,6 +12,7 @@ import 'dart:math' show max;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../theme/theme_controller.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -761,6 +762,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
+    final tight = !CompactTop.of(context).fits(5);
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
       builder: (context, _, _) => Scaffold(
@@ -775,25 +777,26 @@ class _AdventureScreenState extends State<AdventureScreen> {
           actions: [
             const KeyerStatusButton(sound: false),
             const InterferenceButton(),
-            IconButton(
-                tooltip: Strings.t('adv_commands'),
-                icon: Icon(Icons.help_outline, color: c.textMuted),
-                onPressed: () => showAdventureCommandsSheet(context, widget.game.part)),
-            if (_map != null)
+            // Beside a camera cut-out there may be room for four buttons
+            // only: help and map then move into the menu.
+            if (!tight)
+              IconButton(
+                  tooltip: Strings.t('adv_commands'),
+                  icon: Icon(Icons.help_outline, color: c.textMuted),
+                  onPressed: () => showAdventureCommandsSheet(context, widget.game.part)),
+            if (!tight && _map != null)
               IconButton(
                   tooltip: Strings.t('adv_map'),
                   icon: Icon(Icons.map_outlined, color: c.textMuted),
                   onPressed: _openMap),
-            IconButton(
-                tooltip: Strings.t('adv_tempo'),
-                icon: Icon(Icons.speed, color: c.textMuted),
-                onPressed: _ready ? _openTempo : null),
             PopupMenuButton<String>(
               icon: Icon(Icons.more_vert, color: c.textMuted),
               color: c.surface,
               enabled: _ready,
               onSelected: (v) {
                 switch (v) {
+                  case 'help': showAdventureCommandsSheet(context, widget.game.part);
+                  case 'map': _openMap();
                   case 'save': _saveNow();
                   case 'load': _openSaves();
                   case 'undo': _undoMove();
@@ -802,6 +805,12 @@ class _AdventureScreenState extends State<AdventureScreen> {
                 }
               },
               itemBuilder: (_) => [
+                if (tight) ...[
+                  _menuItem(c, 'help', Icons.help_outline, Strings.t('adv_commands')),
+                  if (_map != null)
+                    _menuItem(c, 'map', Icons.map_outlined, Strings.t('adv_map')),
+                  const PopupMenuDivider(),
+                ],
                 _menuItem(c, 'save', Icons.save_outlined, Strings.t('adv_save')),
                 _menuItem(c, 'load', Icons.folder_open_outlined, Strings.t('adv_load')),
                 _menuItem(c, 'undo', Icons.undo, Strings.t('adv_undo_menu')),

@@ -30,6 +30,7 @@ class ExamStrings {
 
   static const Map<String, List<String>> _map = {
     'ex_title': ['Prüfungssimulation', 'Exam simulation'],
+    'ex_title_short': ['Prüfung', 'Exam'],
     'ex_subtitle': ['Freiwillige Morseprüfung üben', 'Practise the voluntary Morse exam'],
     'ex_hint': [
       'Hören wie in der Prüfung: ohne Pause und Wiederholung, danach Auswertung',

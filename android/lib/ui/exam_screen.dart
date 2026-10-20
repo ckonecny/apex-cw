@@ -235,7 +235,7 @@ class _ExamScreenState extends State<ExamScreen> {
           backgroundColor: c.background,
           appBar: AppBar(
             backgroundColor: c.background,
-            title: appBarTitle(c, ExamStrings.t('ex_title')),
+            title: appBarTitle(c, ExamStrings.t('ex_title'), compact: ExamStrings.t('ex_title_short')),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => _phase == _Phase.setup ? Navigator.pop(context) : _toSetup(),

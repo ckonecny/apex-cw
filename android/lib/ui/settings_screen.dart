@@ -409,6 +409,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: StatusBarMode.set,
               ),
             ),
+            ValueListenableBuilder<bool>(
+              valueListenable: StatusBarMode.hidden,
+              builder: (context, hidden, _) => hidden
+                  ? ValueListenableBuilder<bool>(
+                      valueListenable: CompactTop.enabled,
+                      builder: (context, on, _) => ToggleRow(
+                        label: Strings.t('settings_compact_top'),
+                        value: on,
+                        onChanged: CompactTop.set,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
             const SettingsDivider(),
             ValueListenableBuilder<int>(
               valueListenable: Strings.lang,

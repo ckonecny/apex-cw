@@ -23,7 +23,7 @@ class LearnScreen extends StatelessWidget {
         backgroundColor: c.background,
         appBar: AppBar(
           backgroundColor: c.background,
-          title: appBarTitle(c, Strings.t('learn_title')),
+          title: appBarTitle(c, Strings.t('learn_title'), compact: Strings.t('learn_title_short')),
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: c.textMuted),
             onPressed: () => Navigator.pop(context),

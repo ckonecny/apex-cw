@@ -3,11 +3,13 @@
 // small phone at the capped font size; keys commands through the decoder
 // (<AR>, K as its own word, <ERR>).
 import 'dart:io';
+import 'dart:ui' show DisplayFeature, DisplayFeatureState, DisplayFeatureType;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/adventure/adventure_store.dart';
+import 'package:next_cw_trainer/theme/theme_controller.dart';
 import 'package:next_cw_trainer/ui/adventure_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -290,4 +292,35 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  // Compact top area beside a camera hole: with room for five buttons help and
+  // map stay in the app bar, on a narrow phone they move into the menu.
+  for (final (w, helpInBar) in [(412.0, true), (360.0, false)]) {
+    testWidgets('compact top: help icon in the bar = $helpInBar at ${w}dp', (tester) async {
+      tester.view.physicalSize = Size(w, 800) * 3;
+      tester.view.devicePixelRatio = 3;
+      final holeLeft = w / 2 - 22, holeRight = w / 2 + 22;
+      tester.view.displayFeatures = [
+        DisplayFeature(
+            bounds: Rect.fromLTRB(holeLeft, 0, holeRight, 40),
+            type: DisplayFeatureType.cutout,
+            state: DisplayFeatureState.unknown),
+      ];
+      CompactTop.enabled.value = true;
+      StatusBarMode.hidden.value = true;
+      addTearDown(() {
+        CompactTop.enabled.value = false;
+        StatusBarMode.hidden.value = false;
+        tester.view.reset();
+      });
+
+      await tester.pumpWidget(MaterialApp(
+          builder: (context, child) => CompactTopArea(child: child!),
+          home: AdventureScreen(game: adventureGames.first, newGame: true)));
+      await tester.runAsync(() => Future.delayed(const Duration(milliseconds: 300)));
+      await tester.pump();
+      expect(find.byIcon(Icons.help_outline), helpInBar ? findsOneWidget : findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
 }

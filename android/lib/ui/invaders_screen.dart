@@ -528,7 +528,7 @@ class _InvadersScreenState extends State<InvadersScreen>
           backgroundColor: c.background,
           appBar: AppBar(
             backgroundColor: c.background,
-            title: appBarTitle(c, 'Morse Invaders'),
+            title: appBarTitle(c, 'Morse Invaders', compact: 'Invaders'),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: c.textMuted),
               onPressed: () => Navigator.maybePop(context),

@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/theme_controller.dart';
 import '../../util/key_adapter_state.dart';
 import '../../util/keyer_try.dart';
 import '../settings_screen.dart';
@@ -71,7 +72,7 @@ class _KeyerStatusButtonState extends State<KeyerStatusButton> {
       valueListenable: KeyAdapterState.detected,
       builder: (context, detected, _) => IconButton(
         icon: CustomPaint(
-          size: const Size(26, 26),
+          size: Size.square(CompactTop.of(context).applied ? 22 : 26),
           painter: StraightKeyPainter(detected ? c.accent : c.textFaint),
         ),
         tooltip: Strings.t(detected ? 'keyer_btn_detected' : 'keyer_btn_none'),

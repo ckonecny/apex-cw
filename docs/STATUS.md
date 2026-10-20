@@ -29,6 +29,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
+- Screens' title bar (all, DE+EN): with Settings → "Use the space at the top" the app bar moves up beside the camera cut-out; the default shots are unchanged (option off). Possibly add one shot of the Settings Appearance card (two switches).
 - Own texts text (DE+EN) now describes background playback (#21/#22); no screenshot changes. Test by hand on the phone (screen off, lock screen, Bluetooth buttons); not yet done.
 - `hear_progress2.png`, `echo_progress.png` (DE+EN): heatmap character labels are now coloured by kind (letter/digit/other).
 - `tree_letters.png`, `tree_digits.png` (DE+EN), if they show the intro text: it has a new sentence about walking the tree with an external key (#117).

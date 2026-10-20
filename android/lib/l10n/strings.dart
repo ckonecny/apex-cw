@@ -851,6 +851,14 @@ class Strings {
     'settings_theme': ['Farbschema', 'Theme'],
     'settings_bluelight': ['Blaulichtfilter', 'Blue light filter'],
     'settings_hide_statusbar': ['Statusleiste ausblenden', 'Hide status bar'],
+    'dec_title_short': ['Decoder', 'Decoder'],
+    'ot_title_short': ['Texte', 'Texts'],
+    'adv_title_short': ['Adventure', 'Adventure'],
+    'learn_title_short': ['Lernen', 'Learning'],
+    'settings_compact_top': [
+      'Platz oben nutzen (Titelzeile schlanker, neben der Kamera)',
+      'Use the space at the top (slimmer title bar, beside the camera)'
+    ],
     'settings_bluelight_strength': ['Filterstärke', 'Filter strength'],
     'settings_output_case': ['Schreibweise', 'Letter case'],
     'settings_adapter_id': ['Adapter', 'Adapter'],
