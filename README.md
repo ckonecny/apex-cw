@@ -43,7 +43,8 @@ By Christian Konecny, OE1CKO.
   Red for night vision, Green, Warm grey, Navy & orange) with an optional
   blue-light filter.
 - **Your own material and more games:** share any text from another app
-  into Own texts and let the app play it, plus games from arcade to a CW
+  into Own texts and let the app play it (also with the screen off, controlled
+  from the lock screen or Bluetooth headphones), plus games from arcade to a CW
   text adventure.
 
 ## Origin and credits

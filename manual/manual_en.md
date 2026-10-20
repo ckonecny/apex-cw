@@ -365,7 +365,8 @@ After that, move towards sentences and texts:
   soon as you know most letters and digits.
 - **[Own texts](#own-texts)** (under **Free modes**): copy a text that interests
   you and listen to it as Morse. With shrinking pauses this becomes a good
-  everyday exercise.
+  everyday exercise. The text keeps playing with the screen off, and you can
+  control it from the lock screen or with Bluetooth headphones.
 - With **All characters** and **Callsigns** you practice how callsigns sound.
   This is especially useful for radio amateurs.
 
