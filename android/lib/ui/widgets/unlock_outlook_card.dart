@@ -138,7 +138,7 @@ class UnlockOutlookCard extends StatelessWidget {
     const maxChips = 10;
     Widget chips(List<String> items) {
       final shown = items.take(maxChips).toList();
-      return Wrap(spacing: 6, runSpacing: 6, children: [
+      return Wrap(spacing: 6, runSpacing: 6, alignment: WrapAlignment.center, children: [
         for (final t in shown)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -176,25 +176,33 @@ class UnlockOutlookCard extends StatelessWidget {
           ),
           if (!compact && owed.isNotEmpty) ...[
             const SizedBox(height: 10),
-            Text(Strings.t('ac_outlook_attempts'), style: label),
+            SizedBox(
+                width: double.infinity,
+                child: Text(Strings.t('ac_outlook_attempts'), textAlign: TextAlign.center, style: label)),
             const SizedBox(height: 6),
-            chips([for (final x in owed) '${display(x.key)} ${x.value}']),
+            SizedBox(
+                width: double.infinity,
+                child: chips([for (final x in owed) '${display(x.key)} ${x.value}'])),
           ],
           if (!compact && weak.isNotEmpty) ...[
             const SizedBox(height: 10),
-            Text(
-                Strings.t('ac_outlook_accuracy_boost')
-                    .replaceFirst('{pct}', '${(th.highThreshold * 100).round()}'),
-                style: label),
+            SizedBox(
+                width: double.infinity,
+                child: Text(
+                    Strings.t('ac_outlook_accuracy_boost')
+                        .replaceFirst('{pct}', '${(th.highThreshold * 100).round()}'),
+                    textAlign: TextAlign.center,
+                    style: label)),
             const SizedBox(height: 6),
-            WeakCharChips(
-                weak: weak,
-                excluded: excluded,
-                display: display,
-                onToggle: onToggle,
-                alignment: WrapAlignment.start,
-                showAccuracy: true,
-                small: true),
+            SizedBox(
+                width: double.infinity,
+                child: WeakCharChips(
+                    weak: weak,
+                    excluded: excluded,
+                    display: display,
+                    onToggle: onToggle,
+                    showAccuracy: true,
+                    small: true)),
           ],
         ]),
       ),

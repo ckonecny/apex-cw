@@ -684,6 +684,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
                     excluded: _excludedMixups,
                     outputCase: _outputCase,
                     scale: 1.2,
+                    small: hosted,
                     onToggle: (p) {
                       setState(() {
                         if (!_excludedMixups.remove(p)) _excludedMixups.add(p);

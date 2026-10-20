@@ -29,7 +29,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                 if (_mixups.isNotEmpty && !compact) ...[
                   if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
                     const SizedBox(height: 16),
-                  _buildMixupSection(context, scale: 1.2),
+                  _buildMixupSection(context, scale: 1.2, small: _outlookHostsWeakChars(compact)),
                 ],
                 if (_buildUnlockOutlook(context, compact: compact) case final outlook?) ...[
                   if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact) && !compact)
@@ -77,11 +77,12 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
 
   // Recurring mix-ups, tappable to leave a pair out of the boosted draw (#102).
   Widget _buildMixupSection(BuildContext context,
-      {double scale = 1, VoidCallback? onChanged}) {
+      {double scale = 1, bool small = false, VoidCallback? onChanged}) {
     return SizedBox(
         width: double.infinity,
         child: AppCard(
             child: MixupBoostChips(
+                small: small,
                 pairs: _mixups,
                 excluded: _excludedMixups,
                 outputCase: _outputCase,
@@ -533,7 +534,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
             ],
             if (_mixups.isNotEmpty) ...[
               const SizedBox(height: 20),
-              _buildMixupSection(context, scale: 1.2),
+              _buildMixupSection(context, scale: 1.2, small: _outlookHostsWeakChars(false)),
             ],
             if (_buildUnlockOutlook(context) case final outlook?) ...[
               const SizedBox(height: 20),

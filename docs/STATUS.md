@@ -29,6 +29,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
+- `hear_result.png`, Geben result shots (DE+EN): mix-up chips now as small as the weak-character chips when the "On the way to" card hosts those; its chips and labels are centred.
 - Screens' title bar (all, DE+EN): with Settings → "Use the space at the top" the app bar moves up beside the camera cut-out; the default shots are unchanged (option off). Possibly add one shot of the Settings Appearance card (two switches).
 - Own texts text (DE+EN) now describes background playback (#21/#22); no screenshot changes. Test by hand on the phone (screen off, lock screen, Bluetooth buttons); not yet done.
 - `hear_progress2.png`, `echo_progress.png` (DE+EN): heatmap character labels are now coloured by kind (letter/digit/other).
