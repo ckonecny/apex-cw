@@ -1575,7 +1575,9 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
 - **Übungstage**: ein Kästchen pro Tag (4 Wochen), sonst ein Balken pro Woche
   oder Monat. Tippe darauf, um die Zahl der Tage, die Zeit dieses Trainings und
   die Gesamtzeit dieses Zeitraums zu sehen.
-- **Alle Zeichen, Woche für Woche**: eine Heatmap, Zeichen untereinander,
+- **Alle Zeichen, Woche für Woche**: eine Heatmap, Zeichen untereinander
+  (nach Art eingefärbt: Buchstaben, Ziffern, Satzzeichen/Prosigns – so sind
+  O und 0 leicht zu unterscheiden),
   Wochen nebeneinander, von rot (unter 60 %) bis grün (ab 90 %). Eine Zelle
   mit weniger als 5 Versuchen bleibt leer. Die Spalten füllen die ganze
   Breite; passen die Wochen nicht (Alles), scrollen die Zellen und starten bei der
