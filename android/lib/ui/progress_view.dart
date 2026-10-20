@@ -7,6 +7,7 @@ import '../content/practice_log.dart' show PracticeDay;
 import '../content/progress_series.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
+import '../util/char_color.dart';
 import 'widgets/progress_charts.dart';
 
 class ProgressView extends StatefulWidget {
@@ -368,7 +369,7 @@ class _ProgressViewState extends State<ProgressView> {
                       child: Center(
                           child: Text(_display(ch),
                               style: TextStyle(fontSize: 14,
-                                  fontWeight: FontWeight.bold, color: c.textPrimary))),
+                                  fontWeight: FontWeight.bold, color: charTypeColor(ch, c)))),
                     ),
                   ),
               ]),
