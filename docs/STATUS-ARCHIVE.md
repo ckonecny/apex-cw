@@ -898,3 +898,6 @@ Tag `v1.7.0` = 4fffaa4 (Version 1.7.0+7). Done and archived with it: the "Manual
 
 ## Done 2026-10-18 (merged before 1.8.0-beta1)
 #102 mix-up practice suggestion (PR #106), #107 Send start view (PR #108), #109 compact boost row (PR #110), spaced goal credit (PR #113), 1.7.1 maintenance (folded into 1.8.0). Details: DECISIONS.
+
+## Manual 1.8.0 (2026-10-21)
+All screenshots retaken (light theme, DE+EN), `settings3` from Store build 437 (commit 039560f); manual HTML/PDF built (`APEXCW_Handbuch_v1.8.0.*`, `APEXCW_Manual_v1.8.0.*`), READMEs linked. Closed test: build 437 published to Sia and the developer; app language now follows the phone.
