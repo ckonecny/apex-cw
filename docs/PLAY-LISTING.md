@@ -125,8 +125,13 @@ All built by `python3 store/make_graphics.py` into `store/out/`:
 - `feature_{de,en}.png` — feature graphic 1024×500
 - `shot_{de,en}_N_<name>.png` — 8 phone screenshots per language, 1080×1920,
   captioned, upload in order N (home, listen, statistics, head copy, exam
-  simulation, send, QSO Bot, games). Raw shots in `store/raw/{de,en}/` (dark
-  theme, test phone, 2026-10-08, beta 1.6.1); retake when those screens change.
+  simulation, QSO Bot, colour themes, games). The themes shot is a fan of the
+  home screen in all seven themes (`store/raw/{de,en}/theme_N.png`); the Send
+  shot (`raw/*/send.png`) is still taken but no longer in the set (Play allows
+  8). Raw shots in `store/raw/{de,en}/` (Dark theme, test phone, 2026-10-21,
+  beta 1.8.0); retake when those screens change with `store/capture/`.
+- `site/img/{de,en}_themes.webp` — the same fan, wide, transparent, for the
+  landing page.
 
 ## Console answers
 

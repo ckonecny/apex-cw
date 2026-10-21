@@ -50,3 +50,8 @@ v1.7.0 (2026-10-12) additions:
   screen. Keep the screen awake and unlocked for the whole session.
 - Keying via `key.sh` is only reliable for short letters; a 100 % Echo block
   (needed for `echo_result2`) has to be keyed by hand.
+
+v1.8.0 (2026-10-21) note: `insert.py` is stale (anchors no longer match the manuals,
+and it drops every screenshot block it does not list). Do not run it; add or
+move screenshot blocks in the Markdown files directly. Captions changed that way
+on 2026-10-21: `settings1/2/3`, `hear_trends`, `echo_trends` (both languages).

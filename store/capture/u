@@ -1,0 +1,2 @@
+#!/bin/bash
+exec python3 -I "$(dirname "$0")/../../manual/tools/ui.py" "$@"

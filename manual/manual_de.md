@@ -966,9 +966,9 @@ angehakten schwachen Zeichen im nächsten Block und startet ihn. **Beenden** (li
 Startansicht zurück.
 
 ::: {.shots}
-![Ergebnisseite: Trefferquote, schwache Zeichen, Vorschläge](img/de/echo_result.png)
+![Ergebnisseite: Trefferquote, Fortschritt, schwache Zeichen](img/de/echo_result.png)
 
-![Ein Vorschlag (hier: Gebetempo erhöhen), angehakt](img/de/echo_result2.png)
+![Ein Vorschlag (hier: neues Zeichen freigeschaltet), angehakt](img/de/echo_result2.png)
 :::
 
 ## Einstellungen im ⚙-Blatt (Geben) {#einstellungen-geben}
@@ -1318,6 +1318,12 @@ Verwechslungen stehen dann in **einer Zeile**
 von unten mit allen Zeichen und Paaren zum An- und Abwählen; **Fertig** schließt es.
 Dasselbe gilt für die Startansicht von Geben.
 
+::: {.shots}
+![Startansicht von Hören mit der kompakten Zeile „Gezielt üben“](img/de/hear_start_compact.png)
+
+![Das Fenster der Zeile: schwache Zeichen und Verwechslungspaare zum An- und Abwählen](img/de/hear_boost_sheet.png)
+:::
+
 ## Trend
 
 Ab dem **sechsten** Block zeigt die Statuszeile einen Trend, z. B.
@@ -1625,6 +1631,10 @@ sich nicht rückgängig machen.
 ![Statistik Hören: Versuche, Trefferquote, bereit](img/de/hear_stats.png)
 
 ![Statistik Geben mit häufigen Verwechslungen](img/de/echo_stats.png)
+
+![Reiter „Trends“ (Hören): neu aufgetauchte, wachsende und abklingende Verwechslungen](img/de/hear_trends.png)
+
+![Reiter „Trends“ (Geben)](img/de/echo_trends.png)
 :::
 
 # CW Keyer
@@ -2787,11 +2797,11 @@ wenn du beim Scrollen versehentlich ein Bedienelement berührt hast. Eine neuere
 Änderung.
 
 ::: {.shots .three}
-![Einstellungen: Darstellung, Allgemein, Keyer](img/de/settings1.png)
+![Einstellungen: Darstellung, Allgemein](img/de/settings1.png)
 
-![Audioausgabe](img/de/settings2.png)
+![Störungen und Keyer](img/de/settings2.png)
 
-![USB-CW-Adapter, Key-Events, Info](img/de/settings3.png)
+![USB-CW-Adapter, Key-Events, Audioausgabe, Info](img/de/settings3.png)
 :::
 
 ## Darstellung
@@ -2804,6 +2814,10 @@ wenn du beim Scrollen versehentlich ein Bedienelement berührt hast. Eine neuere
 | Statusleiste ausblenden | Blendet die Android-Statusleiste (Uhr, Akku) aus, damit sie nicht gegen den Blaulichtfilter absticht; ein Wisch von oben zeigt sie kurz | **Aus** / An |
 | Platz oben nutzen | Nur sichtbar, wenn die Statusleiste ausgeblendet ist. Die Titelzeile rückt in den freigewordenen Streifen neben die Kamera-Aussparung und wird schlanker (kleinere Schrift und Symbole, Titel unabhängig von der Systemschrift, ggf. verkürzt, damit sie nicht hinter der Kamera enden), der Inhalt darunter bekommt mehr Platz. Bei einer breiten Notch, einem Loch in der Ecke oder zu wenig Platz neben der Kamera (sehr schmale Handys) bleibt das normale Layout | **Aus** / An |
 | Sprache | Sprache der App | **Deutsch** / English |
+
+::: {.shots .one}
+![Darstellung: bei eingeschaltetem „Statusleiste ausblenden“ erscheint der Schalter „Platz oben nutzen“](img/de/settings_appearance.png)
+:::
 
 ## Allgemein
 

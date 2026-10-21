@@ -939,9 +939,9 @@ characters in the next block, and starts it. **Finish** applies the ticked
 suggestions without a boost and returns to the start view.
 
 ::: {.shots}
-![Result page: accuracy, weak characters, suggestions](img/en/echo_result.png)
+![Result page: accuracy, progress, weak characters](img/en/echo_result.png)
 
-![A suggestion (here: raise the sending speed), ticked](img/en/echo_result2.png)
+![A suggestion (here: new character unlocked), ticked](img/en/echo_result2.png)
 :::
 
 ## Settings in the ⚙ sheet (Send) {#settings-send}
@@ -1282,6 +1282,12 @@ mix-ups then appear in **one row**
 with all characters and pairs to tick or leave out; **Done** closes it. The
 same applies to the Send start view.
 
+::: {.shots}
+![Listen start view with the compact "Practice focus" row](img/en/hear_start_compact.png)
+
+![The row's sheet: weak characters and mix-up pairs to tick or leave out](img/en/hear_boost_sheet.png)
+:::
+
 ## Trend
 
 From the **sixth** block on, the status line shows a trend, for example
@@ -1574,6 +1580,10 @@ statistics are kept. This cannot be undone.
 ![Listen statistics: attempts, accuracy, ready](img/en/hear_stats.png)
 
 ![Send statistics with common mix-ups](img/en/echo_stats.png)
+
+![“Trends” tab (Listen): new, growing and fading mix-ups](img/en/hear_trends.png)
+
+![“Trends” tab (Send)](img/en/echo_trends.png)
 :::
 
 # CW Keyer
@@ -2691,11 +2701,11 @@ scrolling. A newer change replaces the bar, so Undo always refers to the last
 change.
 
 ::: {.shots .three}
-![Settings: Appearance, General, Keyer](img/en/settings1.png)
+![Settings: Appearance, General](img/en/settings1.png)
 
-![Audio output](img/en/settings2.png)
+![Interference and Keyer](img/en/settings2.png)
 
-![USB CW adapter, key events, Info](img/en/settings3.png)
+![USB CW adapter, key events, audio output, Info](img/en/settings3.png)
 :::
 
 ## Appearance
@@ -2708,6 +2718,10 @@ change.
 | Hide status bar | Hides the Android status bar (clock, battery) so it does not clash with the blue light filter; swiping down from the top shows it briefly | **Off** / On |
 | Use the space at the top | Only shown while the status bar is hidden. The title bar moves up into the freed strip beside the camera cut-out and gets slimmer (smaller text and icons, title independent of the system font size and shortened if needed so it does not end up behind the camera), so the content below gets more room. With a wide notch, a hole in a corner or too little room beside the camera (very narrow phones) the normal layout stays | **Off** / On |
 | Language | App language | **Deutsch** / English |
+
+::: {.shots .one}
+![Appearance: with "Hide status bar" on, the switch "Use the space at the top" appears](img/en/settings_appearance.png)
+:::
 
 ## General
 
