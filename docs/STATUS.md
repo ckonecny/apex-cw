@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Latest tagged build: v1.7.0 (2026-10-12; v1.8.0-beta1 in preparation, see below; tag `v1.7.0` = commit 4fffaa4; exam simulation, learn-from-mistake, word lists, themes, undo bar, focus mode, new logo, DM Sans). Previous: v1.6.0 (2026-10-05), v1.5.0 (2026-10-03); the beta builds v1.6.1-beta1…6 are folded into 1.7.0; older versions in `docs/STATUS-ARCHIVE.md`.
+Latest tagged build: v1.7.0 (2026-10-12; v1.8.0-beta2 in preparation, see below; beta1 published 2026-10-18; tag `v1.7.0` = commit 4fffaa4; exam simulation, learn-from-mistake, word lists, themes, undo bar, focus mode, new logo, DM Sans). Previous: v1.6.0 (2026-10-05), v1.5.0 (2026-10-03); the beta builds v1.6.1-beta1…6 are folded into 1.7.0; older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -52,10 +52,11 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - Many screenshots with an app bar (#116): new keyer symbol; Send result page: "." and "-" on the buttons with a key detected. `echo_start.png` (DE+EN): with Koch · Random, the start view now shows the weak characters and mix-up pairs card (#107).
 - New shots (DE+EN), e.g. `hear_start_compact.png`, `hear_boost_sheet.png`: the compact row and its sheet when space is tight (#109).
 
-## v1.8.0-beta1 (in preparation, version 1.8.0+9)
-Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: tag/publish `tools/publish_beta.sh v1.8.0-beta1` after merge of the release PR, then the release (`tools/build_release.sh v1.8.0`, APK + AAB; manual HTML/PDF and screenshots only then). Engine config per screen: `android/test/engine_config_test.dart`; shared config helper: issue #18.
+## v1.8.0 (beta1 published 2026-10-18, beta2 2026-10-21; version 1.8.0+9)
+Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test the beta, then the release (`tools/build_release.sh v1.8.0`, APK + AAB; manual HTML/PDF and screenshots only then). Engine config per screen: `android/test/engine_config_test.dart`; shared config helper: issue #18.
 
 ## Phone tests still open (1.8.0)
+- Own texts in the background (#21/#22): tried on the test phone with Tozo T6; check other headsets and phones in the beta.
 - Mix-up suggestions (#102/#106): over weeks of real use, check that the card appears when pairs recur and that boosting works.
 - Send start view (#107), compact row (#109), spaced goal credit, external key everywhere (#116): tried on the test phone; recheck in the beta.
 

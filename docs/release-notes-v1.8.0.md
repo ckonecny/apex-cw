@@ -27,6 +27,11 @@ contains everything from the 1.7.1 maintenance round (firmware audit).
 - **Own texts in the background:** a playing text goes on with the screen off or
   in another app, with notification, lock-screen and Bluetooth headset controls
   (previous/next = sentence).
+- **Use the space at the top:** new setting (Appearance, off by default, shown
+  while the status bar is hidden) that moves the app bar up beside the camera
+  hole of phones that have one; titles shrink so they end before the hole.
+- **Statistics:** the character list of the progress view is coloured by kind
+  (letters, digits, punctuation/prosigns), so O and 0 are easy to tell apart.
 - **Random groups from length 1** to drill single characters.
 - **Character chart** now also lists Ä Ö Ü CH.
 - **Navy & orange theme:** all menu icons orange.
@@ -37,6 +42,8 @@ contains everything from the 1.7.1 maintenance round (firmware audit).
 - **Listen and Send:** one shared tempo + spacing block; Send has Stop in the
   app bar and the paddles at the bottom while a block runs.
 - **Spaced daily goal:** each session credits at most goal ÷ number of sessions.
+- Mix-up chips look like the weak-character chips (same size, centred in the
+  "On the way to" card).
 - Weak-character card only for random character groups; the Words chip says
   "none fit" instead of "ca. 0".
 
@@ -51,6 +58,8 @@ contains everything from the 1.7.1 maintenance round (firmware audit).
   the engine mode changes.
 
 ## Updated libraries
+Removed four unused packages (`flutter_soloud`, `provider`, `cupertino_icons`,
+`audio_session`); the app gets smaller.
 `shared_preferences`, `url_launcher`, Gradle 9.8.1, Android Gradle Plugin 9.4.1, Kotlin 2.4.21.
 
 ---
