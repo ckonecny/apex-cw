@@ -119,7 +119,7 @@ Jedes Feld merkt sich seine eigene Größe.
 
 Unter **Einstellungen → Darstellung** wählst du das **Farbschema** (System / Hell /
 Dunkel / Bernstein / Rot / Grün / Warmgrau / Marine & Orange) und die **Sprache**
-der App (Deutsch / English). Bernstein, Rot, Grün, Warmgrau und Marine & Orange
+der App (Deutsch / English; ohne eigene Wahl folgt sie der Handysprache). Bernstein, Rot, Grün, Warmgrau und Marine & Orange
 sind dunkle Schemata mit eigener Farbpalette: Bernstein mit warmen Gelbtönen,
 Rot (Nachtsicht) mit gedämpftem Rot, das die Dunkeladaption der Augen am
 wenigsten stört, Grün wie ein Phosphor-Terminal, Warmgrau mit weichem,
@@ -2813,7 +2813,7 @@ wenn du beim Scrollen versehentlich ein Bedienelement berührt hast. Eine neuere
 | Filterstärke | Wie stark das Blau gedämpft wird (nur bei aktivem Filter sichtbar) | 10–100 % (**50 %**) |
 | Statusleiste ausblenden | Blendet die Android-Statusleiste (Uhr, Akku) aus, damit sie nicht gegen den Blaulichtfilter absticht; ein Wisch von oben zeigt sie kurz | **Aus** / An |
 | Platz oben nutzen | Nur sichtbar, wenn die Statusleiste ausgeblendet ist. Die Titelzeile rückt in den freigewordenen Streifen neben die Kamera-Aussparung und wird schlanker (kleinere Schrift und Symbole, Titel unabhängig von der Systemschrift, ggf. verkürzt, damit sie nicht hinter der Kamera enden), der Inhalt darunter bekommt mehr Platz. Bei einer breiten Notch, einem Loch in der Ecke oder zu wenig Platz neben der Kamera (sehr schmale Handys) bleibt das normale Layout | **Aus** / An |
-| Sprache | Sprache der App | **Deutsch** / English |
+| Sprache | Sprache der App. Solange du nichts gewählt hast, richtet sie sich nach der Sprache des Handys: Deutsch auf einem deutschsprachigen Handy, sonst English | **Deutsch** / English (je nach Handy) |
 
 ::: {.shots .one}
 ![Darstellung: bei eingeschaltetem „Statusleiste ausblenden“ erscheint der Schalter „Platz oben nutzen“](img/de/settings_appearance.png)

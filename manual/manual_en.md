@@ -116,7 +116,7 @@ the result page, among others. Each area remembers its own size.
 
 Under **Settings → Appearance** you choose the **Theme** (System, Light,
 Dark, Amber, Red, Green, Warm grey or Navy & orange) and the app **Language**
-(Deutsch or English). Amber, Red, Green, Warm grey and Navy & orange are dark
+(Deutsch or English; without your own choice it follows the phone's language). Amber, Red, Green, Warm grey and Navy & orange are dark
 themes with their own palette: Amber with warm yellows, Red (night vision) with
 muted red, which disturbs dark adaptation the least, Green like a phosphor
 terminal, Warm grey with a soft, low-contrast brown-grey, and Navy & orange
@@ -2717,7 +2717,7 @@ change.
 | Filter strength | How strongly blue is reduced (only shown while the filter is on) | 10–100 % (**50 %**) |
 | Hide status bar | Hides the Android status bar (clock, battery) so it does not clash with the blue light filter; swiping down from the top shows it briefly | **Off** / On |
 | Use the space at the top | Only shown while the status bar is hidden. The title bar moves up into the freed strip beside the camera cut-out and gets slimmer (smaller text and icons, title independent of the system font size and shortened if needed so it does not end up behind the camera), so the content below gets more room. With a wide notch, a hole in a corner or too little room beside the camera (very narrow phones) the normal layout stays | **Off** / On |
-| Language | App language | **Deutsch** / English |
+| Language | App language. Until you choose one, it follows the phone's language: Deutsch on a German-language phone, English on any other | **Deutsch** / English (by phone) |
 
 ::: {.shots .one}
 ![Appearance: with "Hide status bar" on, the switch "Use the space at the top" appears](img/en/settings_appearance.png)

@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// Minimal two-language UI text lookup for the app. No intl/ARB tooling —
 /// just a static map keyed by a short id, indexed by the current language.
-/// 0=Deutsch (default, matches the app's original single-language text),
-/// 1=English. A "full" gen-l10n/ARB setup can replace this later if more
+/// 0=Deutsch, 1=English. Without a saved choice the device language decides
+/// ([defaultFor]). A "full" gen-l10n/ARB setup can replace this later if more
 /// languages, plurals, or date/number formatting are ever needed; for two
 /// hand-picked languages this avoids the codegen/BuildContext machinery.
 class Strings {
@@ -12,8 +12,15 @@ class Strings {
 
   static Future<void> load() async {
     final p = await SharedPreferences.getInstance();
-    lang.value = (p.getInt('uiLang') ?? 0).clamp(0, 1);
+    lang.value = (p.getInt('uiLang') ??
+            defaultFor(PlatformDispatcher.instance.locale.languageCode))
+        .clamp(0, 1);
   }
+
+  /// Language used until the user picks one: German on a German-language
+  /// phone, English on every other.
+  static int defaultFor(String deviceLanguageCode) =>
+      deviceLanguageCode == 'de' ? 0 : 1;
 
   static Future<void> set(int index) async {
     lang.value = index.clamp(0, 1);

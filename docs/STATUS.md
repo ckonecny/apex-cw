@@ -36,6 +36,7 @@ Retaken 2026-10-21 (debug build of beta 1.8.0, light theme, DE+EN, 12 weeks of s
 Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test the beta, then the release (`tools/build_release.sh v1.8.0`, APK + AAB; manual HTML/PDF and screenshots only then). Engine config per screen: `android/test/engine_config_test.dart`; shared config helper: issue #18.
 
 ## Phone tests still open (1.8.0)
+- App language default (this branch): without a saved choice, German on a German-language phone, English otherwise. Unit-tested; on the test phone only the German case can be seen (try an English phone/tester).
 - Own texts in the background (#21/#22): tried on the test phone with Tozo T6; check other headsets and phones in the beta.
 - Mix-up suggestions (#102/#106): over weeks of real use, check that the card appears when pairs recur and that boosting works.
 - Send start view (#107), compact row (#109), spaced goal credit, external key everywhere (#116): tried on the test phone; recheck in the beta.
