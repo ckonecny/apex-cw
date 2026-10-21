@@ -29,7 +29,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 
 ## Manual: pending for next release
 Retaken 2026-10-21 (debug build of beta 1.8.0, light theme, DE+EN, 12 weeks of statistics seeded, phone prefs restored afterwards; scripts: `manual/tools/capture/`): all screenshots except the ones below. Notes: `echo_result2` shows "new character unlocked" (caption changed), `qso` was answered via the text field, `char_practice` shows the character E, `adv_map` shows only the start room, `own_*` use the two Wikipedia texts the user added; new `hear_start_compact`, `hear_boost_sheet`, `settings_appearance` are placed in both manuals. Still to do:
-- `settings3` and the Info card: from the release build (version/commit).
+- `settings3` (Info card with version/commit) retaken 2026-10-21 from the release build 1.8.0 (Build 435, commit 4329490, installed over the debug build — same upload-key signature, data kept). Retake it once more from the final build: the final release gets a new build number and commit.
 - Check: `own_library` (EN) shows "2% heard" on the German text (progress from the screenshot run).
 
 ## v1.8.0 (beta1 published 2026-10-18, beta2 2026-10-21; version 1.8.0+9)
