@@ -16,7 +16,7 @@ while time.time() < t_end:
     word = next((int(m.group(1)) for l in labs for m in [re.search(r'(?:Wort|Word|Gruppe|Group) (\d+) /', l)] if m), 0)
     att = next((int(m.group(1)) for l in labs for m in [re.search(r'(?:Versuch|Attempt) (\d+)', l)] if m), 1)
     sending = any(re.search('Senden|Sending|Geben …', l) for l in labs)
-    tgt = next((l.strip() for l, b in n if 950 < b[1] < 1150 and re.fullmatch(r'\s*[a-z0-9]+\s*', l)), None)
+    tgt = next((l.strip() for l, b in n if 1100 < b[1] < 1300 and re.fullmatch(r'\s*[a-z0-9]+\s*', l)), None)
     if sending and tgt and (word, att) not in done:
         done.add((word, att))
         ans = tgt

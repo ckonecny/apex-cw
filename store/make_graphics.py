@@ -11,6 +11,7 @@ gesture bars cut off: rows 140..2374) framed at 1080x1920 (9:16;
 Play allows at most 2:1) with a caption. Texts per language are in FEATURE
 and SHOTS below.
 """
+import math
 import os
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
@@ -29,11 +30,17 @@ SHOTS = [  # (raw file, DE caption, EN caption), in store order
     ('hear_stats', 'Statistik für jedes Zeichen', 'Statistics for every character'),
     ('verstehen', 'Verstehen ohne Mitschreiben', 'Head copy without writing'),
     ('exam', 'Prüfungssimulation', 'Exam simulation'),
-    ('send', 'Geben üben mit Bewertung', 'Sending practice with grading'),
     ('qso', 'QSO-Bot als Übungspartner', 'QSO Bot as a practice partner'),
+    ('themes', 'Sieben Farbschemata', 'Seven colour themes'),
     ('games', 'Spielend morsen lernen', 'Learn Morse through games'),
 ]
 RAW = os.path.join(ROOT, 'store', 'raw')
+SITE = os.path.join(ROOT, 'site', 'img')
+# Fan of the seven colour themes: raw/<lang>/theme_N.png, left to right (the
+# middle one is on top). N = the app's theme index (1 Light, 2 Dark, 3 Amber,
+# 4 Red, 5 Green, 6 Warm grey, 7 Navy & orange).
+THEME_ORDER = (1, 3, 4, 7, 5, 6, 2)
+
 TOP, BOTTOM = (30, 52, 96), (18, 33, 64)           # the new icon's navy (#122140)
 DOT, DASH = 18, 54                                  # "CW" in Morse as a motif
 
@@ -100,6 +107,8 @@ def shot(lang, name, caption):
     d.text((540, 150), caption, font=f, fill='white', anchor='mm')
     morse(d, 540 - 157, 225, '-.-. .--', (94, 214, 214))
     raw = Image.open(os.path.join(RAW, lang, name + '.png')).convert('RGB')
+    if name == 'games':   # scrollbar was captured at the right edge: paint over
+        ImageDraw.Draw(raw).rectangle([raw.width - 14, 0, raw.width, raw.height], fill=raw.getpixel((raw.width - 30, 600)))
     h = 1920 - 300 - 40
     w = round(raw.width * h / raw.height)
     x, y = (1080 - w) // 2, 300
@@ -112,6 +121,52 @@ def shot(lang, name, caption):
     return im
 
 
+def fan(lang, size, card_w, crop_h, radius, step, pivot_y, bg=None):
+    """Seven theme shots as a fan: each shows only the top `crop_h` rows of
+    the raw shot; the middle card is drawn last (fully visible)."""
+    W, H = size
+    im = bg.copy().convert('RGBA') if bg else Image.new('RGBA', size, (0, 0, 0, 0))
+    n = len(THEME_ORDER)
+    order = sorted(range(n), key=lambda i: -abs(i - n // 2))     # outer cards first
+    card_h = round(card_w * crop_h / 1080)
+    for i in order:
+        angle = (i - n // 2) * step
+        raw = Image.open(os.path.join(RAW, lang, f'theme_{THEME_ORDER[i]}.png')).convert('RGB')
+        card = rounded(raw.crop((0, 0, 1080, crop_h)).resize((card_w, card_h), Image.LANCZOS), card_w // 14)
+        edge = Image.new('RGBA', card.size, (0, 0, 0, 0))                # thin light rim
+        ImageDraw.Draw(edge).rounded_rectangle([0, 0, card_w - 1, card_h - 1], card_w // 14,
+                                               outline=(255, 255, 255, 60), width=3)
+        card = Image.alpha_composite(card, edge)
+        pad = 60                                                         # room for the shadow
+        sheet = Image.new('RGBA', (card_w + 2 * pad, card_h + 2 * pad), (0, 0, 0, 0))
+        shadow = Image.new('RGBA', sheet.size, (0, 0, 0, 0))
+        ImageDraw.Draw(shadow).rounded_rectangle([pad - 4, pad + 10, pad + card_w + 4, pad + card_h + 10],
+                                                 card_w // 14, fill=(0, 0, 0, 150))
+        sheet = Image.alpha_composite(sheet, shadow.filter(ImageFilter.GaussianBlur(16)))
+        sheet.alpha_composite(card, (pad, pad))
+        rot = sheet.rotate(-angle, resample=Image.BICUBIC, expand=True)
+        a = math.radians(angle)
+        # the card's bottom-centre sits on the arc around the pivot
+        cx = W / 2 + radius * math.sin(a)
+        cy = pivot_y - radius * math.cos(a) - card_h / 2 + card_h / 2
+        im.alpha_composite(rot, (round(cx - rot.width / 2), round(cy - rot.height / 2)))
+    return im
+
+
+def themes_shot(lang):
+    im = gradient(1080, 1920).convert('RGBA')
+    d = ImageDraw.Draw(im)
+    caption = next(de if lang == 'de' else en for n, de, en in SHOTS if n == 'themes')
+    d.text((540, 150), caption, font=font(64, 'Bold'), fill='white', anchor='mm')
+    morse(d, 540 - 157, 225, '-.-. .--', (94, 214, 214))
+    return fan(lang, (1080, 1920), 640, 1900, 760, 8, 1700, bg=im).convert('RGB')
+
+
+def themes_site(lang):
+    out = fan(lang, (1500, 640), 420, 1900, 520, 8, 915)
+    out.save(os.path.join(SITE, f'{lang}_themes.webp'), quality=84, method=6)
+
+
 if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
     Image.open(ICON).convert('RGB').resize((512, 512), Image.LANCZOS).save(
@@ -120,5 +175,7 @@ if __name__ == '__main__':
         feature(lang).save(os.path.join(OUT, f'feature_{lang}.png'), optimize=True)
     for i, (name, de, en) in enumerate(SHOTS, 1):
         for lang, cap in (('de', de), ('en', en)):
-            shot(lang, name, cap).save(os.path.join(OUT, f'shot_{lang}_{i}_{name}.png'), optimize=True)
+            (themes_shot(lang) if name == 'themes' else shot(lang, name, cap)).save(os.path.join(OUT, f'shot_{lang}_{i}_{name}.png'), optimize=True)
+    for lang in FEATURE:
+        themes_site(lang)
     print('written to', os.path.relpath(OUT))
