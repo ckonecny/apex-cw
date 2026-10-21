@@ -34,10 +34,13 @@ HÖREN
 • Koch-Methode mit den Reihenfolgen M32, LCWO, CW Academy, LICW oder einer eigenen
 • Blockweise mitschreiben, Fehler markieren, Auswertung mit Trend und schwachen Zeichen
 • Adaptive Vorschläge: nächstes Koch-Zeichen, Farnsworth-Abstände, Tempo, Pausenhinweis – du entscheidest
+• Verwechslungen werden erkannt: Die App zeigt, welche Zeichen du durcheinanderbringst, und übt genau diese Paare
+• Eigene Texte (z. B. Artikel oder Bücher) als CW anhören – auch im Hintergrund bei ausgeschaltetem Bildschirm
 
 GEBEN
 • Echo-Trainer: Wort hören, zurückgeben, sofortige Bewertung
-• Eigenes Profil fürs Geben, Verwechslungspaare, Gebe-Tempo
+• Gleiche Ansicht wie beim Hören: schwache Zeichen, Verwechslungspaare, Fortschritt
+• Eigenes Profil fürs Geben, Gebe-Tempo
 
 PRÜFUNGSSIMULATION
 • Die freiwillige Morseprüfung üben: Österreich, Deutschland, UK, Neuseeland, Indien, USA oder ein eigenes Profil
@@ -62,7 +65,8 @@ DRAN BLEIBEN
 • Tagesziel und Serie, Statistik pro Zeichen, Verlaufskurven für Trefferquote, Tempo und Übungszeit
 
 AUSSERDEM
-• Touch-Keyer am Bildschirm oder echte Morsetaste über einen Adapter
+• Touch-Keyer am Bildschirm oder echte Morsetaste über einen USB-Adapter, auf fast allen Bildschirmen erkannt
+• Sieben Farbthemen (hell, dunkel, Bernstein, Rot, Grün, Warmgrau, Marine) und optionaler Blaulichtfilter für die Nacht
 • Latenzarmer Mithörton, Ausgabe über Lautsprecher, Kopfhörer oder Bluetooth
 • Deutsch und Englisch, ausführliches Handbuch
 
@@ -81,10 +85,13 @@ LISTEN
 • Koch method with M32, LCWO, CW Academy, LICW or your own sequence
 • Copy in blocks, mark your misses, results with trend and weak characters
 • Adaptive suggestions: next Koch character, Farnsworth spacing, speed, break hint – you decide
+• Mix-ups are tracked: the app shows which characters you confuse and drills exactly those pairs
+• Play your own texts (articles, books) as CW – also in the background with the screen off
 
 SEND
 • Echo Trainer: hear a word, key it back, instant grading
-• Separate sending profile, confusion pairs, answer speed cap
+• Same view as Listen: weak characters, mix-up pairs, progress
+• Separate sending profile, answer speed cap
 
 EXAM SIMULATION
 • Rehearse the voluntary Morse exam: Austria, Germany, UK, New Zealand, India, USA or your own profile
@@ -109,13 +116,38 @@ STAY ON TRACK
 • Daily goal and streak, per-character statistics, progress charts for hit rate, speed and practice time
 
 ALSO
-• On-screen touch keyer, or a real Morse key via an adapter
+• On-screen touch keyer, or a real Morse key via a USB adapter, recognised on almost every screen
+• Seven colour themes (light, dark, amber, red, green, warm grey, navy) and an optional blue-light filter for the night
 • Low-latency sidetone through speaker, headphones or Bluetooth
 • German and English, detailed manual
 
 No ads, no accounts, no data collection. Free software (GPL-3.0), source code on GitHub.
 
 Many ideas and much of the training logic come from the open-source Morserino-32 firmware by Willi Kraml, OE1WKL – many thanks for that. APEX CW is an independent project, not affiliated with the Morserino-32 team. Zork is a trademark of its owners; this app is not affiliated with them.
+```
+
+## What's new (1.8.0, max. 500 characters each)
+
+**DE** (about 450)
+```
+• Hören und Geben jetzt gleich aufgebaut: schwache Zeichen, Verwechslungen, Fortschritt
+• Statistik zeigt Verwechslungen – mit Übungsvorschlag
+• Externe Morsetaste (USB) wird fast überall erkannt
+• Eigene Texte laufen im Hintergrund weiter, auch bei ausgeschaltetem Bildschirm
+• Koch-Reihenfolgen mit Prosigns (SK, AS, KN, KA, VE, BK)
+• Neues Farbthema Marine/Orange, mehr Platz oben bei Kameraloch
+• Korrektur: Buchstaben-/Wortpausen waren einen Punkt zu kurz (jetzt 3 und 7)
+```
+
+**EN** (about 480)
+```
+• Listen and Send now work the same way: weak characters, mix-up pairs, progress
+• Statistics show which characters you confuse – with a practice suggestion
+• External Morse key (USB) recognised almost everywhere
+• Own texts keep playing in the background, even with the screen off
+• Koch sequences with prosigns (SK, AS, KN, KA, VE, BK)
+• New navy/orange theme, more room at the top on phones with a camera hole
+• Fix: letter and word gaps were one dit too short – now exactly 3 and 7
 ```
 
 ## Graphics
