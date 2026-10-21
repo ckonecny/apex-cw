@@ -50,6 +50,17 @@ Alerts also arrive by e-mail (GitHub notification settings). Build
 tooling (Gradle, Android Gradle Plugin) updates are merged one group at a time
 and tried on the test phone first.
 
+## Versioning: git and Play Store match (user, 2026-10-21)
+Every build that goes to the Play Store (closed test included) is a normal
+numbered version with its tag and GitHub release: **bug fix → patch**
+(1.8.0 → 1.8.1), **feature → minor** (1.8.x → 1.9.0). Bump `version:` in
+`android/pubspec.yaml`, tag `vX.Y.Z`, build with `tools/build_release.sh`,
+create the GitHub release (APK + manual PDFs) so "Latest" is the version in
+the store. Not every version has to reach the store, but the store never has
+a version git doesn't know. Re-uploading the same versionName with a higher
+build number (as with 1.8.0 build 435 → 437) is a one-off, not the schema.
+Betas for testers outside the store stay `vX.Y.Z-betaN` pre-releases.
+
 ## Release consistency check
 Run before every beta or release (CLAUDE.md rule 16); fix drift right away.
 - `docs/STATUS.md`: latest tag/version line, "Manual: pending" list, open

@@ -120,6 +120,12 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
     consistency first, and fix what drifted in the same change.** Checklist:
     `docs/PROJECT.md` "Release consistency check". Report the result to the
     user (what was checked, what was fixed, what stays open).
+17. **Git and Play Store versions match.** Every Play upload (closed test
+    included) is a numbered version with tag `vX.Y.Z` and a GitHub release
+    (APK + manual PDFs, "Latest" = the store version): bug fix → patch,
+    feature → minor, `version:` in `android/pubspec.yaml` bumped first. Not
+    every version must reach the store, but git never lags behind it.
+    Details: `docs/PROJECT.md` "Versioning".
 
 ## Build / run
 
