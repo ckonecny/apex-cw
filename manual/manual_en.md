@@ -1534,10 +1534,13 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
 - **Days practised**: one box per day (4 weeks), otherwise a bar per week or
   month. Tap one to see the number of days, this training's time and the
   total time of that period.
-- **All characters, week by week**: a heatmap, characters down, weeks across,
+- **Practised characters, week by week**: a heatmap, characters down, weeks across,
   the characters coloured by kind (letters, digits, punctuation/prosigns) so
   O and 0 are easy to tell apart,
-  from red (below 60 %) to green (from 90 %). A cell with fewer than 5
+  from red (below 60 %) to green (from 90 %). With 12 weeks and All, each
+  column is a calendar week (Mon–Sun, the date is the Monday, the last column
+  the current week); with 4 weeks they are 7-day blocks counted back from today
+  (the date is the block's first day); over a long history, calendar months. A cell with fewer than 5
   attempts stays empty. The columns fill the whole width; if the weeks don't fit (All), the cells scroll
   and start at the newest week; the characters and week headings stay in place. **Weakest first** sorts by the latest hit rate. Tap
   a character to open its detail view.
