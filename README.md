@@ -292,6 +292,10 @@ Morserino-32 firmware, Copyright (C) 2018-2025 Willi Kraml, OE1WKL, which is
 itself GPL-3.0; the app is therefore a derivative work under the same
 licence.
 
+The confirmation tones "Marimba" and "Gentle" (`android/android/app/src/main/res/raw/`)
+are the project's own sounds, computed from sine waves by
+`tools/make_confirm_tones.py`, and fall under the same GPL.
+
 Bundled third-party material keeps its own licence: Zork I–III story files
 (MIT, `android/assets/zork/LICENSE`), the fonts Anonymous Pro and DM
 Sans (SIL Open Font License 1.1, `android/assets/fonts/OFL-*.txt`), the English

@@ -694,8 +694,8 @@ Platz hat.
 ![Falsch: das Wort kommt noch einmal, Versuch 2 von 2](img/de/hear_type_retry.png)
 :::
 
-Ob nach dem Prüfen ein kurzer Ton kommt (hoch = richtig, tief = falsch),
-stellst du im ⚙-Blatt von **Geben** unter **Bestätigungston** ein. Wie viele Versuche
+Welcher kurze Ton nach dem Prüfen kommt (hoch = richtig, tief = falsch) oder
+ob gar keiner, stellst du im ⚙-Blatt von **Geben** unter **Bestätigungston** ein. Wie viele Versuche
 du pro Wort hast und ob die Tasten vibrieren, stellst du im ⚙-Blatt unter
 **Ablauf** ein (siehe [unten](#ablauf)).
 
@@ -1011,7 +1011,7 @@ Dazu kommt der Abschnitt **Echo Trainer**:
 | Vorgabe | Wie die Vorgabe kommt: **Ton** = nur hören; **Anzeige** = nur lesen, ohne Ton; **Beides** = hören und nach dem Abspielen lesen | **Ton** / Anzeige / Beides |
 | Gebetempo (max.) | Höchstes Antwort-Tempo, siehe [Gebetempo](#gebetempo) | **wie Hören**, 10–50 WPM |
 | Tonversatz | Dein Mithörton beim Antworten liegt einen Halbton höher oder tiefer als die Vorgabe | Kein Versatz / **Hoch ½** / Runter ½ |
-| Bestätigungston | Kurzer Ton nach der Bewertung: hoch für richtig, tief für falsch | Aus / **Ein** |
+| Bestätigungston | Kurzer Ton nach der Bewertung: hoch für richtig, tief für falsch. **Klassisch** sind die zwei Töne der Morserino-Firmware, **Marimba** zwei weiche Marimba-Töne, **Sanft** ein einzelner Ton mit leichtem Vibrato (beide heben sich deutlich vom Morseton ab). Beim Auswählen hörst du erst „richtig“, dann „falsch“; ein Tipp auf die gewählte Art spielt sie noch einmal | **Klassisch** / Marimba / Sanft / Kein Ton |
 
 **Vorgabe = Anzeige** ist eine gute Übung, um vom geschriebenen Text zum
 Geben zu kommen, etwa zum Einschleifen neuer Zeichen.
@@ -2962,7 +2962,7 @@ Abkürzungen, Rufzeichen-Präfixe, QSO-Texte) aus der Morserino-32-Firmware von
 Willi Kraml, OE1WKL, die ebenfalls unter der GPL-3.0 steht. Den Quellcode
 findest du auf [GitHub](https://github.com/ckonecny/apex-cw). Die
 Lizenzseite zeigt außerdem die MIT-Lizenz von Zork I–III, die SIL Open Font
-License der Schriften Anonymous Pro und DM Sans, die CC-BY-SA-4.0-Lizenz der Wortlisten (abgeleitet aus dem Projekt FrequencyWords) und die Lizenzen der verwendeten Flutter-Pakete. Zork ist eine Marke der jeweiligen Rechteinhaber;
+License der Schriften Anonymous Pro und DM Sans, die CC-BY-SA-4.0-Lizenz der Wortlisten (abgeleitet aus dem Projekt FrequencyWords) und die Lizenzen der verwendeten Flutter-Pakete. Die Bestätigungstöne „Marimba“ und „Sanft“ sind eigene Klänge der App (aus Sinuswellen berechnet) und stehen ebenfalls unter der GPL. Zork ist eine Marke der jeweiligen Rechteinhaber;
 die App ist mit ihnen, Infocom, Activision oder Microsoft nicht verbunden.
 
 ## Koch-Reihenfolge {#koch-reihenfolge}

@@ -1,18 +1,52 @@
 package at.oe1cko.nextcwtrainer
 
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.util.Log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCallHandler, KeySink, GenTone {
+class CwTonePlugin(context: Context, private val channel: MethodChannel) : MethodChannel.MethodCallHandler, KeySink, GenTone {
 
     companion object {
         const val CHANNEL = "at.oe1cko.nextcwtrainer/cw_tone"
         private const val TAG = "CwTonePlugin"
+
+        // Confirmation tone styles, same numbers as ConfirmTone in
+        // lib/util/confirm_tone.dart (0 = off never reaches this side).
+        const val STYLE_CLASSIC = 1
+        const val STYLE_MARIMBA = 2
+        const val STYLE_SANFT = 3
     }
 
     // Tracks the sidetone pitch so playConfirmTone() can restore it afterward.
     @Volatile private var lastFreqHz = 600.0
+
+    // Follows setVolume: the Marimba/Sanft sounds play at the sidetone volume
+    // (their level against the Morse tone is baked into the files, see
+    // tools/make_confirm_tones.py). 0.7 = the native default.
+    @Volatile private var volume = 0.7f
+
+    // Marimba and Sanft are short recordings synthesised by
+    // tools/make_confirm_tones.py (res/raw). Their own voice (SoundPool), so
+    // they never touch the sidetone's pitch or state (CLAUDE.md rule 2). Not
+    // yet loaded when played = silent for that one call.
+    private val soundPool: SoundPool = SoundPool.Builder()
+        .setMaxStreams(2)
+        .setAudioAttributes(AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build())
+        .build()
+    // style -> (right, wrong) sound ids
+    private val confirmSounds: Map<Int, Pair<Int, Int>> = mapOf(
+        STYLE_MARIMBA to (soundPool.load(context, R.raw.confirm_marimba_ok, 1) to
+            soundPool.load(context, R.raw.confirm_marimba_err, 1)),
+        STYLE_SANFT to (soundPool.load(context, R.raw.confirm_sanft_ok, 1) to
+            soundPool.load(context, R.raw.confirm_sanft_err, 1)),
+    )
+    @Volatile private var confirmStream = 0
 
     // Timing jitter ("bad fist") of the other station, 0..1; read by CwGenerator.
     @Volatile override var jitter = 0f
@@ -71,10 +105,25 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
     }
 
     /**
+     * Confirmation tone in the style the user picked. [STYLE_CLASSIC] is the
+     * firmware tone (below); Marimba and Sanft are the SoundPool sounds.
+     */
+    fun playConfirmTone(ok: Boolean, style: Int = STYLE_CLASSIC) {
+        val ids = confirmSounds[style]
+        if (ids == null) {
+            playClassicConfirmTone(ok)
+            return
+        }
+        if (confirmStream != 0) soundPool.stop(confirmStream)
+        val v = volume.coerceIn(0f, 1f)
+        confirmStream = soundPool.play(if (ok) ids.first else ids.second, v, v, 1, 0, 1f)
+    }
+
+    /**
      * Echo Trainer "Confrm. Tone" — mirrors MorseOutput::soundSignalOK/ERR exactly:
      * OK = 440Hz/97ms then 587Hz/193ms (rising); ERR = 366Hz/97ms then 330Hz/193ms (falling).
      */
-    fun playConfirmTone(ok: Boolean) {
+    private fun playClassicConfirmTone(ok: Boolean) {
         val restoreFreq = lastFreqHz
         val f1 = if (ok) 440.0 else 366.0
         val f2 = if (ok) 587.0 else 330.0
@@ -102,7 +151,8 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
                 result.success(null)
             }
             "setVolume" -> {
-                CwAudioNative.setVolume((call.arguments as? Number)?.toFloat() ?: 0.7f)
+                volume = (call.arguments as? Number)?.toFloat() ?: 0.7f
+                CwAudioNative.setVolume(volume)
                 result.success(null)
             }
             "setEnvelopeMs" -> {
@@ -125,7 +175,14 @@ class CwTonePlugin(private val channel: MethodChannel) : MethodChannel.MethodCal
                 result.success(null)
             }
             "playConfirmTone" -> {
-                playConfirmTone(call.arguments as? Boolean ?: true)
+                // {ok: Boolean, style: Int}; a bare Boolean = the classic tone.
+                val a = call.arguments
+                if (a is Map<*, *>) {
+                    playConfirmTone(a["ok"] as? Boolean ?: true,
+                        (a["style"] as? Number)?.toInt() ?: STYLE_CLASSIC)
+                } else {
+                    playConfirmTone(a as? Boolean ?: true)
+                }
                 result.success(null)
             }
             "playEffect" -> {

@@ -28,6 +28,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
+- Retake `echo_sheet.png` (DE+EN): the Echo Trainer section of Geben's ⚙ sheet now shows the four-way "Confirmation tone" choice instead of the switch (#136).
 - Check: `own_library` (EN) shows "2% heard" on the German text (progress from the screenshot run).
 - Retake `settings3` again with the final release build (new build number and commit).
 
@@ -35,6 +36,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test the beta, then the release (`tools/build_release.sh v1.8.0`, APK + AAB; manual HTML/PDF and screenshots only then). Engine config per screen: `android/test/engine_config_test.dart`; shared config helper: issue #18.
 
 ## Phone tests still open (1.8.0)
+- Confirmation tone choice (#136, branch `claude/confirm-tone-variants`, written in the cloud without build or tests): pending install. Check on the test phone: the four choices in Geben's ⚙ sheet (Echo Trainer section), the right → wrong preview when picking, Marimba/Gentle level against the sidetone at several volumes, sound in the Echo Trainer, Hören typing flow, Geben and character practice, and that an old "off" setting stayed off. Then run `flutter analyze` and `flutter test` (`confirm_tone_test.dart`).
 - App language default (this branch): without a saved choice, German on a German-language phone, English otherwise. Unit-tested; on the test phone only the German case can be seen (try an English phone/tester).
 - Own texts in the background (#21/#22): tried on the test phone with Tozo T6; check other headsets and phones in the beta.
 - Mix-up suggestions (#102/#106): over weeks of real use, check that the card appears when pairs recur and that boosting works.

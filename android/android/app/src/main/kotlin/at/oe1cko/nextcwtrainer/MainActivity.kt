@@ -169,6 +169,7 @@ class MainActivity : FlutterActivity() {
 
         // ── Audio & Keyer ──────────────────────────────────────────────────────
         tonePlugin = CwTonePlugin(
+            this,
             MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CwTonePlugin.CHANNEL)
         )
         keyer     = CwKeyer(tonePlugin)

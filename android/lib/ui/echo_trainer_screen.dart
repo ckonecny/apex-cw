@@ -1,3 +1,4 @@
+import '../util/confirm_tone.dart';
 import '../util/interference_profile.dart';
 import 'widgets/interference_button.dart';
 import 'dart:async';
@@ -148,7 +149,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   int  _echoThinkTime = 8;   // seconds
   int  _echoRepeats   = 3;   // M32 "Echo Repeats": 0..6, or 7 = "Forever"
   int  _echoDisplay   = _dispCodeOnly;  // matches M32 "Echo Prompt": sound/display/both
-  bool _confirmTone   = true;
+  ConfirmTone _confirmTone = ConfirmTone.classic;
   // "Gebe-Tempo" (M32 "Echo Speed Max"): cap on the tempo the ANSWER is
   // expected at; 0 = same as the prompt. Answer tempo = min(prompt, cap).
   int  _answerWpmMax  = 0;
@@ -287,7 +288,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _echoThinkTime  = p.getInt('echoThinkTime')  ?? 8;
       _echoRepeats    = (p.getInt('echoRepeats')   ?? 3).clamp(0, 7);
       _echoDisplay    = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
-      _confirmTone    = p.getBool('confirmTone')   ?? true;
+      _confirmTone    = ConfirmTone.fromPrefs(p);
       _answerWpmMax   = kGiveWpmCap(p.getInt('echoAnswerWpmMax') ?? 0);
       _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
       _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
@@ -992,7 +993,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (_repeats == 1) _applyBlockFeedback(_targetPlain, _attempt);
 
     setState(() => _state = ok ? _State.correct : _State.wrong);
-    if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', ok);
+    _confirmTone.play(_toneChannel, ok);
 
     if (ok) {
       _recordWord(_repeats == 1 ? WordOutcome.first : WordOutcome.afterRepeat);

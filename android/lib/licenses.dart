@@ -28,7 +28,10 @@ void registerAppLicenses() {
             'abbreviations, call sign prefixes, QSO texts): Copyright (C) '
             '2018-2025 Willi Kraml, OE1WKL.\nBoth under the GNU General '
             'Public License v3.0 or later. Source code: '
-            'https://github.com/ckonecny/apex-cw');
+            'https://github.com/ckonecny/apex-cw\nThe confirmation tones '
+            '"Marimba" and "Gentle" are the app\'s own sounds, computed from '
+            'sine waves by tools/make_confirm_tones.py (also GPL-3.0 or '
+            'later).');
     yield await file(['Zork I–III'], 'assets/zork/LICENSE',
         preamble: 'Zork I–III by Marc Blank, Dave Lebling, Bruce Daniels '
             'and Tim Anderson (Infocom). Zork is a trademark of its owners; '
