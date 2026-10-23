@@ -10,6 +10,7 @@ import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/char_color.dart';
+import '../util/confirm_tone.dart';
 import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
@@ -60,7 +61,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
   int _curtisBDit = 75, _curtisBDah = 45;
   int _acs = 0;
   int _outputCase = 0;
-  bool _confirmTone = true;
+  ConfirmTone _confirmTone = ConfirmTone.classic;
 
   late final MorseDecoder _decoder;
   StreamSubscription? _genSub;
@@ -114,7 +115,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
     _curtisBDah   = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
     _acs          = (p.getInt('acs') ?? 0).clamp(0, 3);
     _outputCase   = (p.getInt('outputCase') ?? 0).clamp(0, 1);
-    _confirmTone  = p.getBool('confirmTone') ?? true;
+    _confirmTone  = ConfirmTone.fromPrefs(p);
     if (!mounted) return;
 
     // Rule 2: the shared keyer/tone keep whatever the last screen set.
@@ -235,7 +236,7 @@ class _CharPracticeScreenState extends State<CharPracticeScreen> {
     _answered = true;
     final ok = ch.toUpperCase() == widget.ch.toUpperCase();
     setState(() { _ok = ok; _given = ch; });
-    if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', ok);
+    _confirmTone.play(_toneChannel, ok);
     // Same pauses as the Echo Trainer before the next play.
     _replayAfter(ok ? 1200 : 1500);
   }

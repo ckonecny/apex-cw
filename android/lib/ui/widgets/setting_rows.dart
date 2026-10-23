@@ -281,8 +281,13 @@ class SegmentRow extends StatelessWidget {
   final List<String> options;
   final int selected;
   final ValueChanged<int> onChanged;
+  // Options per row; default: all in one row up to 3, else 3 per row.
+  final int? perRow;
+  // Called when the already selected option is tapped again.
+  final VoidCallback? onTapActive;
   const SegmentRow({super.key, required this.label, required this.options,
-      required this.selected, required this.onChanged});
+      required this.selected, required this.onChanged, this.perRow,
+      this.onTapActive});
 
   @override
   Widget build(BuildContext context) {
@@ -295,16 +300,19 @@ class SegmentRow extends StatelessWidget {
       const SizedBox(height: 8),
       LayoutBuilder(builder: (context, constraints) {
         // Wrap onto multiple rows once options no longer fit comfortably in one.
-        final perRow = options.length <= 3 ? options.length : 3;
+        final cols = perRow ?? (options.length <= 3 ? options.length : 3);
         final gap = 6.0;
-        final itemWidth = (constraints.maxWidth - gap * (perRow - 1)) / perRow;
+        final itemWidth = (constraints.maxWidth - gap * (cols - 1)) / cols;
         return Wrap(
           spacing: gap, runSpacing: gap,
           children: List.generate(options.length, (i) {
             final active = i == selected;
             return SizedBox(width: itemWidth, child: GestureDetector(
               onTap: () {
-                if (i == selected) return;
+                if (i == selected) {
+                  onTapActive?.call();
+                  return;
+                }
                 final old = selected;
                 onChanged(i);
                 showSettingUndo(context, label, () => onChanged(old));

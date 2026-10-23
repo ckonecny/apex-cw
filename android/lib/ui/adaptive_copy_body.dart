@@ -35,6 +35,7 @@ import 'widgets/unlock_outlook_card.dart';
 import 'widgets/boost_summary.dart';
 import 'widgets/fit_or_compact.dart';
 import '../util/char_color.dart';
+import '../util/confirm_tone.dart';
 import '../util/interference_profile.dart';
 import '../l10n/strings.dart';
 import '../util/practice_clock.dart';
@@ -302,7 +303,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   Set<int> _learnWrong = {};     // positions wrong in the first attempt
   int _learnElement = 0;         // elements of the lesson heard so far
   bool _typeHaptic = true;
-  bool _confirmTone = true;      // global, set in Geben's ⚙ sheet
+  ConfirmTone _confirmTone = ConfirmTone.classic;      // global, set in Settings → General
   _TypeState _typeState = _TypeState.input;
   String _input = '';
   String _target = '';           // word being asked
@@ -690,7 +691,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       _typeAttempts = (pf.getInt('typeAttempts') ?? 2).clamp(1, 3);
       _typeHaptic = (pf.getInt('typeHaptic') ?? 1) == 1;
       _learnFromMistake = (pf.getInt('typeOnWrong') ?? 0) == 1;
-      _confirmTone = p.getBool('confirmTone') ?? true;
+      _confirmTone = ConfirmTone.fromPrefs(p);
       await _runTypingBlock();
       return;
     }
@@ -793,12 +794,12 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         if (typed == null) { // passed: same lesson as after a mistake
           if (_learnFromMistake) {
             learned = true;
-            if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', false);
+            _confirmTone.play(_toneChannel, false);
           }
           break;
         }
         final ok = isTypedRight(group, typed);
-        if (_confirmTone) _toneChannel.invokeMethod('playConfirmTone', ok);
+        _confirmTone.play(_toneChannel, ok);
         if (ok) {
           outcome = a == 1 ? 0 : 1;
           break;

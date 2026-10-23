@@ -97,7 +97,6 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _echoDisplay = 1;
   int _echoAnswerWpmMax = 0;
   int _toneShift = 1;
-  bool _confirmTone = true;
   // Koch sequence (global keys, as in Settings before). 0=M32, 1=LCWO,
   // 2=CW Academy, 3=LICW, 4=Custom.
   int _kochSeq = 0;
@@ -156,7 +155,6 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _echoDisplay = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _echoAnswerWpmMax = kGiveWpmCap(p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
       _toneShift = (p.getInt('toneShift') ?? 1).clamp(0, 2);
-      _confirmTone = p.getBool('confirmTone') ?? true;
       _kochSeq = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
       final ck = p.getString('customKochChars') ?? '';
       if (ck.isNotEmpty) _customKochChars = ck;
@@ -672,15 +670,6 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
           onChanged: (v) {
             setState(() => _toneShift = v);
             _p?.setInt('toneShift', v);
-          },
-        ),
-        const SettingsDivider(),
-        ToggleRow(
-          label: Strings.t('settings_confirm_tone'),
-          value: _confirmTone,
-          onChanged: (v) {
-            setState(() => _confirmTone = v);
-            _p?.setBool('confirmTone', v);
           },
         ),
       ]),
