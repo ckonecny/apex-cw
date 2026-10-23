@@ -31,6 +31,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - Retake `echo_sheet.png` (DE+EN): the Echo Trainer section no longer has the "Confirmation tone" switch (#136); it moved to Settings → General. Retake the Settings General screenshot too if one shows that card.
 - Check: `own_library` (EN) shows "2% heard" on the German text (progress from the screenshot run).
 - Retake `settings3` again with the final release build (new build number and commit).
+- Retake `hear_progress2.png` (DE+EN): the heatmap card has a new line explaining the columns (calendar week vs. 7-day blocks).
 
 ## v1.8.0 (released to the closed test 2026-10-21)
 Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test the beta, then the release (`tools/build_release.sh v1.8.0`, APK + AAB; manual HTML/PDF and screenshots only then). Engine config per screen: `android/test/engine_config_test.dart`; shared config helper: issue #18.

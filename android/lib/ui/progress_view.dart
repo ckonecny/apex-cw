@@ -408,6 +408,14 @@ class _ProgressViewState extends State<ProgressView> {
           Text('90 %', style: mono10),
         ]),
         const SizedBox(height: 4),
+        Text(
+            Strings.t(month
+                ? 'pr_heat_cols_month'
+                : _range == ProgressRange.weeks4
+                    ? 'pr_heat_cols_roll'
+                    : 'pr_heat_cols_cal'),
+            style: mono12),
+        const SizedBox(height: 6),
         Text(Strings.t('pr_heat_note').replaceFirst('{n}', '$kHeatMinAttempts'), style: mono12),
       ]),
     );
