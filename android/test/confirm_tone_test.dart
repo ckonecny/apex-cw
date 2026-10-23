@@ -136,6 +136,15 @@ void main() {
           scrollable: find.byType(Scrollable).first);
     }
 
+    // The sheet scrolls: bring the option on screen before tapping it, or the
+    // tap lands outside the sheet.
+    Future<void> tapOption(WidgetTester t, String key) async {
+      final f = find.text(Strings.t(key));
+      await t.ensureVisible(f);
+      await t.pump();
+      await t.tap(f);
+    }
+
     for (final lang in [0, 1]) {
       testWidgets('lang $lang: four choices, no overflow, picking one saves and plays',
           (t) async {
@@ -146,7 +155,7 @@ void main() {
         }
         expect(t.takeException(), isNull);
 
-        await t.tap(find.text(Strings.t('opt_confirm_gentle')));
+        await tapOption(t, 'opt_confirm_gentle');
         await t.pump();
         await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
         final p = await SharedPreferences.getInstance();
@@ -159,12 +168,12 @@ void main() {
 
         // Tapping the chosen one again plays it again.
         calls.clear();
-        await t.tap(find.text(Strings.t('opt_confirm_gentle')));
+        await tapOption(t, 'opt_confirm_gentle');
         await t.pump();
         expect(calls.single.arguments, {'ok': true, 'style': 3});
         await t.pump(const Duration(milliseconds: 1100));
 
-        await t.tap(find.text(Strings.t('opt_confirm_none')));
+        await tapOption(t, 'opt_confirm_none');
         await t.pump();
         await t.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
         expect(ConfirmTone.fromPrefs(p), ConfirmTone.off);
