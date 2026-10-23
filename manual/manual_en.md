@@ -671,7 +671,7 @@ is hidden to make room for the keyboard.
 :::
 
 Which short tone follows the grading (high = correct, low = wrong), or none
-at all, is set under **Confirmation tone** in the ⚙ sheet of **Send**. How many attempts
+at all, is set in **Settings** under **General → Confirmation tone** (it applies to Listen, Send and character practice). How many attempts
 you get per word and whether the keys vibrate is set in the ⚙ sheet under
 **Flow** (see [below](#flow)).
 
@@ -983,7 +983,6 @@ In addition there is the **Echo Trainer** section:
 | Prompt | How the prompt is given. **Sound** means you only hear it. **Display** means you only read it, with no audio. **Both** means you hear it and then read it once it has played | **Sound** / Display / Both |
 | Sending speed (max) | Highest speed for your answer, see [Sending speed](#sending-speed) | **same as prompt**, 10–50 WPM |
 | Tone shift | Your sidetone while answering is half a tone above or below the prompt | No shift / **Up ½** / Down ½ |
-| Confirmation tone | Short tone after grading: high for right, low for wrong. **Classic** is the two tones of the Morserino firmware, **Marimba** two soft marimba notes, **Gentle** a single note with a light vibrato (both stand out clearly from the Morse tone). When you pick one you hear “right”, then “wrong”; tapping the chosen one again plays it again | **Classic** / Marimba / Gentle / No tone |
 
 **Prompt = Display** is a good way to get from written text to sending,
 for example to drill new characters.
@@ -2730,6 +2729,7 @@ change.
 | Pitch (Hz) | Frequency of the sidetone and of the played characters | 300–900 Hz in 50 Hz steps (**600 Hz**) |
 | Tone softness | Rise and fall time of the tone. Larger values sound softer and click less, especially on short dits | 1–9 ms (**5 ms**) |
 | Letter case | Show characters in lower or UPPER case. Display only | **lower** / UPPER |
+| Confirmation tone | Short tone after grading: high for right, low for wrong. **Classic** is the two tones of the Morserino firmware, **Marimba** two soft marimba notes, **Gentle** a single note with a light vibrato (both stand out clearly from the Morse tone). When you pick one you hear “right”, then “wrong”; tapping the chosen one again plays it again | **Classic** / Marimba / Gentle / No tone |
 | Break hint when the error rate rises | Suggests a break in Listen and Send when errors pile up or the hit rate drops clearly under the same conditions (see [Break hint](#break-hint)) | **On** / Off |
 | Break hint: sensitivity | How early the hint comes (only shown while the hint is on) | Early / **Normal** / Late |
 | Do not disturb while practising | While a training screen is open, switches Android's Do Not Disturb to "priority" and back afterwards, so other apps stay quiet. Calls and messages you allowed in the Android settings still come through. Needs Do Not Disturb access for APEX CW: the setting then shows a button to grant it, and one that opens the Android Do Not Disturb settings so you can switch it on yourself | On / **Off** |

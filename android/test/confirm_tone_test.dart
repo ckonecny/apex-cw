@@ -4,13 +4,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:next_cw_trainer/content/training_profile.dart';
 import 'package:next_cw_trainer/l10n/strings.dart';
-import 'package:next_cw_trainer/ui/widgets/training_settings_sheet.dart';
+import 'package:next_cw_trainer/ui/settings_screen.dart';
 import 'package:next_cw_trainer/util/confirm_tone.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _channel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+const _settingsChannel = MethodChannel('at.oe1cko.nextcwtrainer/settings');
+const _settingsEvents = MethodChannel('at.oe1cko.nextcwtrainer/settings_events');
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,11 @@ void main() {
       calls.add(c);
       return null;
     });
+    // The Settings screen asks the native side about paddles, outputs, version.
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(_settingsChannel, (c) async => null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(_settingsEvents, (c) async => null);
   });
 
   group('stored choice', () {
@@ -107,7 +113,7 @@ void main() {
     });
   });
 
-  group('settings row', () {
+  group('settings row (Einstellungen, Allgemein)', () {
     Future<void> open(WidgetTester t, int lang) async {
       SharedPreferences.setMockInitialValues({});
       Strings.lang.value = lang;
@@ -118,18 +124,8 @@ void main() {
         builder: (context, child) => MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.3)),
             child: child!),
-        home: Builder(
-          builder: (ctx) => Scaffold(
-            body: TextButton(
-              onPressed: () => showTrainingSettingsSheet(ctx,
-                  profile: TrainingProfile.echo,
-                  sections: const [TrainingSection.echoFlow]),
-              child: const Text('open'),
-            ),
-          ),
-        ),
+        home: const SettingsScreen(),
       ));
-      await t.tap(find.text('open'));
       await t.pumpAndSettle();
       await t.scrollUntilVisible(
           find.text(Strings.t('settings_confirm_tone_help')), 200,

@@ -4,7 +4,6 @@ import '../../content/cw_content.dart';
 import '../../content/echo_suggestions.dart';
 import '../../content/training_profile.dart';
 import '../../content/charset_content.dart';
-import '../../util/confirm_tone.dart';
 import 'charset_header.dart';
 import 'decoder_chars_setting.dart';
 import '../../l10n/strings.dart';
@@ -98,7 +97,6 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _echoDisplay = 1;
   int _echoAnswerWpmMax = 0;
   int _toneShift = 1;
-  ConfirmTone _confirmTone = ConfirmTone.classic;
   // Koch sequence (global keys, as in Settings before). 0=M32, 1=LCWO,
   // 2=CW Academy, 3=LICW, 4=Custom.
   int _kochSeq = 0;
@@ -157,7 +155,6 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _echoDisplay = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _echoAnswerWpmMax = kGiveWpmCap(p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
       _toneShift = (p.getInt('toneShift') ?? 1).clamp(0, 2);
-      _confirmTone = ConfirmTone.fromPrefs(p);
       _kochSeq = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
       final ck = p.getString('customKochChars') ?? '';
       if (ck.isNotEmpty) _customKochChars = ck;
@@ -675,44 +672,9 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             _p?.setInt('toneShift', v);
           },
         ),
-        const SettingsDivider(),
-        SegmentRow(
-          label: Strings.t('settings_confirm_tone'),
-          options: [
-            for (final t in ConfirmTone.uiOrder) Strings.t(_confirmToneLabelKey(t)),
-          ],
-          perRow: 2,
-          selected: ConfirmTone.uiOrder.indexOf(_confirmTone),
-          onChanged: (v) {
-            final t = ConfirmTone.uiOrder[v];
-            setState(() => _confirmTone = t);
-            final p = _p;
-            if (p != null) t.save(p);
-            t.preview();
-          },
-          onTapActive: _confirmTone.preview,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
-          child: Text(Strings.t('settings_confirm_tone_help'),
-              style: TextStyle(fontSize: 12, color: c.textMuted)),
-        ),
       ]),
       const SizedBox(height: 24),
     ];
-  }
-
-  static String _confirmToneLabelKey(ConfirmTone t) => switch (t) {
-        ConfirmTone.classic => 'opt_confirm_classic',
-        ConfirmTone.marimba => 'opt_confirm_marimba',
-        ConfirmTone.sanft => 'opt_confirm_gentle',
-        ConfirmTone.off => 'opt_confirm_none',
-      };
-
-  @override
-  void dispose() {
-    ConfirmTone.cancelPreview();
-    super.dispose();
   }
 
   @override

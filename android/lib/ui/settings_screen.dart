@@ -13,6 +13,7 @@ import '../licenses.dart';
 import 'widgets/setting_rows.dart';
 import 'interference_settings_card.dart';
 import '../util/bluetooth_hint.dart';
+import '../util/confirm_tone.dart';
 import '../util/key_adapter_state.dart';
 import '../content/break_hint.dart';
 import '../util/break_reminder.dart';
@@ -52,6 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // "Tone Softness" (M32 posToneSoftness, default 4): sidetone attack/release
   // time, prefValue 0..8 maps to 1..9 ms (MorseOutput::setSidetoneEnvelope()).
   int  _toneSoftness = 4;
+  ConfirmTone _confirmTone = ConfirmTone.classic;
 
   // ── Practice Set ──────────────────────────────────────────────────────────
 
@@ -154,6 +156,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _eventSub?.cancel();
     KeyAdapterState.detected.removeListener(_loadPaddleDesc);
     _scroll.dispose();
+    ConfirmTone.cancelPreview();
     _settingsChannel.invokeMethod('cancelLearnPaddle');
     super.dispose();
   }
@@ -164,6 +167,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _pitch          = p.getInt('pitch')          ?? 600;
       _outputCase     = (p.getInt('outputCase')    ?? 0).clamp(0, 1);
       _toneSoftness   = (p.getInt('toneSoftness')  ?? 4).clamp(0, 8);
+      _confirmTone    = ConfirmTone.fromPrefs(p);
       _keyerMode      = p.getInt('keyerMode')      ?? 0;
       _curtisBDitTiming = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
       _curtisBDahTiming = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
@@ -190,6 +194,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setInt('acs',            _acs);
     await p.setInt('straightStartWpm', _straightStartWpm);
   }
+
+  static String _confirmToneLabelKey(ConfirmTone t) => switch (t) {
+        ConfirmTone.classic => 'opt_confirm_classic',
+        ConfirmTone.marimba => 'opt_confirm_marimba',
+        ConfirmTone.sanft => 'opt_confirm_gentle',
+        ConfirmTone.off => 'opt_confirm_none',
+      };
 
   void _saveLive() => _save();  // called on every interactive change
 
@@ -453,6 +464,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
               options: [Strings.t('opt_lower'), Strings.t('opt_upper')],
               selected: _outputCase,
               onChanged: (v) { setState(() => _outputCase = v); _saveLive(); },
+            ),
+            const SettingsDivider(),
+            SegmentRow(
+              label: Strings.t('settings_confirm_tone'),
+              options: [
+                for (final t in ConfirmTone.uiOrder) Strings.t(_confirmToneLabelKey(t)),
+              ],
+              perRow: 2,
+              selected: ConfirmTone.uiOrder.indexOf(_confirmTone),
+              onChanged: (v) async {
+                final t = ConfirmTone.uiOrder[v];
+                setState(() => _confirmTone = t);
+                t.save(await SharedPreferences.getInstance());
+                t.preview();
+              },
+              onTapActive: _confirmTone.preview,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
+              child: Text(Strings.t('settings_confirm_tone_help'),
+                  style: TextStyle(fontSize: 12, color: c.textMuted)),
             ),
             const SettingsDivider(),
             ValueListenableBuilder<bool>(

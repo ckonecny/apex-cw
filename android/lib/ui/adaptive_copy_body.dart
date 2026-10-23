@@ -303,7 +303,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   Set<int> _learnWrong = {};     // positions wrong in the first attempt
   int _learnElement = 0;         // elements of the lesson heard so far
   bool _typeHaptic = true;
-  ConfirmTone _confirmTone = ConfirmTone.classic;      // global, set in Geben's ⚙ sheet
+  ConfirmTone _confirmTone = ConfirmTone.classic;      // global, set in Settings → General
   _TypeState _typeState = _TypeState.input;
   String _input = '';
   String _target = '';           // word being asked

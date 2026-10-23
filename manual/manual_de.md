@@ -695,7 +695,7 @@ Platz hat.
 :::
 
 Welcher kurze Ton nach dem Prüfen kommt (hoch = richtig, tief = falsch) oder
-ob gar keiner, stellst du im ⚙-Blatt von **Geben** unter **Bestätigungston** ein. Wie viele Versuche
+ob gar keiner, stellst du in den **Einstellungen** unter **Allgemein → Bestätigungston** ein (gilt für Hören, Geben und Zeichen üben). Wie viele Versuche
 du pro Wort hast und ob die Tasten vibrieren, stellst du im ⚙-Blatt unter
 **Ablauf** ein (siehe [unten](#ablauf)).
 
@@ -1011,7 +1011,6 @@ Dazu kommt der Abschnitt **Echo Trainer**:
 | Vorgabe | Wie die Vorgabe kommt: **Ton** = nur hören; **Anzeige** = nur lesen, ohne Ton; **Beides** = hören und nach dem Abspielen lesen | **Ton** / Anzeige / Beides |
 | Gebetempo (max.) | Höchstes Antwort-Tempo, siehe [Gebetempo](#gebetempo) | **wie Hören**, 10–50 WPM |
 | Tonversatz | Dein Mithörton beim Antworten liegt einen Halbton höher oder tiefer als die Vorgabe | Kein Versatz / **Hoch ½** / Runter ½ |
-| Bestätigungston | Kurzer Ton nach der Bewertung: hoch für richtig, tief für falsch. **Klassisch** sind die zwei Töne der Morserino-Firmware, **Marimba** zwei weiche Marimba-Töne, **Sanft** ein einzelner Ton mit leichtem Vibrato (beide heben sich deutlich vom Morseton ab). Beim Auswählen hörst du erst „richtig“, dann „falsch“; ein Tipp auf die gewählte Art spielt sie noch einmal | **Klassisch** / Marimba / Sanft / Kein Ton |
 
 **Vorgabe = Anzeige** ist eine gute Übung, um vom geschriebenen Text zum
 Geben zu kommen, etwa zum Einschleifen neuer Zeichen.
@@ -2826,6 +2825,7 @@ wenn du beim Scrollen versehentlich ein Bedienelement berührt hast. Eine neuere
 | Tonhöhe (Hz) | Frequenz des Mithörtons und der gespielten Zeichen | 300–900 Hz in 50-Hz-Schritten (**600 Hz**) |
 | Tonweichheit | Anstiegs- und Abfallzeit des Tons. Größere Werte klingen weicher und klicken weniger, besonders bei kurzen Dits | 1–9 ms (**5 ms**) |
 | Schreibweise | Zeichen in Klein- oder Großbuchstaben anzeigen. Betrifft nur die Anzeige | **klein** / GROSS |
+| Bestätigungston | Kurzer Ton nach der Bewertung: hoch für richtig, tief für falsch. **Klassisch** sind die zwei Töne der Morserino-Firmware, **Marimba** zwei weiche Marimba-Töne, **Sanft** ein einzelner Ton mit leichtem Vibrato (beide heben sich deutlich vom Morseton ab). Beim Auswählen hörst du erst „richtig“, dann „falsch“; ein Tipp auf die gewählte Art spielt sie noch einmal | **Klassisch** / Marimba / Sanft / Kein Ton |
 | Pausenhinweis bei steigender Fehlerquote | Schlägt in Hören und Geben eine Pause vor, wenn sich die Fehler häufen oder die Trefferquote unter gleichen Bedingungen deutlich fällt (siehe [Pausenhinweis](#pausenhinweis)) | **An** / Aus |
 | Pausenhinweis: Empfindlichkeit | Wie früh der Hinweis kommt (nur sichtbar, wenn der Hinweis an ist) | Früh / **Normal** / Spät |
 | Beim Üben nicht stören | Schaltet „Nicht stören“ von Android auf „Priorität“, solange ein Trainingsscreen offen ist, und danach wieder zurück, damit andere Apps schweigen. Anrufe und Meldungen, die du in den Android-Einstellungen erlaubt hast, kommen weiter durch. Braucht den Zugriff auf „Nicht stören“ für APEX CW: Die Einstellung zeigt dann einen Knopf dafür und einen, der die Android-Einstellungen „Nicht stören“ öffnet, damit du es selbst einschalten kannst | An / **Aus** |

@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// The sound that follows a right/wrong grading (Hören typing, Geben, Echo
-/// Trainer, character practice). One global choice, set in the ⚙ sheet.
+/// Trainer, character practice). One global choice, set in Settings → General.
 ///
 /// The index is the stored value and what the native side gets as `style`
 /// (CwTonePlugin.STYLE_*): [off] never reaches it.
