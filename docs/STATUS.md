@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Next: v1.9.0 (notes `docs/release-notes-v1.9.0.md`; AAB for the Play closed test built, manual PDFs and screenshots still pending; beta `v1.9.0-beta1` on GitHub). Latest tagged build: v1.8.0 (2026-10-21, build 437, tag `v1.8.0` = commit 039560f; in the Play closed test with 2 testers; manual built for it). Previous: v1.7.0 (2026-10-12), v1.6.0 (2026-10-05); beta builds and older versions in `docs/STATUS-ARCHIVE.md`.
+Next: v1.9.0 (notes `docs/release-notes-v1.9.0.md`; AAB for the Play closed test built, manual and screenshots done; beta `v1.9.0-beta1` on GitHub). Latest tagged build: v1.8.0 (2026-10-21, build 437, tag `v1.8.0` = commit 039560f; in the Play closed test with 2 testers; manual built for it). Previous: v1.7.0 (2026-10-12), v1.6.0 (2026-10-05); beta builds and older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -28,11 +28,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
-- Retake `echo_sheet.png` (DE+EN): the Echo Trainer section no longer has the "Confirmation tone" switch (#136); it moved to Settings → General. Retake the Settings General screenshot too if one shows that card.
-- Check: `own_library` (EN) shows "2% heard" on the German text (progress from the screenshot run).
-- Retake `settings3` again with the final release build (new build number and commit).
-- New screenshot `audio_trainer.png` (DE+EN) for the Audio trainer chapter (manual text has no image yet).
-- Retake `hear_progress2.png` (DE+EN): the heatmap card has a new line explaining the columns (calendar week vs. 7-day blocks).
+(empty; v1.9.0 manual and screenshots done 2026-10-24)
 
 ## v1.8.0 (released to the closed test 2026-10-21)
 Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test the beta, then the release (`tools/build_release.sh v1.8.0`, APK + AAB; manual HTML/PDF and screenshots only then). Engine config per screen: `android/test/engine_config_test.dart`; shared config helper: issue #18.
