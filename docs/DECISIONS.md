@@ -2318,3 +2318,12 @@ Voice volume (#139, same day, user request): own slider `atVolume` (profile `aud
 Undo and endless (#139, same day, user request): the think-pause, group-pause and voice-volume sliders use the usual undo snackbar (`showUndo` left on). The groups-per-block slider has one extra step at the right end for the audio trainer only: stored `maxWords` 51 = endless (`_blockMax` in the sheet); the screen maps it to `maxGroups` 0, which the engine already treats as "until stopped", and shows "Groups: n" without "of N". Hören keeps its 1-50 slider and the stored value 0 = 10 (shared encoding, unchanged).
 
 Audio trainer in the background (#140): reuses the own-texts foreground service (`OwnTextPlaybackService`, MediaSession, audio focus, wake lock, noisy-receiver) instead of a second service; the Dart wrapper `OwnTextPlayback.update` now takes `labelPrefix` (`ot_bg` / `at_bg` strings) and `channelId` (own notification channel per screen). Only one of the two screens runs at a time. The engine sees the buttons as `play` -> `resume`, `pause` -> `pause` (also audio focus loss, calls, unplugging), `next` -> `skipGroup`, `prev` -> `repeatGroup`. The last two cut the running group at once (`_Jumped`, raced in `_guard` like stop; sounds stopped natively) and go on with a new group or the same one; the block counter does not count a skipped group. The screen reports `playing = !paused` to the service on every engine state change and stops the service when the run ends or the screen is left. Headset play before the first start does nothing (the service only exists during a run).
+
+## Audio trainer: running view like Hören (2026-10-24)
+While the trainer runs, the setup area (character set, note, intro, tempo box)
+is gone and the screen shows Hören's running view (header, phase, progress
+dots, group count, WPM, Pause/Stop). The solution has a reserved 44 px slot, so
+nothing moves when it appears (before, the status card grew and pushed the
+tempo box down and up again). Back while running stops and returns to the
+start view (`PopScope canPop: !running`), as in Hören; the settings icon is
+hidden while running.
