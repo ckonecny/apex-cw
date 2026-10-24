@@ -1,8 +1,8 @@
-// Own texts in the background (issues #21, #22): talks to the Android
-// foreground service (OwnTextPlaybackService.kt) that keeps the player alive
-// with the screen off and shows lock-screen / notification / headset controls.
-// Only the own-texts player uses this; the sound itself still comes from the
-// shared generator.
+// Own texts and the audio trainer in the background (issues #21, #22, #140):
+// talks to the Android foreground service (OwnTextPlaybackService.kt) that
+// keeps the player alive with the screen off and shows lock-screen /
+// notification / headset controls. Only one of the two screens runs at a time;
+// the sound itself still comes from the shared generator.
 import 'dart:async';
 
 import 'package:flutter/services.dart';
@@ -12,12 +12,16 @@ import '../l10n/strings.dart';
 
 class OwnTextPlayback {
   static const _channel = MethodChannel('at.oe1cko.nextcwtrainer/own_playback');
-  static const _events = EventChannel('at.oe1cko.nextcwtrainer/own_playback_events');
+  static const _events = EventChannel(
+    'at.oe1cko.nextcwtrainer/own_playback_events',
+  );
   static const _reminder = MethodChannel('at.oe1cko.nextcwtrainer/reminder');
 
   /// Buttons from the lock screen, notification and headset:
-  /// "play", "pause", "next" (next sentence), "prev" (previous sentence).
-  static Stream<String> get commands => _events.receiveBroadcastStream().cast<String>();
+  /// "play", "pause", "next" (next sentence / group), "prev" (previous
+  /// sentence / repeat the group).
+  static Stream<String> get commands =>
+      _events.receiveBroadcastStream().cast<String>();
 
   /// Without the notification permission (Android 13+) the player still runs
   /// in the background, but shows no controls; asked only once.
@@ -32,16 +36,25 @@ class OwnTextPlayback {
     } catch (_) {}
   }
 
-  static Future<void> update({required String title, required bool playing}) async {
+  /// [labelPrefix] picks the notification texts (`ot_bg_*` own texts,
+  /// `at_bg_*` audio trainer); [channelId] keeps each screen's notification
+  /// channel apart in the system settings.
+  static Future<void> update({
+    required String title,
+    required bool playing,
+    String labelPrefix = 'ot_bg',
+    String channelId = 'own_text_playback',
+  }) async {
     try {
       await _channel.invokeMethod('update', {
         'title': title,
         'playing': playing,
-        'channel': Strings.t('ot_bg_channel'),
+        'channelId': channelId,
+        'channel': Strings.t('${labelPrefix}_channel'),
         'play': Strings.t('ot_bg_play'),
         'pause': Strings.t('ot_bg_pause'),
-        'next': Strings.t('ot_bg_next'),
-        'prev': Strings.t('ot_bg_prev'),
+        'next': Strings.t('${labelPrefix}_next'),
+        'prev': Strings.t('${labelPrefix}_prev'),
       });
     } catch (_) {}
   }

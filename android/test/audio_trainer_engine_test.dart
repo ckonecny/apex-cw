@@ -62,50 +62,67 @@ void main() {
     expect(audioTrainerVoices, ['kristin', 'bryce']);
   });
 
-  test('each group: Morse, think pause, its voices, pause, then the next', () async {
-    final r = _Rig(
+  test(
+    'each group: Morse, think pause, its voices, pause, then the next',
+    () async {
+      final r = _Rig(
         config: const AudioTrainerConfig(
-            thinkPause: Duration(milliseconds: 4000),
-            voiceGap: Duration(milliseconds: 500),
-            groupPause: Duration(milliseconds: 3000)));
-    r.contents.addAll(['ab', 'c1']);
-    final done = r.engine.run();
-    // stop as the third group is drawn, i.e. after two complete groups
-    r.engine.state.addListener(() {
-      if (r.engine.state.value.groupsDone == 2) r.engine.stop();
-    });
-    await done;
-    expect(r.log.take(11).toList(), [
-      'morse:AB',
-      'wait:4000',
-      'voice:A', 'wait:500', 'voice:B',
-      'wait:3000',
-      'morse:C1',
-      'wait:4000',
-      'voice:C', 'wait:500', 'voice:1',
-    ]);
-    // groupsDone == 2 stops the run before the second pause
-    expect(r.log, contains('stopMorse'));
-    expect(r.engine.state.value.phase, AudioTrainerPhase.idle);
-    expect(r.engine.state.value.groupsDone, 2);
-  });
+          thinkPause: Duration(milliseconds: 4000),
+          voiceGap: Duration(milliseconds: 500),
+          groupPause: Duration(milliseconds: 3000),
+        ),
+      );
+      r.contents.addAll(['ab', 'c1']);
+      final done = r.engine.run();
+      // stop as the third group is drawn, i.e. after two complete groups
+      r.engine.state.addListener(() {
+        if (r.engine.state.value.groupsDone == 2) r.engine.stop();
+      });
+      await done;
+      expect(r.log.take(11).toList(), [
+        'morse:AB',
+        'wait:4000',
+        'voice:A',
+        'wait:500',
+        'voice:B',
+        'wait:3000',
+        'morse:C1',
+        'wait:4000',
+        'voice:C',
+        'wait:500',
+        'voice:1',
+      ]);
+      // groupsDone == 2 stops the run before the second pause
+      expect(r.log, contains('stopMorse'));
+      expect(r.engine.state.value.phase, AudioTrainerPhase.idle);
+      expect(r.engine.state.value.groupsDone, 2);
+    },
+  );
 
-  test('the run ends by itself after maxGroups, without a last pause', () async {
-    final r = _Rig(
+  test(
+    'the run ends by itself after maxGroups, without a last pause',
+    () async {
+      final r = _Rig(
         config: const AudioTrainerConfig(
-            maxGroups: 2,
-            thinkPause: Duration(milliseconds: 4000),
-            groupPause: Duration(milliseconds: 3000)));
-    r.contents.addAll(['a', 'b']);
-    await r.engine.run();
-    expect(r.log.where((l) => l.startsWith('morse:')).toList(), ['morse:A', 'morse:B']);
-    // one pause between the two groups, none after the last
-    expect(r.log.where((l) => l == 'wait:3000').length, 1);
-    expect(r.engine.state.value.finished, isTrue);
-    expect(r.engine.state.value.groupsDone, 2);
-    expect(r.engine.state.value.phase, AudioTrainerPhase.idle);
-    expect(r.engine.running, isFalse);
-  });
+          maxGroups: 2,
+          thinkPause: Duration(milliseconds: 4000),
+          groupPause: Duration(milliseconds: 3000),
+        ),
+      );
+      r.contents.addAll(['a', 'b']);
+      await r.engine.run();
+      expect(r.log.where((l) => l.startsWith('morse:')).toList(), [
+        'morse:A',
+        'morse:B',
+      ]);
+      // one pause between the two groups, none after the last
+      expect(r.log.where((l) => l == 'wait:3000').length, 1);
+      expect(r.engine.state.value.finished, isTrue);
+      expect(r.engine.state.value.groupsDone, 2);
+      expect(r.engine.state.value.phase, AudioTrainerPhase.idle);
+      expect(r.engine.running, isFalse);
+    },
+  );
 
   test('maxGroups 0 runs until stopped', () async {
     final r = _Rig(config: const AudioTrainerConfig());
@@ -154,8 +171,11 @@ void main() {
     expect(r.engine.state.value.solutionChar, 0);
     await r.engine.stop();
     await done;
-    expect(seen.take(3).toList(),
-        [AudioTrainerPhase.morse, AudioTrainerPhase.think, AudioTrainerPhase.solution]);
+    expect(seen.take(3).toList(), [
+      AudioTrainerPhase.morse,
+      AudioTrainerPhase.think,
+      AudioTrainerPhase.solution,
+    ]);
   });
 
   test('stop ends a Morse that never reports completion', () async {
@@ -204,5 +224,53 @@ void main() {
     await done;
     expect(r.engine.running, isFalse);
     expect(r.engine.state.value.paused, isFalse);
+  });
+
+  test(
+    'skipGroup cuts the running group short and draws the next one',
+    () async {
+      final r = _Rig();
+      r.contents.addAll(['ab', 'cd']);
+      r.morseGate = Completer<void>();
+      final done = r.engine.run();
+      await _until(() => r.log.contains('morse:AB'));
+      r.morseGate = null; // later groups play on their own
+      await r.engine.skipGroup();
+      await _until(() => r.log.contains('morse:CD'));
+      expect(r.log, contains('stopMorse'));
+      expect(r.log.where((e) => e.startsWith('voice:')), isEmpty);
+      expect(r.engine.state.value.groupsDone, 0);
+      await r.engine.stop();
+      await done;
+    },
+  );
+
+  test('repeatGroup plays the same group again', () async {
+    final r = _Rig();
+    r.contents.addAll(['ab', 'cd']);
+    r.morseGate = Completer<void>();
+    final done = r.engine.run();
+    await _until(() => r.log.contains('morse:AB'));
+    r.morseGate = null;
+    await r.engine.repeatGroup();
+    await _until(() => r.log.where((e) => e == 'morse:AB').length == 2);
+    expect(r.log, isNot(contains('morse:CD')));
+    await r.engine.stop();
+    await done;
+  });
+
+  test('skipGroup while paused resumes the run', () async {
+    final r = _Rig();
+    r.contents.addAll(['ab', 'cd']);
+    r.engine.pause(); // no-op before run
+    final done = r.engine.run();
+    await _until(() => r.log.contains('morse:AB'));
+    r.engine.pause();
+    expect(r.engine.state.value.paused, isTrue);
+    await r.engine.skipGroup();
+    expect(r.engine.state.value.paused, isFalse);
+    await _until(() => r.log.contains('morse:CD'));
+    await r.engine.stop();
+    await done;
   });
 }
