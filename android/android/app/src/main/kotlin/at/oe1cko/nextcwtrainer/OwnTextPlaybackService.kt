@@ -99,7 +99,21 @@ class OwnTextPlaybackService : Service() {
                     "prev" to (intent.getStringExtra("prev") ?: "Previous"))
                 refresh()
             }
-            ACTION_STOP -> shutDown()
+            ACTION_STOP -> {
+                // Started with startForegroundService() (the app could not know
+                // whether an earlier start had arrived yet): that start must be
+                // answered with startForeground(), or Android kills the app.
+                if (!foreground) {
+                    val n = buildNotification()
+                    if (Build.VERSION.SDK_INT >= 29) {
+                        startForeground(NOTIF_ID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+                    } else {
+                        startForeground(NOTIF_ID, n)
+                    }
+                }
+                OwnTextPlayback.startPending = false
+                shutDown()
+            }
             CMD_PLAY -> OwnTextPlayback.onCommand?.invoke("play")
             CMD_PAUSE -> OwnTextPlayback.onCommand?.invoke("pause")
             CMD_NEXT -> OwnTextPlayback.onCommand?.invoke("next")
@@ -132,6 +146,7 @@ class OwnTextPlaybackService : Service() {
                 startForeground(NOTIF_ID, notification)
             }
             foreground = true
+            OwnTextPlayback.startPending = false
         } else if (foreground) {
             // Paused: stay as a notification the user can swipe away, so the
             // play button on the lock screen keeps working.
@@ -153,7 +168,7 @@ class OwnTextPlaybackService : Service() {
 
     private fun buildNotification(): Notification {
         val nm = getSystemService(NotificationManager::class.java)
-        nm.createNotificationChannel(NotificationChannel(channelId, labels["channel"],
+        nm.createNotificationChannel(NotificationChannel(channelId, labels["channel"] ?: "Playback",
             NotificationManager.IMPORTANCE_LOW).apply { setShowBadge(false) })
         val open = packageManager.getLaunchIntentForPackage(packageName)?.let {
             PendingIntent.getActivity(this, 0, it, PendingIntent.FLAG_IMMUTABLE)
@@ -233,4 +248,12 @@ class OwnTextPlaybackService : Service() {
 object OwnTextPlayback {
     /** "play" | "pause" | "next" | "prev"; null while no player listens. */
     @Volatile var onCommand: ((String) -> Unit)? = null
+
+    /**
+     * A startForegroundService() is on its way and the service has not yet
+     * called startForeground(). Stopping the service now (stopService) would
+     * crash the app with ForegroundServiceDidNotStartInTimeException, so the
+     * stop is then sent as an intent that the service answers properly.
+     */
+    @Volatile var startPending = false
 }
