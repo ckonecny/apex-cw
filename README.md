@@ -296,6 +296,14 @@ The confirmation tones "Marimba" and "Gentle" (`android/android/app/src/main/res
 are the project's own sounds, computed from sine waves by
 `tools/make_confirm_tones.py`, and fall under the same GPL.
 
+The spoken spelling-alphabet samples of the audio trainer (`voice_kristin_*`,
+`voice_bryce_*` in the same folder) were synthesised offline with
+[Piper](https://github.com/OHF-Voice/piper1-gpl) (GPL-3.0, build tool only,
+not shipped) from the voice models "kristin" and "bryce" of
+[rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices), whose
+voice cards state public-domain training data (LibriVox recordings, and the
+author's own recordings for "bryce"). Script: `tools/make_voice_samples.py`.
+
 Bundled third-party material keeps its own licence: Zork I–III story files
 (MIT, `android/assets/zork/LICENSE`), the fonts Anonymous Pro and DM
 Sans (SIL Open Font License 1.1, `android/assets/fonts/OFL-*.txt`), the English

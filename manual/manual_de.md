@@ -69,7 +69,7 @@ Die Startseite hat vier Gruppen:
 | **Üben** | **Hören** | Mitschreiben üben: CW Generator und Koch Trainer im Blockablauf |
 | | **Geben** | Senden üben: Echo Trainer – ein Wort wird vorgespielt, du gibst es zurück |
 | | **Verstehen** | Hören ohne Mitschreiben: Sätze, Q-Gruppen, Mini-QSO (siehe [Verstehen](#verstehen)) |
-| **Frei** | **Freie Modi** | Öffnet fünf Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) |
+| **Frei** | **Freie Modi** | Öffnet sechs Kacheln: **CW Keyer** (frei tasten, mit Mitschrift als Text), **CW-Decoder** (CW über das Mikrofon mitlesen), **WiFi Trx** (CW über das Internet mit anderen Morserinos und Apps) **QSO Bot** (ein simulierter QSO-Partner) und **Eigene Texte** (eigene Texte aus der Zwischenablage als Morse hören, siehe [Eigene Texte](#eigene-texte)) und **Audio-Trainer** (Morse mitdenken, danach die Buchstabierwörter hören, siehe [Audio-Trainer](#audio-trainer)) |
 | **Spielen** | **Spiele** | Morse Invaders, Text-Adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Lernen** | **Lernressourcen** | Interaktiver Morse-Baum, Zeichentabelle, Prüfungssimulation, Links zu Kursen und Übungsseiten |
 
@@ -1968,6 +1968,57 @@ Eigene Texte, nicht für die anderen Übungen.
 ![⚙-Blatt der Eigenen Texte](img/de/own_sheet.png)
 :::
 
+# Audio-Trainer {#audio-trainer}
+
+Der **Audio-Trainer** ist zum Kopfhören (Head Copy) mit geschlossenen Augen
+gedacht. Du hörst eine Gruppe Zeichen als Morse und tippst nichts – du denkst
+sie nur mit. Nach einer Pause nennt eine Stimme zu jedem Zeichen das
+Buchstabierwort (Alfa, Bravo, Charlie …), in der Reihenfolge, in der die Zeichen
+gesendet wurden. Du vergleichst, was du gedacht hast, mit dem, was du hörst,
+und beurteilst selbst, ob du richtig lagst. Dann folgt die nächste Gruppe. Du
+findest den Modus unter **Freie Modi**.
+
+Es wird nichts bewertet und nichts pro Zeichen gezählt, also gibt es weder einen
+Statistik-Eintrag noch eine Heatmap. Die Übungszeit zählt aber für dein
+Tagesziel.
+
+## So läuft eine Gruppe
+
+1. **Morse:** Die App spielt eine Gruppe.
+2. **Denkpause:** Stille, lang genug, um die Zeichen fertig zu denken.
+3. **Auflösung:** Die Stimme nennt zu jedem Zeichen ein Buchstabierwort, in der
+   gesendeten Reihenfolge, mit einer kurzen Pause zwischen den Zeichen. Die
+   Gruppe erscheint dabei auf dem Bildschirm; das gerade gesprochene Zeichen ist
+   hervorgehoben.
+4. **Pause zwischen den Gruppen**, dann startet die nächste Gruppe von selbst. Nach der eingestellten Zahl von Gruppen (**Gruppen pro Block**) endet der Block.
+
+**Pause** hält den Ablauf am nächsten Schritt an, **Stopp** beendet ihn. Auch
+das Verlassen des Bildschirms beendet ihn.
+
+## Einstellungen
+
+Die Seite ist aufgebaut wie die anderen Trainings: oben der Zeichenvorrat
+(Zeichenvorrat, Inhalt, Koch-Lektion), dann ein kurzer Hinweis, das Statusfeld,
+Tempo und Zeichenabstand und der **Start**-Knopf. Zeichenvorrat, Koch-Lektion,
+Tempo und Abstand funktionieren wie beim [Hören](#zeichenvorrat-und-inhalt-wählen).
+Nur Buchstaben und Ziffern haben ein Sprach-Sample; Satzzeichen und Prosigns
+werden übersprungen. Das **Stör**-Symbol oben funktioniert wie in den anderen
+Trainings (Tippen: an/aus, langer Druck: Einstellungen); das Rauschen steht,
+solange der Trainer läuft, und wirkt auf das Morse, nicht auf die Stimme.
+
+Alles Weitere steckt im **Zahnrad** (⚙) oben:
+
+- **Koch-Reihenfolge** (nur bei der Koch-Lektion): M32, LCWO, CW Academy, LICW oder eigene.
+- **Gruppenlänge** (min–max, 1–8, wie beim Hören): Die Länge einer Gruppe wird jedes Mal zwischen den beiden Werten gewürfelt. Voreingestellt ist 1, bei Zufallszeichen also ein einzelnes Zeichen pro Gruppe. Sie wird nur bei Zufallszeichen, „Gemischt“ und dem Übungsset gezeigt.
+- **Wortsprache**, **Wortlänge** (min–max) und **Abkürzungslänge** (min–max): Bei **Wörter**, **Abkürzungen** und **Gemischt** ersetzen sie die Gruppenlänge, genau wie beim Hören. Die Zahl auf dem Chip **Wörter** ändert sich mit.
+- **Gruppen pro Block** (1–50 oder ganz rechts **endlos**, voreingestellt **10**, bei Wörtern „Wörter pro Block“), wie beim Hören: Nach so vielen Gruppen endet der Block von selbst. Das Statusfeld zeigt „Block beendet“, **Start** beginnt den nächsten Block. **Stopp** beendet früher. Bei **endlos** läuft der Trainer, bis du ihn stoppst.
+- **Denkpause**: 1–15 s zwischen dem letzten Morsezeichen und der Auflösung.
+- **Pause zwischen Gruppen**: 1–10 s.
+- **Stimme**: **Kristin** oder **Bryce**. Eine Änderung wirkt ab dem nächsten Start.
+- **Lautstärke der Stimme** (10–100 %, voreingestellt **70 %**): der Pegel der Stimme, unabhängig vom Morseton. Sie gilt, sobald du das Blatt schließt, also ab dem nächsten gesprochenen Zeichen. Wie bei den anderen Reglern lässt sich eine Änderung mit **Rückgängig** zurücknehmen.
+
+Alle diese Einstellungen, auch Zeichenvorrat, Koch-Lektion und Koch-Reihenfolge, gelten nur für den Audio-Trainer: Eine Änderung hier ändert weder Hören noch Geben, und umgekehrt (beim ersten Mal werden sie aus dem Hören übernommen). Geteilt mit dem Rest der App sind nur Tonhöhe, Groß-/Kleinschreibung der Anzeige und die Stör-Einstellungen. Der Bildschirm bleibt an, solange der Audio-Trainer offen ist; Abspielen bei ausgeschaltetem Bildschirm gibt es noch nicht.
+
 # Spiele
 
 Unter **Spielen → Spiele** findest du acht Einträge. Die Liste ist länger als der
@@ -2966,7 +3017,7 @@ Abkürzungen, Rufzeichen-Präfixe, QSO-Texte) aus der Morserino-32-Firmware von
 Willi Kraml, OE1WKL, die ebenfalls unter der GPL-3.0 steht. Den Quellcode
 findest du auf [GitHub](https://github.com/ckonecny/apex-cw). Die
 Lizenzseite zeigt außerdem die MIT-Lizenz von Zork I–III, die SIL Open Font
-License der Schriften Anonymous Pro und DM Sans, die CC-BY-SA-4.0-Lizenz der Wortlisten (abgeleitet aus dem Projekt FrequencyWords) und die Lizenzen der verwendeten Flutter-Pakete. Die Bestätigungstöne „Marimba“ und „Sanft“ sind eigene Klänge der App (aus Sinuswellen berechnet) und stehen ebenfalls unter der GPL. Zork ist eine Marke der jeweiligen Rechteinhaber;
+License der Schriften Anonymous Pro und DM Sans, die CC-BY-SA-4.0-Lizenz der Wortlisten (abgeleitet aus dem Projekt FrequencyWords) und die Lizenzen der verwendeten Flutter-Pakete. Die Bestätigungstöne „Marimba“ und „Sanft“ sind eigene Klänge der App (aus Sinuswellen berechnet) und stehen ebenfalls unter der GPL. Die gesprochenen Buchstabierwörter des Audio-Trainers wurden mit Piper aus den gemeinfreien Stimmenmodellen „kristin“ und „bryce“ erzeugt (Skript im Quellcode). Zork ist eine Marke der jeweiligen Rechteinhaber;
 die App ist mit ihnen, Infocom, Activision oder Microsoft nicht verbunden.
 
 ## Koch-Reihenfolge {#koch-reihenfolge}

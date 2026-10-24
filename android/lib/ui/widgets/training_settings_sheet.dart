@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../content/cw_content.dart';
 import '../../content/echo_suggestions.dart';
+import '../../content/audio_trainer_engine.dart' show audioTrainerVoices;
 import '../../content/training_profile.dart';
 import '../../content/charset_content.dart';
 import 'charset_header.dart';
@@ -12,7 +13,7 @@ import 'setting_rows.dart';
 
 /// Parts of the per-training settings a screen can show, see
 /// docs/archive/training/P3-einstellungen-in-screens.md.
-enum TrainingSection { content, spacing, wordSpacing, wordSelection, echoFlow, hearFlow, adaptive, kochSequence, decoderChars }
+enum TrainingSection { content, spacing, wordSpacing, wordSelection, echoFlow, hearFlow, adaptive, kochSequence, decoderChars, audioFlow }
 
 /// Opens the settings sheet for one training profile ([TrainingProfile.hear]
 /// or [TrainingProfile.echo]). Every change is saved immediately; the screen
@@ -99,6 +100,18 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _toneShift = 1;
   // Koch sequence (global keys, as in Settings before). 0=M32, 1=LCWO,
   // 2=CW Academy, 3=LICW, 4=Custom.
+  /// The Koch sequence keys are global prefs; the audio trainer keeps its own
+  /// copy (`audio.kochSeq`, ...) so it never changes Hören's sequence.
+  bool get _audio => widget.profile == TrainingProfile.audio;
+  /// Right end of the block-size slider: 50, or 51 = endless in the audio trainer.
+  int get _blockMax => _audio ? 51 : 50;
+
+  String _kk(String k) => widget.profile == TrainingProfile.audio ? 'audio.$k' : k;
+
+  // Audio trainer flow (#139): think pause and pause between groups in
+  // seconds, voice index.
+  int _atThink = 4, _atRest = 3, _atVoice = 0, _atVolume = 70;
+
   int _kochSeq = 0;
   String _customKochChars = 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
   int _licwCarouselStart = 0;
@@ -135,6 +148,10 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               ? (p.getInt('wpm') ?? 20)
               : TrainingProfile.clampWpm(prof.getInt('wpm') ?? p.getInt('wpm'));
       _randomOption = (prof.getInt('randomOption') ?? 0).clamp(0, _randomOptionKeys.length - 1);
+      _atThink = (prof.getInt('atThink') ?? 4).clamp(1, 15);
+      _atRest = (prof.getInt('atRest') ?? 3).clamp(1, 10);
+      _atVolume = (prof.getInt('atVolume') ?? 70).clamp(10, 100);
+      _atVoice = (prof.getInt('atVoice') ?? 0).clamp(0, audioTrainerVoices.length - 1);
       _groupLength = (prof.getInt('groupLength') ?? 5).clamp(1, 8);
       _groupLengthMax = (prof.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);
@@ -155,10 +172,10 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _echoDisplay = (p.getInt('echoDisplayMode') ?? 1).clamp(1, 3);
       _echoAnswerWpmMax = kGiveWpmCap(p.getInt('echoAnswerWpmMax') ?? 0).clamp(0, 50);
       _toneShift = (p.getInt('toneShift') ?? 1).clamp(0, 2);
-      _kochSeq = (p.getInt('kochSeq') ?? 0).clamp(0, 4);
-      final ck = p.getString('customKochChars') ?? '';
+      _kochSeq = (p.getInt(_kk('kochSeq')) ?? 0).clamp(0, 4);
+      final ck = p.getString(_kk('customKochChars')) ?? '';
       if (ck.isNotEmpty) _customKochChars = ck;
-      _licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
+      _licwCarouselStart = (p.getInt(_kk('licwCarouselStart')) ?? 0).clamp(0, 13);
       _adaptiveHighPct = (p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99);
       _adaptiveLowPct = (p.getInt('adaptiveLowThresholdPct') ?? 70).clamp(30, 95);
       _adaptiveEmaAlphaPct = (p.getInt('adaptiveEmaAlphaPct') ?? 30).clamp(5, 100);
@@ -304,7 +321,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
           selected: _kochSeq,
           onChanged: (v) {
             setState(() => _kochSeq = v);
-            _p?.setInt('kochSeq', v);
+            _p?.setInt(_kk('kochSeq'), v);
           },
         ),
         if (_kochSeq == 3) ...[
@@ -316,7 +333,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             display: '$_licwCarouselStart',
             onChanged: (v) {
               setState(() => _licwCarouselStart = v.round());
-              _p?.setInt('licwCarouselStart', _licwCarouselStart);
+              _p?.setInt(_kk('licwCarouselStart'), _licwCarouselStart);
             },
           ),
         ],
@@ -327,11 +344,59 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
             initialValue: _customKochChars,
             onChanged: (v) {
               setState(() => _customKochChars = v);
-              _p?.setString('customKochChars', v);
+              _p?.setString(_kk('customKochChars'), v);
             },
             countLabel: Strings.t('settings_unique_chars_detected').replaceFirst('{n}', '$n'),
           ),
         ],
+      ]),
+      const SizedBox(height: 24),
+    ];
+  }
+
+  List<Widget> _audioFlow() {
+    return [
+      SettingsSectionHeader(Strings.t('settings_audio_flow')),
+      _hint(Strings.t('settings_audio_flow_desc')),
+      SettingsCard(children: [
+        LabeledSlider(
+          label: Strings.t('at_think_pause'),
+          display: Strings.t('at_seconds').replaceFirst('{n}', '$_atThink'),
+          value: _atThink.toDouble(), min: 1, max: 15, divisions: 14,
+          onChanged: (v) {
+            setState(() => _atThink = v.round());
+            _setInt('atThink', _atThink);
+          },
+        ),
+        LabeledSlider(
+          label: Strings.t('at_rest_pause'),
+          display: Strings.t('at_seconds').replaceFirst('{n}', '$_atRest'),
+          value: _atRest.toDouble(), min: 1, max: 10, divisions: 9,
+          onChanged: (v) {
+            setState(() => _atRest = v.round());
+            _setInt('atRest', _atRest);
+          },
+        ),
+        const SettingsDivider(),
+        SegmentRow(
+          label: Strings.t('at_voice'),
+          options: [for (final v in audioTrainerVoices) v[0].toUpperCase() + v.substring(1)],
+          selected: _atVoice,
+          // Loaded at the next start; a running session keeps its voice.
+          onChanged: (v) {
+            setState(() => _atVoice = v);
+            _setInt('atVoice', v);
+          },
+        ),
+        LabeledSlider(
+          label: Strings.t('at_voice_volume'),
+          display: '$_atVolume %',
+          value: _atVolume.toDouble(), min: 10, max: 100, divisions: 18,
+          onChanged: (v) {
+            setState(() => _atVolume = v.round());
+            _setInt('atVolume', _atVolume);
+          },
+        ),
       ]),
       const SizedBox(height: 24),
     ];
@@ -569,12 +634,15 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         rows[i],
       ],
       if (rows.isNotEmpty) const SettingsDivider(),
+      // The audio trainer has one more step at the right end: endless (51).
       LabeledSlider(
           label: Strings.t(k == ContentKind.random
               ? 'settings_groups_per_block' : 'settings_words_per_block'),
-          value: (_maxWords == 0 ? 10 : _maxWords).clamp(1, 50).toDouble(),
-          min: 1, max: 50, divisions: 49,
-          display: '${_maxWords == 0 ? 10 : _maxWords.clamp(1, 50)}',
+          value: (_maxWords == 0 ? 10 : _maxWords).clamp(1, _blockMax).toDouble(),
+          min: 1, max: _blockMax.toDouble(), divisions: _blockMax - 1,
+          display: _audio && _maxWords > 50
+              ? Strings.t('at_endless')
+              : '${_maxWords == 0 ? 10 : _maxWords.clamp(1, 50)}',
           onChanged: (v) {
             setState(() => _maxWords = v.round());
             _setInt('maxWords', _maxWords);
@@ -745,6 +813,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
                 TrainingSection.adaptive => _adaptive(),
                 TrainingSection.kochSequence => _kochSequence(),
                 TrainingSection.decoderChars => _decoderChars(),
+                TrainingSection.audioFlow => _audioFlow(),
               },
             ),
         ],

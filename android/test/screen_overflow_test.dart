@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/l10n/strings.dart';
+import 'package:next_cw_trainer/ui/audio_trainer_screen.dart';
 import 'package:next_cw_trainer/ui/char_practice_screen.dart';
 import 'package:next_cw_trainer/ui/decoder_screen.dart';
 import 'package:next_cw_trainer/ui/echo_trainer_screen.dart';
@@ -77,6 +78,7 @@ void main() {
     'goal_settings': () => const GoalSettingsScreen(),
     'links': () => const LinksScreen(),
     'free': () => const FreeScreen(),
+    'audio_trainer': () => const AudioTrainerScreen(),
     'morse_tree': () => const MorseTreeScreen(),
     'head_copy': () => const HeadCopyScreen(),
     'q_groups': () => const QGroupsScreen(),

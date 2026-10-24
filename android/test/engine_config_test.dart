@@ -12,6 +12,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:next_cw_trainer/ui/audio_trainer_screen.dart';
 import 'package:next_cw_trainer/ui/char_practice_screen.dart';
 import 'package:next_cw_trainer/ui/head_copy_screen.dart';
 import 'package:next_cw_trainer/ui/invaders_screen.dart';
@@ -57,6 +58,7 @@ final _generatorScreens = <String, Widget Function()>{
   'head_copy': () => const HeadCopyScreen(),
   'q_groups': () => const QGroupsScreen(),
   'mini_qso': () => const MiniQsoScreen(),
+  'audio_trainer': () => const AudioTrainerScreen(),
 };
 
 /// Single-character playback only: speed and tone, no spacing needed.

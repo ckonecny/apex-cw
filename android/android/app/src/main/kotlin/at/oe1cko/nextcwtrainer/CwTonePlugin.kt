@@ -7,7 +7,7 @@ import android.util.Log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class CwTonePlugin(context: Context, private val channel: MethodChannel) : MethodChannel.MethodCallHandler, KeySink, GenTone {
+class CwTonePlugin(private val context: Context, private val channel: MethodChannel) : MethodChannel.MethodCallHandler, KeySink, GenTone {
 
     companion object {
         const val CHANNEL = "at.oe1cko.nextcwtrainer/cw_tone"
@@ -47,6 +47,9 @@ class CwTonePlugin(context: Context, private val channel: MethodChannel) : Metho
             soundPool.load(context, R.raw.confirm_sanft_err, 1)),
     )
     @Volatile private var confirmStream = 0
+
+    // Spoken character samples of the audio trainer (#139).
+    private val voiceSamples = VoiceSamples(context)
 
     // Timing jitter ("bad fist") of the other station, 0..1; read by CwGenerator.
     @Volatile override var jitter = 0f
@@ -185,6 +188,16 @@ class CwTonePlugin(context: Context, private val channel: MethodChannel) : Metho
                 }
                 result.success(null)
             }
+            // Audio trainer (#139): loadVoice loads a voice, playVoiceChar plays one sample
+            // (the call returns when it has ended), setVoiceVolume sets its level 0..1,
+            // stopVoice aborts it.
+            "loadVoice" -> voiceSamples.load(call.arguments as? String ?: "kristin") { ok -> result.success(ok) }
+            "playVoiceChar" -> voiceSamples.play(call.arguments as? String ?: "", result)
+            "setVoiceVolume" -> {
+                voiceSamples.volume = ((call.arguments as? Number)?.toFloat() ?: 0.7f).coerceIn(0f, 1f)
+                result.success(null)
+            }
+            "stopVoice" -> { voiceSamples.stop(); result.success(null) }
             "playEffect" -> {
                 // [[freqHz, ms], ...]
                 val notes = (call.arguments as? List<*>).orEmpty().mapNotNull { n ->

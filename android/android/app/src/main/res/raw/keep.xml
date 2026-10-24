@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The voice samples are looked up by name at run time (VoiceSamples.kt), so
+     the resource shrinker must not drop them as unused. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/voice_*" />

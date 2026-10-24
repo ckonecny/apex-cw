@@ -67,7 +67,7 @@ The home screen has four groups:
 | **Practice** | **Listen** | Practice copying: CW Generator and Koch Trainer in the block flow |
 | | **Send** | Practice sending: Echo Trainer. A word is played and you key it back |
 | | **Head copy** | Listening without writing: sentences, Q-groups, Mini QSO (see [Head copy](#head-copy)) |
-| **Free** | **Free modes** | Opens five tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) and **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) |
+| **Free** | **Free modes** | Opens six tiles: **CW Keyer** (key freely, with the text decoded on screen), **CW Decoder** (copy CW through the microphone), **WiFi Trx** (CW over the internet with other Morserinos and apps) **QSO Bot** (a simulated QSO partner) **Own texts** (hear your own texts from the clipboard as Morse, see [Own texts](#own-texts)) and **Audio trainer** (think along with the Morse, then hear the spelling words, see [Audio trainer](#audio-trainer)) |
 | **Play** | **Games** | Morse Invaders, text adventure, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave |
 | **Learn** | **Learning resources** | Interactive Morse tree, character chart, exam simulation, links to courses and practice sites |
 
@@ -1907,6 +1907,55 @@ only, not to the other exercises.
 ![⚙ sheet of Own texts](img/en/own_sheet.png)
 :::
 
+# Audio trainer {#audio-trainer}
+
+The **Audio trainer** is for head copy with your eyes closed. You hear one
+group of characters in Morse and type nothing – you only think it. After a pause
+a voice says the spelling word of every character (Alfa, Bravo, Charlie …) in
+the order they were sent. You compare what you thought with what you hear and
+judge for yourself. Then the next group follows. You find it under **Free
+modes**.
+
+Nothing is graded and nothing is counted per character, so there is no
+statistics entry and no heatmap. The time you practise still counts towards your
+daily goal.
+
+## How a group runs
+
+1. **Morse:** the app plays one group.
+2. **Thinking pause:** silence, long enough to finish thinking the characters.
+3. **Solution:** the voice says one spelling word per character, in the order
+   sent, with a short pause between the characters. The group appears on screen
+   while it is spoken; the character being spoken is highlighted.
+4. **Pause between groups**, then the next group starts by itself. After the set number of groups (**Groups per block**) the block ends.
+
+**Pause** holds the flow at the next step, **Stop** ends it. Leaving the screen
+also stops it.
+
+## Settings
+
+The page is laid out like the other trainings: the character set at the top
+(character set, content, Koch lesson), then a short note, the status field, the
+speed and character spacing, and the **Start** button. Character set, Koch
+lesson, speed and spacing work as in [Listen](#choosing-the-character-set-and-content).
+Only letters and digits have a voice sample; punctuation and prosigns are
+skipped. The **interference** symbol in the top bar works as in the other
+trainings (tap: on/off, long press: settings); the noise stands while the
+trainer runs and affects the Morse, not the voice.
+
+Everything else is in the **gear** (⚙) at the top:
+
+- **Koch sequence** (only with the Koch lesson): M32, LCWO, CW Academy, LICW or your own.
+- **Group length** (min–max, 1–8, as in Listen): the length of a group is drawn between the two values each time. The default is 1; with random characters this means a single character per group. It is only shown for random characters, mixed content and the practice set.
+- **Word language**, **Word length** (min–max) and **Abbreviation length** (min–max): with **Words**, **Abbreviations** and **Mixed** these replace the group length, exactly as in Listen. The number on the **Words** chip changes with them.
+- **Groups per block** (1–50 or **endless** at the far right end, default **10**, “Words per block” with words), as in Listen: the block ends by itself after that many groups. The status field shows “Block finished”, **Start** begins the next block. **Stop** ends it earlier. With **endless** the trainer keeps going until you stop it.
+- **Thinking pause**: 1–15 s between the last Morse character and the solution.
+- **Pause between groups**: 1–10 s.
+- **Voice**: **Kristin** or **Bryce**. A change takes effect at the next start.
+- **Voice volume** (10–100 %, default **70 %**): the level of the voice, independent of the Morse tone. It applies when you close the sheet, so it is heard from the next spoken character on. Like the other sliders, a change can be taken back with **Undo**.
+
+All of these, including the character set, the Koch lesson and the Koch sequence, are stored only for the Audio trainer: changing them here does not change Listen or Send, and the other way round (the first time they are copied from Listen). Only the pitch, the display case and the interference settings are shared with the rest of the app. The display stays on while the Audio trainer is open; playing with the screen off is not available yet.
+
 # Games
 
 Under **Play → Games** there are eight entries. The list is longer than the screen; a
@@ -2868,7 +2917,7 @@ OE1WKL, which is also under the GPL-3.0. The source code is on
 shows the MIT License of Zork I–III, the SIL Open Font License of the fonts
 Anonymous Pro and DM Sans, the CC-BY-SA-4.0 licence of
 the word lists (derived from the FrequencyWords project),
-and the licences of the Flutter packages the app uses. The confirmation tones “Marimba” and “Gentle” are the app’s own sounds (computed from sine waves) and are also under the GPL. Zork is a trademark of its owners; the app is not affiliated with
+and the licences of the Flutter packages the app uses. The confirmation tones “Marimba” and “Gentle” are the app’s own sounds (computed from sine waves) and are also under the GPL. The spoken spelling words of the Audio trainer were generated with Piper from the public-domain voice models “kristin” and “bryce” (script in the source code). Zork is a trademark of its owners; the app is not affiliated with
 them, nor with Infocom, Activision or Microsoft.
 
 ## Koch sequence {#koch-sequence}

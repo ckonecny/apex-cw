@@ -31,6 +31,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - Retake `echo_sheet.png` (DE+EN): the Echo Trainer section no longer has the "Confirmation tone" switch (#136); it moved to Settings → General. Retake the Settings General screenshot too if one shows that card.
 - Check: `own_library` (EN) shows "2% heard" on the German text (progress from the screenshot run).
 - Retake `settings3` again with the final release build (new build number and commit).
+- New screenshot `audio_trainer.png` (DE+EN) for the Audio trainer chapter (manual text has no image yet).
 - Retake `hear_progress2.png` (DE+EN): the heatmap card has a new line explaining the columns (calendar week vs. 7-day blocks).
 
 ## v1.8.0 (released to the closed test 2026-10-21)
@@ -42,6 +43,9 @@ Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test 
 - Own texts in the background (#21/#22): tried on the test phone with Tozo T6; check other headsets and phones in the beta.
 - Mix-up suggestions (#102/#106): over weeks of real use, check that the card appears when pairs recur and that boosting works.
 - Send start view (#107), compact row (#109), spaced goal credit, external key everywhere (#116): tried on the test phone; recheck in the beta.
+
+## Audio trainer (#139, branch `feature/audio-trainer`, not committed)
+Built: voice samples (Kristin, Bryce), flow engine (per group: Morse, think pause, solution) + tests, native sample player (`VoiceSamples.kt`, channel `cw_tone`: loadVoice/playVoiceChar/stopVoice), screen under Free modes (`audio_trainer_screen.dart`, profile `audio` and own Koch sequence `audio.*`, both seeded from Hören once; word/abbrev length, interference button), DE+EN strings, manual chapter DE+EN, tests (engine, `engine_config_test`, `screen_overflow_test`). Installed on the test phone (debug, 2026-10-23): the flow runs group by group (Morse, think pause, solution on screen, pause, counter), no errors in logcat. Not yet judged by ear / still to check: voices audible and the new voice-volume slider (samples re-rendered louder, default 70 %) against the Morse tone, pause/stop, voice switch, Koch level / character set, practice time in the daily goal, release build keeps the `voice_*` raw files (`res/raw/keep.xml`). Background/headset: #140. Romeo/Sierra samples "not optimal" by ear (accepted).
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
