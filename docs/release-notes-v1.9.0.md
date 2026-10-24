@@ -17,3 +17,10 @@ choice of confirmation sounds and a clearer heat map.
   Settings > General; right and wrong now sound clearly different from the
   Morse tone (#136).
 - **Heat map:** explains what a column is and is titled "Practised characters".
+
+## Fixed
+- **Crash on Stop in the background:** pausing on the lock screen, unlocking and
+  tapping Stop could crash the app (Audio trainer and Own texts share the
+  playback service). The service is now stopped in a way Android accepts.
+- **Audio trainer view:** while it runs, the setup area is hidden and the
+  running view looks like Listen; the solution no longer makes the tempo box jump.
