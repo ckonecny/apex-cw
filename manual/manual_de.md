@@ -1982,6 +1982,15 @@ Es wird nichts bewertet und nichts pro Zeichen gezählt, also gibt es weder eine
 Statistik-Eintrag noch eine Heatmap. Die Übungszeit zählt aber für dein
 Tagesziel.
 
+## Die Ansicht während des Laufs
+
+Nach **Start** blendet der Audio-Trainer die Auswahl des Zeichenvorrats, den
+Hinweis, die Beschreibung und das Tempo aus und zeigt dieselbe Laufansicht wie
+Hören: oben Kopfzeile mit Inhalt und Koch-Stufe, in der Mitte die aktuelle Phase,
+die Fortschrittspunkte, „Gruppe n von N“ und das Tempo, darunter die Auflösung
+(sie hat ihren festen Platz, nichts springt), unten **Pause** und **Stopp**.
+Mit **Stopp** (oder „Zurück“) siehst du wieder alles wie am Anfang.
+
 ## So läuft eine Gruppe
 
 1. **Morse:** Die App spielt eine Gruppe.
@@ -2021,7 +2030,7 @@ Alles Weitere steckt im **Zahnrad** (⚙) oben:
 
 Alle diese Einstellungen, auch Zeichenvorrat, Koch-Lektion und Koch-Reihenfolge, gelten nur für den Audio-Trainer: Eine Änderung hier ändert weder Hören noch Geben, und umgekehrt (beim ersten Mal werden sie aus dem Hören übernommen). Geteilt mit dem Rest der App sind nur Tonhöhe, Groß-/Kleinschreibung der Anzeige und die Stör-Einstellungen. Der Bildschirm bleibt an, solange der Audio-Trainer offen ist, du kannst ihn aber ausschalten.
 
-**Im Hintergrund und per Kopfhörer:** Der Audio-Trainer läuft weiter, wenn du den Bildschirm ausschaltest oder in eine andere App wechselst. Solange er läuft, zeigt Android eine Benachrichtigung mit den Tasten **Gruppe wiederholen**, **Abspielen/Pause** und **Nächste Gruppe**; dieselben Tasten gibt es auf dem Sperrbildschirm und an Bluetooth-Kopfhörern (zurück wiederholt die laufende Gruppe, vor springt zur nächsten; beides bricht die laufende Gruppe sofort ab). Ein Anruf, eine andere Audio-App oder das Abziehen der Kopfhörer pausiert den Trainer. Beim ersten Mal fragt Android nach der Erlaubnis für Benachrichtigungen – ohne sie läuft der Trainer trotzdem weiter, aber ohne Tasten in der Benachrichtigung. Verlässt du den Audio-Trainer mit „Zurück“, endet die Wiedergabe.
+**Im Hintergrund und per Kopfhörer:** Der Audio-Trainer läuft weiter, wenn du den Bildschirm ausschaltest oder in eine andere App wechselst. Solange er läuft, zeigt Android eine Benachrichtigung mit den Tasten **Gruppe wiederholen**, **Abspielen/Pause** und **Nächste Gruppe**; dieselben Tasten gibt es auf dem Sperrbildschirm und an Bluetooth-Kopfhörern (zurück wiederholt die laufende Gruppe, vor springt zur nächsten; beides bricht die laufende Gruppe sofort ab). Ein Anruf, eine andere Audio-App oder das Abziehen der Kopfhörer pausiert den Trainer. Beim ersten Mal fragt Android nach der Erlaubnis für Benachrichtigungen – ohne sie läuft der Trainer trotzdem weiter, aber ohne Tasten in der Benachrichtigung. Mit „Zurück“ beendest du den Durchlauf und kehrst zur Startansicht zurück; ein zweites „Zurück“ verlässt den Audio-Trainer.
 
 # Spiele
 

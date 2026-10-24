@@ -398,9 +398,11 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
     return ValueListenableBuilder<int>(
       valueListenable: Strings.lang,
       builder: (context, _, _) => PopScope(
-        canPop: true,
+        // While running, back stops and returns to the start view (as in
+        // Hören) instead of leaving the screen.
+        canPop: !running,
         onPopInvokedWithResult: (didPop, _) {
-          if (didPop) _engine?.stop();
+          if (!didPop) _engine?.stop();
         },
         child: Scaffold(
           backgroundColor: c.background,
@@ -413,19 +415,22 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
             ),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: c.textMuted),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.maybePop(context),
             ),
             actions: [
               const InterferenceButton(),
-              IconButton(
-                tooltip: Strings.t('settings_title'),
-                icon: Icon(Icons.settings, color: c.textMuted),
-                onPressed: _loaded ? _openSettings : null,
-              ),
+              if (!running)
+                IconButton(
+                  tooltip: Strings.t('settings_title'),
+                  icon: Icon(Icons.settings, color: c.textMuted),
+                  onPressed: _loaded ? _openSettings : null,
+                ),
             ],
           ),
           body: !_loaded
               ? const SizedBox.shrink()
+              : running
+              ? _runningView(c, s)
               : Column(
                   children: [
                     Expanded(
@@ -479,7 +484,7 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          _status(c, s, running),
+                          _status(c, s),
                           const SizedBox(height: 12),
                           SettingsCard(
                             children: [
@@ -509,7 +514,7 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
                         top: false,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                          child: _buttons(c, running, s),
+                          child: _startButton(),
                         ),
                       ),
                     ),
@@ -520,8 +525,7 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
     );
   }
 
-  Widget _status(AppColors c, AudioTrainerState s, bool running) {
-    final solution = s.phase == AudioTrainerPhase.solution;
+  Widget _status(AppColors c, AudioTrainerState s) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -555,64 +559,184 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
               style: TextStyle(fontSize: 12, color: c.danger),
             ),
           ],
-          if (solution) ...[
-            const SizedBox(height: 12),
-            Text.rich(
-              TextSpan(
-                children: [
-                  for (var i = 0; i < s.group.length; i++)
-                    TextSpan(
-                      text: s.group[i],
-                      style: TextStyle(
-                        color: i == s.solutionChar ? c.accent : c.textPrimary,
-                        fontWeight: i == s.solutionChar
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
-                    ),
-                ],
-              ),
-              style: const TextStyle(
-                fontSize: 28,
-                fontFamily: 'AnonymousPro',
-                letterSpacing: 4,
-              ),
-            ),
-          ],
         ],
       ),
     );
   }
 
-  Widget _buttons(AppColors c, bool running, AudioTrainerState s) {
-    if (!running) {
-      return SizedBox(
-        width: double.infinity,
-        child: FilledButton.icon(
-          onPressed: _starting ? null : _start,
-          icon: const Icon(Icons.play_arrow),
-          label: Text(Strings.t('at_start')),
-        ),
-      );
-    }
-    return Row(
+  /// Same running view as Hören: block header, big phase text, progress dots,
+  /// group count and tempo, Pause / Stop at the bottom. The setup area is gone
+  /// while running; the solution has a reserved slot, so nothing jumps.
+  Widget _runningView(AppColors c, AudioTrainerState s) {
+    final endless = _maxGroups == 0;
+    final current = endless
+        ? s.groupsDone + 1
+        : (s.groupsDone + 1).clamp(1, _maxGroups);
+    final solution = s.phase == AudioTrainerPhase.solution;
+    return Column(
       children: [
-        Expanded(
-          child: OutlinedButton.icon(
-            onPressed: () => s.paused ? _engine?.resume() : _engine?.pause(),
-            icon: Icon(s.paused ? Icons.play_arrow : Icons.pause),
-            label: Text(Strings.t(s.paused ? 'at_resume' : 'at_pause')),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text(
+                  Strings.t('at_title').toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: c.textMuted,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Flexible(
+                child: Text(
+                  '${contentLabel(_choice.content)}'
+                  '${_choice.set == CharSet.koch ? ' · KOCH $_kochLevel' : ''}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 12, color: c.textMuted),
+                ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(width: 12),
         Expanded(
-          child: FilledButton.icon(
-            onPressed: _stop,
-            icon: const Icon(Icons.stop),
-            label: Text(Strings.t('at_stop')),
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _phaseText(s),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: c.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  if (!endless)
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      children: [
+                        for (var i = 0; i < _maxGroups; i++)
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: Icon(
+                              i == s.groupsDone
+                                  ? Icons.radio_button_checked
+                                  : Icons.circle,
+                              size: i == s.groupsDone ? 16 : 10,
+                              color:
+                                  i < s.groupsDone ||
+                                      (i == s.groupsDone &&
+                                          s.phase != AudioTrainerPhase.morse &&
+                                          s.phase != AudioTrainerPhase.idle)
+                                  ? c.accent
+                                  : c.border,
+                            ),
+                          ),
+                      ],
+                    ),
+                  const SizedBox(height: 12),
+                  Text(
+                    endless
+                        ? Strings.t('at_groups_count')
+                              .replaceFirst('{n}', '$current')
+                        : Strings.t('ac_group_of')
+                              .replaceFirst('{n}', '$current')
+                              .replaceFirst('{total}', '$_maxGroups'),
+                    style: TextStyle(fontSize: 13, color: c.textMuted),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '$_wpm WPM',
+                    style: TextStyle(fontSize: 12, color: c.textDisabled),
+                  ),
+                  const SizedBox(height: 24),
+                  // Reserved height: the solution appears without moving the rest.
+                  SizedBox(
+                    height: 44,
+                    child: !solution
+                        ? null
+                        : FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  for (var i = 0; i < s.group.length; i++)
+                                    TextSpan(
+                                      text: s.group[i],
+                                      style: TextStyle(
+                                        color: i == s.solutionChar
+                                            ? c.accent
+                                            : c.textPrimary,
+                                        fontWeight: i == s.solutionChar
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              style: const TextStyle(
+                                fontSize: 28,
+                                fontFamily: 'AnonymousPro',
+                                letterSpacing: 4,
+                              ),
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: AppButton(
+                    label: Strings.t(s.paused ? 'at_resume' : 'at_pause'),
+                    color: c.info,
+                    primary: false,
+                    onTap: () =>
+                        s.paused ? _engine?.resume() : _engine?.pause(),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: AppButton(
+                    label: Strings.t('at_stop'),
+                    color: c.info,
+                    onTap: _stop,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _startButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: FilledButton.icon(
+        onPressed: _starting ? null : _start,
+        icon: const Icon(Icons.play_arrow),
+        label: Text(Strings.t('at_start')),
+      ),
     );
   }
 }

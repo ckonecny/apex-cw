@@ -1920,6 +1920,15 @@ Nothing is graded and nothing is counted per character, so there is no
 statistics entry and no heatmap. The time you practise still counts towards your
 daily goal.
 
+## The view while it runs
+
+After **Start** the Audio trainer hides the character-set choice, the note, the
+description and the tempo, and shows the same running view as Listen: a header
+line with the content and Koch level, the current phase in the middle, the
+progress dots, "Group n of N" and the speed, below that the solution (it has a
+fixed place, so nothing jumps), and **Pause** and **Stop** at the bottom. After
+**Stop** (or "Back") everything is shown again as at the beginning.
+
 ## How a group runs
 
 1. **Morse:** the app plays one group.
@@ -1958,7 +1967,7 @@ Everything else is in the **gear** (⚙) at the top:
 
 All of these, including the character set, the Koch lesson and the Koch sequence, are stored only for the Audio trainer: changing them here does not change Listen or Send, and the other way round (the first time they are copied from Listen). Only the pitch, the display case and the interference settings are shared with the rest of the app. The display stays on while the Audio trainer is open, but you can turn it off.
 
-**In the background and with a headset:** The Audio trainer keeps running when you turn the screen off or switch to another app. While it runs, Android shows a notification with the buttons **Repeat group**, **Play/Pause** and **Next group**; the same buttons are on the lock screen and on Bluetooth headsets (previous repeats the running group, next jumps to the following one; both cut the running group short at once). A call, another audio app or unplugging the headphones pauses the trainer. The first time, Android asks for permission to show notifications – without it the trainer keeps running but has no buttons in the notification. Leaving the Audio trainer with "Back" ends the playback.
+**In the background and with a headset:** The Audio trainer keeps running when you turn the screen off or switch to another app. While it runs, Android shows a notification with the buttons **Repeat group**, **Play/Pause** and **Next group**; the same buttons are on the lock screen and on Bluetooth headsets (previous repeats the running group, next jumps to the following one; both cut the running group short at once). A call, another audio app or unplugging the headphones pauses the trainer. The first time, Android asks for permission to show notifications – without it the trainer keeps running but has no buttons in the notification. "Back" ends the run and returns to the start view; a second "Back" leaves the Audio trainer.
 
 # Games
 

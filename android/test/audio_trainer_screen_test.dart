@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/l10n/strings.dart';
 import 'package:next_cw_trainer/ui/audio_trainer_screen.dart';
+import 'package:next_cw_trainer/ui/widgets/charset_header.dart';
+import 'package:next_cw_trainer/ui/widgets/tempo_spacing_section.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -39,7 +41,11 @@ void main() {
         c,
       ) async {
         calls.add('$ch.${c.method}(${c.arguments})');
-        return null;
+        return switch (c.method) {
+          'loadVoice' => true,
+          'getNextContent' => 'ABC',
+          _ => null,
+        };
       });
     }
   });
@@ -191,4 +197,33 @@ void main() {
       expect(sp.getInt('kochSeq'), 2); // global untouched
     },
   );
+
+  testWidgets('running hides the setup area, Stop brings it all back', (
+    tester,
+  ) async {
+    await open(tester, prefs(0), size: const Size(360, 2000));
+    expect(find.byType(CharsetHeader), findsOneWidget);
+    expect(find.byIcon(Icons.settings), findsOneWidget);
+
+    await tester.tap(find.text('Start'));
+    await tester.runAsync(
+      () => Future.delayed(const Duration(milliseconds: 300)),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(CharsetHeader), findsNothing);
+    expect(find.byType(TempoSpacingSection), findsNothing);
+    expect(find.byIcon(Icons.settings), findsNothing);
+    expect(find.text('Pause'), findsOneWidget);
+    expect(find.text('Stopp'), findsOneWidget);
+
+    await tester.tap(find.text('Stopp'));
+    await tester.runAsync(
+      () => Future.delayed(const Duration(milliseconds: 300)),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(CharsetHeader), findsOneWidget);
+    expect(find.byType(TempoSpacingSection), findsOneWidget);
+    expect(find.byIcon(Icons.settings), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }
