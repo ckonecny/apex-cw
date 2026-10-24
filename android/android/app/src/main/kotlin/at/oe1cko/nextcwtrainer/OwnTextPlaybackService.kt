@@ -21,13 +21,13 @@ import android.os.IBinder
 import android.os.PowerManager
 
 /**
- * Keeps the own-texts player (issues #21, #22) alive with the screen off or
+ * Keeps the own-texts player (issues #21, #22) and the audio trainer (#140) alive with the screen off or
  * the app in the background: foreground service with a media notification, a
  * MediaSession for the lock screen and headset buttons, audio focus and a
  * partial wake lock. It plays nothing itself — the sound still comes from the
  * shared CwGenerator, driven by the Dart player. Every button press is handed
  * to [OwnTextPlayback.onCommand]; Dart answers with a new state via update.
- * Only the own-texts player starts it (nothing else uses it).
+ * Only these two screens start it, never both at once.
  */
 class OwnTextPlaybackService : Service() {
 
@@ -51,6 +51,7 @@ class OwnTextPlaybackService : Service() {
     private var foreground = false
     private var title = ""
     private var labels = mapOf<String, String>()
+    private var channelId = CHANNEL
 
     private val noisy = object : BroadcastReceiver() {
         override fun onReceive(c: Context, i: Intent) {
@@ -89,6 +90,7 @@ class OwnTextPlaybackService : Service() {
             ACTION_UPDATE -> {
                 title = intent.getStringExtra("title") ?: ""
                 playing = intent.getBooleanExtra("playing", false)
+                channelId = intent.getStringExtra("channelId")?.takeIf { it.isNotEmpty() } ?: CHANNEL
                 labels = mapOf(
                     "channel" to (intent.getStringExtra("channel") ?: "Playback"),
                     "play" to (intent.getStringExtra("play") ?: "Play"),
@@ -151,12 +153,12 @@ class OwnTextPlaybackService : Service() {
 
     private fun buildNotification(): Notification {
         val nm = getSystemService(NotificationManager::class.java)
-        nm.createNotificationChannel(NotificationChannel(CHANNEL, labels["channel"],
+        nm.createNotificationChannel(NotificationChannel(channelId, labels["channel"],
             NotificationManager.IMPORTANCE_LOW).apply { setShowBadge(false) })
         val open = packageManager.getLaunchIntentForPackage(packageName)?.let {
             PendingIntent.getActivity(this, 0, it, PendingIntent.FLAG_IMMUTABLE)
         }
-        val b = Notification.Builder(this, CHANNEL)
+        val b = Notification.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_stat_play)
             .setContentTitle(title)
             .setContentText("APEX CW")
@@ -197,7 +199,7 @@ class OwnTextPlaybackService : Service() {
     private fun holdWakeLock() {
         if (wakeLock?.isHeld == true) return
         wakeLock = getSystemService(PowerManager::class.java)
-            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "apexcw:owntext")
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "apexcw:playback")
             .apply { acquire(WAKE_LOCK_MS) }
     }
 

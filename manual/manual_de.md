@@ -2001,8 +2001,10 @@ Die Seite ist aufgebaut wie die anderen Trainings: oben der Zeichenvorrat
 (Zeichenvorrat, Inhalt, Koch-Lektion), dann ein kurzer Hinweis, das Statusfeld,
 Tempo und Zeichenabstand und der **Start**-Knopf. Zeichenvorrat, Koch-Lektion,
 Tempo und Abstand funktionieren wie beim [Hören](#zeichenvorrat-und-inhalt-wählen).
-Nur Buchstaben und Ziffern haben ein Sprach-Sample; Satzzeichen und Prosigns
-werden übersprungen. Das **Stör**-Symbol oben funktioniert wie in den anderen
+**Hinweis:** Aktuell werden nur Buchstaben und Ziffern unterstützt: Nur sie haben ein
+Sprach-Sample. Satzzeichen, Sonderzeichen und Prosigns, die der Zeichenvorrat
+enthält, werden aus der Gruppe gestrichen und weder als Morse noch als Stimme
+gespielt; die Gruppe kann dadurch kürzer ausfallen als eingestellt. Das **Stör**-Symbol oben funktioniert wie in den anderen
 Trainings (Tippen: an/aus, langer Druck: Einstellungen); das Rauschen steht,
 solange der Trainer läuft, und wirkt auf das Morse, nicht auf die Stimme.
 
@@ -2017,7 +2019,9 @@ Alles Weitere steckt im **Zahnrad** (⚙) oben:
 - **Stimme**: **Kristin** oder **Bryce**. Eine Änderung wirkt ab dem nächsten Start.
 - **Lautstärke der Stimme** (10–100 %, voreingestellt **70 %**): der Pegel der Stimme, unabhängig vom Morseton. Sie gilt, sobald du das Blatt schließt, also ab dem nächsten gesprochenen Zeichen. Wie bei den anderen Reglern lässt sich eine Änderung mit **Rückgängig** zurücknehmen.
 
-Alle diese Einstellungen, auch Zeichenvorrat, Koch-Lektion und Koch-Reihenfolge, gelten nur für den Audio-Trainer: Eine Änderung hier ändert weder Hören noch Geben, und umgekehrt (beim ersten Mal werden sie aus dem Hören übernommen). Geteilt mit dem Rest der App sind nur Tonhöhe, Groß-/Kleinschreibung der Anzeige und die Stör-Einstellungen. Der Bildschirm bleibt an, solange der Audio-Trainer offen ist; Abspielen bei ausgeschaltetem Bildschirm gibt es noch nicht.
+Alle diese Einstellungen, auch Zeichenvorrat, Koch-Lektion und Koch-Reihenfolge, gelten nur für den Audio-Trainer: Eine Änderung hier ändert weder Hören noch Geben, und umgekehrt (beim ersten Mal werden sie aus dem Hören übernommen). Geteilt mit dem Rest der App sind nur Tonhöhe, Groß-/Kleinschreibung der Anzeige und die Stör-Einstellungen. Der Bildschirm bleibt an, solange der Audio-Trainer offen ist, du kannst ihn aber ausschalten.
+
+**Im Hintergrund und per Kopfhörer:** Der Audio-Trainer läuft weiter, wenn du den Bildschirm ausschaltest oder in eine andere App wechselst. Solange er läuft, zeigt Android eine Benachrichtigung mit den Tasten **Gruppe wiederholen**, **Abspielen/Pause** und **Nächste Gruppe**; dieselben Tasten gibt es auf dem Sperrbildschirm und an Bluetooth-Kopfhörern (zurück wiederholt die laufende Gruppe, vor springt zur nächsten; beides bricht die laufende Gruppe sofort ab). Ein Anruf, eine andere Audio-App oder das Abziehen der Kopfhörer pausiert den Trainer. Beim ersten Mal fragt Android nach der Erlaubnis für Benachrichtigungen – ohne sie läuft der Trainer trotzdem weiter, aber ohne Tasten in der Benachrichtigung. Verlässt du den Audio-Trainer mit „Zurück“, endet die Wiedergabe.
 
 # Spiele
 

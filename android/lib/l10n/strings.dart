@@ -271,7 +271,8 @@ class Strings {
     'at_seconds': ['{n} s', '{n} s'],
     'at_voice_error': ['Die Stimme konnte nicht geladen werden.', 'The voice could not be loaded.'],
     'at_error': ['Der Audio-Trainer konnte keine passenden Zeichen erzeugen. Prüfe den Zeichensatz.', 'The audio trainer could not produce suitable characters. Check the character set.'],
-    'at_only_letters': ['Nur Buchstaben und Ziffern; andere Zeichen werden übersprungen.', 'Letters and digits only; other characters are skipped.'],
+    'at_note_label': ['Hinweis:', 'Note:'],
+    'at_only_letters': ['Aktuell nur Buchstaben und Ziffern: Satz- und Sonderzeichen werden übersprungen, Gruppen können dadurch kürzer sein.', 'Currently letters and digits only: punctuation and special characters are skipped, so groups can be shorter.'],
 
     // ── Own texts (issue #8) ─────────────────────────────────────────────
     'ot_title': ['Eigene Texte', 'Own texts'],
@@ -312,6 +313,9 @@ class Strings {
     'ot_bg_pause': ['Pause', 'Pause'],
     'ot_bg_next': ['Nächster Satz', 'Next sentence'],
     'ot_bg_prev': ['Vorheriger Satz', 'Previous sentence'],
+    'at_bg_channel': ['Audio-Trainer', 'Audio trainer'],
+    'at_bg_next': ['Nächste Gruppe', 'Next group'],
+    'at_bg_prev': ['Gruppe wiederholen', 'Repeat group'],
     'ot_slower': ['Langsamer', 'Slower'],
     'ot_faster': ['Schneller', 'Faster'],
     'ot_word': ['Wort', 'Word'],

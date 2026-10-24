@@ -86,19 +86,25 @@ class AudioTrainerState {
     int? solutionChar,
     bool? paused,
     bool? finished,
-  }) =>
-      AudioTrainerState(
-        phase: phase ?? this.phase,
-        groupsDone: groupsDone ?? this.groupsDone,
-        group: group ?? this.group,
-        solutionChar: solutionChar ?? this.solutionChar,
-        paused: paused ?? this.paused,
-        finished: finished ?? this.finished,
-      );
+  }) => AudioTrainerState(
+    phase: phase ?? this.phase,
+    groupsDone: groupsDone ?? this.groupsDone,
+    group: group ?? this.group,
+    solutionChar: solutionChar ?? this.solutionChar,
+    paused: paused ?? this.paused,
+    finished: finished ?? this.finished,
+  );
 }
 
 class _Stopped implements Exception {
   const _Stopped();
+}
+
+/// The running group is cut short ([AudioTrainerEngine.skipGroup] /
+/// [AudioTrainerEngine.repeatGroup]).
+class _Jumped implements Exception {
+  final bool repeat;
+  const _Jumped(this.repeat);
 }
 
 class AudioTrainerEngine {
@@ -131,6 +137,8 @@ class AudioTrainerEngine {
   bool _running = false;
   Completer<void>? _resume;
   Completer<void> _stopSig = Completer<void>();
+  Completer<void> _jumpSig = Completer<void>();
+  bool _jumpRepeat = false;
 
   AudioTrainerEngine({
     required this.nextContent,
@@ -154,18 +162,32 @@ class AudioTrainerEngine {
     _running = true;
     _stopRequested = false;
     _stopSig = Completer<void>();
+    _jumpSig = Completer<void>();
     _set(const AudioTrainerState());
+    String? again;
     try {
-      while (await _cycle()) {}
+      while (true) {
+        try {
+          if (!await _cycle(again)) break;
+          again = null;
+        } on _Jumped catch (j) {
+          // Cut short from outside: next group, or the same one once more.
+          again = j.repeat ? state.value.group : null;
+          _jumpSig = Completer<void>();
+        }
+      }
     } on _Stopped {
       // normal end
     } finally {
       _running = false;
       _resume = null;
-      _set(state.value.copyWith(
+      _set(
+        state.value.copyWith(
           phase: AudioTrainerPhase.idle,
           solutionChar: -1,
-          paused: false));
+          paused: false,
+        ),
+      );
     }
   }
 
@@ -173,6 +195,23 @@ class AudioTrainerEngine {
     _stopRequested = true;
     _resume?.complete();
     if (!_stopSig.isCompleted) _stopSig.complete();
+    await stopMorse();
+    await stopVoice();
+  }
+
+  /// Ends the running group at once and goes on with a new one (headset
+  /// "next"). Resumes a paused run.
+  Future<void> skipGroup() => _jump(false);
+
+  /// Ends the running group at once and plays the same group again (headset
+  /// "previous"). Resumes a paused run.
+  Future<void> repeatGroup() => _jump(true);
+
+  Future<void> _jump(bool repeat) async {
+    if (!_running || _stopRequested || _jumpSig.isCompleted) return;
+    _jumpRepeat = repeat;
+    _jumpSig.complete();
+    if (state.value.paused) resume();
     await stopMorse();
     await stopVoice();
   }
@@ -203,8 +242,9 @@ class AudioTrainerEngine {
   /// Awaits [f], or ends the run as soon as [stop] is called (a stopped
   /// native sound may never report completion).
   Future<void> _guard(Future<void> f) async {
-    await Future.any([f, _stopSig.future]);
+    await Future.any([f, _stopSig.future, _jumpSig.future]);
     if (_stopRequested) throw const _Stopped();
+    if (_jumpSig.isCompleted) throw _Jumped(_jumpRepeat);
   }
 
   Future<void> _wait(Duration d) async {
@@ -225,10 +265,15 @@ class AudioTrainerEngine {
 
   /// One group: Morse, thinking pause, solution, pause. False once the block
   /// is complete.
-  Future<bool> _cycle() async {
-    final group = await _drawGroup();
-    _update((s) => s.copyWith(
-        phase: AudioTrainerPhase.morse, group: group, solutionChar: -1));
+  Future<bool> _cycle(String? again) async {
+    final group = again ?? await _drawGroup();
+    _update(
+      (s) => s.copyWith(
+        phase: AudioTrainerPhase.morse,
+        group: group,
+        solutionChar: -1,
+      ),
+    );
     await _step();
     await _guard(playMorse(group));
 
@@ -245,15 +290,23 @@ class AudioTrainerEngine {
 
     final done = state.value.groupsDone + 1;
     if (config.maxGroups > 0 && done >= config.maxGroups) {
-      _update((s) => s.copyWith(
+      _update(
+        (s) => s.copyWith(
           phase: AudioTrainerPhase.rest,
           groupsDone: done,
           solutionChar: -1,
-          finished: true));
+          finished: true,
+        ),
+      );
       return false;
     }
-    _update((s) => s.copyWith(
-        phase: AudioTrainerPhase.rest, groupsDone: done, solutionChar: -1));
+    _update(
+      (s) => s.copyWith(
+        phase: AudioTrainerPhase.rest,
+        groupsDone: done,
+        solutionChar: -1,
+      ),
+    );
     await _wait(config.groupPause);
     return true;
   }

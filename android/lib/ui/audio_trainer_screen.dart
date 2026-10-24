@@ -21,6 +21,7 @@ import '../content/training_profile.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
+import '../util/own_text_playback.dart';
 import '../util/practice_clock.dart';
 import '../util/interference_profile.dart';
 import 'widgets/app_ui.dart';
@@ -68,6 +69,7 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
   AudioTrainerState _last = const AudioTrainerState();
   bool _starting = false;
   bool _failed = false;
+  StreamSubscription<String>? _mediaSub;
 
   List<String> get _activeKochChars => kochSequenceChars(
     _kochSeq,
@@ -80,11 +82,19 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
     super.initState();
     KeepScreenOn.enable();
     PracticeClock.instance.enter('audio');
+    // Headset, lock screen and notification buttons (#140).
+    _mediaSub = OwnTextPlayback.commands.listen(
+      _onMediaCommand,
+      onError: (_) {},
+    );
+    OwnTextPlayback.ensureNotificationPermission();
     _load();
   }
 
   @override
   void dispose() {
+    _mediaSub?.cancel();
+    OwnTextPlayback.stop();
     _engine?.stop();
     InterferenceProfile.releaseAmbient(this);
     PracticeClock.instance.audioPlaying = false;
@@ -288,6 +298,7 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
     engine.state.addListener(_onEngineState);
     setState(() => _starting = false);
     PracticeClock.instance.audioPlaying = true;
+    _syncBackground();
     // The noise stands while the trainer runs (the voice is not affected).
     InterferenceProfile.requestAmbient(this);
     try {
@@ -300,13 +311,52 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
       InterferenceProfile.releaseAmbient(this);
       PracticeClock.instance.audioPlaying = false;
       _engine = null;
+      _bgSent = false;
+      OwnTextPlayback.stop();
       if (mounted) setState(() {});
+    }
+  }
+
+  bool _bgPlaying = false;
+
+  /// Tells the foreground service whether the trainer is playing, so the
+  /// notification shows the right button and the session stays alive (#140).
+  void _syncBackground() {
+    final e = _engine;
+    if (e == null) return;
+    final playing = !e.state.value.paused;
+    if (playing == _bgPlaying && _bgSent) return;
+    _bgPlaying = playing;
+    _bgSent = true;
+    OwnTextPlayback.update(
+      title: Strings.t('at_title'),
+      playing: playing,
+      labelPrefix: 'at_bg',
+      channelId: 'audio_trainer_playback',
+    );
+  }
+
+  bool _bgSent = false;
+
+  void _onMediaCommand(String cmd) {
+    final e = _engine;
+    if (e == null || !mounted) return;
+    switch (cmd) {
+      case 'play':
+        e.resume();
+      case 'pause':
+        e.pause();
+      case 'next':
+        e.skipGroup();
+      case 'prev':
+        e.repeatGroup();
     }
   }
 
   void _onEngineState() {
     // Keeps the practice clock alive across the long silent pauses.
     PracticeClock.instance.touch();
+    _syncBackground();
     if (mounted) setState(() {});
   }
 
@@ -405,8 +455,18 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
                             wordLengthMax: _wordLengthMax,
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            Strings.t('at_only_letters'),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: '${Strings.t('at_note_label')} ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(text: Strings.t('at_only_letters')),
+                              ],
+                            ),
                             style: TextStyle(fontSize: 12, color: c.textMuted),
                           ),
                           const SizedBox(height: 12),

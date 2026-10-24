@@ -1938,8 +1938,10 @@ The page is laid out like the other trainings: the character set at the top
 (character set, content, Koch lesson), then a short note, the status field, the
 speed and character spacing, and the **Start** button. Character set, Koch
 lesson, speed and spacing work as in [Listen](#choosing-the-character-set-and-content).
-Only letters and digits have a voice sample; punctuation and prosigns are
-skipped. The **interference** symbol in the top bar works as in the other
+**Note:** Currently only letters and digits are supported: only they have a voice
+sample. Punctuation, special characters and prosigns contained in the character
+set are removed from the group and played neither as Morse nor as voice; a
+group can therefore come out shorter than set. The **interference** symbol in the top bar works as in the other
 trainings (tap: on/off, long press: settings); the noise stands while the
 trainer runs and affects the Morse, not the voice.
 
@@ -1954,7 +1956,9 @@ Everything else is in the **gear** (⚙) at the top:
 - **Voice**: **Kristin** or **Bryce**. A change takes effect at the next start.
 - **Voice volume** (10–100 %, default **70 %**): the level of the voice, independent of the Morse tone. It applies when you close the sheet, so it is heard from the next spoken character on. Like the other sliders, a change can be taken back with **Undo**.
 
-All of these, including the character set, the Koch lesson and the Koch sequence, are stored only for the Audio trainer: changing them here does not change Listen or Send, and the other way round (the first time they are copied from Listen). Only the pitch, the display case and the interference settings are shared with the rest of the app. The display stays on while the Audio trainer is open; playing with the screen off is not available yet.
+All of these, including the character set, the Koch lesson and the Koch sequence, are stored only for the Audio trainer: changing them here does not change Listen or Send, and the other way round (the first time they are copied from Listen). Only the pitch, the display case and the interference settings are shared with the rest of the app. The display stays on while the Audio trainer is open, but you can turn it off.
+
+**In the background and with a headset:** The Audio trainer keeps running when you turn the screen off or switch to another app. While it runs, Android shows a notification with the buttons **Repeat group**, **Play/Pause** and **Next group**; the same buttons are on the lock screen and on Bluetooth headsets (previous repeats the running group, next jumps to the following one; both cut the running group short at once). A call, another audio app or unplugging the headphones pauses the trainer. The first time, Android asks for permission to show notifications – without it the trainer keeps running but has no buttons in the notification. Leaving the Audio trainer with "Back" ends the playback.
 
 # Games
 
