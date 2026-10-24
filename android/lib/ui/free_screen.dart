@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
+import 'audio_trainer_screen.dart';
 import 'decoder_screen.dart';
 import 'keyer_screen.dart';
 import 'own_texts_screen.dart';
@@ -77,6 +78,15 @@ class FreeScreen extends StatelessWidget {
               hint: Strings.t('free_ot_hint'),
               color: c.accent,
               onTap: () => open(const OwnTextsScreen()),
+            ),
+            const SizedBox(height: 12),
+            HubCard(
+              icon: Icons.record_voice_over_outlined,
+              title: Strings.t('at_title'),
+              subtitle: Strings.t('at_subtitle'),
+              hint: Strings.t('free_at_hint'),
+              color: c.accent,
+              onTap: () => open(const AudioTrainerScreen()),
             ),
           ],
         ),

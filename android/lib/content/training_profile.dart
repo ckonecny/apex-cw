@@ -9,6 +9,9 @@ import 'charset_content.dart';
 class TrainingProfile {
   static const hear = 'hear';
   static const echo = 'echo';
+  // Audio trainer (#139): own copy of the Hören character-set settings, seeded
+  // from `hear` on first use (see AudioTrainerSettings).
+  static const audio = 'audio';
   // CW Keyer and WiFi Trx keep only their own word gap (no migration needed:
   // a missing value falls back to defaultInterWord).
   static const keyer = 'keyer';
@@ -33,6 +36,9 @@ class TrainingProfile {
     // Hören typing mode: last used start (0 paper, 1 typing), attempts per
     // word, key vibration.
     'copyMode', 'typeAttempts', 'typeOnWrong', 'typeHaptic',
+    // Audio trainer: think pause (s), pause between groups (s), voice index
+    // (audioTrainerVoices), voice volume in percent.
+    'atThink', 'atRest', 'atVoice', 'atVolume',
   ];
   static const _stringFields = ['practiceChars'];
   static const _versionKey = 'profileVersion';
