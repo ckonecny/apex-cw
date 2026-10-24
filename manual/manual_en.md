@@ -1548,7 +1548,7 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
 ::: {.shots .three}
 ![Progress tab (Listen): hit rate, speed and days practised over 12 weeks](img/en/hear_progress.png)
 
-![Below it the heatmap: all characters, week by week](img/en/hear_progress2.png)
+![Below it the heatmap: practised characters, week by week](img/en/hear_progress2.png)
 
 ![Progress tab (Send)](img/en/echo_progress.png)
 :::
@@ -1920,6 +1920,8 @@ Nothing is graded and nothing is counted per character, so there is no
 statistics entry and no heatmap. The time you practise still counts towards your
 daily goal.
 
+![Audio trainer: start view](img/en/audio_trainer.png)
+
 ## The view while it runs
 
 After **Start** the Audio trainer hides the character-set choice, the note, the
@@ -1928,6 +1930,8 @@ line with the content and Koch level, the current phase in the middle, the
 progress dots, "Group n of N" and the speed, below that the solution (it has a
 fixed place, so nothing jumps), and **Pause** and **Stop** at the bottom. After
 **Stop** (or "Back") everything is shown again as at the beginning.
+
+![Audio trainer while running: the group's solution](img/en/audio_trainer_run.png)
 
 ## How a group runs
 

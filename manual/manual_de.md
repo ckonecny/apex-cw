@@ -1599,7 +1599,7 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
 ::: {.shots .three}
 ![Reiter Verlauf (Hören): Quote, Tempo und Übungstage über 12 Wochen](img/de/hear_progress.png)
 
-![Darunter die Heatmap: alle Zeichen, Woche für Woche](img/de/hear_progress2.png)
+![Darunter die Heatmap: trainierte Zeichen, Woche für Woche](img/de/hear_progress2.png)
 
 ![Reiter Verlauf (Geben)](img/de/echo_progress.png)
 :::
@@ -1982,6 +1982,8 @@ Es wird nichts bewertet und nichts pro Zeichen gezählt, also gibt es weder eine
 Statistik-Eintrag noch eine Heatmap. Die Übungszeit zählt aber für dein
 Tagesziel.
 
+![Audio-Trainer: Startansicht](img/de/audio_trainer.png)
+
 ## Die Ansicht während des Laufs
 
 Nach **Start** blendet der Audio-Trainer die Auswahl des Zeichenvorrats, den
@@ -1990,6 +1992,8 @@ Hören: oben Kopfzeile mit Inhalt und Koch-Stufe, in der Mitte die aktuelle Phas
 die Fortschrittspunkte, „Gruppe n von N“ und das Tempo, darunter die Auflösung
 (sie hat ihren festen Platz, nichts springt), unten **Pause** und **Stopp**.
 Mit **Stopp** (oder „Zurück“) siehst du wieder alles wie am Anfang.
+
+![Audio-Trainer während des Laufs: Auflösung der Gruppe](img/de/audio_trainer_run.png)
 
 ## So läuft eine Gruppe
 
