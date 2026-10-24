@@ -526,11 +526,24 @@ class MainActivity : FlutterActivity() {
                             i.putExtra(k, call.argument<String>(k) ?: "")
                         }
                         i.putExtra("playing", playing)
-                        if (playing) startForegroundService(i) else startService(i)
+                        if (playing) {
+                            OwnTextPlayback.startPending = true
+                            startForegroundService(i)
+                        } else {
+                            startService(i)
+                        }
                         result.success(null)
                     }
                     "stop" -> {
-                        stopService(Intent(this, OwnTextPlaybackService::class.java))
+                        if (OwnTextPlayback.startPending) {
+                            // The earlier start has not reached the service yet:
+                            // let the service end itself (see startPending).
+                            startForegroundService(
+                                Intent(this, OwnTextPlaybackService::class.java)
+                                    .setAction(OwnTextPlaybackService.ACTION_STOP))
+                        } else {
+                            stopService(Intent(this, OwnTextPlaybackService::class.java))
+                        }
                         result.success(null)
                     }
                     else -> result.notImplemented()
