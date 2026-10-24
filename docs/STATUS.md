@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Latest tagged build: v1.8.0 (2026-10-21, build 437, tag `v1.8.0` = commit 039560f; in the Play closed test with 2 testers; manual built for it). Previous: v1.7.0 (2026-10-12), v1.6.0 (2026-10-05); beta builds and older versions in `docs/STATUS-ARCHIVE.md`.
+Next: v1.9.0 (notes `docs/release-notes-v1.9.0.md`, beta `v1.9.0-beta1` in test). Latest tagged build: v1.8.0 (2026-10-21, build 437, tag `v1.8.0` = commit 039560f; in the Play closed test with 2 testers; manual built for it). Previous: v1.7.0 (2026-10-12), v1.6.0 (2026-10-05); beta builds and older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -44,10 +44,10 @@ Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test 
 - Mix-up suggestions (#102/#106): over weeks of real use, check that the card appears when pairs recur and that boosting works.
 - Send start view (#107), compact row (#109), spaced goal credit, external key everywhere (#116): tried on the test phone; recheck in the beta.
 
-## Audio trainer (#139, branch `feature/audio-trainer`, not committed)
+## Audio trainer (#139, merged to main, beta 1.9.0-beta1)
 Built: voice samples (Kristin, Bryce), flow engine (per group: Morse, think pause, solution) + tests, native sample player (`VoiceSamples.kt`, channel `cw_tone`: loadVoice/playVoiceChar/stopVoice), screen under Free modes (`audio_trainer_screen.dart`, profile `audio` and own Koch sequence `audio.*`, both seeded from Hören once; word/abbrev length, interference button), DE+EN strings, manual chapter DE+EN, tests (engine, `engine_config_test`, `screen_overflow_test`). Installed on the test phone (debug, 2026-10-23): the flow runs group by group (Morse, think pause, solution on screen, pause, counter), no errors in logcat. Not yet judged by ear / still to check: voices audible and the new voice-volume slider (samples re-rendered louder, default 70 %) against the Morse tone, pause/stop, voice switch, Koch level / character set, practice time in the daily goal, release build keeps the `voice_*` raw files (`res/raw/keep.xml`). Romeo/Sierra samples "not optimal" by ear (accepted).
 
-### Audio trainer background (#140, branch `feature/audio-trainer-background`, on top of #139, not committed)
+### Audio trainer background (#140, merged to main, beta 1.9.0-beta1)
 Built: foreground service/lock-screen/headset buttons shared with Own texts (play/pause, next = skip group, prev = repeat group), engine `skipGroup`/`repeatGroup`, strings, manual DE+EN, tests. To check on the test phone: runs with the screen off for several groups, notification buttons, headset buttons, call/unplug pauses, notification permission, back ends it. Manual: the Audio-trainer screenshot is still pending (see above).
 
 ## Hints for the next session
