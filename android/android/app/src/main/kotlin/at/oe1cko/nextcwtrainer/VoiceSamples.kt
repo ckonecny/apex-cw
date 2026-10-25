@@ -10,7 +10,7 @@ import io.flutter.plugin.common.MethodChannel
 
 /**
  * Spoken samples for the audio trainer (#139): a-z, 0-9, nine punctuation
- * words (. , : - / = ? @ +), six prosign meanings and the words "Pro sign",
+ * words (. , : - / = ? @ +), ten prosign meanings and the words "Pro sign",
  * one short Ogg/Opus file per sample and voice (res/raw/voice_<voice>_<key>,
  * made by tools/make_voice_samples.py), plus three voice-independent tones
  * that can introduce a prosign (res/raw/prosign_tone_<name>.wav, made by

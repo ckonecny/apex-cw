@@ -83,8 +83,8 @@ shows the version and the commit it was built from.
 
 A detailed user manual in German and English — every setting with its range
 and default, and how the adaptive mode decides — is in [`manual/`](manual/):
-[Handbuch (PDF)](manual/APEXCW_Handbuch_v1.9.0.pdf) ·
-[User Manual (PDF)](manual/APEXCW_Manual_v1.9.0.pdf), also as HTML.
+[Handbuch (PDF)](manual/APEXCW_Handbuch_v1.10.0.pdf) ·
+[User Manual (PDF)](manual/APEXCW_Manual_v1.10.0.pdf), also as HTML.
 
 ## What the app covers
 
@@ -99,9 +99,10 @@ as immediate as it does on the device.
   characters, Random Groups (incl. prosign groups `<AS>`, `<KA>`, `<KN>`,
   `<SK>`, `<VE>`, `<BK>`), common English words, abbreviations, call signs
   (weighted prefix table, region/common-only options), mixed content, and
-  your own practice-character set.
-- **Koch method as the character set**: M32, LCWO, CW Academy, LICW (incl.
-  the LICW Carousel) or a custom sequence, with the firmware's weighting that
+  your own practice-character set, or a set of all ten prosigns (AS KA KN SK VE BK AR BT HH SOS).
+- **Koch method as the character set**: LCWO, CW Academy, LICW (incl.
+  the LICW Carousel), Morserino or a custom sequence (the original lists of
+  each course; the Morserino list keeps the firmware's prosign tail), with the firmware's weighting that
   plays the most recently learned characters a bit more often.
 - **Block flow for copying on paper**: a block is played, then revealed; you
   mark what you missed, and the result page shows accuracy, weak characters,

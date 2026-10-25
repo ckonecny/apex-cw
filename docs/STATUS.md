@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Next: v1.10.0 (pubspec 1.10.0+12; beta `v1.10.0-beta1` for testers: everything of `v1.9.1-beta1` (effective WPM in the progress view, spoken symbols and prosigns in the audio trainer; 1.9.1 stays a beta only and is folded in) plus app shortcuts (#151) and tempo/spacing buttons in the audio trainer's media controls (#152); release notes and the Play upload follow after the beta). Latest release: v1.9.0 (2026-10-24, notes `docs/release-notes-v1.9.0.md`; AAB for the Play closed test built, manual and screenshots done). Previous: v1.8.0 (2026-10-21), v1.7.0 (2026-10-12); beta builds and older versions in `docs/STATUS-ARCHIVE.md`.
+Latest: v1.10.0 (pubspec 1.10.0+13, 2026-10-25, notes `docs/release-notes-v1.10.0.md`): everything of the betas `v1.9.1-beta1` and `v1.10.0-beta1` plus the Prosigns set (#156), original Koch sequences, Q-groups tempo only. AAB for the Play upload built; manual, screenshots and Play texts (`docs/PLAY-LISTING.md`) in the release steps below. Previous: v1.9.0 (2026-10-24), v1.8.0 (2026-10-21), v1.7.0 (2026-10-12); older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
