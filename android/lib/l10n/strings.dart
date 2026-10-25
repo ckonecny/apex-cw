@@ -271,8 +271,6 @@ class Strings {
     'at_seconds': ['{n} s', '{n} s'],
     'at_voice_error': ['Die Stimme konnte nicht geladen werden.', 'The voice could not be loaded.'],
     'at_error': ['Der Audio-Trainer konnte keine passenden Zeichen erzeugen. Prüfe den Zeichensatz.', 'The audio trainer could not produce suitable characters. Check the character set.'],
-    'at_note_label': ['Hinweis:', 'Note:'],
-    'at_only_letters': ['Umlaute (Ä, Ö, Ü, CH) werden nicht gesprochen und übersprungen, Gruppen können dadurch kürzer sein.', 'Umlauts (Ä, Ö, Ü, CH) are not spoken and are skipped, so groups can be shorter.'],
     'at_prosign_intro': ['Vor einem Prosign', 'Before a prosign'],
     'at_prosign_word': ['„Pro sign“ gesprochen', '"Pro sign" spoken'],
     'at_prosign_bell': ['Glocke', 'Bell'],

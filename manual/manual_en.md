@@ -1958,7 +1958,7 @@ daily goal.
 
 ## The view while it runs
 
-After **Start** the Audio trainer hides the character-set choice, the note, the
+After **Start** the Audio trainer hides the character-set choice, the
 description and the tempo, and shows the same running view as Listen: a header
 line with the content and Koch level, the current phase in the middle, the
 progress dots, "Group n of N" and the speed, below that the solution (it has a
@@ -1973,7 +1973,9 @@ fixed place, so nothing jumps), and **Pause** and **Stop** at the bottom. After
 2. **Thinking pause:** silence, long enough to finish thinking the characters.
 3. **Solution:** the voice says one spelling word per character, in the order
    sent, with a short pause between the characters. The group appears on screen
-   while it is spoken; the character being spoken is highlighted.
+   while it is spoken, in the display case you set and colored as everywhere in the app (letters, digits, and
+   punctuation/prosigns each in their own color); the character being spoken
+   is bold, the others are dimmed.
 4. **Pause between groups**, then the next group starts by itself. After the set number of groups (**Groups per block**) the block ends.
 
 **Pause** holds the flow at the next step, **Stop** ends it. Leaving the screen
@@ -1982,10 +1984,10 @@ also stops it.
 ## Settings
 
 The page is laid out like the other trainings: the character set at the top
-(character set, content, Koch lesson), then a short note, the status field, the
+(character set, content, Koch lesson), then the description, the status field, the
 speed and character spacing, and the **Start** button. Character set, Koch
 lesson, speed and spacing work as in [Listen](#choosing-the-character-set-and-content).
-**Note:** Umlauts (Ä, Ö, Ü, CH) are not spoken; they are removed from the group
+Umlauts (Ä, Ö, Ü, CH) are not spoken; they are removed from the group
 and played neither as Morse nor as voice. A group can therefore come out
 shorter than set. The **interference** symbol in the top bar works as in the other
 trainings (tap: on/off, long press: settings); the noise stands while the

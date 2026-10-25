@@ -20,6 +20,7 @@ import '../content/cw_content.dart';
 import '../content/training_profile.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
+import '../util/char_color.dart';
 import '../util/keep_screen_on.dart';
 import '../util/own_text_playback.dart';
 import '../util/practice_clock.dart';
@@ -486,21 +487,6 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
                             wordLengthMin: _wordLengthMin,
                             wordLengthMax: _wordLengthMax,
                           ),
-                          const SizedBox(height: 8),
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: '${Strings.t('at_note_label')} ',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                TextSpan(text: Strings.t('at_only_letters')),
-                              ],
-                            ),
-                            style: TextStyle(fontSize: 12, color: c.textMuted),
-                          ),
                           const SizedBox(height: 12),
                           Text(
                             Strings.t('at_intro'),
@@ -701,11 +687,19 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
                                   for (final (i, t)
                                       in audioTrainerTokens(s.group).indexed)
                                     TextSpan(
-                                      text: t,
+                                      // Display case from the global
+                                      // setting, as in the other trainings.
+                                      text: _outputCase == 1
+                                          ? t
+                                          : t.toLowerCase(),
+                                      // Type colors as everywhere else;
+                                      // the char being spoken stays full
+                                      // and bold, the others are dimmed.
                                       style: TextStyle(
                                         color: i == s.solutionChar
-                                            ? c.accent
-                                            : c.textPrimary,
+                                            ? charTypeColor(t, c)
+                                            : charTypeColor(t, c)
+                                                  .withValues(alpha: 0.5),
                                         fontWeight: i == s.solutionChar
                                             ? FontWeight.bold
                                             : FontWeight.normal,

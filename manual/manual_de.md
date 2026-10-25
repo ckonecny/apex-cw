@@ -2021,8 +2021,8 @@ Tagesziel.
 
 ## Die Ansicht während des Laufs
 
-Nach **Start** blendet der Audio-Trainer die Auswahl des Zeichenvorrats, den
-Hinweis, die Beschreibung und das Tempo aus und zeigt dieselbe Laufansicht wie
+Nach **Start** blendet der Audio-Trainer die Auswahl des Zeichenvorrats, die
+Beschreibung und das Tempo aus und zeigt dieselbe Laufansicht wie
 Hören: oben Kopfzeile mit Inhalt und Koch-Stufe, in der Mitte die aktuelle Phase,
 die Fortschrittspunkte, „Gruppe n von N“ und das Tempo, darunter die Auflösung
 (sie hat ihren festen Platz, nichts springt), unten **Pause** und **Stopp**.
@@ -2036,8 +2036,10 @@ Mit **Stopp** (oder „Zurück“) siehst du wieder alles wie am Anfang.
 2. **Denkpause:** Stille, lang genug, um die Zeichen fertig zu denken.
 3. **Auflösung:** Die Stimme nennt zu jedem Zeichen ein Buchstabierwort, in der
    gesendeten Reihenfolge, mit einer kurzen Pause zwischen den Zeichen. Die
-   Gruppe erscheint dabei auf dem Bildschirm; das gerade gesprochene Zeichen ist
-   hervorgehoben.
+   Gruppe erscheint dabei auf dem Bildschirm, in der eingestellten Groß-/Kleinschreibung
+   und farbig wie überall in der App
+   (Buchstaben, Ziffern sowie Satzzeichen/Prosigns in je eigener Farbe); das gerade
+   gesprochene Zeichen ist fett, die übrigen sind abgeblendet.
 4. **Pause zwischen den Gruppen**, dann startet die nächste Gruppe von selbst. Nach der eingestellten Zahl von Gruppen (**Gruppen pro Block**) endet der Block.
 
 **Pause** hält den Ablauf am nächsten Schritt an, **Stopp** beendet ihn. Auch
@@ -2046,10 +2048,10 @@ das Verlassen des Bildschirms beendet ihn.
 ## Einstellungen
 
 Die Seite ist aufgebaut wie die anderen Trainings: oben der Zeichenvorrat
-(Zeichenvorrat, Inhalt, Koch-Lektion), dann ein kurzer Hinweis, das Statusfeld,
+(Zeichenvorrat, Inhalt, Koch-Lektion), dann die Beschreibung, das Statusfeld,
 Tempo und Zeichenabstand und der **Start**-Knopf. Zeichenvorrat, Koch-Lektion,
 Tempo und Abstand funktionieren wie beim [Hören](#zeichenvorrat-und-inhalt-wählen).
-**Hinweis:** Umlaute (Ä, Ö, Ü, CH) werden nicht gesprochen; sie werden aus der
+Umlaute (Ä, Ö, Ü, CH) werden nicht gesprochen; sie werden aus der
 Gruppe gestrichen und weder als Morse noch als Stimme gespielt. Die Gruppe kann
 dadurch kürzer ausfallen als eingestellt. Das **Stör**-Symbol oben funktioniert wie in den anderen
 Trainings (Tippen: an/aus, langer Druck: Einstellungen); das Rauschen steht,
