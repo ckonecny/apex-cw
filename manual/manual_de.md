@@ -2021,9 +2021,9 @@ Die Seite ist aufgebaut wie die anderen Trainings: oben der Zeichenvorrat
 (Zeichenvorrat, Inhalt, Koch-Lektion), dann ein kurzer Hinweis, das Statusfeld,
 Tempo und Zeichenabstand und der **Start**-Knopf. Zeichenvorrat, Koch-Lektion,
 Tempo und Abstand funktionieren wie beim [Hören](#zeichenvorrat-und-inhalt-wählen).
-**Hinweis:** Umlaute (Ä, Ö, Ü, CH) und Prosigns werden nicht gesprochen; sie werden
-aus der Gruppe gestrichen und weder als Morse noch als Stimme gespielt. Die
-Gruppe kann dadurch kürzer ausfallen als eingestellt. Das **Stör**-Symbol oben funktioniert wie in den anderen
+**Hinweis:** Umlaute (Ä, Ö, Ü, CH) werden nicht gesprochen; sie werden aus der
+Gruppe gestrichen und weder als Morse noch als Stimme gespielt. Die Gruppe kann
+dadurch kürzer ausfallen als eingestellt. Das **Stör**-Symbol oben funktioniert wie in den anderen
 Trainings (Tippen: an/aus, langer Druck: Einstellungen); das Rauschen steht,
 solange der Trainer läuft, und wirkt auf das Morse, nicht auf die Stimme.
 
@@ -2036,6 +2036,14 @@ Alles Weitere steckt im **Zahnrad** (⚙) oben:
 - **Denkpause**: 1–15 s zwischen dem letzten Morsezeichen und der Auflösung.
 - **Pause zwischen Gruppen**: 1–10 s.
 - **Stimme**: **Kristin** oder **Bryce**. Eine Änderung wirkt ab dem nächsten Start.
+- **Vor einem Prosign**: Prosigns (AS, KA, KN, SK, VE, BK) bleiben in der Gruppe, im
+  Morse hörst du sie als ein Zeichen und in der Auflösung steht das Prosign in
+  Klammern (`<AS>`). Die Stimme nennt immer die Bedeutung: AS „Stand by“, KA
+  „Start of message“, KN „Go ahead, named station only“, SK „End of contact“, VE
+  „Understood“, BK „Break“. Davor hörst du, je nach Auswahl, das Wort **„Pro sign“**,
+  einen Ton (**Glocke**, **Harfe** oder **Gong**) oder **nichts** (Aus). Voreingestellt
+  ist „Pro sign“. Die Auswahl wirkt ab dem nächsten gesprochenen Prosign; die Töne
+  haben die Lautstärke der Stimme.
 - **Lautstärke der Stimme** (10–100 %, voreingestellt **70 %**): der Pegel der Stimme, unabhängig vom Morseton. Sie gilt, sobald du das Blatt schließt, also ab dem nächsten gesprochenen Zeichen. Wie bei den anderen Reglern lässt sich eine Änderung mit **Rückgängig** zurücknehmen.
 
 Alle diese Einstellungen, auch Zeichenvorrat, Koch-Lektion und Koch-Reihenfolge, gelten nur für den Audio-Trainer: Eine Änderung hier ändert weder Hören noch Geben, und umgekehrt (beim ersten Mal werden sie aus dem Hören übernommen). Geteilt mit dem Rest der App sind nur Tonhöhe, Groß-/Kleinschreibung der Anzeige und die Stör-Einstellungen. Der Bildschirm bleibt an, solange der Audio-Trainer offen ist, du kannst ihn aber ausschalten.
@@ -3040,7 +3048,7 @@ Abkürzungen, Rufzeichen-Präfixe, QSO-Texte) aus der Morserino-32-Firmware von
 Willi Kraml, OE1WKL, die ebenfalls unter der GPL-3.0 steht. Den Quellcode
 findest du auf [GitHub](https://github.com/ckonecny/apex-cw). Die
 Lizenzseite zeigt außerdem die MIT-Lizenz von Zork I–III, die SIL Open Font
-License der Schriften Anonymous Pro und DM Sans, die CC-BY-SA-4.0-Lizenz der Wortlisten (abgeleitet aus dem Projekt FrequencyWords) und die Lizenzen der verwendeten Flutter-Pakete. Die Bestätigungstöne „Marimba“ und „Sanft“ sind eigene Klänge der App (aus Sinuswellen berechnet) und stehen ebenfalls unter der GPL. Die gesprochenen Buchstabierwörter des Audio-Trainers wurden mit Piper aus den gemeinfreien Stimmenmodellen „kristin“ und „bryce“ erzeugt (Skript im Quellcode). Zork ist eine Marke der jeweiligen Rechteinhaber;
+License der Schriften Anonymous Pro und DM Sans, die CC-BY-SA-4.0-Lizenz der Wortlisten (abgeleitet aus dem Projekt FrequencyWords) und die Lizenzen der verwendeten Flutter-Pakete. Die Bestätigungstöne „Marimba“ und „Sanft“ sind eigene Klänge der App (aus Sinuswellen berechnet) und stehen ebenfalls unter der GPL. Die gesprochenen Buchstabierwörter des Audio-Trainers wurden mit Piper aus den gemeinfreien Stimmenmodellen „kristin“ und „bryce“ erzeugt (Skript im Quellcode); die Töne vor Prosigns („Glocke“, „Harfe“, „Gong“) sind eigene Klänge der App, aus Sinuswellen berechnet. Zork ist eine Marke der jeweiligen Rechteinhaber;
 die App ist mit ihnen, Infocom, Activision oder Microsoft nicht verbunden.
 
 ## Koch-Reihenfolge {#koch-reihenfolge}

@@ -9,12 +9,14 @@ import android.os.Looper
 import io.flutter.plugin.common.MethodChannel
 
 /**
- * Spoken spelling-alphabet samples for the audio trainer (#139): a-z, 0-9 and
- * nine punctuation words (. , : - / = ? @ +), one short Ogg/Opus file per
- * character and voice (res/raw/voice_<voice>_<key>, key = the character or
- * the name in [KEYS],
- * made by tools/make_voice_samples.py). Its own SoundPool and its own volume,
- * so the sidetone and the shared generator are never touched (CLAUDE.md rule 2).
+ * Spoken samples for the audio trainer (#139): a-z, 0-9, nine punctuation
+ * words (. , : - / = ? @ +), six prosign meanings and the words "Pro sign",
+ * one short Ogg/Opus file per sample and voice (res/raw/voice_<voice>_<key>,
+ * made by tools/make_voice_samples.py), plus three voice-independent tones
+ * that can introduce a prosign (res/raw/prosign_tone_<name>.wav, made by
+ * tools/make_prosign_tones.py). The keys come from Dart (`voiceSampleKey`).
+ * Its own SoundPool and its own volume, so the sidetone and the shared
+ * generator are never touched (CLAUDE.md rule 2).
  *
  * [play] answers the channel call when the sample has ended (its duration
  * is read once when the voice is loaded), or at once when [stop] is called.
@@ -35,20 +37,20 @@ class VoiceSamples(private val context: Context) {
     private class Sample(val soundId: Int, val durationMs: Long)
 
     private var voice: String? = null
-    private val samples = HashMap<Char, Sample>()
+    private val samples = HashMap<String, Sample>()
     private val main = Handler(Looper.getMainLooper())
     private var stream = 0
     private var pending: Runnable? = null
     private var pendingResult: MethodChannel.Result? = null
 
-    /** Loads all samples of [name]; [done] gets true when all are ready. */
+    /** Loads all samples and tones of [name]; [done] gets true when all are ready. */
     fun load(name: String, done: (Boolean) -> Unit) {
         if (voice == name && samples.size == KEYS.size) { done(true); return }
         stop()
         samples.values.forEach { pool.unload(it.soundId) }
         samples.clear()
         voice = null
-        val ids = HashMap<Int, Char>()
+        val ids = HashMap<Int, String>()
         var remaining = 0
         pool.setOnLoadCompleteListener { _, id, status ->
             main.post {
@@ -58,13 +60,14 @@ class VoiceSamples(private val context: Context) {
                 if (remaining == 0) { voice = name; done(true) }
             }
         }
-        for ((c, key) in KEYS) {
-            val res = context.resources.getIdentifier("voice_${name}_$key", "raw", context.packageName)
+        for (key in KEYS) {
+            val file = if (key.startsWith("tone_")) "prosign_$key" else "voice_${name}_$key"
+            val res = context.resources.getIdentifier(file, "raw", context.packageName)
             if (res == 0) { done(false); return }
             val dur = durationMs(res)
             val id = pool.load(context, res, 1)
-            ids[id] = c
-            samples[c] = Sample(id, dur)
+            ids[id] = key
+            samples[key] = Sample(id, dur)
             remaining++
         }
     }
@@ -77,8 +80,8 @@ class VoiceSamples(private val context: Context) {
         } catch (_: Exception) { 800L } finally { r.release() }
     }
 
-    fun play(char: String, result: MethodChannel.Result) {
-        val s = samples[char.lowercase().firstOrNull() ?: ' ']
+    fun play(key: String, result: MethodChannel.Result) {
+        val s = samples[key]
         if (s == null) { result.success(null); return }
         stop()
         val v = volume.coerceIn(0f, 1f)
@@ -102,11 +105,11 @@ class VoiceSamples(private val context: Context) {
     fun release() { stop(); pool.release() }
 
     companion object {
-        /** Character -> file-name key (letters and digits are their own key). */
-        private val KEYS: Map<Char, String> =
-            ('a'..'z').associateWith { it.toString() } +
-            ('0'..'9').associateWith { it.toString() } +
-            mapOf('.' to "period", ',' to "comma", ':' to "colon", '-' to "dash",
-                '/' to "slash", '=' to "equals", '?' to "question", '@' to "at", '+' to "plus")
+        /** Sample keys: letters, digits, symbol names, prosigns, tones. */
+        private val KEYS: List<String> =
+            ('a'..'z').map { it.toString() } + ('0'..'9').map { it.toString() } +
+            listOf("period", "comma", "colon", "dash", "slash", "equals", "question", "at", "plus") +
+            listOf("prosign_word", "prosign_as", "prosign_ka", "prosign_kn", "prosign_sk", "prosign_ve", "prosign_bk") +
+            listOf("tone_bell", "tone_harp", "tone_gong")
     }
 }

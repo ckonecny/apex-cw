@@ -10,9 +10,52 @@ import 'package:flutter/foundation.dart';
 // UI-free: Morse, voice samples, content and waiting are injected, so the
 // whole flow (including pause and stop) is unit-testable without audio.
 
+/// The prosigns the audio trainer speaks, as the bracketed tokens the
+/// generator and the Morse player use (`<AS>`).
+const audioTrainerProsigns = ['AS', 'KA', 'KN', 'SK', 'VE', 'BK'];
+
+final _prosign = RegExp(r'<[A-Za-z]{2}>');
+
+/// One speakable unit: a prosign token, or a letter, digit or symbol.
+final _token = RegExp(r'<(?:AS|KA|KN|SK|VE|BK)>|[A-Z0-9.,:\-/=?@+]');
+
+/// A generated group reduced to what can be spoken afterwards: upper case,
+/// characters without a sample (umlauts, other prosigns ...) dropped. Prosigns
+/// stay as `<AS>`. Empty = unusable.
+String audioTrainerGroup(String raw) => audioTrainerTokens(
+  raw.replaceAllMapped(
+    _prosign,
+    (m) => audioTrainerProsigns.contains(m[0]!.substring(1, 3).toUpperCase())
+        ? m[0]!.toUpperCase()
+        : '',
+  ),
+).join();
+
+/// The units of a group from [audioTrainerGroup]: `ab<KA>?` gives
+/// `A`, `B`, `<KA>`, `?`.
+List<String> audioTrainerTokens(String group) => [
+  for (final m in _token.allMatches(group.toUpperCase())) m[0]!,
+];
+
+/// What plays before a prosign's meaning (setting `atProsign`; the index is
+/// the stored value).
+enum ProsignIntro {
+  word('<PROSIGN>', 'prosign_word'),
+  bell('<BELL>', 'tone_bell'),
+  harp('<HARP>', 'tone_harp'),
+  gong('<GONG>', 'tone_gong'),
+  off('', '');
+
+  /// The token the engine hands to `playVoice`.
+  final String token;
+
+  /// Its sample key (see [voiceSampleKey]).
+  final String key;
+  const ProsignIntro(this.token, this.key);
+}
+
 /// Punctuation and operator characters that have a voice sample, with the
-/// word spoken and the sample's file-name key (`voice_kristin_question`).
-/// Prosigns and other characters have none.
+/// sample's file-name key (`voice_kristin_question`).
 const audioTrainerSymbols = {
   '.': 'period',
   ',': 'comma',
@@ -25,22 +68,23 @@ const audioTrainerSymbols = {
   '+': 'plus',
 };
 
-/// Characters that have a voice sample: a-z, 0-9 and [audioTrainerSymbols].
-final _sampleChar = RegExp(r'^[A-Z0-9.,:\-/=?@+]$');
-final _prosign = RegExp(r'<[A-Za-z]{2}>');
-
-/// A generated group reduced to what can be spoken afterwards: upper case,
-/// prosigns and characters without a sample dropped. Empty = unusable.
-String audioTrainerGroup(String raw) => raw
-    .replaceAll(_prosign, '')
-    .toUpperCase()
-    .split('')
-    .where(_sampleChar.hasMatch)
-    .join();
+/// Sample key of a token from [audioTrainerTokens] or of a
+/// [ProsignIntro.token]: `a`, `question`, `prosign_as`, `prosign_word`
+/// (voice samples `voice_<voice>_<key>`) or `tone_bell` (voice-independent
+/// tone `prosign_tone_bell`).
+String voiceSampleKey(String token) {
+  if (token.length > 2) {
+    for (final i in ProsignIntro.values) {
+      if (i.token == token && i.key.isNotEmpty) return i.key;
+    }
+    return 'prosign_${token.substring(1, 3).toLowerCase()}';
+  }
+  return audioTrainerSymbols[token] ?? token.toLowerCase();
+}
 
 /// Android raw resource name of a voice sample: `voice_kristin_a`.
-String voiceSampleName(String voice, String char) =>
-    'voice_${voice}_${audioTrainerSymbols[char] ?? char.toLowerCase()}';
+String voiceSampleName(String voice, String token) =>
+    'voice_${voice}_${voiceSampleKey(token)}';
 
 /// The voices shipped in `res/raw` (see `tools/make_voice_samples.py`).
 const audioTrainerVoices = ['kristin', 'bryce'];
@@ -58,8 +102,16 @@ class AudioTrainerConfig {
   /// Groups per block: the run ends after this many. 0 = until stopped.
   final int maxGroups;
 
+  /// What introduces the meaning of a prosign.
+  final ProsignIntro prosignIntro;
+
+  /// Silence between that introduction and the meaning.
+  final Duration prosignGap;
+
   const AudioTrainerConfig({
     this.maxGroups = 0,
+    this.prosignIntro = ProsignIntro.word,
+    this.prosignGap = const Duration(milliseconds: 250),
     this.thinkPause = const Duration(seconds: 4),
     this.voiceGap = const Duration(milliseconds: 500),
     this.groupPause = const Duration(seconds: 3),
@@ -77,7 +129,7 @@ class AudioTrainerState {
   /// The current group, empty before the first one.
   final String group;
 
-  /// Which character the solution is speaking, -1 outside it.
+  /// Which token ([audioTrainerTokens]) the solution is speaking, -1 outside it.
   final int solutionChar;
   final bool paused;
 
@@ -131,7 +183,8 @@ class AudioTrainerEngine {
   /// Aborts a running [playMorse].
   final Future<void> Function() stopMorse;
 
-  /// Speaks the sample of one character and completes when it has ended.
+  /// Speaks the sample of one token (a character, a prosign such as `<AS>`,
+  /// or a [ProsignIntro.token]) and completes when it has ended.
   final Future<void> Function(String char) playVoice;
 
   /// Aborts a running [playVoice].
@@ -295,11 +348,16 @@ class AudioTrainerEngine {
     await _wait(config.thinkPause);
 
     _update((s) => s.copyWith(phase: AudioTrainerPhase.solution));
-    for (var c = 0; c < group.length; c++) {
+    final tokens = audioTrainerTokens(group);
+    for (var c = 0; c < tokens.length; c++) {
       if (c > 0) await _wait(config.voiceGap);
       await _step();
       _update((s) => s.copyWith(solutionChar: c));
-      await _guard(playVoice(group[c]));
+      if (tokens[c].length > 1 && config.prosignIntro != ProsignIntro.off) {
+        await _guard(playVoice(config.prosignIntro.token));
+        await _wait(config.prosignGap);
+      }
+      await _guard(playVoice(tokens[c]));
     }
 
     final done = state.value.groupsDone + 1;

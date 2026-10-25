@@ -1958,9 +1958,9 @@ The page is laid out like the other trainings: the character set at the top
 (character set, content, Koch lesson), then a short note, the status field, the
 speed and character spacing, and the **Start** button. Character set, Koch
 lesson, speed and spacing work as in [Listen](#choosing-the-character-set-and-content).
-**Note:** Umlauts (Ä, Ö, Ü, CH) and prosigns are not spoken; they are removed
-from the group and played neither as Morse nor as voice. A group can therefore
-come out shorter than set. The **interference** symbol in the top bar works as in the other
+**Note:** Umlauts (Ä, Ö, Ü, CH) are not spoken; they are removed from the group
+and played neither as Morse nor as voice. A group can therefore come out
+shorter than set. The **interference** symbol in the top bar works as in the other
 trainings (tap: on/off, long press: settings); the noise stands while the
 trainer runs and affects the Morse, not the voice.
 
@@ -1973,6 +1973,14 @@ Everything else is in the **gear** (⚙) at the top:
 - **Thinking pause**: 1–15 s between the last Morse character and the solution.
 - **Pause between groups**: 1–10 s.
 - **Voice**: **Kristin** or **Bryce**. A change takes effect at the next start.
+- **Before a prosign**: prosigns (AS, KA, KN, SK, VE, BK) stay in the group; in
+  the Morse you hear them as one character and the solution shows the prosign in
+  brackets (`<AS>`). The voice always says the meaning: AS "Stand by", KA "Start
+  of message", KN "Go ahead, named station only", SK "End of contact", VE
+  "Understood", BK "Break". Before it you hear, as chosen, the words **"Pro sign"**,
+  a tone (**Bell**, **Harp** or **Gong**) or **nothing** (Off). The default is "Pro
+  sign". The choice applies from the next spoken prosign; the tones have the
+  level of the voice.
 - **Voice volume** (10–100 %, default **70 %**): the level of the voice, independent of the Morse tone. It applies when you close the sheet, so it is heard from the next spoken character on. Like the other sliders, a change can be taken back with **Undo**.
 
 All of these, including the character set, the Koch lesson and the Koch sequence, are stored only for the Audio trainer: changing them here does not change Listen or Send, and the other way round (the first time they are copied from Listen). Only the pitch, the display case and the interference settings are shared with the rest of the app. The display stays on while the Audio trainer is open, but you can turn it off.
@@ -2940,7 +2948,7 @@ OE1WKL, which is also under the GPL-3.0. The source code is on
 shows the MIT License of Zork I–III, the SIL Open Font License of the fonts
 Anonymous Pro and DM Sans, the CC-BY-SA-4.0 licence of
 the word lists (derived from the FrequencyWords project),
-and the licences of the Flutter packages the app uses. The confirmation tones “Marimba” and “Gentle” are the app’s own sounds (computed from sine waves) and are also under the GPL. The spoken spelling words of the Audio trainer were generated with Piper from the public-domain voice models “kristin” and “bryce” (script in the source code). Zork is a trademark of its owners; the app is not affiliated with
+and the licences of the Flutter packages the app uses. The confirmation tones “Marimba” and “Gentle” are the app’s own sounds (computed from sine waves) and are also under the GPL. The spoken spelling words of the Audio trainer were generated with Piper from the public-domain voice models “kristin” and “bryce” (script in the source code); the tones before prosigns (“Bell”, “Harp”, “Gong”) are the app’s own sounds, computed from sine waves. Zork is a trademark of its owners; the app is not affiliated with
 them, nor with Infocom, Activision or Microsoft.
 
 ## Koch sequence {#koch-sequence}

@@ -49,13 +49,18 @@ void main() {
     test('upper-cases and keeps letters and digits', () {
       expect(audioTrainerGroup('ab3z'), 'AB3Z');
     });
-    test('keeps the spoken symbols, drops prosigns and unknown characters', () {
-      expect(audioTrainerGroup('a.b,<KA>c/ä'), 'A.B,C/');
+    test('keeps the spoken symbols and prosigns, drops the rest', () {
+      expect(audioTrainerGroup('a.b,<ka>c/ä'), 'A.B,<KA>C/');
+      expect(audioTrainerGroup('<AR>x<BK>'), 'X<BK>');
       expect(audioTrainerGroup('-:=?@+'), '-:=?@+');
     });
     test('empty when nothing speakable is left', () {
-      expect(audioTrainerGroup('(<SK>)ä&'), '');
+      expect(audioTrainerGroup('(<AR>)ä&'), '');
     });
+  });
+
+  test('tokens: prosigns are one unit', () {
+    expect(audioTrainerTokens('A<KA>?<SK>'), ['A', '<KA>', '?', '<SK>']);
   });
 
   test('sample names match the files written by make_voice_samples.py', () {
@@ -63,6 +68,9 @@ void main() {
     expect(voiceSampleName('bryce', '7'), 'voice_bryce_7');
     expect(voiceSampleName('kristin', '?'), 'voice_kristin_question');
     expect(voiceSampleName('bryce', '+'), 'voice_bryce_plus');
+    expect(voiceSampleName('bryce', '<AS>'), 'voice_bryce_prosign_as');
+    expect(voiceSampleKey(ProsignIntro.word.token), 'prosign_word');
+    expect(voiceSampleKey(ProsignIntro.harp.token), 'tone_harp');
     expect(audioTrainerVoices, ['kristin', 'bryce']);
   });
 
@@ -71,6 +79,8 @@ void main() {
       for (var c = 0x41; c <= 0x5a; c++) String.fromCharCode(c),
       for (var c = 0; c < 10; c++) '$c',
       ...audioTrainerSymbols.keys,
+      ProsignIntro.word.token,
+      for (final p in audioTrainerProsigns) '<$p>',
     ];
     for (final v in audioTrainerVoices) {
       for (final c in chars) {
@@ -80,6 +90,57 @@ void main() {
         expect(f.existsSync(), isTrue, reason: f.path);
       }
     }
+  });
+
+  test('every prosign tone has a file', () {
+    for (final i in ProsignIntro.values.where(
+      (i) => i.key.startsWith('tone_'),
+    )) {
+      final f = File('android/app/src/main/res/raw/prosign_${i.key}.wav');
+      expect(f.existsSync(), isTrue, reason: f.path);
+    }
+  });
+
+  group('prosign introduction', () {
+    Future<List<String>> play(ProsignIntro intro) async {
+      final r = _Rig(
+        config: AudioTrainerConfig(
+          maxGroups: 1,
+          prosignIntro: intro,
+          voiceGap: const Duration(milliseconds: 500),
+          prosignGap: const Duration(milliseconds: 250),
+        ),
+      );
+      r.contents.add('a<KA>');
+      await r.engine.run();
+      return r.log.skipWhile((e) => e != 'voice:A').toList();
+    }
+
+    test('spoken word, then the meaning', () async {
+      expect(await play(ProsignIntro.word), [
+        'voice:A',
+        'wait:500',
+        'voice:<PROSIGN>',
+        'wait:250',
+        'voice:<KA>',
+      ]);
+    });
+    test('a tone, then the meaning', () async {
+      expect(await play(ProsignIntro.gong), [
+        'voice:A',
+        'wait:500',
+        'voice:<GONG>',
+        'wait:250',
+        'voice:<KA>',
+      ]);
+    });
+    test('off: only the meaning', () async {
+      expect(await play(ProsignIntro.off), [
+        'voice:A',
+        'wait:500',
+        'voice:<KA>',
+      ]);
+    });
   });
 
   test(
@@ -157,7 +218,7 @@ void main() {
 
   test('groups without speakable characters are drawn again', () async {
     final r = _Rig();
-    r.contents.addAll(['()', '<SK>', 'q']);
+    r.contents.addAll(['()', '<AR>', 'q']);
     final done = r.engine.run();
     await _settle();
     await r.engine.stop();
