@@ -28,10 +28,10 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
-(empty; v1.10.0 shots retaken 2026-10-25, `hear_prosigns.png` is new. `chart.png` shows only the letters at the top and did not change.)
+- `audio_trainer.png`, `audio_trainer_run.png` (both languages): umlaut note removed from the start view; solution now in character-type colors (shots of 1.10.0 still show the old view).
 
-## Prosign set (#156, branch `feature/prosign-charset`)
-Built, installed on the test phone, not yet checked there: chip order, tiles, typing keyboard row, chart, tree row, audio trainer with the set. The spoken meanings for AR, BT, HH, SOS are in (`res/raw`); still to hear in the app.
+## Prosign set (#156, in 1.10.0)
+Not yet checked on the phone: tiles, typing keyboard row, chart, tree row, audio trainer with the set and the spoken meanings for AR, BT, HH, SOS.
 
 ## Phone tests still open (1.8.0)
 - Confirmation tone choice (#136, PR #137, written in the cloud; CI is green: analyze, tests, debug build): pending install. Check on the test phone: the four choices in Settings → General, the right → wrong preview when picking, Marimba/Gentle level against the sidetone at several volumes, sound in the Echo Trainer, Hören typing flow, Geben and character practice, and that an old "off" setting stayed off.
