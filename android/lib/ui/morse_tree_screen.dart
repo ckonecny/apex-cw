@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../content/cw_content.dart' show kProsignCodes, kProsignTokens;
 import '../content/training_profile.dart';
 import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
@@ -155,6 +156,50 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
         .catchError((_) {});
   }
 
+  /// A prosign from the strip below the tree: the tree stops at five
+  /// elements, SK, BK, HH and SOS are longer. Plays it and shows its code.
+  Future<void> _playProsign(String token) async {
+    if (!_ready) return;
+    setState(() { _path = kProsignCodes[token]!; _lit = 0; _sounding = false; });
+    await _genChannel.invokeMethod('stopOne').catchError((_) {});
+    await Future.delayed(const Duration(milliseconds: 40));
+    await _genChannel.invokeMethod('playOne', '<$token>').catchError((_) {});
+  }
+
+  Widget _prosignStrip(AppColors c) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(Strings.t('tree_prosigns'), style: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.bold, color: c.textMuted)),
+          const SizedBox(height: 4),
+          Text(Strings.t('tree_prosigns_note'), style: TextStyle(
+              fontSize: 11, color: c.textMuted)),
+          const SizedBox(height: 8),
+          Wrap(spacing: 6, runSpacing: 6, children: [
+            for (final t in kProsignTokens)
+              Material(
+                color: c.surface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(
+                      color: _path == kProsignCodes[t] ? c.accentPurple : c.border,
+                      width: _path == kProsignCodes[t] ? 1.5 : 1),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: () => _playProsign(t),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Text(t, style: TextStyle(
+                        fontFamily: 'CwMono', fontSize: 15,
+                        fontWeight: FontWeight.w700, color: c.accentPurple)),
+                  ),
+                ),
+              ),
+          ]),
+        ],
+      );
+
   Future<void> _setWpm(int v) async {
     setState(() => _wpm = v.clamp(TrainingProfile.minWpm, 60));
     await _genChannel.invokeMethod('setWpm', _wpm).catchError((_) {});
@@ -287,6 +332,21 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
                   ]),
                   Expanded(child: _treeArea(height: null, landscape: true)),
                   _chNote(c),
+                  const SizedBox(height: 4),
+                  SizedBox(
+                    height: 44,
+                    child: ListView(scrollDirection: Axis.horizontal, children: [
+                      for (final t in kProsignTokens)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: ActionChip(
+                            label: Text(t, style: TextStyle(
+                                fontFamily: 'CwMono', color: c.accentPurple)),
+                            onPressed: () => _playProsign(t),
+                          ),
+                        ),
+                    ]),
+                  ),
                 ]),
               )
             : ListView(
@@ -306,6 +366,8 @@ class _MorseTreeScreenState extends State<MorseTreeScreen> {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     runSpacing: 8,
                     children: [_chip(), _speed(c)]),
+                  const SizedBox(height: 20),
+                  _prosignStrip(c),
                 ],
               ),
       ),

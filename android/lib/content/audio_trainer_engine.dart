@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import 'cw_content.dart' show kProsignTokens;
+
 // Audio trainer (issue #139): the app plays one character group in Morse, the
 // user only thinks it, and after a pause the app speaks the spelling-alphabet
 // word of every character in the order it was sent; then the next group
@@ -12,12 +14,12 @@ import 'package:flutter/foundation.dart';
 
 /// The prosigns the audio trainer speaks, as the bracketed tokens the
 /// generator and the Morse player use (`<AS>`).
-const audioTrainerProsigns = ['AS', 'KA', 'KN', 'SK', 'VE', 'BK'];
+const audioTrainerProsigns = kProsignTokens;
 
-final _prosign = RegExp(r'<[A-Za-z]{2}>');
+final _prosign = RegExp(r'<[A-Za-z]{2,3}>');
 
 /// One speakable unit: a prosign token, or a letter, digit or symbol.
-final _token = RegExp(r'<(?:AS|KA|KN|SK|VE|BK)>|[A-Z0-9.,:\-/=?@+]');
+final _token = RegExp('<(?:${kProsignTokens.join('|')})>|[A-Z0-9.,:\\-/=?@+]');
 
 /// A generated group reduced to what can be spoken afterwards: upper case,
 /// characters without a sample (umlauts, other prosigns ...) dropped. Prosigns
@@ -25,7 +27,8 @@ final _token = RegExp(r'<(?:AS|KA|KN|SK|VE|BK)>|[A-Z0-9.,:\-/=?@+]');
 String audioTrainerGroup(String raw) => audioTrainerTokens(
   raw.replaceAllMapped(
     _prosign,
-    (m) => audioTrainerProsigns.contains(m[0]!.substring(1, 3).toUpperCase())
+    (m) => audioTrainerProsigns
+        .contains(m[0]!.substring(1, m[0]!.length - 1).toUpperCase())
         ? m[0]!.toUpperCase()
         : '',
   ),
@@ -77,7 +80,7 @@ String voiceSampleKey(String token) {
     for (final i in ProsignIntro.values) {
       if (i.token == token && i.key.isNotEmpty) return i.key;
     }
-    return 'prosign_${token.substring(1, 3).toLowerCase()}';
+    return 'prosign_${token.substring(1, token.length - 1).toLowerCase()}';
   }
   return audioTrainerSymbols[token] ?? token.toLowerCase();
 }

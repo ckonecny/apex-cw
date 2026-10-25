@@ -51,16 +51,18 @@ void main() {
     });
     test('keeps the spoken symbols and prosigns, drops the rest', () {
       expect(audioTrainerGroup('a.b,<ka>c/ä'), 'A.B,<KA>C/');
-      expect(audioTrainerGroup('<AR>x<BK>'), 'X<BK>');
+      expect(audioTrainerGroup('<AR>x<BK><SOS><CH>'), '<AR>X<BK><SOS>');
       expect(audioTrainerGroup('-:=?@+'), '-:=?@+');
     });
     test('empty when nothing speakable is left', () {
-      expect(audioTrainerGroup('(<AR>)ä&'), '');
+      expect(audioTrainerGroup('(<CH>)ä&'), '');
     });
   });
 
   test('tokens: prosigns are one unit', () {
     expect(audioTrainerTokens('A<KA>?<SK>'), ['A', '<KA>', '?', '<SK>']);
+    expect(audioTrainerTokens('<SOS><AR>e'), ['<SOS>', '<AR>', 'E']);
+    expect(voiceSampleKey('<SOS>'), 'prosign_sos');
   });
 
   test('sample names match the files written by make_voice_samples.py', () {
@@ -218,7 +220,7 @@ void main() {
 
   test('groups without speakable characters are drawn again', () async {
     final r = _Rig();
-    r.contents.addAll(['()', '<AR>', 'q']);
+    r.contents.addAll(['()', '<CH>', 'q']);
     final done = r.engine.run();
     await _settle();
     await r.engine.stop();

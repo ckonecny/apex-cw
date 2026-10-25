@@ -183,7 +183,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   String _target  = '';
   // Random groups carry prosigns as "<KA>" (so playWord() can tell them from
   // the letters K A); the decoder emits "KA", so compare without brackets.
-  String get _targetPlain => _target.replaceAll(RegExp('[<>]'), '');
+  // AR and BT are keyed as + and =, which is what the decoder reports.
+  String get _targetPlain => _target
+      .replaceAll('<AR>', '+')
+      .replaceAll('<BT>', '=')
+      .replaceAll(RegExp('[<>]'), '');
   String _attempt = '';
 
   // "repeats" in m32_v6.ino: how many times the CURRENT word has been
@@ -748,7 +752,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _genChannel.invokeMethod('setWpm', _currentWpm).catchError((_) {});
     await _genChannel.invokeMethod('setInterCharSpace', _interCharSpace).catchError((_) {});
     await _genChannel.invokeMethod('setInterWordSpace', _interWordSpace).catchError((_) {});
-    final practice = {..._practiceChars, ..._boostChars}.toList();
+    final practice = {
+      ...effectivePracticeChars(_choice.set, joinCharTokens(_practiceChars), keyed: true),
+      ..._boostChars,
+    }.toList();
     await _genChannel.invokeMethod('setPracticeChars', practice).catchError((_) {});
     await _genChannel.invokeMethod('setBoostLevel',
         _boostChars.isEmpty ? _boostLevel : max(_boostLevel, 1)).catchError((_) {});

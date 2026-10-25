@@ -196,7 +196,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
 
   Future<void> _restorePracticeCharsAndBoost() async {
     final pf = await TrainingProfile.open(TrainingProfile.hear);
-    final practiceChars = parsePracticeChars(pf.getString('practiceChars') ?? '');
+    final practiceChars = profilePracticeChars(pf);
     final boostLevel = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
     await _genChannel.invokeMethod('setPracticeChars', practiceChars);
     await _genChannel.invokeMethod('setBoostLevel', boostLevel);
@@ -339,7 +339,8 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
                 _savePrefs();
               },
               controller: _adaptiveController,
-              practiceChars: _practiceChars,
+              practiceChars: joinCharTokens(
+                  effectivePracticeChars(_choice.set, _practiceChars)),
               onActiveChanged: (v) { if (mounted) setState(() => _adaptiveActive = v); },
               controls: _controls(),
             ),

@@ -109,7 +109,8 @@ class VoiceSamples(private val context: Context) {
         private val KEYS: List<String> =
             ('a'..'z').map { it.toString() } + ('0'..'9').map { it.toString() } +
             listOf("period", "comma", "colon", "dash", "slash", "equals", "question", "at", "plus") +
-            listOf("prosign_word", "prosign_as", "prosign_ka", "prosign_kn", "prosign_sk", "prosign_ve", "prosign_bk") +
+            listOf("prosign_word", "prosign_as", "prosign_ka", "prosign_kn", "prosign_sk", "prosign_ve", "prosign_bk",
+                   "prosign_ar", "prosign_bt", "prosign_hh", "prosign_sos") +
             listOf("tone_bell", "tone_harp", "tone_gong")
     }
 }

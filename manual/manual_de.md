@@ -312,7 +312,7 @@ nicht alles an einem Tag üben.
 
 - **Zeichenvorrat:** **Koch-Lektion**, **Inhalt:** **Zufall**.
 - **KOCH:** **2**. Das sind die ersten zwei Zeichen der Koch-Reihenfolge
-  (bei **M32**: `m` und `k`). Die Voreinstellung steht auf 5, stell den Regler
+  (bei **Morserino**: `m` und `k`). Die Voreinstellung steht auf 5, stell den Regler
   zum Einstieg ruhig zurück. Welche Reihenfolge du nimmst, ist zweitrangig;
   Hauptsache, du bleibst dabei (siehe [Koch-Reihenfolge](#koch-reihenfolge)).
 - **WPM (Zeichentempo):** **20**, die Voreinstellung. Das klingt anfangs
@@ -536,6 +536,7 @@ Oben auf der Startansicht wählst du zwei Dinge:
 |---|---|
 | **Koch-Lektion** | Nur die Zeichen bis zu deiner aktuellen Lektion |
 | **Alle Zeichen** | Alle Buchstaben, Ziffern, Satzzeichen und Prosigns |
+| **Prosigns** | Nur die Prosigns: AS, KA, KN, SK, VE, BK, AR, BT, HH und SOS |
 | **Übungsset** | Nur die Zeichen, die du selbst einträgst |
 
 **Inhalt** – was gespielt wird:
@@ -586,6 +587,19 @@ Normalerweise musst du die Lektion nicht von Hand erhöhen: Der Blockablauf
 schlägt dir das nächste Zeichen vor, sobald du bereit bist (siehe
 [Wann das nächste Koch-Zeichen kommt](#wann-das-nächste-koch-zeichen-kommt)).
 
+### Prosigns
+
+Der Zeichenvorrat **Prosigns** übt nur die Betriebszeichen. Unter den Chips
+siehst du die zehn Prosigns als Kacheln (Tippen spielt sie ab); der Inhalt ist
+immer **Zufall**. In Hören erscheint eine Gruppe als `<ka><sk>` (Schreibweise
+wie eingestellt) und beim Tippen antwortest du mit den Prosign-Tasten: Die
+Tastatur zeigt dann eine Reihe mit zehn Prosign-Tasten. AR und BT sind dieselben
+Zeichen wie `+` und `=` (der Keyer zeigt sie so an); HH ist das Fehlerzeichen
+(acht Punkte). Beim Geben (Tasten) fehlen HH, weil acht Punkte das Getastete
+löschen, und SOS, das der Keyer nicht dekodiert. Der Vorrat ist nicht
+editierbar; für eine eigene Mischung nimm das **Übungsset** mit Prosigns in
+spitzen Klammern (`<AR><SOS>`).
+
 ### Übungsset
 
 Beim Zeichenvorrat **Übungsset** erscheint direkt auf der Startansicht ein
@@ -598,7 +612,7 @@ wurden. Beim Übungsset gibt es nur den Inhalt **Zufall**.
 
 Unter der Übungsfläche steht eine Karte mit **Tempo** (Zeichentempo, 10 bis 60
 WPM, dahinter in Klammern das effektive Tempo), **Zeichenabstand** und
-**Wortabstand**. Sie ist dieselbe wie in Sätze, Mini-QSO und Q-Gruppen. Du siehst
+**Wortabstand**. Sie ist dieselbe wie in Sätze und Mini-QSO (Q-Gruppen haben nur das Tempo). Du siehst
 sie auf der Startansicht und im Ergebnis, nicht während ein Block läuft und
 nicht in „Gesendet“ (auch nicht bei der Markierung einzelner Wörter). Die Pausen kannst du auch
 im ⚙-Blatt unter **Abstände** einstellen.
@@ -2039,18 +2053,19 @@ solange der Trainer läuft, und wirkt auf das Morse, nicht auf die Stimme.
 
 Alles Weitere steckt im **Zahnrad** (⚙) oben:
 
-- **Koch-Reihenfolge** (nur bei der Koch-Lektion): M32, LCWO, CW Academy, LICW oder eigene.
+- **Koch-Reihenfolge** (nur bei der Koch-Lektion): LCWO, CW Academy, LICW, Morserino oder eigene.
 - **Gruppenlänge** (min–max, 1–8, wie beim Hören): Die Länge einer Gruppe wird jedes Mal zwischen den beiden Werten gewürfelt. Voreingestellt ist 1, bei Zufallszeichen also ein einzelnes Zeichen pro Gruppe. Sie wird nur bei Zufallszeichen, „Gemischt“ und dem Übungsset gezeigt.
 - **Wortsprache**, **Wortlänge** (min–max) und **Abkürzungslänge** (min–max): Bei **Wörter**, **Abkürzungen** und **Gemischt** ersetzen sie die Gruppenlänge, genau wie beim Hören. Die Zahl auf dem Chip **Wörter** ändert sich mit.
 - **Gruppen pro Block** (1–50 oder ganz rechts **endlos**, voreingestellt **10**, bei Wörtern „Wörter pro Block“), wie beim Hören: Nach so vielen Gruppen endet der Block von selbst. Das Statusfeld zeigt „Block beendet“, **Start** beginnt den nächsten Block. **Stopp** beendet früher. Bei **endlos** läuft der Trainer, bis du ihn stoppst.
 - **Denkpause**: 1–15 s zwischen dem letzten Morsezeichen und der Auflösung.
 - **Pause zwischen Gruppen**: 1–10 s.
 - **Stimme**: **Kristin** oder **Bryce**. Eine Änderung wirkt ab dem nächsten Start.
-- **Vor einem Prosign**: Prosigns (AS, KA, KN, SK, VE, BK) bleiben in der Gruppe, im
+- **Vor einem Prosign**: Prosigns (AS, KA, KN, SK, VE, BK, AR, BT, HH, SOS) bleiben in der Gruppe, im
   Morse hörst du sie als ein Zeichen und in der Auflösung steht das Prosign in
   Klammern (`<AS>`). Die Stimme nennt immer die Bedeutung: AS „Stand by“, KA
   „Start of message“, KN „Go ahead, named station only“, SK „End of contact“, VE
-  „Understood“, BK „Break“. Davor hörst du, je nach Auswahl, das Wort **„Pro sign“**,
+  „Understood“, BK „Break“, AR „End of message“, BT „New paragraph“, HH „Error“, SOS
+  „Distress call“. Davor hörst du, je nach Auswahl, das Wort **„Pro sign“**,
   einen Ton (**Glocke**, **Harfe** oder **Gong**) oder **nichts** (Aus). Voreingestellt
   ist „Pro sign“. Die Auswahl wirkt ab dem nächsten gesprochenen Prosign; die Töne
   haben die Lautstärke der Stimme.
@@ -2146,11 +2161,13 @@ bedeutet. Wie bei [Sätzen](#verstehen) braucht das keine Taste.
 unabhängig von der App-Sprache), die **Stufe** (1, 2 oder 3; die Gruppen sind
 nach Häufigkeit geordnet, und jede Stufe nimmt die seltenere dazu: Stufe 1 hat
 die 8 häufigsten, Stufe 2 insgesamt 16, Stufe 3 alle 24; unter der Auswahl
-steht, was die Stufe bedeutet), die **Fragen pro Runde** (5 oder 10), **Tempo**,
-**Zeichenabstand** und **Wortabstand**. Die Werte gelten nur für Q-Gruppen;
-beim ersten Öffnen übernimmt die App sie aus **Hören**. Das **effektive Tempo**
-steht in Klammern hinter dem Tempo, unter dem Start die Trefferquote der letzten
-Runden. **Spickzettel** öffnet die Liste aller Gruppen.
+steht, was die Stufe bedeutet), die **Fragen pro Runde** (5 oder 10), **Tempo**.
+Das Tempo gilt nur für Q-Gruppen; beim ersten Öffnen übernimmt die App es aus
+**Hören**. Es gibt keinen Zeichen- und keinen Wortabstand: Eine Q-Gruppe hörst du
+als ganze „Melodie“, nicht Zeichen für Zeichen, und es wird immer nur eine
+Gruppe gespielt, ein Wortabstand käme also nie vor. Die Zeichen laufen deshalb
+immer mit normalem Abstand, das Tempo ist direkt die WPM. Unter dem Start steht
+die Trefferquote der letzten Runden. **Spickzettel** öffnet die Liste aller Gruppen.
 
 ::: {.shots .one}
 ![Q-Gruppen: Start mit Stufe, Fragen pro Runde und Tempo](img/de/qgroups_setup.png)
@@ -2635,7 +2652,9 @@ ein Punkt ist eine gepunktete Linie, ein Strich eine dicke durchgezogene. Ein Ze
 sein Code endet – du liest den Code ab, indem du dem Weg nach unten folgst.
 Auf den ersten vier Ebenen stehen die Buchstaben. **Ziffern und Zeichen**
 blendet die fünfte Ebene mit Ziffern und Zeichen ein; der Baum lässt sich
-dann seitwärts verschieben.
+dann seitwärts verschieben. Prosigns wie SK, BK, HH und SOS haben mehr als
+fünf Elemente und passen nicht in den Baum: Sie stehen in einer Reihe
+**Prosigns** darunter. Tippe eines an, um es zu hören und seinen Code zu sehen.
 
 Tippe auf ein Zeichen, um es zu hören. Es klingt mit deiner **Tonhöhe**
 (Einstellungen → Allgemein) und mit dem Tempo, das unter dem Baum steht.
@@ -2683,8 +2702,8 @@ und decodiert. Er stimmt also immer mit dem überein, was du hörst.
 ## Zeichentabelle
 
 Die Zeichentabelle listet alle Zeichen der App mit ihrem Code, gruppiert in
-**Buchstaben**, **Umlaute und CH** (Ä, Ö, Ü, CH), **Ziffern**, **Satzzeichen** und **Prosigns** (SK, KN, KA, AS,
-VE, BK). Jeder Code ist als Punkte und Striche gezeichnet.
+**Buchstaben**, **Umlaute und CH** (Ä, Ö, Ü, CH), **Ziffern**, **Satzzeichen** und **Prosigns** (AS, KA, KN, SK,
+VE, BK, AR, BT, HH, SOS; AR und BT haben denselben Code wie `+` und `=`). Jeder Code ist als Punkte und Striche gezeichnet.
 
 Tippe auf ein Zeichen: Es klingt mit deiner Tonhöhe, und seine Punkte und
 Striche leuchten auf, während sie erklingen. Das Tempo startet mit dem Wert aus
@@ -3070,10 +3089,10 @@ wenn dort der Zeichenvorrat **Koch-Lektion** gewählt ist. Sie gilt aber für
 
 | Reihenfolge | Beschreibung |
 |---|---|
-| **M32** | Die Reihenfolge des Morserino-32 (51 Schritte): `m k r s u a p t l o w i . n j e f 0 y v , g 5 / q 9 z h 3 8 b ? 4 2 7 c 1 d 6 x - = SK + AS KN KA VE BK @ :` |
-| LCWO | Die Reihenfolge von lcwo.net |
-| CW Academy | Die Reihenfolge der CW Academy (CWops) |
-| LICW | Die Reihenfolge der Long Island CW Club mit **Einstiegspunkt** (siehe unten) |
+| LCWO | Die Reihenfolge von lcwo.net (41 Schritte: Buchstaben, Ziffern und `. , ? = /`; keine Prosigns) |
+| CW Academy | Die Anfängerreihenfolge der CW Academy (CWops) (44 Schritte, endet mit `x z BK SK .`; `+` ist AR, `=` ist BT) |
+| LICW | Die Reihenfolge der Long Island CW Club (44 Zeichen) mit **Einstiegspunkt** (siehe unten) |
+| **Morserino** | Die Reihenfolge des Morserino-32 (51 Schritte): `m k r s u a p t l o w i . n j e f 0 y v , g 5 / q 9 z h 3 8 b ? 4 2 7 c 1 d 6 x - = SK + AS KN KA VE BK @ :` |
 | Eigene | Deine eigene Reihenfolge |
 
 **LICW-Einstiegspunkt** (0–13): Beim LICW-Kurs steigen Teilnehmer an
@@ -3086,9 +3105,11 @@ erkannten Zeichen an. Voreingestellt ist `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p
 die Reihenfolge des YouTube-Morsekurses von „Heinz – just me“
 ([Playlist](https://www.youtube.com/watch?v=WhjCvgC0iHg&list=PLZjVloEmSdLgGGT_exNDoXzmnV-q0zmET)).
 
-**Prosigns:** Die Folgen von M32, LCWO, CW Academy und LICW enthalten die
-sechs Prosigns SK, AS, KN, KA, VE und BK genau dort, wo die Firmware sie
-einordnet (meist am Ende). Ein Prosign ist ein eigener Lektionsschritt: Es
+**Prosigns:** Die Folge von Morserino enthält die sechs Prosigns SK, AS, KN, KA, VE
+und BK genau dort, wo die Firmware sie einordnet (meist am Ende). Die Folgen
+von CW Academy und LICW enthalten nur die Prosigns ihrer Kurse, SK und BK
+(`+` und `=` stehen für AR und BT); LCWO hat keine. Diese drei folgen den
+Original-Kursen und hören dort auf, wo diese aufhören. Ein Prosign ist ein eigener Lektionsschritt: Es
 erscheint als Kachel mit zwei Buchstaben, wird als ein Zeichen gespielt
 (nicht als zwei Buchstaben) und kommt in Zufallsgruppen vor. Wörter und
 Abkürzungen enthalten keine Prosigns. In den Spielen (Morsel, Gedächtnis-Kette,
@@ -3130,7 +3151,7 @@ kommst oder dessen Handbuch liest, hilft diese Tabelle:
 | CurtisB DitT% / DahT% | CurtisB Dit-Timing / Dah-Timing |
 
 Die Namen der Keyer-Modi (Iambic A, Ultimatic …) und der Koch-Reihenfolgen
-(M32, LCWO …) sind in der App gleich wie am Morserino.
+(Morserino, LCWO …) sind in der App gleich wie am Morserino.
 
 # Was die App (noch) nicht kann
 

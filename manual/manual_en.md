@@ -302,7 +302,7 @@ Open **Listen** and set:
 
 - **Character set:** **Koch lesson**, **Content:** **Random**.
 - **KOCH:** **2**. These are the first two characters of the Koch sequence
-  (with **M32**: `m` and `k`). The default is 5; moving the slider back is a
+  (with **Morserino**: `m` and `k`). The default is 5; moving the slider back is a
   good idea for the start. Which sequence you use is secondary; the main thing
   is to stick to it (see [Koch sequence](#koch-sequence)).
 - **WPM (character speed):** **20**, the default. It sounds fast at first but
@@ -515,6 +515,7 @@ The **character set** decides which characters are practiced:
 |---|---|
 | **Koch lesson** | Only the characters up to your current lesson |
 | **All characters** | All letters, digits, punctuation and prosigns |
+| **Prosigns** | Only the prosigns: AS, KA, KN, SK, VE, BK, AR, BT, HH and SOS |
 | **Practice set** | Only the characters you enter yourself |
 
 The **content** decides what is played:
@@ -564,6 +565,18 @@ Usually you don't need to raise the lesson by hand. The block flow suggests
 the next character once you are ready (see
 [When the next Koch character comes](#when-the-next-koch-character-comes)).
 
+### Prosigns
+
+The **Prosigns** character set practices only the procedural signals. Below the
+chips you see the ten prosigns as tiles (tap one to hear it); the content is
+always **Random**. In Listen, a group is shown like `<ka><sk>` (display case as
+set) and, with typing, you answer with the prosign keys: the keyboard then
+shows one row of ten prosign keys. AR and BT are the same signals as `+` and `=`
+(the keyer shows them that way); HH is the error sign (eight dits). In Send
+(keying) the set leaves out HH, because eight dits erase what you keyed, and SOS,
+which the keyer cannot decode. The set cannot be edited; for your own mix use the
+**Practice set** with prosigns in angle brackets (`<AR><SOS>`).
+
 ### Practice set
 
 With the **Practice set** character set, an input field appears right on the
@@ -576,7 +589,7 @@ only offers the **Random** content.
 
 Below the practice area is a card with **Speed** (character speed, 10 to 60
 WPM, the effective speed in brackets behind it), **Character spacing** and
-**Word spacing**. It is the same as in Sentences, Mini QSO and Q-groups. You see
+**Word spacing**. It is the same as in Sentences and Mini QSO (Q-groups have the speed only). You see
 it on the start view and in the result, not while a block runs and not in
 "Sent" (nor while you mark single words). You can also set the pauses in the ⚙ sheet
 under **Spacing**.
@@ -1976,18 +1989,19 @@ trainer runs and affects the Morse, not the voice.
 
 Everything else is in the **gear** (⚙) at the top:
 
-- **Koch sequence** (only with the Koch lesson): M32, LCWO, CW Academy, LICW or your own.
+- **Koch sequence** (only with the Koch lesson): LCWO, CW Academy, LICW, Morserino or your own.
 - **Group length** (min–max, 1–8, as in Listen): the length of a group is drawn between the two values each time. The default is 1; with random characters this means a single character per group. It is only shown for random characters, mixed content and the practice set.
 - **Word language**, **Word length** (min–max) and **Abbreviation length** (min–max): with **Words**, **Abbreviations** and **Mixed** these replace the group length, exactly as in Listen. The number on the **Words** chip changes with them.
 - **Groups per block** (1–50 or **endless** at the far right end, default **10**, “Words per block” with words), as in Listen: the block ends by itself after that many groups. The status field shows “Block finished”, **Start** begins the next block. **Stop** ends it earlier. With **endless** the trainer keeps going until you stop it.
 - **Thinking pause**: 1–15 s between the last Morse character and the solution.
 - **Pause between groups**: 1–10 s.
 - **Voice**: **Kristin** or **Bryce**. A change takes effect at the next start.
-- **Before a prosign**: prosigns (AS, KA, KN, SK, VE, BK) stay in the group; in
+- **Before a prosign**: prosigns (AS, KA, KN, SK, VE, BK, AR, BT, HH, SOS) stay in the group; in
   the Morse you hear them as one character and the solution shows the prosign in
   brackets (`<AS>`). The voice always says the meaning: AS "Stand by", KA "Start
   of message", KN "Go ahead, named station only", SK "End of contact", VE
-  "Understood", BK "Break". Before it you hear, as chosen, the words **"Pro sign"**,
+  "Understood", BK "Break", AR "End of message", BT "New paragraph", HH "Error", SOS
+  "Distress call". Before it you hear, as chosen, the words **"Pro sign"**,
   a tone (**Bell**, **Harp** or **Gong**) or **nothing** (Off). The default is "Pro
   sign". The choice applies from the next spoken prosign; the tones have the
   level of the voice.
@@ -2082,11 +2096,13 @@ Like [Sentences](#head-copy), it needs no key.
 independent of the app language), the **level** (1, 2 or 3; the groups are
 ordered by how common they are, and each level adds the rarer ones: level 1
 has the 8 most common, level 2 has 16 in all, level 3 all 24; below the choice
-it says what the level means), the **questions per round** (5 or 10), **speed**,
-**character spacing** and **word spacing**. They apply to Q-groups only; on
-first open the app takes them from **Listen**. The **effective
-speed** is shown in brackets behind the speed, below the start button the hit
-rate of the recent rounds.
+it says what the level means), the **questions per round** (5 or 10), **speed**.
+The speed applies to Q-groups only; on first open the app takes it from
+**Listen**. There is no character or word spacing: you hear a Q-group as one
+whole "melody", not character by character, and only one group is played at a
+time, so a word gap would never occur. The characters therefore always run with
+normal spacing, and the speed is the WPM directly. Below the start button is
+the hit rate of the recent rounds.
 **Cheat sheet** opens the list of all groups.
 
 ::: {.shots .one}
@@ -2549,7 +2565,9 @@ The Morse tree shows all codes in one picture: from the dot at the top, a
 dotted line, a dah a thick solid one. A character sits where its code ends,
 so you can read every code by following the path down to it. Letters are on
 the first four levels. **Digits and signs** adds the fifth level with digits
-and signs; the tree then scrolls sideways.
+and signs; the tree then scrolls sideways. Prosigns such as SK, BK, HH and SOS
+have more than five elements and do not fit in the tree: they are in a **Prosigns**
+row below it. Tap one to hear it and see its code.
 
 Tap a character to hear it. It sounds at your **pitch** (Settings → General) and at the speed shown below the tree. That speed starts at your
 **Listen** speed and can be changed here with **–** and **+** (10–60 WPM); the
@@ -2593,8 +2611,8 @@ decoding, so it always matches what you hear.
 ## Character chart
 
 The character chart lists every character of the app with its code, grouped
-into **Letters**, **Umlauts and CH** (Ä, Ö, Ü, CH), **Digits**, **Punctuation** and **Prosigns** (SK, KN, KA, AS,
-VE, BK). Each code is drawn as dots and dashes.
+into **Letters**, **Umlauts and CH** (Ä, Ö, Ü, CH), **Digits**, **Punctuation** and **Prosigns** (AS, KA, KN, SK,
+VE, BK, AR, BT, HH, SOS; AR and BT have the same code as `+` and `=`). Each code is drawn as dots and dashes.
 
 Tap a character: it sounds at your pitch, and its dots and dashes light up as
 they sound. The speed starts at the value from the Listen training; **−** and
@@ -2970,10 +2988,10 @@ trainings and games, though.
 
 | Sequence | Description |
 |---|---|
-| **M32** | The Morserino-32 order (51 steps): `m k r s u a p t l o w i . n j e f 0 y v , g 5 / q 9 z h 3 8 b ? 4 2 7 c 1 d 6 x - = SK + AS KN KA VE BK @ :` |
-| LCWO | The lcwo.net order |
-| CW Academy | The CW Academy (CWops) order |
-| LICW | The Long Island CW Club order with an **entry point** (see below) |
+| LCWO | The lcwo.net order (41 steps: letters, digits and `. , ? = /`; no prosigns) |
+| CW Academy | The CW Academy (CWops) beginner order (44 steps, ending `x z BK SK .`; `+` is AR, `=` is BT) |
+| LICW | The Long Island CW Club order (44 characters) with an **entry point** (see below) |
+| **Morserino** | The Morserino-32 order (51 steps): `m k r s u a p t l o w i . n j e f 0 y v , g 5 / q 9 z h 3 8 b ? 4 2 7 c 1 d 6 x - = SK + AS KN KA VE BK @ :` |
 | Custom | Your own order |
 
 **LICW entry point** (0–13): in the LICW course, students join a "carousel"
@@ -2986,9 +3004,11 @@ default is `esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?`, the order of the YouTube
 Morse course by "Heinz – just me"
 ([playlist](https://www.youtube.com/watch?v=WhjCvgC0iHg&list=PLZjVloEmSdLgGGT_exNDoXzmnV-q0zmET)).
 
-**Prosigns:** the M32, LCWO, CW Academy and LICW sequences contain the six
-prosigns SK, AS, KN, KA, VE and BK exactly where the firmware puts them
-(mostly at the end). A prosign is a lesson step of its own: it appears as a
+**Prosigns:** the Morserino sequence contains the six prosigns SK, AS, KN, KA, VE and
+BK exactly where the firmware puts them (mostly at the end). The CW Academy
+and LICW sequences contain only the prosigns of their courses, SK and BK
+(`+` and `=` stand for AR and BT); LCWO has none. These three follow the
+original courses and stop where those stop. A prosign is a lesson step of its own: it appears as a
 two-letter tile, is played as one character (not as two letters) and turns up
 in random groups. Words and abbreviations contain no prosigns. They are left
 out of the games (Morsel, Memory Chain, Maze, Invaders), where every
@@ -3029,7 +3049,7 @@ Morserino or read its manual, this table helps:
 | CurtisB DitT% / DahT% | CurtisB dit timing / dah timing |
 
 The names of the keyer modes (Iambic A, Ultimatic …) and of the Koch
-sequences (M32, LCWO …) are the same as on the Morserino.
+sequences (Morserino, LCWO …) are the same as on the Morserino.
 
 # What the app does not do (yet)
 

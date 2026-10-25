@@ -435,6 +435,8 @@ class Strings {
     'tree_title': ['Morse-Baum', 'Morse tree'],
     'tree_subtitle': ['Punkt links, Strich rechts – Zeichen antippen', 'Dit left, dah right – tap a character'],
     'tree_hint': ['Hören, wie der Weg zum Zeichen klingt', 'Hear the path to a character'],
+    'tree_prosigns': ['Prosigns', 'Prosigns'],
+    'tree_prosigns_note': ['Der Baum reicht nur bis fünf Elemente; Prosigns wie SK, BK, HH und SOS sind länger. Tippe hier auf eines, um es zu hören und seinen Code zu sehen. AR und BT sind dieselben Zeichen wie + und =.', 'The tree only goes to five elements; prosigns like SK, BK, HH and SOS are longer. Tap one here to hear it and see its code. AR and BT are the same signs as + and =.'],
     'tree_digits': ['Ziffern und Zeichen', 'Digits and signs'],
     'tree_intro': ['Tippe auf ein Zeichen: Es klingt mit deiner Tonhöhe, und der Weg von der Wurzel leuchtet Element für Element auf. Links ist ein Punkt, rechts ein Strich. Mit einer angeschlossenen Taste gehst du den Baum selbst: Punkt nach links, Strich nach rechts; nach einer kurzen Pause beginnst du wieder oben.', 'Tap a character: it sounds at your pitch, and the path from the root lights up element by element. Left is a dit, right is a dah. With an external key, walk the tree yourself: dit goes left, dah goes right; after a short pause you start again at the top.'],
     'tree_ch_note': ['Hinweis zu CH (– – – –): Das Zeichen ist ein historisches nationales Zusatzzeichen, früher im deutschen und skandinavischen Sprachraum üblich. Im heutigen internationalen Funkverkehr ist es obsolet. Sende CH immer als zwei getrennte Buchstaben: C (– · – ·) und H (· · · ·).', 'Note on CH (– – – –): this is a historic national extra character, once common in German- and Scandinavian-speaking countries. It is obsolete in international radio today. Always send CH as two separate letters: C (– · – ·) and H (· · · ·).'],
@@ -693,6 +695,7 @@ class Strings {
     'charset_koch': ['Koch-Lektion', 'Koch lesson'],
     'charset_all': ['Alle Zeichen', 'All characters'],
     'charset_practice': ['Übungsset', 'Practice set'],
+    'charset_prosigns': ['Prosigns', 'Prosigns'],
 
     // ── CW Generator / Koch Trainer screen ───────────────────────────────
     'repeat_upper': ['WIEDERHOLEN', 'REPEAT'],

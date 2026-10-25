@@ -1,11 +1,14 @@
 // Koch character order and content helpers (mirrors CwGenerator.kt).
 //
-// Koch Sequence: the M32/LCWO/CW Academy/LICW orders below are the firmware's
-// own strings (MorsePreferences.h: morserinoKochChars/lcwoKochChars/
-// cwacKochChars/licwAllKochChars), taken over verbatim and tokenised by
-// [_kochTokens] — 45 plain characters plus the 6 prosigns the firmware marks
-// with upper-case letters. A lesson step is one token, so a prosign is a
-// two-letter entry ('KA', rule 3 in CLAUDE.md) in a list of single characters.
+// Koch Sequence: the M32/LCWO/CW Academy/LICW orders below come from the
+// firmware's own strings (MorsePreferences.h: morserinoKochChars/lcwoKochChars/
+// cwacKochChars/licwAllKochChars), tokenised by [_kochTokens] — prosigns are
+// marked with upper-case letters there. M32 is the firmware's order as is
+// (51 steps). LCWO, CW Academy and LICW are cut back to the original
+// course: the firmware appends its own tail (`- SK + AS KN VE BK @ :` etc.)
+// that none of those courses teaches (docs/DECISIONS.md). A lesson step is
+// one token, so a prosign is a two-letter entry ('KA', rule 3 in CLAUDE.md)
+// in a list of single characters.
 
 // Firmware marker letter -> prosign (m32_v6.ino CWchars: S=<as>, A=<ka>,
 // N=<kn>, K=<sk>, E=<ve>, B=<bk>).
@@ -26,20 +29,22 @@ bool isProsignToken(String t) => t.length > 1;
 String kochPlayText(String t) => t.length > 1 ? '<${t.toUpperCase()}>' : t.toUpperCase();
 
 final kochSeqM32 = _kochTokens('mkrsuaptlowi.njef0yv,g5/q9zh38b?427c1d6x-=K+SNAEB@:');
-final kochSeqLcwo = _kochTokens('kmuresnaptlwi.jz=foy,vg5/q92h38b?47c1d60x-K+ASNEB@:');
-final kochSeqCwAcademy = _kochTokens('teanois14rhdl25ucmw36?fy,pgq79/bv+kj80=xzBK.-ASNE@:');
+// lcwo.net: 40 lessons, 41 characters (lesson 1 is K M); letters, digits and
+// . , ? = / only.
+final kochSeqLcwo = _kochTokens('kmuresnaptlwi.jz=foy,vg5/q92h38b?47c1d60x');
+// CW Academy beginner curriculum, sessions 1-10: + is <AR>, = is <BT>.
+final kochSeqCwAcademy = _kochTokens('teanois14rhdl25ucmw36?fy,pgq79/bv+kj80=xzBK.');
 
-// Full LICW curriculum source (MorsePreferences.h's licwAllKochChars), the
-// basis for the carousel rotation below.
-const _licwAllKochChars = 'reatinpgslcdhofuwbkmy59,qxv73?+K=16.zj/28B40-ASNE@:';
+// The 44 LICW characters (BC1 + BC2; MorsePreferences.h's licwAllKochChars
+// without the firmware's own tail), the basis for the carousel rotation below.
+// + is <AR>, = is <BT>.
+const _licwAllKochChars = 'reatinpgslcdhofuwbkmy59,qxv73?+K=16.zj/28B40';
 
 // LICW Carousel "Entry Point" (posCarouselStart, 0-13): ports
 // Koch::setupLICWkochChars() exactly — start<6 rotates an 18-char "BC1"
 // window, start>=6 rotates the full 44-char "BC2" window, by character index
 // over the string with its prosign markers (so the BC2 window carries <sk>
-// and <bk>, like the firmware's). "-@:" (never covered by any carousel
-// window; MorsePreferences.cpp caps the rotation at 44 chars) is appended so
-// levels above the carousel's own range still have somewhere to grow.
+// and <bk>, like the firmware's).
 List<String> licwCarouselChars(int start) {
   final all = _kochTokens(_licwAllKochChars);
   final s = start.clamp(0, 13);
@@ -54,7 +59,7 @@ List<String> licwCarouselChars(int start) {
     out.addAll(all.sublist(3 * s, 3 * s + segLen));
     if (s > 6) out.addAll(all.sublist(18, 18 + (3 * s - 18)));
   }
-  return [...out, '-', '@', ':'];
+  return out;
 }
 
 // seq: 0=M32, 1=LCWO, 2=CW Academy, 3=LICW, 4=Custom (matches M32 "Koch Sequence")
@@ -85,7 +90,20 @@ List<String> kochActiveChars(int level, [List<String>? sequence]) {
 // into an ordered, de-duplicated token list. A prosign is typed in angle
 // brackets, `<KA>` (CLAUDE.md rule 3); anything else is one character per
 // token, upper-cased. Whitespace is ignored.
-final _prosignInput = RegExp(r'<(AS|KA|KN|SK|VE|BK)>', caseSensitive: false);
+/// Every prosign the app knows, in the order shown (Prosign set, keyboard,
+/// chart, tree). AR and BT are the same signals as `+` and `=` (the decoder
+/// reports those as `+`/`=`); HH is the error sign (the decoder's `<err>`).
+const kProsignTokens = ['AS', 'KA', 'KN', 'SK', 'VE', 'BK', 'AR', 'BT', 'HH', 'SOS'];
+
+/// Dit/dah code of each prosign (CwGenerator.kt morseTable).
+const kProsignCodes = {
+  'AS': '.-...', 'KA': '-.-.-', 'KN': '-.--.', 'SK': '...-.-', 'VE': '...-.',
+  'BK': '-...-.-', 'AR': '.-.-.', 'BT': '-...-', 'HH': '........',
+  'SOS': '...---...',
+};
+
+final _prosignAlt = kProsignTokens.join('|');
+final _prosignInput = RegExp('<($_prosignAlt)>', caseSensitive: false);
 
 List<String> parseCharTokens(String input) {
   final seen = <String>{};
@@ -122,12 +140,13 @@ List<String> parsePracticeChars(String input) => parseCharTokens(input);
 const _prosignGlyph = {
   'AS': '\uE000', 'KA': '\uE001', 'KN': '\uE002',
   'SK': '\uE003', 'VE': '\uE004', 'BK': '\uE005',
+  'AR': '\uE006', 'BT': '\uE007', 'HH': '\uE008', 'SOS': '\uE009',
 };
 final _glyphToken = {for (final e in _prosignGlyph.entries) e.value: e.key};
 
 /// `AB<KA>C` -> `AB\uE001C`.
 String prosignsToGlyphs(String s) =>
-    s.replaceAllMapped(RegExp('<(AS|KA|KN|SK|VE|BK)>', caseSensitive: false),
+    s.replaceAllMapped(_prosignInput,
         (m) => _prosignGlyph[m.group(1)!.toUpperCase()]!);
 
 /// `AB\uE001C` -> `AB<KA>C`, the text for the generator.
