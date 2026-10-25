@@ -51,6 +51,9 @@ Built: foreground service/lock-screen/headset buttons shared with Own texts (pla
 ## Launcher shortcuts (#151, branch `feature/app-shortcuts`, not merged)
 Built: dynamic shortcuts, user's choice and order in Settings → Appearance → App shortcuts (8 on offer, 4 on by default), manual DE+EN, tests. First version (fixed five) checked on the test phone: works, launcher shows four. Settings screen checked on the test phone (2026-10-25): passt. PR open, not merged.
 
+## Audio trainer lock-screen controls (#152, branch `feature/audio-trainer-lockscreen-controls`, based on `feature/app-shortcuts`)
+Built: tempo/spacing −/+ instead of prev/next in the audio trainer's media controls, values in the subtitle, manual DE+EN, test. Checked on the test phone 2026-10-25 (debug build): the four buttons in the shade's media player, tempo/spacing change and the subtitle follows. Lock screen checked by the user: passt. PR open (stacked on #153), not merged. Still to check in the beta: by ear, own texts still with prev/next.
+
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>
   ./build.sh` states the release commit on the title page when only manual

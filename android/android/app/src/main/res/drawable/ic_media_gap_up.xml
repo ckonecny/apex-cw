@@ -1,0 +1,8 @@
+<!-- Audio trainer media button (#152), drawn for this project (GPL-3.0-or-later). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF" android:pathData="M11,5h2v14h-2zM9,8l-6,4l6,4zM15,8l6,4l-6,4z" />
+</vector>

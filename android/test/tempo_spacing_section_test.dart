@@ -82,4 +82,13 @@ void main() {
     await tester.tap(find.byIcon(Icons.add_circle_outline).first);
     expect(got, (21, 21));
   });
+
+  // Shared with the audio trainer's lock-screen buttons (#152).
+  test('stepCharSpacing: 3..45 dits, word gap never below', () {
+    expect(stepCharSpacing(3, 7, 1), (4, 7));
+    expect(stepCharSpacing(7, 7, 1), (8, 8));
+    expect(stepCharSpacing(8, 8, -1), (7, 8));
+    expect(stepCharSpacing(3, 7, -1), (3, 7));
+    expect(stepCharSpacing(45, 50, 1), (45, 50));
+  });
 }

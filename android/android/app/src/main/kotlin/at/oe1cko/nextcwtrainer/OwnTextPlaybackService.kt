@@ -38,6 +38,14 @@ class OwnTextPlaybackService : Service() {
         const val CMD_PAUSE = "at.oe1cko.nextcwtrainer.OT_PAUSE"
         const val CMD_NEXT = "at.oe1cko.nextcwtrainer.OT_NEXT"
         const val CMD_PREV = "at.oe1cko.nextcwtrainer.OT_PREV"
+        // Audio trainer (#152): tempo and character spacing instead of prev/next.
+        // The action strings are also the commands handed to Dart.
+        private const val CMD_CUSTOM = "at.oe1cko.nextcwtrainer.OT_CUSTOM:"
+        private val TUNE_ACTIONS = listOf(
+            "tempo_down" to R.drawable.ic_media_tempo_down,
+            "tempo_up" to R.drawable.ic_media_tempo_up,
+            "gap_down" to R.drawable.ic_media_gap_down,
+            "gap_up" to R.drawable.ic_media_gap_up)
         private const val CHANNEL = "own_text_playback"
         private const val NOTIF_ID = 4721
         // Safety net: a forgotten lock never holds the CPU awake for longer.
@@ -50,6 +58,9 @@ class OwnTextPlaybackService : Service() {
     private var playing = false
     private var foreground = false
     private var title = ""
+    private var subtitle = ""
+    /** Audio trainer: tempo/spacing buttons replace previous/next. */
+    private var tune = false
     private var labels = mapOf<String, String>()
     private var channelId = CHANNEL
 
@@ -79,6 +90,9 @@ class OwnTextPlaybackService : Service() {
                 override fun onSkipToNext() { OwnTextPlayback.onCommand?.invoke("next") }
                 override fun onSkipToPrevious() { OwnTextPlayback.onCommand?.invoke("prev") }
                 override fun onStop() { OwnTextPlayback.onCommand?.invoke("pause") }
+                override fun onCustomAction(action: String, extras: android.os.Bundle?) {
+                    OwnTextPlayback.onCommand?.invoke(action)
+                }
             })
             isActive = true
         }
@@ -89,6 +103,8 @@ class OwnTextPlaybackService : Service() {
         when (intent?.action) {
             ACTION_UPDATE -> {
                 title = intent.getStringExtra("title") ?: ""
+                subtitle = intent.getStringExtra("subtitle") ?: ""
+                tune = intent.getBooleanExtra("tune", false)
                 playing = intent.getBooleanExtra("playing", false)
                 channelId = intent.getStringExtra("channelId")?.takeIf { it.isNotEmpty() } ?: CHANNEL
                 labels = mapOf(
@@ -96,7 +112,8 @@ class OwnTextPlaybackService : Service() {
                     "play" to (intent.getStringExtra("play") ?: "Play"),
                     "pause" to (intent.getStringExtra("pause") ?: "Pause"),
                     "next" to (intent.getStringExtra("next") ?: "Next"),
-                    "prev" to (intent.getStringExtra("prev") ?: "Previous"))
+                    "prev" to (intent.getStringExtra("prev") ?: "Previous")) +
+                    TUNE_ACTIONS.associate { (a, _) -> a to (intent.getStringExtra(a) ?: a) }
                 refresh()
             }
             ACTION_STOP -> {
@@ -118,6 +135,8 @@ class OwnTextPlaybackService : Service() {
             CMD_PAUSE -> OwnTextPlayback.onCommand?.invoke("pause")
             CMD_NEXT -> OwnTextPlayback.onCommand?.invoke("next")
             CMD_PREV -> OwnTextPlayback.onCommand?.invoke("prev")
+            else -> intent?.action?.takeIf { it.startsWith(CMD_CUSTOM) }
+                ?.let { OwnTextPlayback.onCommand?.invoke(it.removePrefix(CMD_CUSTOM)) }
         }
         // Not restarted by the system: without the Dart player there is nothing to drive.
         return START_NOT_STICKY
@@ -127,15 +146,23 @@ class OwnTextPlaybackService : Service() {
         val s = session ?: return
         s.setMetadata(MediaMetadata.Builder()
             .putString(MediaMetadata.METADATA_KEY_TITLE, title)
-            .putString(MediaMetadata.METADATA_KEY_ARTIST, "APEX CW")
+            .putString(MediaMetadata.METADATA_KEY_ARTIST, subtitle.ifEmpty { "APEX CW" })
             .build())
-        s.setPlaybackState(PlaybackState.Builder()
+        // Without previous/next the system media controls (Android 13+) put
+        // the four custom actions into all free slots.
+        val skip = if (tune) 0L
+            else PlaybackState.ACTION_SKIP_TO_NEXT or PlaybackState.ACTION_SKIP_TO_PREVIOUS
+        val state = PlaybackState.Builder()
             .setActions(PlaybackState.ACTION_PLAY or PlaybackState.ACTION_PAUSE or
-                PlaybackState.ACTION_PLAY_PAUSE or PlaybackState.ACTION_SKIP_TO_NEXT or
-                PlaybackState.ACTION_SKIP_TO_PREVIOUS or PlaybackState.ACTION_STOP)
+                PlaybackState.ACTION_PLAY_PAUSE or PlaybackState.ACTION_STOP or skip)
             .setState(if (playing) PlaybackState.STATE_PLAYING else PlaybackState.STATE_PAUSED,
                 PlaybackState.PLAYBACK_POSITION_UNKNOWN, if (playing) 1f else 0f)
-            .build())
+        if (tune) {
+            for ((a, icon) in TUNE_ACTIONS) {
+                state.addCustomAction(PlaybackState.CustomAction.Builder(a, labels[a] ?: a, icon).build())
+            }
+        }
+        s.setPlaybackState(state.build())
         if (playing) { requestFocus(); holdWakeLock() } else { releaseWakeLock() }
 
         val notification = buildNotification()
@@ -176,16 +203,29 @@ class OwnTextPlaybackService : Service() {
         val b = Notification.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_stat_play)
             .setContentTitle(title)
-            .setContentText("APEX CW")
+            .setContentText(subtitle.ifEmpty { "APEX CW" })
             .setContentIntent(open)
             .setOnlyAlertOnce(true)
             .setVisibility(Notification.VISIBILITY_PUBLIC)
-            .addAction(action(CMD_PREV, android.R.drawable.ic_media_previous, labels["prev"] ?: ""))
-            .addAction(
-                if (playing) action(CMD_PAUSE, android.R.drawable.ic_media_pause, labels["pause"] ?: "")
-                else action(CMD_PLAY, android.R.drawable.ic_media_play, labels["play"] ?: ""))
-            .addAction(action(CMD_NEXT, android.R.drawable.ic_media_next, labels["next"] ?: ""))
-            .setStyle(Notification.MediaStyle()
+        val playPause =
+            if (playing) action(CMD_PAUSE, android.R.drawable.ic_media_pause, labels["pause"] ?: "")
+            else action(CMD_PLAY, android.R.drawable.ic_media_play, labels["play"] ?: "")
+        if (tune) {
+            // Older Android shows the notification's own buttons: tempo
+            // around play/pause in the compact view, spacing behind.
+            val (td, tu) = TUNE_ACTIONS[0] to TUNE_ACTIONS[1]
+            b.addAction(action(CMD_CUSTOM + td.first, td.second, labels[td.first] ?: ""))
+                .addAction(playPause)
+                .addAction(action(CMD_CUSTOM + tu.first, tu.second, labels[tu.first] ?: ""))
+            for ((a, icon) in TUNE_ACTIONS.drop(2)) {
+                b.addAction(action(CMD_CUSTOM + a, icon, labels[a] ?: ""))
+            }
+        } else {
+            b.addAction(action(CMD_PREV, android.R.drawable.ic_media_previous, labels["prev"] ?: ""))
+                .addAction(playPause)
+                .addAction(action(CMD_NEXT, android.R.drawable.ic_media_next, labels["next"] ?: ""))
+        }
+        b.setStyle(Notification.MediaStyle()
                 .setMediaSession(session?.sessionToken)
                 .setShowActionsInCompactView(0, 1, 2))
         if (Build.VERSION.SDK_INT >= 31) {
@@ -246,7 +286,10 @@ class OwnTextPlaybackService : Service() {
 
 /** Bridge between the service and the Dart player (set by MainActivity). */
 object OwnTextPlayback {
-    /** "play" | "pause" | "next" | "prev"; null while no player listens. */
+    /**
+     * "play" | "pause" | "next" | "prev", for the audio trainer also
+     * "tempo_down" | "tempo_up" | "gap_down" | "gap_up"; null while no player listens.
+     */
     @Volatile var onCommand: ((String) -> Unit)? = null
 
     /**

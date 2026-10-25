@@ -19,7 +19,8 @@ class OwnTextPlayback {
 
   /// Buttons from the lock screen, notification and headset:
   /// "play", "pause", "next" (next sentence / group), "prev" (previous
-  /// sentence / repeat the group).
+  /// sentence / repeat the group); with [update]'s `tune` (audio trainer,
+  /// #152) "tempo_down", "tempo_up", "gap_down", "gap_up" instead of next/prev.
   static Stream<String> get commands =>
       _events.receiveBroadcastStream().cast<String>();
 
@@ -38,16 +39,21 @@ class OwnTextPlayback {
 
   /// [labelPrefix] picks the notification texts (`ot_bg_*` own texts,
   /// `at_bg_*` audio trainer); [channelId] keeps each screen's notification
-  /// channel apart in the system settings.
+  /// channel apart in the system settings. [subtitle] replaces "APEX CW"
+  /// under the title; [tune] swaps previous/next for tempo and spacing −/+.
   static Future<void> update({
     required String title,
     required bool playing,
     String labelPrefix = 'ot_bg',
     String channelId = 'own_text_playback',
+    String subtitle = '',
+    bool tune = false,
   }) async {
     try {
       await _channel.invokeMethod('update', {
         'title': title,
+        'subtitle': subtitle,
+        'tune': tune,
         'playing': playing,
         'channelId': channelId,
         'channel': Strings.t('${labelPrefix}_channel'),
@@ -55,6 +61,8 @@ class OwnTextPlayback {
         'pause': Strings.t('ot_bg_pause'),
         'next': Strings.t('${labelPrefix}_next'),
         'prev': Strings.t('${labelPrefix}_prev'),
+        for (final a in ['tempo_down', 'tempo_up', 'gap_down', 'gap_up'])
+          a: Strings.t('at_bg_$a'),
       });
     } catch (_) {}
   }
