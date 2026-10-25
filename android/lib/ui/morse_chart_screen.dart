@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../content/cw_content.dart' show kProsignCodes, kProsignTokens;
 import '../content/training_profile.dart';
 import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
@@ -38,7 +39,7 @@ class _MorseChartScreenState extends State<MorseChartScreen> {
   static const _national = ['Ä', 'Ö', 'Ü', 'CH'];
   static const _digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   static const _signs = ['.', ',', '?', '/', '-', '=', '+', '@', ':'];
-  static const _prosigns = ['SK', 'KN', 'KA', 'AS', 'VE', 'BK'];
+  static const _prosigns = kProsignTokens;
 
   // character -> code, from the same table the app plays and decodes with
   static final Map<String, String> _code = {
@@ -155,7 +156,7 @@ class _MorseChartScreenState extends State<MorseChartScreen> {
               width: w,
               child: _ChartTile(
                 ch: ch,
-                pattern: _code[ch] ?? '',
+                pattern: _code[ch] ?? kProsignCodes[ch] ?? '',
                 active: ch == _ch,
                 lit: ch == _ch ? _lit : 0,
                 sounding: ch == _ch && _sounding,

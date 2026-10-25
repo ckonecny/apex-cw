@@ -2,30 +2,39 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/content/cw_content.dart';
 
 void main() {
-  test('M32, LCWO and CW Academy sequences carry the six prosigns (#72)', () {
-    for (final seq in [kochSeqM32, kochSeqLcwo, kochSeqCwAcademy]) {
-      expect(seq.length, 51);
-      expect(seq.where(isProsignToken).toSet(),
-          {'SK', 'AS', 'KN', 'KA', 'VE', 'BK'});
-      expect(seq.where((t) => !isProsignToken(t)).length, 45);
-    }
-  });
-
-  test('prosigns sit where the firmware puts them', () {
+  test('M32 carries the six prosigns where the firmware puts them (#72)', () {
+    expect(kochSeqM32.length, 51);
+    expect(kochSeqM32.where(isProsignToken).toSet(),
+        {'SK', 'AS', 'KN', 'KA', 'VE', 'BK'});
     expect(kochSeqM32.sublist(40),
         ['-', '=', 'SK', '+', 'AS', 'KN', 'KA', 'VE', 'BK', '@', ':']);
-    expect(kochSeqLcwo.sublist(41),
-        ['-', 'SK', '+', 'KA', 'AS', 'KN', 'VE', 'BK', '@', ':']);
-    expect(kochSeqCwAcademy.sublist(40),
-        ['Z', 'BK', 'SK', '.', '-', 'KA', 'AS', 'KN', 'VE', '@', ':']);
   });
 
-  test('LICW carousel keeps the prosigns inside its window', () {
+  test('LCWO is the original course: no prosigns, no extras', () {
+    expect(kochSeqLcwo.length, 41);
+    expect(kochSeqLcwo.where(isProsignToken), isEmpty);
+    expect(kochSeqLcwo.last, 'X');
+    expect(kochSeqLcwo.take(5), ['K', 'M', 'U', 'R', 'E']);
+  });
+
+  test('CW Academy ends with the curriculum: X Z . BK SK, nothing after', () {
+    expect(kochSeqCwAcademy.length, 44);
+    expect(kochSeqCwAcademy.where(isProsignToken).toSet(), {'SK', 'BK'});
+    expect(kochSeqCwAcademy.sublist(39),
+        ['X', 'Z', 'BK', 'SK', '.']);
+  });
+
+  test('LICW carousel: BC1 entries are the 18 BC1 characters, BC2 all 44', () {
     final bc1 = licwCarouselChars(0);
+    expect(bc1.take(6), ['R', 'E', 'A', 'T', 'I', 'N']);
     expect(bc1.where(isProsignToken), isEmpty);
-    final bc2 = licwCarouselChars(6);
-    expect(bc2.where(isProsignToken).toSet(), {'SK', 'BK'});
-    expect(bc2.sublist(bc2.length - 3), ['-', '@', ':']);
+    for (var s = 0; s <= 13; s++) {
+      final c = licwCarouselChars(s);
+      final n = s < 6 ? 18 : 44;
+      expect(c.length, n, reason: 'entry point $s');
+      expect(c.toSet().length, n, reason: 'entry point $s');
+    }
+    expect(licwCarouselChars(6).where(isProsignToken).toSet(), {'SK', 'BK'});
   });
 
   test('a prosign goes to the generator bracketed', () {

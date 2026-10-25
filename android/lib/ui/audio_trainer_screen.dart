@@ -215,7 +215,7 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
     await _genChannel.invokeMethod('setKochChars', _activeKochChars);
     await _genChannel.invokeMethod(
       'setPracticeChars',
-      parsePracticeChars(_practiceChars),
+      effectivePracticeChars(_choice.set, _practiceChars),
     );
     await _genChannel.invokeMethod('setBoostLevel', boost);
     await _toneChannel.invokeMethod('setVoiceVolume', _voiceVolume / 100);

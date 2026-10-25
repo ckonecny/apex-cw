@@ -20,6 +20,7 @@ import '../content/char_stats.dart';
 import '../content/mixup_suggest.dart';
 import '../content/mixup_trend.dart';
 import '../content/training_profile.dart';
+import '../content/charset_content.dart' show profilePracticeChars;
 import '../content/cw_content.dart'
     show glyphToken, glyphsToPlayText, isProsignGlyph, keyGlyph, kochActiveChars,
         parsePracticeChars, prosignsToGlyphs;
@@ -450,7 +451,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
 
   Future<void> _restorePracticeCharsAndBoost() async {
     final pf = await TrainingProfile.open(TrainingProfile.hear);
-    final practiceChars = parsePracticeChars(pf.getString('practiceChars') ?? '');
+    final practiceChars = profilePracticeChars(pf);
     final boostLevel = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
     await _genChannel.invokeMethod('setPracticeChars', practiceChars);
     await _genChannel.invokeMethod('setBoostLevel', boostLevel);

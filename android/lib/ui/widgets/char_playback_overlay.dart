@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../content/cw_content.dart' show glyphToken, kochPlayText;
+import '../../content/cw_content.dart'
+    show glyphToken, kochPlayText, kProsignCodes;
 import '../../keyer/morse_decoder.dart';
 import '../../theme/app_colors.dart';
 import '../../util/char_color.dart';
@@ -23,7 +24,10 @@ final Map<String, String> _patterns = {
 };
 
 /// Dit/dah pattern ('.'/'-') of a single character, '' if unknown.
-String morsePattern(String ch) => _patterns[glyphToken(ch).toUpperCase()] ?? '';
+String morsePattern(String ch) {
+  final t = glyphToken(ch).toUpperCase();
+  return _patterns[t] ?? kProsignCodes[t] ?? '';
+}
 
 /// Tap on a Koch character in Hören or Geben (Sia's suggestion, 2026-09-27):
 /// dims the screen and shows a tile with the character and its code. Each

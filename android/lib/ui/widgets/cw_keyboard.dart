@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/nav_strip.dart';
+import '../../content/cw_content.dart' show kProsignTokens;
 import 'app_ui.dart';
 
 const kKeyboardPunct = ['.', ',', ':', '-', '/', '=', '?', '@', '+'];
-const kKeyboardProsigns = ['AS', 'KA', 'KN', 'SK', 'VE', 'BK'];
+const kKeyboardProsigns = kProsignTokens;
 
 class CwKeyboard extends StatelessWidget {
   /// Active keys, uppercase ("A", "0", ".", or a prosign like "KA").
@@ -50,7 +51,7 @@ class CwKeyboard extends StatelessWidget {
     final hasPunct = kKeyboardPunct.any(active.contains);
     final hasPro = kKeyboardProsigns.any(active.contains);
     // More rows → slightly flatter keys, so the keyboard keeps its height.
-    final keyH = hasPunct ? 50.0 : 56.0;
+    final keyH = hasPunct && hasPro ? 44.0 : (hasPunct || hasPro ? 50.0 : 56.0);
 
     Widget ch(String k) => _CharKey(
           label: k.length > 1 || outputCase == 1 ? k : k.toLowerCase(),
@@ -75,19 +76,21 @@ class CwKeyboard extends StatelessWidget {
             child: Icon(Icons.backspace_outlined, size: 22, color: c.textMuted)), 3),
       ],
       if (hasPunct) [gap(1), for (final k in kKeyboardPunct) unit(ch(k)), gap(1)],
+      // The prosigns get a row of their own; every key keeps its place.
+      if (hasPro) [for (final k in kKeyboardProsigns) unit(ch(k))],
       [
         unit(_ActionKey(
             height: keyH, enabled: enabled, haptic: haptic, onTap: onPass,
             child: Text(passLabel, style: TextStyle(fontFamily: 'CwMono',
-                fontSize: hasPro ? 12 : 15, fontWeight: FontWeight.bold, color: c.textMuted))),
-            hasPro ? 3 : 5),
-        if (hasPro) for (final k in kKeyboardProsigns) unit(ch(k)) else gap(7),
+                fontSize: 15, fontWeight: FontWeight.bold, color: c.textMuted))),
+            5),
+        gap(7),
         unit(_ActionKey(
             height: keyH, enabled: enabled, haptic: haptic, onTap: onSubmit,
             color: c.accent.withValues(alpha: submitFaded ? 0.45 : 1),
             child: Text(submitLabel, style: TextStyle(fontFamily: 'CwMono',
-                fontSize: hasPro ? 13 : 16, fontWeight: FontWeight.bold, color: c.background))),
-            hasPro ? 5 : 8),
+                fontSize: 16, fontWeight: FontWeight.bold, color: c.background))),
+            8),
       ],
     ];
 

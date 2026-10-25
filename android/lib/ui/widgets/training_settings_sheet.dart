@@ -115,8 +115,14 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   int _kochSeq = 0;
   String _customKochChars = 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
   int _licwCarouselStart = 0;
-  static List<String> get _kochSeqLabels =>
-      ['M32', 'LCWO', 'CW Academy', 'LICW', Strings.t('opt_custom')];
+  // Shown order of the stored `kochSeq` values (0=Morserino, 1=LCWO,
+  // 2=CW Academy, 3=LICW, 4=Custom; the stored numbers never change):
+  // Morserino sits before Custom.
+  static const _kochSeqOrder = [1, 2, 3, 0, 4];
+  static List<String> get _kochSeqLabels => [
+        for (final v in _kochSeqOrder)
+          ['Morserino', 'LCWO', 'CW Academy', 'LICW', Strings.t('opt_custom')][v],
+      ];
   // Adaptive Copy engine thresholds (global keys, as in Settings before).
   int _adaptiveLowPct = 70;
   int _adaptiveHighPct = 90;
@@ -319,8 +325,9 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         SegmentRow(
           label: Strings.t('settings_sequence'),
           options: _kochSeqLabels,
-          selected: _kochSeq,
-          onChanged: (v) {
+          selected: _kochSeqOrder.indexOf(_kochSeq),
+          onChanged: (i) {
+            final v = _kochSeqOrder[i];
             setState(() => _kochSeq = v);
             _p?.setInt(_kk('kochSeq'), v);
           },

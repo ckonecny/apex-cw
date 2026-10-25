@@ -13,6 +13,7 @@ String charSetLabel(CharSet s) => Strings.t(const {
       CharSet.koch: 'charset_koch',
       CharSet.all: 'charset_all',
       CharSet.practice: 'charset_practice',
+      CharSet.prosigns: 'charset_prosigns',
     }[s]!);
 
 String contentLabel(ContentKind k) => Strings.t(const {
@@ -104,11 +105,11 @@ class CharsetHeader extends StatelessWidget {
   Widget _content(BuildContext context, AppColors c, bool koch, WordPool? pool) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       _Chips(
-        labels: [for (final s in CharSet.values) charSetLabel(s)],
-        selected: choice.set.index,
-        onChanged: (i) => onChanged(choice.withSet(CharSet.values[i])),
+        labels: [for (final s in charSetOrder) charSetLabel(s)],
+        selected: charSetOrder.indexOf(choice.set),
+        onChanged: (i) => onChanged(choice.withSet(charSetOrder[i])),
         onLongPress: (i) {
-          if (CharSet.values[i] == CharSet.koch && onKochLongPress != null) {
+          if (charSetOrder[i] == CharSet.koch && onKochLongPress != null) {
             keyHaptic();   // confirms the hidden gesture (#60)
             onKochLongPress!();
           }
@@ -185,6 +186,31 @@ class CharsetHeader extends StatelessWidget {
                     color: c.textFaint, fontStyle: FontStyle.italic)),
           ),
       ],
+      if (choice.set == CharSet.prosigns)
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Wrap(
+            spacing: 6, runSpacing: 6,
+            children: [
+              for (final t in prosignSetTokens())
+                GestureDetector(
+                  onTap: onCharTap == null ? null : () => onCharTap!(t),
+                  child: Container(
+                    width: 44, height: 32, alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: c.surfaceAlt,
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: c.border),
+                    ),
+                    child: NoTextScale(child: Text(
+                        outputCase == 1 ? t : t.toLowerCase(),
+                        style: TextStyle(fontFamily: 'CwMono', fontSize: 14,
+                            color: charTypeColor(t, c)))),
+                  ),
+                ),
+            ],
+          ),
+        ),
       if (choice.set == CharSet.practice && onPracticeCharsChanged != null)
         Container(
           margin: const EdgeInsets.only(top: 4),

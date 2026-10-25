@@ -72,6 +72,11 @@ PROSIGNS = {
     "prosign_sk": "End of contact.",
     "prosign_ve": "Understood.",
     "prosign_bk": "Break.",
+    # Added with the Prosign set (#156).
+    "prosign_ar": "End of message.",
+    "prosign_bt": "New paragraph.",
+    "prosign_hh": "Error.",
+    "prosign_sos": "Distress call.",
 }
 
 

@@ -1,10 +1,34 @@
+import 'cw_content.dart' show kProsignTokens, parsePracticeChars;
 import 'training_profile.dart';
 
 /// Character set and content of a training (docs/archive/training/P7-zeichenvorrat-startseite.md).
 ///
 /// Koch is not a mode but a character set: the firmware's `kochActive` only
 /// filters the characters and weights them.
-enum CharSet { koch, all, practice }
+///
+/// Index order is persisted (`profile.<kind>.charset`), never reorder: new
+/// sets go at the end, [charSetOrder] is the order they are shown in.
+enum CharSet { koch, all, practice, prosigns }
+
+/// The order the character sets are offered in (Prosigns sits between All
+/// characters and Practice set).
+const charSetOrder = [CharSet.koch, CharSet.all, CharSet.prosigns, CharSet.practice];
+
+/// The prosigns a Prosign set draws from. Keyed answers (Geben) leave out HH
+/// (eight dits are the decoder's "erase" sign, never a character) and SOS
+/// (the keyer decoder has no code for it).
+List<String> prosignSetTokens({bool keyed = false}) =>
+    [for (final t in kProsignTokens) if (!keyed || (t != 'HH' && t != 'SOS')) t];
+
+/// What the native "practice set" mode draws from: the saved Practice set,
+/// or the fixed prosigns for the Prosign set.
+List<String> effectivePracticeChars(CharSet set, String saved, {bool keyed = false}) =>
+    set == CharSet.prosigns ? prosignSetTokens(keyed: keyed) : parsePracticeChars(saved);
+
+/// Same, read from a training profile.
+List<String> profilePracticeChars(TrainingProfile p, {bool keyed = false}) =>
+    effectivePracticeChars(CharsetChoice.load(p).set, p.getString('practiceChars') ?? '',
+        keyed: keyed);
 
 /// Index order is persisted (`profile.<kind>.content`), never reorder.
 enum ContentKind { random, words, abbrevs, calls, mixed }
@@ -18,6 +42,7 @@ List<ContentKind> allowedContents(CharSet set) {
       return const [ContentKind.random, ContentKind.words, ContentKind.abbrevs,
           ContentKind.calls, ContentKind.mixed];
     case CharSet.practice:
+    case CharSet.prosigns:
       return const [ContentKind.random];
   }
 }
@@ -40,7 +65,9 @@ class EngineSelection {
 
 EngineSelection engineSelection(CharSet set, ContentKind content) {
   final c = sanitizeContent(set, content);
-  if (set == CharSet.practice) return const EngineSelection(4, false, false);
+  if (set == CharSet.practice || set == CharSet.prosigns) {
+    return const EngineSelection(4, false, false);
+  }
   final koch = set == CharSet.koch;
   switch (c) {
     case ContentKind.random:

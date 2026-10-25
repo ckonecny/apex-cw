@@ -30,6 +30,11 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 ## Manual: pending for next release
 - `hear_progress.png`, `echo_progress.png` (both languages): new KPI "WPM eff." and a second speed curve in the Verlauf tab.
 - `settings_appearance.png` (both languages): new row "App-Shortcuts" (#151).
+- Prosign set (#156): `hear_start.png` (or the Hören start view shot) with the new chip; `tree_*.png` (prosign row below the tree); `chart_*.png` (four more prosign tiles); typing keyboard shot if there is one (prosign row). Both languages.
+- `qgroups_setup.png` (both languages): the Q-groups start view has only the tempo slider now (no spacing rows, no "eff.").
+
+## Prosign set (#156, branch `feature/prosign-charset`)
+Built, installed on the test phone, not yet checked there: chip order, tiles, typing keyboard row, chart, tree row, audio trainer with the set. The spoken meanings for AR, BT, HH, SOS are in (`res/raw`); still to hear in the app.
 
 ## Phone tests still open (1.8.0)
 - Confirmation tone choice (#136, PR #137, written in the cloud; CI is green: analyze, tests, debug build): pending install. Check on the test phone: the four choices in Settings → General, the right → wrong preview when picking, Marimba/Gentle level against the sidetone at several volumes, sound in the Echo Trainer, Hören typing flow, Geben and character practice, and that an old "off" setting stayed off.

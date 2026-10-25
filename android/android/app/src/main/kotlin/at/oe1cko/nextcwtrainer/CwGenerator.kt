@@ -141,7 +141,7 @@ class CwGenerator(
         // — these are commonly confused; this table was wrong here before.
         "AR" to ".-.-.", "SK" to "...-.-", "KN" to "-.--.", "KA" to "-.-.-",
         "BT" to "-...-",  "AS" to ".-...",  "VE" to "...-.", "BK" to "-...-.-",
-        "HH" to "........",
+        "HH" to "........", "SOS" to "...---...",
         // German umlauts and the historic CH (----), as in the decoder tree.
         // Only the Morse tree plays them; Own Text flattens ä→AE etc. before
         // the text reaches the generator. CH needs the explicit <CH> form.
