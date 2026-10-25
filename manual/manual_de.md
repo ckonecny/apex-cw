@@ -1571,12 +1571,19 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
   Abständen ab. Die Zeit je Training wird erst seit diesem Update getrennt
   erfasst; bei früheren Tagen steckt sie nur in der Gesamtzeit (ein Hinweis
   nennt ihre Zahl). Vor dem Tagesziel gibt es gar keine Zeit.
-- **Trefferquote, WPM und Übungstage** darunter. Quote und WPM sind die des
+- **Trefferquote, WPM, WPM eff. und Übungstage** darunter. **WPM** ist
+  das Zeichentempo, **WPM eff.** das Tempo mit den Abständen (PARIS-Wort).
+  Beim Hören auf Papier zählen Zeichen- und Wortabstand mit, beim Hören im
+  Tippmodus und beim Geben nur der Zeichenabstand, weil dort nach jedem Wort
+  angehalten wird; als Wortabstand gelten dann die üblichen 7 Dits. Bei den
+  Standardabständen (3 und 7) sind beide Werte gleich. Quote und WPM sind die des
   letzten Tages (4 Wochen), der letzten Woche (12 Wochen) oder des letzten
   Monats (Alles, ab etwa einem halben Jahr) mit Übung, gewichtet nach
   Versuchen, mit Pfeil gegenüber dem Zeitraum davor. „Übungstage“ liest sich
   wie *42/88*.
-- **Trefferquote pro Tag / Woche / Monat** und **Tempo (WPM)** als Kurven.
+- **Trefferquote pro Tag / Woche / Monat**, **Tempo (WPM)** und **effektives
+  Tempo (WPM)** als Kurven. Das effektive Tempo gibt es erst seit diesem
+  Update; frühere Tage haben dort eine Lücke.
   Zeiträume ohne Übung sind Lücken, keine Null. Tippe auf einen Punkt der
   Trefferquote, um die Versuche und die Quote dieses Zeitraums zu sehen.
 - **Übungstage**: ein Kästchen pro Tag (4 Wochen), sonst ein Balken pro Woche

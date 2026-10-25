@@ -144,6 +144,39 @@ void main() {
     expect(again.days, isEmpty);
   });
 
+  group('effectiveWpm', () {
+    test('standard spacing equals the character speed', () {
+      expect(effectiveWpm(20, 3, 7), closeTo(20, 1e-9));
+      expect(effectiveWpm(20, 3, 7, wordGap: false), closeTo(20, 1e-9));
+    });
+    test('paper counts char and word gap, typing only the char gap', () {
+      // 31 + 4*6 + 14 = 69 dits vs. 31 + 24 + 7 = 62 dits per word.
+      expect(effectiveWpm(20, 6, 14), closeTo(20 * 50 / 69, 1e-9));
+      expect(effectiveWpm(20, 6, 14, wordGap: false), closeTo(20 * 50 / 62, 1e-9));
+    });
+    test('word gap is at least char gap + 4 like the generator', () {
+      expect(effectiveWpm(20, 10, 7), closeTo(20 * 50 / (31 + 40 + 14), 1e-9));
+    });
+  });
+
+  test('effective wpm is stored per day and survives save/load', () async {
+    SharedPreferences.setMockInitialValues({});
+    final p = await SharedPreferences.getInstance();
+    final store = CharStatsStore(CharStatsStore.hear);
+    store.now = () => DateTime(2026, 10, 1);
+    store.record('a', true); // no wpm known yet
+    store.effWpm = 12.5;
+    store.record('a', true);
+    store.effWpm = 15.5;
+    store.record('b', false);
+    await store.save(p);
+    final back = CharStatsStore(CharStatsStore.hear);
+    await back.load(p);
+    final d = back.days['2026-10-01']!;
+    expect(d.wn, 2);
+    expect(d.avgEffWpm, closeTo(14, 1e-9));
+  });
+
   test('recordWord books the days too, without wpm when unknown', () {
     final store = CharStatsStore(CharStatsStore.echo);
     store.now = () => DateTime(2026, 10, 1);

@@ -25,6 +25,8 @@ class ProgressBucket {
   int errors = 0;
   int ws = 0; // wpm sum over all attempts, see DayStat
   int wpmAttempts = 0; // attempts that carry a wpm
+  double we = 0; // effective wpm sum, see DayStat
+  int effAttempts = 0; // attempts that carry an effective wpm
   int daysPracticed = 0;
   int seconds = 0; // active practice time of the track ('hear' / 'echo'), practice log
   int totalSeconds = 0; // all trainings together
@@ -36,6 +38,7 @@ class ProgressBucket {
 
   double? get rate => attempts == 0 ? null : (attempts - errors) / attempts;
   double? get avgWpm => wpmAttempts == 0 ? null : ws / wpmAttempts;
+  double? get avgEffWpm => effAttempts == 0 ? null : we / effAttempts;
 
   /// Hit rate of one character; null below [minAttempts] (min. 1).
   double? charRate(String ch, {int minAttempts = 1}) {
@@ -164,6 +167,8 @@ ProgressSeries buildSeries(Map<String, DayStat> days, ProgressRange range, DateT
     b.errors += s.errors;
     b.ws += s.ws;
     if (s.ws > 0) b.wpmAttempts += s.attempts;
+    b.we += s.we;
+    b.effAttempts += s.wn;
     b.daysPracticed++;
     practiced++;
     s.chars.forEach((ch, v) {

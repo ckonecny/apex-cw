@@ -159,6 +159,8 @@ class _ProgressViewState extends State<ProgressView> {
 
     final wpms = [for (final b in s.buckets) b.avgWpm];
     final wpmPresent = wpms.whereType<double>().toList();
+    final effs = [for (final b in s.buckets) b.avgEffWpm];
+    final effPresent = effs.whereType<double>().toList();
 
     // Practice time exists from the first day of the practice log on.
     final sinceKey = widget.practice.keys.map(DateTime.tryParse).whereType<DateTime>().fold<DateTime?>(
@@ -180,6 +182,9 @@ class _ProgressViewState extends State<ProgressView> {
         const SizedBox(width: 8),
         _kpi(c, latest.avgWpm == null ? '–' : latest.avgWpm!.toStringAsFixed(1),
             Strings.t('pr_kpi_wpm')),
+        const SizedBox(width: 8),
+        _kpi(c, latest.avgEffWpm == null ? '–' : latest.avgEffWpm!.toStringAsFixed(1),
+            Strings.t('pr_kpi_eff')),
         const SizedBox(width: 8),
         _kpi(c, '${s.daysPracticed}/${s.daysTotal}', Strings.t('pr_kpi_days')),
       ]),
@@ -225,6 +230,24 @@ class _ProgressViewState extends State<ProgressView> {
               final hi = wpmPresent.reduce((a, b) => a > b ? a : b).ceilToDouble() + 1;
               return ProgressLineChart(
                 values: wpms,
+                yMin: lo,
+                yMax: hi < lo + 2 ? lo + 2 : hi,
+                yLabel: (v) => v.round().toString(),
+                firstLabel: labels.first,
+                lastLabel: labels.last,
+                color: c.info,
+                height: 90,
+              );
+            }()),
+      if (effPresent.isNotEmpty)
+        _card(
+            c,
+            Strings.t('pr_eff_title').replaceFirst('{u}', unit),
+            () {
+              final lo = effPresent.reduce((a, b) => a < b ? a : b).floorToDouble() - 1;
+              final hi = effPresent.reduce((a, b) => a > b ? a : b).ceilToDouble() + 1;
+              return ProgressLineChart(
+                values: effs,
                 yMin: lo,
                 yMax: hi < lo + 2 ? lo + 2 : hi,
                 yLabel: (v) => v.round().toString(),

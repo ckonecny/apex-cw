@@ -17,6 +17,15 @@ void main() {
   timeTests();
   final now = DateTime(2026, 10, 1); // a Thursday
 
+  test('effective wpm averages only the attempts that carry one', () {
+    final s = buildSeries({
+      '2026-10-01': day(10, 1)..we = 80..wn = 10,
+      '2026-09-30': day(10, 1), // from before effective wpm existed
+    }, ProgressRange.weeks4, now);
+    expect(s.latest!.avgEffWpm, closeTo(8, 1e-9));
+    expect(s.buckets[s.buckets.length - 2].avgEffWpm, isNull);
+  });
+
   test('4 weeks: 28 day buckets, practice days counted', () {
     final s = buildSeries({
       '2026-10-01': day(10, 1),

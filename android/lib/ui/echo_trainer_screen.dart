@@ -353,6 +353,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<void> _applyBlockFeedback(String target, String received) async {
     // Straight key: the speed the operator actually keyed (measured).
     _charStats.wpm = _keyerMode == 4 ? _measuredWpm : _wpm;
+    // Every word is answered before the next one: only the character gap counts.
+    _charStats.effWpm = effectiveWpm(_charStats.wpm, _interCharSpace, _interWordSpace, wordGap: false);
     final pair = _charStats.recordWord(target, received);
     if (pair != null) _blockPairs.add(pair);
     final p = await SharedPreferences.getInstance();
