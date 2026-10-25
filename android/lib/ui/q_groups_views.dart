@@ -59,13 +59,11 @@ extension _QGroupsViews on _QGroupsScreenState {
           const SettingsDivider(),
           TempoSpacingSection(
             wpm: _s.wpm,
-            interChar: _s.interChar,
-            interWord: _s.interWord,
+            interChar: 3,
+            interWord: 7,
+            showSpacing: false,
             onWpm: (v) => _update(() => _s.wpm = v),
-            onSpacing: (ic, iw) => _update(() {
-              _s.interChar = ic;
-              _s.interWord = iw;
-            }),
+            onSpacing: (_, _) {},
           ),
         ]),
         const SizedBox(height: 12),

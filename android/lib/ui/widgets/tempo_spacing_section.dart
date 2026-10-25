@@ -17,6 +17,9 @@ import 'setting_rows.dart';
 /// [showWordGap] false (Geben: the answer pause lives in the ⚙ sheet): no
 /// word-gap row, and "eff." counts the gap at the normal 7 dits.
 ///
+/// [showSpacing] false (Q-groups: a group is heard as one melody, never
+/// character by character): only the tempo slider, plain "WPM" without "eff.".
+///
 /// [typing] (Hören on the on-screen keyboard): the app waits after every word,
 /// so only the character spacing is shown and counts for "eff." (see
 /// [effectiveWpm]). [compact] uses denser sliders and rows, for screens where
@@ -34,7 +37,7 @@ import 'setting_rows.dart';
 
 class TempoSpacingSection extends StatelessWidget {
   final int wpm, interChar, interWord;
-  final bool typing, compact, showUndo, showWordGap;
+  final bool typing, compact, showUndo, showWordGap, showSpacing;
   final Widget? leading;
   final String? speedLabel;
   final ValueChanged<int> onWpm;
@@ -49,6 +52,7 @@ class TempoSpacingSection extends StatelessWidget {
     required this.onSpacing,
     this.typing = false,
     this.showWordGap = true,
+    this.showSpacing = true,
     this.compact = false,
     this.showUndo = true,
     this.leading,
@@ -69,7 +73,7 @@ class TempoSpacingSection extends StatelessWidget {
       if (leading != null) ...[leading!, const SettingsDivider()],
       LabeledSlider(
         label: speedLabel ?? Strings.t('hc_speed'),
-        display: '$wpm WPM (eff. $eff)',
+        display: showSpacing ? '$wpm WPM (eff. $eff)' : '$wpm WPM',
         value: wpm.toDouble(),
         min: TrainingProfile.minWpm.toDouble(),
         max: 60,
@@ -78,6 +82,7 @@ class TempoSpacingSection extends StatelessWidget {
         dense: compact,
         onChanged: (v) => onWpm(v.round()),
       ),
+      if (showSpacing) ...[
       const SettingsDivider(),
       Padding(
         padding: EdgeInsets.fromLTRB(16, compact ? 0 : 4, 8, compact ? 0 : 4),
@@ -103,6 +108,7 @@ class TempoSpacingSection extends StatelessWidget {
             ),
         ]),
       ),
+      ],
     ]);
   }
 }

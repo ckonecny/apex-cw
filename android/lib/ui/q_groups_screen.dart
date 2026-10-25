@@ -36,18 +36,16 @@ class QgSettings {
   int lang = 0; // content language: 0 German, 1 English
   int level = 1; // groups of level <= this
   int count = 10; // questions per round
-  int wpm = 20, interChar = 3, interWord = 7;
+  int wpm = 20;
 
   static const counts = [5, 10];
 
   static Future<QgSettings> load() async {
     final p = await SharedPreferences.getInstance();
     if (p.getInt('qg.wpm') == null) {
-      // First visit: start from the Hören profile's speed and spacing.
+      // First visit: start from the Hören profile's speed.
       final hear = await TrainingProfile.open(TrainingProfile.hear);
       await p.setInt('qg.wpm', TrainingProfile.clampWpm(hear.getInt('wpm')));
-      await p.setInt('qg.interCharSpace', (hear.getInt('interCharSpace') ?? 3).clamp(3, 45));
-      await p.setInt('qg.interWordSpace', (hear.getInt('interWordSpace') ?? 7).clamp(6, 105));
     }
     final s = QgSettings();
     s.lang = (p.getInt('qg.lang') ?? Strings.lang.value).clamp(0, 1);
@@ -55,8 +53,6 @@ class QgSettings {
     final n = p.getInt('qg.count') ?? 10;
     s.count = counts.contains(n) ? n : 10;
     s.wpm = TrainingProfile.clampWpm(p.getInt('qg.wpm'));
-    s.interChar = (p.getInt('qg.interCharSpace') ?? 3).clamp(3, 45);
-    s.interWord = (p.getInt('qg.interWordSpace') ?? 7).clamp(s.interChar < 6 ? 6 : s.interChar, 105);
     return s;
   }
 
@@ -66,8 +62,6 @@ class QgSettings {
     await p.setInt('qg.level', level);
     await p.setInt('qg.count', count);
     await p.setInt('qg.wpm', wpm);
-    await p.setInt('qg.interCharSpace', interChar);
-    await p.setInt('qg.interWordSpace', interWord);
   }
 }
 
@@ -152,8 +146,9 @@ class _QGroupsScreenState extends State<QGroupsScreen> {
     await _toneChannel.invokeMethod('setEnvelopeMs',
         ((prefs.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
     await _genChannel.invokeMethod('setWpm', _s.wpm);
-    await _genChannel.invokeMethod('setInterCharSpace', _s.interChar);
-    await _genChannel.invokeMethod('setInterWordSpace', _s.interWord);
+    // A group is one melody: normal spacing, nothing to adjust.
+    await _genChannel.invokeMethod('setInterCharSpace', 3);
+    await _genChannel.invokeMethod('setInterWordSpace', 7);
   }
 
   // ---- playback ----
