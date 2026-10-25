@@ -600,6 +600,10 @@ löschen, und SOS, das der Keyer nicht dekodiert. Der Vorrat ist nicht
 editierbar; für eine eigene Mischung nimm das **Übungsset** mit Prosigns in
 spitzen Klammern (`<AR><SOS>`).
 
+::: {.shots .one}
+![Zeichenvorrat Prosigns in Hören: die zehn Prosigns als Kacheln](img/de/hear_prosigns.png)
+:::
+
 ### Übungsset
 
 Beim Zeichenvorrat **Übungsset** erscheint direkt auf der Startansicht ein

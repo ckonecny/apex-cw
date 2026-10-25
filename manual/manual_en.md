@@ -577,6 +577,10 @@ shows one row of ten prosign keys. AR and BT are the same signals as `+` and `=`
 which the keyer cannot decode. The set cannot be edited; for your own mix use the
 **Practice set** with prosigns in angle brackets (`<AR><SOS>`).
 
+::: {.shots .one}
+![Prosigns character set in Listen: the ten prosigns as tiles](img/en/hear_prosigns.png)
+:::
+
 ### Practice set
 
 With the **Practice set** character set, an input field appears right on the
