@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Next: v1.9.0 (notes `docs/release-notes-v1.9.0.md`; AAB for the Play closed test built, manual and screenshots done; beta `v1.9.0-beta1` on GitHub). Latest tagged build: v1.8.0 (2026-10-21, build 437, tag `v1.8.0` = commit 039560f; in the Play closed test with 2 testers; manual built for it). Previous: v1.7.0 (2026-10-12), v1.6.0 (2026-10-05); beta builds and older versions in `docs/STATUS-ARCHIVE.md`.
+Next: v1.9.1 (pubspec 1.9.1+11; beta `v1.9.1-beta1` for testers: effective WPM in the progress view, spoken symbols and prosigns in the audio trainer; release notes and the Play upload follow after the beta). Latest release: v1.9.0 (notes `docs/release-notes-v1.9.0.md`; AAB for the Play closed test built, manual and screenshots done). Latest tagged build: v1.8.0 (2026-10-21, build 437, tag `v1.8.0` = commit 039560f; in the Play closed test with 2 testers; manual built for it). Previous: v1.7.0 (2026-10-12), v1.6.0 (2026-10-05); beta builds and older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
