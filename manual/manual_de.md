@@ -85,6 +85,16 @@ Rechts oben öffnet das Zahnrad die **globalen Einstellungen** (Kapitel
 [Einstellungen](#einstellungen)). Alles, was nur ein einzelnes Training
 betrifft, stellst du dagegen direkt in diesem Training ein.
 
+**Direkt vom Homescreen:** Drückst du lange auf das App-Symbol von APEX CW,
+erscheinen Abkürzungen, anfangs zu **Hören**, **Geben**, **Audio-Trainer**
+und **CW Keyer**. Ein Tipp öffnet das Training direkt; zurück kommst du wie
+gewohnt zur Startseite. Jede Abkürzung kannst du aus dem Menü auf den
+Homescreen ziehen und hast dann ein eigenes Symbol dafür. Die Namen folgen der
+Sprache der App. Welche Abkürzungen es gibt und in welcher Reihenfolge,
+stellst du unter Einstellungen → Darstellung → **App-Shortcuts** ein; zur
+Wahl stehen außerdem **CW-Decoder**, **Eigene Texte**, **Spiele** und
+**Zeichentabelle**. Die meisten Launcher zeigen nur die ersten vier.
+
 ::: {.shots}
 ![Die Startseite](img/de/home.png)
 
@@ -2899,6 +2909,7 @@ wenn du beim Scrollen versehentlich ein Bedienelement berührt hast. Eine neuere
 | Statusleiste ausblenden | Blendet die Android-Statusleiste (Uhr, Akku) aus, damit sie nicht gegen den Blaulichtfilter absticht; ein Wisch von oben zeigt sie kurz | **Aus** / An |
 | Platz oben nutzen | Nur sichtbar, wenn die Statusleiste ausgeblendet ist. Die Titelzeile rückt in den freigewordenen Streifen neben die Kamera-Aussparung und wird schlanker (kleinere Schrift und Symbole, Titel unabhängig von der Systemschrift, ggf. verkürzt, damit sie nicht hinter der Kamera enden), der Inhalt darunter bekommt mehr Platz. Bei einer breiten Notch, einem Loch in der Ecke oder zu wenig Platz neben der Kamera (sehr schmale Handys) bleibt das normale Layout | **Aus** / An |
 | Sprache | Sprache der App. Solange du nichts gewählt hast, richtet sie sich nach der Sprache des Handys: Deutsch auf einem deutschsprachigen Handy, sonst English | **Deutsch** / English (je nach Handy) |
+| App-Shortcuts | Öffnet die Liste der Abkürzungen, die ein langer Druck auf das App-Symbol zeigt (Hören, Geben, Audio-Trainer, CW Keyer, CW-Decoder, Eigene Texte, Spiele, Zeichentabelle). Mit dem Schalter ein- oder ausschalten, am Griff in die Reihenfolge ziehen. Die meisten Launcher zeigen nur die ersten vier eingeschalteten; weitere sind mit „wird im Launcher meist nicht angezeigt“ markiert | **Hören, Geben, Audio-Trainer, CW Keyer** an, der Rest aus |
 
 ::: {.shots .one}
 ![Darstellung: bei eingeschaltetem „Statusleiste ausblenden“ erscheint der Schalter „Platz oben nutzen“](img/de/settings_appearance.png)

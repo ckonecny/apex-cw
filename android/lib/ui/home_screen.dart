@@ -23,6 +23,10 @@ import '../l10n/strings.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  /// Opens a screen from Home as if its card was tapped (cards refresh
+  /// afterwards); set while Home is mounted. Used by launcher shortcuts.
+  static void Function(Widget screen)? open;
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -39,7 +43,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    HomeScreen.open = _open;
     _loadInfo();
+  }
+
+  @override
+  void dispose() {
+    if (HomeScreen.open == _open) HomeScreen.open = null;
+    super.dispose();
   }
 
   String _profileInfo(TrainingProfile pf) {

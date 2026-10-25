@@ -13,6 +13,7 @@ import 'util/interference_profile.dart';
 import 'util/paddle_layout.dart';
 import 'util/practice_clock.dart';
 import 'util/reminder.dart';
+import 'util/app_shortcuts.dart';
 import 'util/share_intake.dart';
 import 'ui/home_screen.dart';
 import 'ui/widgets/app_ui.dart';
@@ -40,6 +41,7 @@ void main() async {
   Reminder.refresh();
   runApp(const NextCwTrainerApp());
   ShareIntake.init();
+  AppShortcuts.init();
   BluetoothHint.init();
   KeyAdapterState.init();
   BreakReminder.init();
