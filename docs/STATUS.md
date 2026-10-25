@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Next: v1.9.1 (pubspec 1.9.1+11; beta `v1.9.1-beta1` for testers: effective WPM in the progress view, spoken symbols and prosigns in the audio trainer; release notes and the Play upload follow after the beta). Latest release: v1.9.0 (notes `docs/release-notes-v1.9.0.md`; AAB for the Play closed test built, manual and screenshots done). Latest tagged build: v1.8.0 (2026-10-21, build 437, tag `v1.8.0` = commit 039560f; in the Play closed test with 2 testers; manual built for it). Previous: v1.7.0 (2026-10-12), v1.6.0 (2026-10-05); beta builds and older versions in `docs/STATUS-ARCHIVE.md`.
+Next: v1.10.0 (pubspec 1.10.0+12; beta `v1.10.0-beta1` for testers: everything of `v1.9.1-beta1` (effective WPM in the progress view, spoken symbols and prosigns in the audio trainer; 1.9.1 stays a beta only and is folded in) plus app shortcuts (#151) and tempo/spacing buttons in the audio trainer's media controls (#152); release notes and the Play upload follow after the beta). Latest release: v1.9.0 (2026-10-24, notes `docs/release-notes-v1.9.0.md`; AAB for the Play closed test built, manual and screenshots done). Previous: v1.8.0 (2026-10-21), v1.7.0 (2026-10-12); beta builds and older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -31,9 +31,6 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - `hear_progress.png`, `echo_progress.png` (both languages): new KPI "WPM eff." and a second speed curve in the Verlauf tab.
 - `settings_appearance.png` (both languages): new row "App-Shortcuts" (#151).
 
-## v1.8.0 (released to the closed test 2026-10-21)
-Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test the beta, then the release (`tools/build_release.sh v1.8.0`, APK + AAB; manual HTML/PDF and screenshots only then). Engine config per screen: `android/test/engine_config_test.dart`; shared config helper: issue #18.
-
 ## Phone tests still open (1.8.0)
 - Confirmation tone choice (#136, PR #137, written in the cloud; CI is green: analyze, tests, debug build): pending install. Check on the test phone: the four choices in Settings → General, the right → wrong preview when picking, Marimba/Gentle level against the sidetone at several volumes, sound in the Echo Trainer, Hören typing flow, Geben and character practice, and that an old "off" setting stayed off.
 - App language default (this branch): without a saved choice, German on a German-language phone, English otherwise. Unit-tested; on the test phone only the German case can be seen (try an English phone/tester).
@@ -43,16 +40,16 @@ Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test 
 
 ## Audio trainer (#139, merged to main, beta 1.9.0-beta1)
 Built: voice samples (Kristin, Bryce), flow engine (per group: Morse, think pause, solution) + tests, native sample player (`VoiceSamples.kt`, channel `cw_tone`: loadVoice/playVoiceChar/stopVoice), screen under Free modes (`audio_trainer_screen.dart`, profile `audio` and own Koch sequence `audio.*`, both seeded from Hören once; word/abbrev length, interference button), DE+EN strings, manual chapter DE+EN, tests (engine, `engine_config_test`, `screen_overflow_test`). Installed on the test phone (debug, 2026-10-23): the flow runs group by group (Morse, think pause, solution on screen, pause, counter), no errors in logcat. Not yet judged by ear / still to check: voices audible and the new voice-volume slider (samples re-rendered louder, default 70 %) against the Morse tone, pause/stop, voice switch, Koch level / character set, practice time in the daily goal, release build keeps the `voice_*` raw files (`res/raw/keep.xml`). Romeo/Sierra samples "not optimal" by ear (accepted).
-Spoken symbols (#149, merged) and spoken prosigns with a choice of introduction (word, bell, harp, gong, off; branch `feature/audio-trainer-prosigns`, not merged): debug build installed on the test phone 2026-10-25; check by ear, both voices, in a character set with punctuation and prosigns (Alle Zeichen · Zufall). Manual DE+EN updated, no screenshot changes.
+Spoken symbols (#149, merged) and spoken prosigns with a choice of introduction (word, bell, harp, gong, off; merged #150, in `v1.9.1-beta1`): debug build installed on the test phone 2026-10-25; check by ear, both voices, in a character set with punctuation and prosigns (Alle Zeichen · Zufall). Manual DE+EN updated, no screenshot changes.
 
 ### Audio trainer background (#140, merged to main, beta 1.9.0-beta1)
 Built: foreground service/lock-screen/headset buttons shared with Own texts (play/pause, next = skip group, prev = repeat group), engine `skipGroup`/`repeatGroup`, strings, manual DE+EN, tests. To check on the test phone: runs with the screen off for several groups, notification buttons, headset buttons, call/unplug pauses, notification permission, back ends it. Manual: the Audio-trainer screenshot is still pending (see above).
 
-## Launcher shortcuts (#151, branch `feature/app-shortcuts`, not merged)
-Built: dynamic shortcuts, user's choice and order in Settings → Appearance → App shortcuts (8 on offer, 4 on by default), manual DE+EN, tests. First version (fixed five) checked on the test phone: works, launcher shows four. Settings screen checked on the test phone (2026-10-25): passt. PR open, not merged.
+## Launcher shortcuts (#151, merged #153, beta `v1.10.0-beta1`)
+Built: dynamic shortcuts, user's choice and order in Settings → Appearance → App shortcuts (8 on offer, 4 on by default), manual DE+EN, tests. First version (fixed five) checked on the test phone: works, launcher shows four. Settings screen checked on the test phone (2026-10-25).
 
-## Audio trainer lock-screen controls (#152, branch `feature/audio-trainer-lockscreen-controls`, based on `feature/app-shortcuts`)
-Built: tempo/spacing −/+ instead of prev/next in the audio trainer's media controls, values in the subtitle, manual DE+EN, test. Checked on the test phone 2026-10-25 (debug build): the four buttons in the shade's media player, tempo/spacing change and the subtitle follows. Lock screen checked by the user: passt. PR open (stacked on #153), not merged. Still to check in the beta: by ear, own texts still with prev/next.
+## Audio trainer lock-screen controls (#152, merged #154, beta `v1.10.0-beta1`)
+Built: tempo/spacing −/+ instead of prev/next in the audio trainer's media controls, values in the subtitle, manual DE+EN, test. Checked on the test phone 2026-10-25 (debug build): the four buttons in the shade's media player, tempo/spacing change and the subtitle follows. Lock screen checked by the user. Still to check in the beta: by ear, own texts still with prev/next.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

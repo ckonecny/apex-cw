@@ -42,6 +42,13 @@ By Christian Konecny, OE1CKO.
   practise, and the app has a light theme plus five extra dark ones (Amber,
   Red for night vision, Green, Warm grey, Navy & orange) with an optional
   blue-light filter.
+- **Audio trainer — eyes closed, nothing to type:** a group is keyed, you
+  think along, then a voice spells the solution with the spelling alphabet
+  (two voices; punctuation and prosigns spoken too). It keeps running with
+  the screen off, and the lock screen offers play/pause plus tempo and
+  character spacing −/+.
+- **Straight from the home screen:** long-press the app icon for shortcuts
+  to the modes you pick (Listen, Send, Audio trainer, Keyer, Own texts, ...).
 - **Your own material and more games:** share any text from another app
   into Own texts and let the app play it (also with the screen off, controlled
   from the lock screen or Bluetooth headphones), plus games from arcade to a CW
