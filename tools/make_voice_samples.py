@@ -11,9 +11,11 @@ CC BY-NC-SA, and joe/amy/libritts_r are fine-tuned from the lessac voice,
 whose licence is not clear.
 
     python3 -m venv venv && venv/bin/pip install piper-tts
-    venv/bin/python tools/make_voice_samples.py MODEL.onnx OUT_DIR
+    venv/bin/python tools/make_voice_samples.py MODEL.onnx OUT_DIR [symbols]
 
-MODEL.onnx is en_US-ljspeech-high.onnx (the .onnx.json must sit beside it).
+MODEL.onnx is en_US-kristin-medium.onnx or en_US-bryce-medium.onnx (the
+.onnx.json must sit beside it); the voice name is taken from the file name.
+With "symbols" only the punctuation words are written.
 Writes one mono Ogg/Opus file per character to OUT_DIR, named
 voice_<voice>_<char>.ogg, e.g. voice_kristin_a.ogg (a..z: ICAO words; 0..9:
 digits), trimmed of silence and
@@ -43,6 +45,18 @@ WORDS = {
     "y": "Yankee", "z": "Zulu",
     "0": "Zero", "1": "One", "2": "Two", "3": "Three", "4": "Four",
     "5": "Five", "6": "Six", "7": "Seven", "8": "Eight", "9": "Nine",
+}
+
+
+# Punctuation and operator characters of the Morse set, spoken as words. The
+# file name carries the key, because a character cannot be part of an Android
+# resource name: voice_<voice>_<key>.ogg.
+SYMBOLS = {
+    "period": ("Period", "."), "comma": ("Kom-uh", ","),
+    "colon": ("Colon", ":"), "dash": ("Dash", "-"),
+    "slash": ("Slash", "/"), "equals": ("Equals", "="),
+    "question": ("Question mark", "?"), "at": ("At sign", "@"),
+    "plus": ("Plus", "+"),
 }
 
 
@@ -76,6 +90,7 @@ def main():
     model, out = sys.argv[1], sys.argv[2]
     os.makedirs(out, exist_ok=True)
     name = os.path.basename(model).split("-")[1]
+    only_symbols = len(sys.argv) > 3 and sys.argv[3] == "symbols"
     texts = dict(WORDS)
     texts.update(VOICE_TEXT.get(name, {}))
     voice = PiperVoice.load(model)
@@ -83,7 +98,12 @@ def main():
     calm = SynthesisConfig(length_scale=1.05, noise_scale=0.3,
                            noise_w_scale=0.3)
     with tempfile.TemporaryDirectory() as tmp:
-        for ch in WORDS:
+        for key, (word, _) in SYMBOLS.items():
+            wav_path = os.path.join(tmp, key + ".wav")
+            with wave.open(wav_path, "wb") as w:
+                voice.synthesize_wav(word + ".", w, syn_config=cfg)
+            encode(wav_path, os.path.join(out, "voice_%s_%s.ogg" % (name, key)))
+        for ch in ([] if only_symbols else WORDS):
             text = texts[ch] if ch in VOICE_TEXT.get(name, {}) \
                 else WORDS[ch] + "."
             wav_path = os.path.join(tmp, ch + ".wav")
@@ -91,7 +111,7 @@ def main():
                 voice.synthesize_wav(
                     text, w, syn_config=calm if ch in CALM else cfg)
             encode(wav_path, os.path.join(out, "voice_%s_%s.ogg" % (name, ch)))
-    print("wrote %d files to %s" % (len(WORDS), out))
+    print("wrote to %s" % out)
 
 
 if __name__ == "__main__":

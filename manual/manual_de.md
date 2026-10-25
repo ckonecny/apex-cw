@@ -2021,10 +2021,9 @@ Die Seite ist aufgebaut wie die anderen Trainings: oben der Zeichenvorrat
 (Zeichenvorrat, Inhalt, Koch-Lektion), dann ein kurzer Hinweis, das Statusfeld,
 Tempo und Zeichenabstand und der **Start**-Knopf. Zeichenvorrat, Koch-Lektion,
 Tempo und Abstand funktionieren wie beim [Hören](#zeichenvorrat-und-inhalt-wählen).
-**Hinweis:** Aktuell werden nur Buchstaben und Ziffern unterstützt: Nur sie haben ein
-Sprach-Sample. Satzzeichen, Sonderzeichen und Prosigns, die der Zeichenvorrat
-enthält, werden aus der Gruppe gestrichen und weder als Morse noch als Stimme
-gespielt; die Gruppe kann dadurch kürzer ausfallen als eingestellt. Das **Stör**-Symbol oben funktioniert wie in den anderen
+**Hinweis:** Umlaute (Ä, Ö, Ü, CH) und Prosigns werden nicht gesprochen; sie werden
+aus der Gruppe gestrichen und weder als Morse noch als Stimme gespielt. Die
+Gruppe kann dadurch kürzer ausfallen als eingestellt. Das **Stör**-Symbol oben funktioniert wie in den anderen
 Trainings (Tippen: an/aus, langer Druck: Einstellungen); das Rauschen steht,
 solange der Trainer läuft, und wirkt auf das Morse, nicht auf die Stimme.
 

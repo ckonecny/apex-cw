@@ -10,9 +10,23 @@ import 'package:flutter/foundation.dart';
 // UI-free: Morse, voice samples, content and waiting are injected, so the
 // whole flow (including pause and stop) is unit-testable without audio.
 
-/// Characters that have a voice sample (a-z, 0-9; punctuation and prosigns
-/// have none yet).
-final _sampleChar = RegExp(r'^[A-Z0-9]$');
+/// Punctuation and operator characters that have a voice sample, with the
+/// word spoken and the sample's file-name key (`voice_kristin_question`).
+/// Prosigns and other characters have none.
+const audioTrainerSymbols = {
+  '.': 'period',
+  ',': 'comma',
+  ':': 'colon',
+  '-': 'dash',
+  '/': 'slash',
+  '=': 'equals',
+  '?': 'question',
+  '@': 'at',
+  '+': 'plus',
+};
+
+/// Characters that have a voice sample: a-z, 0-9 and [audioTrainerSymbols].
+final _sampleChar = RegExp(r'^[A-Z0-9.,:\-/=?@+]$');
 final _prosign = RegExp(r'<[A-Za-z]{2}>');
 
 /// A generated group reduced to what can be spoken afterwards: upper case,
@@ -26,7 +40,7 @@ String audioTrainerGroup(String raw) => raw
 
 /// Android raw resource name of a voice sample: `voice_kristin_a`.
 String voiceSampleName(String voice, String char) =>
-    'voice_${voice}_${char.toLowerCase()}';
+    'voice_${voice}_${audioTrainerSymbols[char] ?? char.toLowerCase()}';
 
 /// The voices shipped in `res/raw` (see `tools/make_voice_samples.py`).
 const audioTrainerVoices = ['kristin', 'bryce'];

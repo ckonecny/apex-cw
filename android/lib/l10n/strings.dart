@@ -272,7 +272,7 @@ class Strings {
     'at_voice_error': ['Die Stimme konnte nicht geladen werden.', 'The voice could not be loaded.'],
     'at_error': ['Der Audio-Trainer konnte keine passenden Zeichen erzeugen. Prüfe den Zeichensatz.', 'The audio trainer could not produce suitable characters. Check the character set.'],
     'at_note_label': ['Hinweis:', 'Note:'],
-    'at_only_letters': ['Aktuell nur Buchstaben und Ziffern: Satz- und Sonderzeichen werden übersprungen, Gruppen können dadurch kürzer sein.', 'Currently letters and digits only: punctuation and special characters are skipped, so groups can be shorter.'],
+    'at_only_letters': ['Umlaute (Ä, Ö, Ü, CH) und Prosigns werden nicht gesprochen und übersprungen, Gruppen können dadurch kürzer sein.', 'Umlauts (Ä, Ö, Ü, CH) and prosigns are not spoken and are skipped, so groups can be shorter.'],
 
     // ── Own texts (issue #8) ─────────────────────────────────────────────
     'ot_title': ['Eigene Texte', 'Own texts'],
