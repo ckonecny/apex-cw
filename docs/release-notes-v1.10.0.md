@@ -1,6 +1,6 @@
 # APEX CW v1.10.0
 
-A set of all prosigns, the original Koch sequences, shortcuts on the app icon
+Includes everything of 1.9.0, which never reached the Play Store (the last store version is 1.8.0). A set of all prosigns, the original Koch sequences, shortcuts on the app icon
 and more control for the audio trainer on the lock screen.
 
 ## New
@@ -26,3 +26,12 @@ and more control for the audio trainer on the lock screen.
   and one is played per question, so character and word spacing (and "eff.")
   are gone.
 - The audio trainer no longer shows the hint about umlauts and CH.
+
+## From 1.9.0 (never in the store)
+- **Audio trainer (Free modes):** you hear a group in Morse, think the
+  characters, then hear them spelled out. Own Koch level and character set,
+  two voices, interference button. It keeps running with the screen off, with
+  notification, lock-screen and headset controls.
+- **Confirmation tone:** Classic, Marimba, Gentle or none in Settings > General (#136).
+- **Heat map:** explains what a column is.
+- **Fixed:** crash when pressing Stop in the background.

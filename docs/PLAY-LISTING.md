@@ -128,24 +128,26 @@ Many ideas and much of the training logic come from the open-source Morserino-32
 
 ## What's new (1.10.0, max. 500 characters each)
 
-**DE**
+The store last got 1.8.0 (1.9.0 never went live), so this covers everything since 1.8.0.
+
+**DE** (434)
 ```
-• Neu: Zeichenvorrat „Prosigns“ mit allen zehn Prosigns, samt Tastaturzeile zum Tippen
-• Prosigns auch in Zeichentabelle, Morsebaum und Audio-Trainer (mit gesprochener Bedeutung)
-• Audio-Trainer: Tempo und Zeichenabstand am Sperrbildschirm
-• App-Shortcuts: Icon lange drücken, Modus direkt öffnen
+• Neu: Audio-Trainer (Freie Modi) – Morse mitdenken, dann hören, was es war; spricht auch Satzzeichen und Prosigns, läuft im Hintergrund, Tempo und Zeichenabstand am Sperrbildschirm
+• Neuer Zeichenvorrat „Prosigns“ mit allen zehn, samt Tastaturzeile; auch in Zeichentabelle und Morsebaum
 • Koch-Folgen wie im Original (LCWO, CW Academy, LICW)
-• Q-Gruppen: nur noch ein Tempo-Regler
+• App-Shortcuts: Icon lange drücken
+• Effektives Tempo im Verlauf
+• Bestätigungston wählbar
 ```
 
-**EN**
+**EN** (454)
 ```
-• New: "Prosigns" character set with all ten prosigns, plus a keyboard row for typing
-• Prosigns also in the chart, Morse tree and audio trainer (with the meaning spoken)
-• Audio trainer: tempo and character spacing on the lock screen
-• App shortcuts: long-press the icon to open a mode directly
+• New: Audio trainer (Free modes) – think the Morse, then hear what it was; also speaks punctuation and prosigns, runs in the background, tempo and character spacing on the lock screen
+• New "Prosigns" character set with all ten, plus a keyboard row; also in the chart and Morse tree
 • Koch sequences as in the originals (LCWO, CW Academy, LICW)
-• Q-groups: just one tempo slider
+• App shortcuts: long-press the icon
+• Effective speed in the progress view
+• Choose your confirmation sound
 ```
 
 ## What's new (1.9.0, max. 500 characters each)
