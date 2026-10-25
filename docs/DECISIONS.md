@@ -2327,3 +2327,6 @@ nothing moves when it appears (before, the status card grew and pushed the
 tempo box down and up again). Back while running stops and returns to the
 start view (`PopScope canPop: !running`), as in Hören; the settings icon is
 hidden while running.
+
+## Audio trainer: spoken symbols (2026-10-25, branch `feature/audio-trainer-symbols`)
+Nine more samples per voice: `.` Period, `,` "Kom-uh", `:` Colon, `-` Dash, `/` Slash, `=` Equals, `?` Question mark, `@` At sign, `+` Plus (`SYMBOLS` in `tools/make_voice_samples.py`; run it with the extra argument `symbols` to write only these, so the accepted letter samples are not re-rolled: Piper's output varies from run to run). Same models and licence check as the letters (kristin, bryce; public domain), so the licence page needs no change. File names carry a key instead of the character (`voice_kristin_question.ogg`); `audioTrainerSymbols` (Dart) and `KEYS` (`VoiceSamples.kt`) hold the same map. Wording was picked by ear and by a speech-recogniser check: "Period" is clear with both voices in the final takes; plain "Comma" and "At" were misheard or too short, hence "Kom-uh" and "At sign". `audioTrainerGroup` now keeps these nine; prosigns and all other characters (`( ) & " ' ! $ ;` ...) are still dropped. `audio_trainer_engine_test.dart` checks that every speakable character has a file for each voice.

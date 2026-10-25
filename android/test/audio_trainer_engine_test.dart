@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -48,18 +49,37 @@ void main() {
     test('upper-cases and keeps letters and digits', () {
       expect(audioTrainerGroup('ab3z'), 'AB3Z');
     });
-    test('drops punctuation, prosigns and unknown characters', () {
-      expect(audioTrainerGroup('a.b,<KA>c/ä'), 'ABC');
+    test('keeps the spoken symbols, drops prosigns and unknown characters', () {
+      expect(audioTrainerGroup('a.b,<KA>c/ä'), 'A.B,C/');
+      expect(audioTrainerGroup('-:=?@+'), '-:=?@+');
     });
     test('empty when nothing speakable is left', () {
-      expect(audioTrainerGroup('.,?<SK>'), '');
+      expect(audioTrainerGroup('(<SK>)ä&'), '');
     });
   });
 
   test('sample names match the files written by make_voice_samples.py', () {
     expect(voiceSampleName('kristin', 'A'), 'voice_kristin_a');
     expect(voiceSampleName('bryce', '7'), 'voice_bryce_7');
+    expect(voiceSampleName('kristin', '?'), 'voice_kristin_question');
+    expect(voiceSampleName('bryce', '+'), 'voice_bryce_plus');
     expect(audioTrainerVoices, ['kristin', 'bryce']);
+  });
+
+  test('every speakable character has a sample file for every voice', () {
+    final chars = [
+      for (var c = 0x41; c <= 0x5a; c++) String.fromCharCode(c),
+      for (var c = 0; c < 10; c++) '$c',
+      ...audioTrainerSymbols.keys,
+    ];
+    for (final v in audioTrainerVoices) {
+      for (final c in chars) {
+        final f = File(
+          'android/app/src/main/res/raw/${voiceSampleName(v, c)}.ogg',
+        );
+        expect(f.existsSync(), isTrue, reason: f.path);
+      }
+    }
   });
 
   test(
@@ -137,7 +157,7 @@ void main() {
 
   test('groups without speakable characters are drawn again', () async {
     final r = _Rig();
-    r.contents.addAll(['.,', '<SK>', 'q']);
+    r.contents.addAll(['()', '<SK>', 'q']);
     final done = r.engine.run();
     await _settle();
     await r.engine.stop();
@@ -147,7 +167,7 @@ void main() {
 
   test('gives up with an error when nothing speakable can be drawn', () async {
     final r = _Rig();
-    r.contents.add('...');
+    r.contents.add('(&)');
     expect(r.engine.run(), throwsStateError);
   });
 

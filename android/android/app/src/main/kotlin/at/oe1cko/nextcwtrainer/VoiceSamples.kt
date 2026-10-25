@@ -9,8 +9,10 @@ import android.os.Looper
 import io.flutter.plugin.common.MethodChannel
 
 /**
- * Spoken spelling-alphabet samples for the audio trainer (#139): a-z and 0-9,
- * one short Ogg/Opus file per character and voice (res/raw/voice_<voice>_<c>,
+ * Spoken spelling-alphabet samples for the audio trainer (#139): a-z, 0-9 and
+ * nine punctuation words (. , : - / = ? @ +), one short Ogg/Opus file per
+ * character and voice (res/raw/voice_<voice>_<key>, key = the character or
+ * the name in [KEYS],
  * made by tools/make_voice_samples.py). Its own SoundPool and its own volume,
  * so the sidetone and the shared generator are never touched (CLAUDE.md rule 2).
  *
@@ -39,9 +41,9 @@ class VoiceSamples(private val context: Context) {
     private var pending: Runnable? = null
     private var pendingResult: MethodChannel.Result? = null
 
-    /** Loads all 36 samples of [name]; [done] gets true when all are ready. */
+    /** Loads all samples of [name]; [done] gets true when all are ready. */
     fun load(name: String, done: (Boolean) -> Unit) {
-        if (voice == name && samples.size == CHARS.length) { done(true); return }
+        if (voice == name && samples.size == KEYS.size) { done(true); return }
         stop()
         samples.values.forEach { pool.unload(it.soundId) }
         samples.clear()
@@ -56,8 +58,8 @@ class VoiceSamples(private val context: Context) {
                 if (remaining == 0) { voice = name; done(true) }
             }
         }
-        for (c in CHARS) {
-            val res = context.resources.getIdentifier("voice_${name}_$c", "raw", context.packageName)
+        for ((c, key) in KEYS) {
+            val res = context.resources.getIdentifier("voice_${name}_$key", "raw", context.packageName)
             if (res == 0) { done(false); return }
             val dur = durationMs(res)
             val id = pool.load(context, res, 1)
@@ -99,5 +101,12 @@ class VoiceSamples(private val context: Context) {
 
     fun release() { stop(); pool.release() }
 
-    companion object { private const val CHARS = "abcdefghijklmnopqrstuvwxyz0123456789" }
+    companion object {
+        /** Character -> file-name key (letters and digits are their own key). */
+        private val KEYS: Map<Char, String> =
+            ('a'..'z').associateWith { it.toString() } +
+            ('0'..'9').associateWith { it.toString() } +
+            mapOf('.' to "period", ',' to "comma", ':' to "colon", '-' to "dash",
+                '/' to "slash", '=' to "equals", '?' to "question", '@' to "at", '+' to "plus")
+    }
 }

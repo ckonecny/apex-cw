@@ -1951,10 +1951,9 @@ The page is laid out like the other trainings: the character set at the top
 (character set, content, Koch lesson), then a short note, the status field, the
 speed and character spacing, and the **Start** button. Character set, Koch
 lesson, speed and spacing work as in [Listen](#choosing-the-character-set-and-content).
-**Note:** Currently only letters and digits are supported: only they have a voice
-sample. Punctuation, special characters and prosigns contained in the character
-set are removed from the group and played neither as Morse nor as voice; a
-group can therefore come out shorter than set. The **interference** symbol in the top bar works as in the other
+**Note:** Umlauts (Ä, Ö, Ü, CH) and prosigns are not spoken; they are removed
+from the group and played neither as Morse nor as voice. A group can therefore
+come out shorter than set. The **interference** symbol in the top bar works as in the other
 trainings (tap: on/off, long press: settings); the noise stands while the
 trainer runs and affects the Morse, not the voice.
 
