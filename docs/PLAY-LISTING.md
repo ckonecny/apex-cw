@@ -126,6 +126,48 @@ No ads, no accounts, no data collection. Free software (GPL-3.0), source code on
 Many ideas and much of the training logic come from the open-source Morserino-32 firmware by Willi Kraml, OE1WKL – many thanks for that. APEX CW is an independent project, not affiliated with the Morserino-32 team. Zork is a trademark of its owners; this app is not affiliated with them.
 ```
 
+## What's new (1.10.0, max. 500 characters each)
+
+**DE**
+```
+• Neu: Zeichenvorrat „Prosigns“ mit allen zehn Prosigns, samt Tastaturzeile zum Tippen
+• Prosigns auch in Zeichentabelle, Morsebaum und Audio-Trainer (mit gesprochener Bedeutung)
+• Audio-Trainer: Tempo und Zeichenabstand am Sperrbildschirm
+• App-Shortcuts: Icon lange drücken, Modus direkt öffnen
+• Koch-Folgen wie im Original (LCWO, CW Academy, LICW)
+• Q-Gruppen: nur noch ein Tempo-Regler
+```
+
+**EN**
+```
+• New: "Prosigns" character set with all ten prosigns, plus a keyboard row for typing
+• Prosigns also in the chart, Morse tree and audio trainer (with the meaning spoken)
+• Audio trainer: tempo and character spacing on the lock screen
+• App shortcuts: long-press the icon to open a mode directly
+• Koch sequences as in the originals (LCWO, CW Academy, LICW)
+• Q-groups: just one tempo slider
+```
+
+## What's new (1.9.0, max. 500 characters each)
+
+**DE** (343)
+```
+• Neu: Audio-Trainer unter Freie Modi – Morse mitdenken, dann die Buchstabierwörter hören (Augen zu, nichts tippen)
+• Läuft im Hintergrund weiter, mit Tasten an Sperrbildschirm und Kopfhörer
+• Bestätigungston wählbar: Klassisch, Marimba, Sanft oder aus
+• Heatmap erklärt ihre Spalten
+• Korrektur: Absturz beim Stoppen der Hintergrundwiedergabe
+```
+
+**EN** (342)
+```
+• New: Audio trainer under Free modes – think along with the Morse, then hear the spelling words (eyes closed, no typing)
+• Keeps running in the background, with lock-screen and headset buttons
+• Choose your confirmation sound: Classic, Marimba, Gentle or none
+• The heatmap explains its columns
+• Fix: crash when stopping background playback
+```
+
 ## What's new (1.8.0, max. 500 characters each)
 
 **DE** (about 450)
