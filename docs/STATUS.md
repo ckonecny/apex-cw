@@ -28,10 +28,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
-- `hear_progress.png`, `echo_progress.png` (both languages): new KPI "WPM eff." and a second speed curve in the Verlauf tab.
-- `settings_appearance.png` (both languages): new row "App-Shortcuts" (#151).
-- Prosign set (#156): `hear_start.png` (or the Hören start view shot) with the new chip; `tree_*.png` (prosign row below the tree); `chart_*.png` (four more prosign tiles); typing keyboard shot if there is one (prosign row). Both languages.
-- `qgroups_setup.png` (both languages): the Q-groups start view has only the tempo slider now (no spacing rows, no "eff.").
+(empty; v1.10.0 shots retaken 2026-10-25, `hear_prosigns.png` is new. `chart.png` shows only the letters at the top and did not change.)
 
 ## Prosign set (#156, branch `feature/prosign-charset`)
 Built, installed on the test phone, not yet checked there: chip order, tiles, typing keyboard row, chart, tree row, audio trainer with the set. The spoken meanings for AR, BT, HH, SOS are in (`res/raw`); still to hear in the app.
