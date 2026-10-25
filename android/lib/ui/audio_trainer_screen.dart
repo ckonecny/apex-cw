@@ -326,6 +326,7 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
   }
 
   bool _bgPlaying = false;
+  String _bgSubtitle = '';
 
   /// Tells the foreground service whether the trainer is playing, so the
   /// notification shows the right button and the session stays alive (#140).
@@ -333,14 +334,18 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
     final e = _engine;
     if (e == null) return;
     final playing = !e.state.value.paused;
-    if (playing == _bgPlaying && _bgSent) return;
+    final sub = '$_wpm WPM · ${Strings.t('at_bg_gap')} $_interChar';
+    if (playing == _bgPlaying && sub == _bgSubtitle && _bgSent) return;
     _bgPlaying = playing;
+    _bgSubtitle = sub;
     _bgSent = true;
     OwnTextPlayback.update(
       title: Strings.t('at_title'),
       playing: playing,
       labelPrefix: 'at_bg',
       channelId: 'audio_trainer_playback',
+      subtitle: sub,
+      tune: true,
     );
   }
 
@@ -358,6 +363,20 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
         e.skipGroup();
       case 'prev':
         e.repeatGroup();
+      // Lock-screen tempo/spacing buttons (#152): saved like the screen's own
+      // controls; the generator takes them from the next group on.
+      case 'tempo_down' || 'tempo_up':
+        final w = TrainingProfile.clampWpm(_wpm + (cmd == 'tempo_up' ? 1 : -1));
+        if (w != _wpm) _changed(() => _wpm = w).then((_) => _syncBackground());
+      case 'gap_down' || 'gap_up':
+        final (ic, iw) =
+            stepCharSpacing(_interChar, _interWord, cmd == 'gap_up' ? 1 : -1);
+        if (ic != _interChar) {
+          _changed(() {
+            _interChar = ic;
+            _interWord = iw;
+          }).then((_) => _syncBackground());
+        }
     }
   }
 

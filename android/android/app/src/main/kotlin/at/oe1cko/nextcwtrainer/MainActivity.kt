@@ -537,10 +537,12 @@ class MainActivity : FlutterActivity() {
                         val playing = call.argument<Boolean>("playing") ?: false
                         val i = Intent(this, OwnTextPlaybackService::class.java)
                             .setAction(OwnTextPlaybackService.ACTION_UPDATE)
-                        for (k in listOf("title", "channelId", "channel", "play", "pause", "next", "prev")) {
+                        for (k in listOf("title", "subtitle", "channelId", "channel", "play", "pause", "next", "prev",
+                                "tempo_down", "tempo_up", "gap_down", "gap_up")) {
                             i.putExtra(k, call.argument<String>(k) ?: "")
                         }
                         i.putExtra("playing", playing)
+                        i.putExtra("tune", call.argument<Boolean>("tune") ?: false)
                         if (playing) {
                             OwnTextPlayback.startPending = true
                             startForegroundService(i)

@@ -24,6 +24,14 @@ import 'setting_rows.dart';
 /// sub line, otherwise the sub line stays so the block looks the same
 /// everywhere. [showUndo] switches off the
 /// "Changed … Undo" snackbar of the slider (it would cover buttons below).
+/// One −/+ step of the character spacing, as on the row below: 3..45 dits,
+/// and the word gap is raised with it so it never drops below. Also used by
+/// the audio trainer's lock-screen buttons (#152).
+(int, int) stepCharSpacing(int interChar, int interWord, int delta) {
+  final ic = (interChar + delta).clamp(3, 45);
+  return (ic, interWord < ic ? ic : interWord);
+}
+
 class TempoSpacingSection extends StatelessWidget {
   final int wpm, interChar, interWord;
   final bool typing, compact, showUndo, showWordGap;
@@ -46,6 +54,11 @@ class TempoSpacingSection extends StatelessWidget {
     this.leading,
     this.speedLabel,
   });
+
+  void _step(int delta) {
+    final (ic, iw) = stepCharSpacing(interChar, interWord, delta);
+    onSpacing(ic, iw);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,11 +87,8 @@ class TempoSpacingSection extends StatelessWidget {
             value: '$interChar',
             sub: showSub ? 'Dits · ${ditsToSeconds(interChar, wpm)}' : null,
             compact: compact,
-            onMinus: interChar > 3 ? () => onSpacing(interChar - 1, interWord) : null,
-            // The word gap never drops below the char gap.
-            onPlus: interChar < 45
-                ? () => onSpacing(interChar + 1, interWord < interChar + 1 ? interChar + 1 : interWord)
-                : null,
+            onMinus: interChar > 3 ? () => _step(-1) : null,
+            onPlus: interChar < 45 ? () => _step(1) : null,
           ),
           if (!typing && showWordGap)
             _StepRow(
