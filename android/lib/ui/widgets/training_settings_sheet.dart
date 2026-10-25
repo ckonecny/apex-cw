@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../content/cw_content.dart';
 import '../../content/echo_suggestions.dart';
-import '../../content/audio_trainer_engine.dart' show audioTrainerVoices;
+import '../../content/audio_trainer_engine.dart' show audioTrainerVoices, ProsignIntro;
 import '../../content/training_profile.dart';
 import '../../content/charset_content.dart';
 import 'charset_header.dart';
@@ -110,7 +110,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
 
   // Audio trainer flow (#139): think pause and pause between groups in
   // seconds, voice index.
-  int _atThink = 4, _atRest = 3, _atVoice = 0, _atVolume = 70;
+  int _atThink = 4, _atRest = 3, _atVoice = 0, _atVolume = 70, _atProsign = 0;
 
   int _kochSeq = 0;
   String _customKochChars = 'esno0tqr5ucd9al8ix1myj7h4gvkfz3b.6/w2p?';
@@ -152,6 +152,7 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       _atRest = (prof.getInt('atRest') ?? 3).clamp(1, 10);
       _atVolume = (prof.getInt('atVolume') ?? 70).clamp(10, 100);
       _atVoice = (prof.getInt('atVoice') ?? 0).clamp(0, audioTrainerVoices.length - 1);
+      _atProsign = (prof.getInt('atProsign') ?? 0).clamp(0, ProsignIntro.values.length - 1);
       _groupLength = (prof.getInt('groupLength') ?? 5).clamp(1, 8);
       _groupLengthMax = (prof.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMax = (prof.getInt('wordLengthMax') ?? 0).clamp(0, 8);
@@ -395,6 +396,23 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
           onChanged: (v) {
             setState(() => _atVolume = v.round());
             _setInt('atVolume', _atVolume);
+          },
+        ),
+        const SettingsDivider(),
+        SegmentRow(
+          label: Strings.t('at_prosign_intro'),
+          options: [
+            Strings.t('at_prosign_word'),
+            Strings.t('at_prosign_bell'),
+            Strings.t('at_prosign_harp'),
+            Strings.t('at_prosign_gong'),
+            Strings.t('at_prosign_off'),
+          ],
+          selected: _atProsign,
+          perRow: 3,
+          onChanged: (v) {
+            setState(() => _atProsign = v);
+            _setInt('atProsign', v);
           },
         ),
       ]),

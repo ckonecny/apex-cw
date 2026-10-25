@@ -57,6 +57,8 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
 
   // Own settings.
   int _groupMin = 1, _groupMax = 1, _think = 4, _rest = 3, _voice = 0;
+  // What introduces a prosign's meaning (profile `atProsign`, index of ProsignIntro).
+  int _prosign = 0;
   // Groups per block (profile `maxWords`, as in Hören; stored 0 = the default 10,
   // 51 = endless, which is 0 here).
   int _maxGroups = 10;
@@ -167,6 +169,10 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
       _think = (_pf.getInt('atThink') ?? 4).clamp(1, 15);
       _rest = (_pf.getInt('atRest') ?? 3).clamp(1, 10);
       _voiceVolume = (_pf.getInt('atVolume') ?? 70).clamp(10, 100);
+      _prosign = (_pf.getInt('atProsign') ?? 0).clamp(
+        0,
+        ProsignIntro.values.length - 1,
+      );
       _voice = (_pf.getInt('atVoice') ?? 0).clamp(
         0,
         audioTrainerVoices.length - 1,
@@ -225,6 +231,7 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
       thinkPause: Duration(seconds: _think),
       groupPause: Duration(seconds: _rest),
       maxGroups: _maxGroups,
+      prosignIntro: ProsignIntro.values[_prosign],
     );
   }
 
@@ -289,7 +296,8 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
       nextContent: _nextContent,
       playMorse: _playMorse,
       stopMorse: () => _genChannel.invokeMethod('stopOne'),
-      playVoice: (c) => _toneChannel.invokeMethod('playVoiceChar', c),
+      playVoice: (t) =>
+          _toneChannel.invokeMethod('playVoiceChar', voiceSampleKey(t)),
       stopVoice: () => _toneChannel.invokeMethod('stopVoice'),
     );
     _engine = engine;
@@ -671,9 +679,10 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
                             child: Text.rich(
                               TextSpan(
                                 children: [
-                                  for (var i = 0; i < s.group.length; i++)
+                                  for (final (i, t)
+                                      in audioTrainerTokens(s.group).indexed)
                                     TextSpan(
-                                      text: s.group[i],
+                                      text: t,
                                       style: TextStyle(
                                         color: i == s.solutionChar
                                             ? c.accent

@@ -11,11 +11,12 @@ CC BY-NC-SA, and joe/amy/libritts_r are fine-tuned from the lessac voice,
 whose licence is not clear.
 
     python3 -m venv venv && venv/bin/pip install piper-tts
-    venv/bin/python tools/make_voice_samples.py MODEL.onnx OUT_DIR [symbols]
+    venv/bin/python tools/make_voice_samples.py MODEL.onnx OUT_DIR [symbols|prosigns]
 
 MODEL.onnx is en_US-kristin-medium.onnx or en_US-bryce-medium.onnx (the
 .onnx.json must sit beside it); the voice name is taken from the file name.
-With "symbols" only the punctuation words are written.
+With "symbols" only the punctuation words, with "prosigns" only the
+prosign clips are written.
 Writes one mono Ogg/Opus file per character to OUT_DIR, named
 voice_<voice>_<char>.ogg, e.g. voice_kristin_a.ogg (a..z: ICAO words; 0..9:
 digits), trimmed of silence and
@@ -60,6 +61,20 @@ SYMBOLS = {
 }
 
 
+# Prosigns: the meaning, and the word "Pro sign" as a separate clip, so the app
+# can play the word, a tone or nothing before the meaning (the user's choice).
+# Keys are prosign_<mnemonic>, matching the app's two-letter prosign keys.
+PROSIGNS = {
+    "prosign_word": "Pro sign.",
+    "prosign_as": "Stand by.",
+    "prosign_ka": "Start of message.",
+    "prosign_kn": "Go ahead, named station only.",
+    "prosign_sk": "End of contact.",
+    "prosign_ve": "Understood.",
+    "prosign_bk": "Break.",
+}
+
+
 # Words that need less randomness in the model (noise_scale, noise_w_scale).
 CALM = {"r", "s"}
 
@@ -90,7 +105,8 @@ def main():
     model, out = sys.argv[1], sys.argv[2]
     os.makedirs(out, exist_ok=True)
     name = os.path.basename(model).split("-")[1]
-    only_symbols = len(sys.argv) > 3 and sys.argv[3] == "symbols"
+    mode = sys.argv[3] if len(sys.argv) > 3 else "all"
+    only_symbols = mode in ("symbols", "prosigns")
     texts = dict(WORDS)
     texts.update(VOICE_TEXT.get(name, {}))
     voice = PiperVoice.load(model)
@@ -98,7 +114,12 @@ def main():
     calm = SynthesisConfig(length_scale=1.05, noise_scale=0.3,
                            noise_w_scale=0.3)
     with tempfile.TemporaryDirectory() as tmp:
-        for key, (word, _) in SYMBOLS.items():
+        for key, text in PROSIGNS.items() if mode in ("all", "prosigns") else []:
+            wav_path = os.path.join(tmp, key + ".wav")
+            with wave.open(wav_path, "wb") as w:
+                voice.synthesize_wav(text, w, syn_config=cfg)
+            encode(wav_path, os.path.join(out, "voice_%s_%s.ogg" % (name, key)))
+        for key, (word, _) in (SYMBOLS.items() if mode != "prosigns" else []):
             wav_path = os.path.join(tmp, key + ".wav")
             with wave.open(wav_path, "wb") as w:
                 voice.synthesize_wav(word + ".", w, syn_config=cfg)

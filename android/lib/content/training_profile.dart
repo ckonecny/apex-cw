@@ -37,8 +37,9 @@ class TrainingProfile {
     // word, key vibration.
     'copyMode', 'typeAttempts', 'typeOnWrong', 'typeHaptic',
     // Audio trainer: think pause (s), pause between groups (s), voice index
-    // (audioTrainerVoices), voice volume in percent.
-    'atThink', 'atRest', 'atVoice', 'atVolume',
+    // (audioTrainerVoices), voice volume in percent, what introduces a prosign
+    // (index of ProsignIntro).
+    'atThink', 'atRest', 'atVoice', 'atVolume', 'atProsign',
   ];
   static const _stringFields = ['practiceChars'];
   static const _versionKey = 'profileVersion';

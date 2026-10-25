@@ -296,6 +296,10 @@ The confirmation tones "Marimba" and "Gentle" (`android/android/app/src/main/res
 are the project's own sounds, computed from sine waves by
 `tools/make_confirm_tones.py`, and fall under the same GPL.
 
+The prosign tones "Bell", "Harp" and "Gong" of the audio trainer
+(`prosign_tone_*` in the same folder) are likewise the project's own sounds,
+computed from sine waves by `tools/make_prosign_tones.py`, under the same GPL.
+
 The spoken spelling-alphabet samples of the audio trainer (`voice_kristin_*`,
 `voice_bryce_*` in the same folder) were synthesised offline with
 [Piper](https://github.com/OHF-Voice/piper1-gpl) (GPL-3.0, build tool only,
