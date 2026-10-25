@@ -28,7 +28,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
-(empty; v1.9.0 manual and screenshots done 2026-10-24)
+- `hear_progress.png`, `echo_progress.png` (both languages): new KPI "WPM eff." and a second speed curve in the Verlauf tab.
 
 ## v1.8.0 (released to the closed test 2026-10-21)
 Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test the beta, then the release (`tools/build_release.sh v1.8.0`, APK + AAB; manual HTML/PDF and screenshots only then). Engine config per screen: `android/test/engine_config_test.dart`; shared config helper: issue #18.

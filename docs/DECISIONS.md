@@ -1272,6 +1272,21 @@ Issue #16, merged with #4. Decided with the user:
 - Charts: `ui/widgets/progress_charts.dart` (`CustomPaint`, no package).
 
 
+### Progress view: effective wpm (2026-10-25, user request)
+- The wpm in the statistics is the **character speed**. Added the **effective
+  wpm** with the gaps: `effectiveWpm` in `content/char_stats.dart`,
+  `wpm · 50 / (31 + 4·interChar + wordGap)` (PARIS: 31 dits of elements, 4
+  character gaps, 1 word gap), gaps in total dits as in the generator, word gap
+  at least interChar + 4. 3 / 7 gives the character speed.
+- **Hören on paper:** both gaps count. **Hören typing and Geben:** the sender
+  stops after every word, so only the character gap counts; the word gap is
+  fixed at the standard 7 dits.
+- Stored per day as `we` (sum, double) and `wn` (attempts that carry one) in
+  `DayStat`; no back-fill, older days have no value (gap in the curve, "–" in
+  the KPI). Geben with the straight key uses the measured speed with the
+  profile's character gap (the real gaps of the operator are not measured).
+- View: extra KPI "WPM eff." and a second speed curve.
+
 ## 2026-10-01: Straight key gets its own adaptive decoder (issue #17)
 `StraightKeyDecoder.kt` ports the firmware decoder (`MorseDecoder.cpp`, V9.0 "Version 6 and newer": running `ditAvg`/`dahAvg`, dit/dah threshold = sqrt(ditAvg*dahAvg), character gap 2.2/2.3/2.4 and word gap 5/5.5/6 dits by speed, echo word gap IW+1 only up to 30 WPM as in the firmware). It is pure logic and used only by the straight-key branch of `CwKeyer`; paddle modes are not touched on purpose (well tested, kept strictly separate). Differences from the firmware: no noise blanker (touch input does not bounce), and the start speed is the screen's WPM (later: one start value in the general settings) instead of the fixed 20 WPM-equivalent values. The firmware never reads the configured WPM for the straight key (keyer/Trx show and send the measured WPM). The measurement restarts when WPM or mode is set. A word gap is only reported after a real character (filtered glitches produce none).
 

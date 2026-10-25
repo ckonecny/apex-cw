@@ -75,6 +75,10 @@ class DayStat {
   int errors = 0;
   int ws = 0;
   int wm = 0;
+  // Effective wpm (spacing included, see effectiveWpm): sum over the `wn`
+  // attempts that carry one. Days from before this existed have none.
+  double we = 0;
+  int wn = 0;
   final Map<String, List<int>> chars = {};
   // Mix-ups of this day, "T>G" → count (same pairs as CharStatsStore.pairs, #92).
   // Feeds the trend view; days from before this existed simply have none.
@@ -86,7 +90,9 @@ class DayStat {
       : attempts = j['a'] as int? ?? 0,
         errors = j['e'] as int? ?? 0,
         ws = j['ws'] as int? ?? 0,
-        wm = j['wm'] as int? ?? 0 {
+        wm = j['wm'] as int? ?? 0,
+        we = (j['we'] as num?)?.toDouble() ?? 0,
+        wn = j['wn'] as int? ?? 0 {
     (j['c'] as Map<String, dynamic>? ?? const {}).forEach((k, v) {
       final l = (v as List).cast<int>();
       chars[k] = [l[0], l[1]];
@@ -96,11 +102,25 @@ class DayStat {
 
   Map<String, dynamic> toJson() => {
         'a': attempts, 'e': errors, 'ws': ws, 'wm': wm, 'c': chars,
+        if (wn > 0) ...{'we': double.parse(we.toStringAsFixed(2)), 'wn': wn},
         if (pairs.isNotEmpty) 'p': pairs,
       };
 
   double? get rate => attempts == 0 ? null : (attempts - errors) / attempts;
   double? get avgWpm => attempts == 0 || ws == 0 ? null : ws / attempts;
+  double? get avgEffWpm => wn == 0 ? null : we / wn;
+}
+
+/// Effective speed in wpm of a character speed [wpm] with the gaps
+/// [interChar] / [interWord] (total gaps in dits, like the generator). PARIS
+/// is 31 dits of elements + 4 character gaps + 1 word gap; at 3 / 7 the result
+/// equals [wpm]. [wordGap] false (typing, keying: the sender stops after every
+/// word) counts the standard 7-dit word gap instead of [interWord], so only the
+/// character gap stretches the result. The word gap is at least
+/// interChar + 4, as in the generator (wordGapExtra).
+double effectiveWpm(int wpm, int interChar, int interWord, {bool wordGap = true}) {
+  final word = wordGap ? (interWord > interChar + 4 ? interWord : interChar + 4) : 7;
+  return wpm * 50 / (31 + 4 * interChar + word);
 }
 
 String dayKey(DateTime d) =>
@@ -127,6 +147,8 @@ class CharStatsStore {
   // back-fill. `wpm` is set by the screen before it records (0 = unknown).
   final Map<String, DayStat> days = {};
   int wpm = 0;
+  // Effective wpm of the same attempts, see effectiveWpm (0 = unknown).
+  double effWpm = 0;
   // Overridable for tests.
   DateTime Function() now = DateTime.now;
 
@@ -137,6 +159,10 @@ class CharStatsStore {
     if (wpm > 0) {
       d.ws += wpm;
       if (wpm > d.wm) d.wm = wpm;
+    }
+    if (effWpm > 0) {
+      d.we += effWpm;
+      d.wn++;
     }
     final c = d.chars.putIfAbsent(char, () => [0, 0]);
     c[0]++;

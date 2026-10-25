@@ -1524,11 +1524,18 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
   time per training has only been recorded separately since this update; for
   earlier days it is only in the total (a note gives their number). Before the
   daily goal there is no time at all.
-- **Hit rate, WPM and days practised** below it. Hit rate and WPM are those
+- **Hit rate, WPM, WPM eff. and days practised** below it. **WPM** is
+  the character speed, **WPM eff.** the speed including the gaps (PARIS
+  word). When listening on paper, character and word gap both count; when
+  listening in typing mode and when sending, only the character gap counts,
+  because you stop after every word there; the word gap is then the standard
+  7 dits. At the standard gaps (3 and 7) both values are equal. Hit rate and WPM are those
   of the latest day (4 weeks), week (12 weeks) or month (All, from about half
   a year on) with practice, weighted by attempts, with an arrow against the
   period before. "Days practised" reads like *42/88*.
-- **Hit rate per day / week / month** and **speed (WPM)** as curves. Periods
+- **Hit rate per day / week / month**, **speed (WPM)** and **effective
+  speed (WPM)** as curves. Effective speed has only been recorded since this
+  update; earlier days show a gap there. Periods
   without practice are gaps, not zero. Tap a point of the hit rate to see
   that period's attempts and rate.
 - **Days practised**: one box per day (4 weeks), otherwise a bar per week or

@@ -1000,6 +1000,9 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final p = await SharedPreferences.getInstance();
     await _charStats.load(p);
     _charStats.wpm = _activeWpm;
+    // Paper: the word gaps count; typing stops after every word, so they don't.
+    _charStats.effWpm =
+        effectiveWpm(_activeWpm, _activeInterChar, _activeInterWord, wordGap: !_typing);
     var total = 0, correct = 0;
     final results = <bool>[];
     for (var g = 0; g < _sentGroups.length; g++) {
