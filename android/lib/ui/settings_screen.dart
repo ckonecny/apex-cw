@@ -12,6 +12,8 @@ import '../l10n/strings.dart';
 import '../licenses.dart';
 import 'widgets/setting_rows.dart';
 import 'interference_settings_card.dart';
+import 'shortcuts_screen.dart';
+import '../util/app_shortcuts.dart';
 import '../util/bluetooth_hint.dart';
 import '../util/confirm_tone.dart';
 import '../util/key_adapter_state.dart';
@@ -441,6 +443,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 options: const ['Deutsch', 'English'],
                 selected: lang,
                 onChanged: Strings.set,
+              ),
+            ),
+            const SettingsDivider(),
+            ValueListenableBuilder<Set<String>>(
+              valueListenable: AppShortcuts.off,
+              builder: (context, _, _) => InkWell(
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const ShortcutsScreen())),
+                child: _InfoRow(label: Strings.t('sc_title'),
+                    value: '${AppShortcuts.active.length} ${Strings.t('sc_active')} ›'),
               ),
             ),
           ]),

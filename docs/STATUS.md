@@ -29,6 +29,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 
 ## Manual: pending for next release
 - `hear_progress.png`, `echo_progress.png` (both languages): new KPI "WPM eff." and a second speed curve in the Verlauf tab.
+- `settings_appearance.png` (both languages): new row "App-Shortcuts" (#151).
 
 ## v1.8.0 (released to the closed test 2026-10-21)
 Notes: `docs/release-notes-v1.8.0.md` (1.7.1 maintenance folded in). Next: test the beta, then the release (`tools/build_release.sh v1.8.0`, APK + AAB; manual HTML/PDF and screenshots only then). Engine config per screen: `android/test/engine_config_test.dart`; shared config helper: issue #18.
@@ -46,6 +47,9 @@ Spoken symbols (#149, merged) and spoken prosigns with a choice of introduction 
 
 ### Audio trainer background (#140, merged to main, beta 1.9.0-beta1)
 Built: foreground service/lock-screen/headset buttons shared with Own texts (play/pause, next = skip group, prev = repeat group), engine `skipGroup`/`repeatGroup`, strings, manual DE+EN, tests. To check on the test phone: runs with the screen off for several groups, notification buttons, headset buttons, call/unplug pauses, notification permission, back ends it. Manual: the Audio-trainer screenshot is still pending (see above).
+
+## Launcher shortcuts (#151, branch `feature/app-shortcuts`, not merged)
+Built: dynamic shortcuts, user's choice and order in Settings → Appearance → App shortcuts (8 on offer, 4 on by default), manual DE+EN, tests. First version (fixed five) checked on the test phone: works, launcher shows four. Settings screen checked on the test phone (2026-10-25): passt. PR open, not merged.
 
 ## Hints for the next session
 - Release steps: `manual/README.md` "At release time"; `MANUAL_COMMIT=<hash>

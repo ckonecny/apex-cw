@@ -43,6 +43,7 @@ import 'package:next_cw_trainer/ui/qso_bot_screen.dart';
 import 'package:next_cw_trainer/ui/radio_cave_screen.dart';
 import 'package:next_cw_trainer/ui/wifi_trx_screen.dart';
 import 'package:next_cw_trainer/ui/settings_screen.dart';
+import 'package:next_cw_trainer/ui/shortcuts_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Per-day stats with mix-ups in both windows of the trend view (#101): one pair
@@ -73,6 +74,7 @@ void main() {
     'char_practice': () => const CharPracticeScreen(ch: 'q'),
     'echo': () => const EchoTrainerScreen(),
     'settings': () => const SettingsScreen(),
+    'shortcuts': () => const ShortcutsScreen(),
     'goals': () => const GoalsScreen(),
     'adventure_select': () => const AdventureSelectScreen(),
     'goal_settings': () => const GoalSettingsScreen(),

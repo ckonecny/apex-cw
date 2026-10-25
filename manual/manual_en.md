@@ -83,6 +83,16 @@ The gear icon at the top right opens the **global settings** (chapter
 [Settings](#settings)). Anything that concerns only one training is set up
 directly inside that training.
 
+**Straight from the home screen:** long-press the APEX CW app icon to get
+shortcuts, at first to **Listen**, **Send**, **Audio trainer** and
+**CW Keyer**. A tap opens that training directly; back takes you to the app's
+home screen as usual. You can drag any shortcut from that menu onto your home
+screen to get an icon of its own. The names follow the app's language. Which
+shortcuts there are and in which order is set under Settings → Appearance →
+**App shortcuts**; **CW Decoder**, **Own texts**, **Games** and
+**Character chart** are also on offer. Most launchers show only the first
+four.
+
 ::: {.shots}
 ![The home screen](img/en/home.png)
 
@@ -2800,6 +2810,7 @@ change.
 | Hide status bar | Hides the Android status bar (clock, battery) so it does not clash with the blue light filter; swiping down from the top shows it briefly | **Off** / On |
 | Use the space at the top | Only shown while the status bar is hidden. The title bar moves up into the freed strip beside the camera cut-out and gets slimmer (smaller text and icons, title independent of the system font size and shortened if needed so it does not end up behind the camera), so the content below gets more room. With a wide notch, a hole in a corner or too little room beside the camera (very narrow phones) the normal layout stays | **Off** / On |
 | Language | App language. Until you choose one, it follows the phone's language: Deutsch on a German-language phone, English on any other | **Deutsch** / English (by phone) |
+| App shortcuts | Opens the list of shortcuts a long-press on the app icon shows (Listen, Send, Audio trainer, CW Keyer, CW Decoder, Own texts, Games, Character chart). Switch each on or off and drag it by the handle into place. Most launchers show only the first four that are on; any further ones are marked "most launchers won't show this" | **Listen, Send, Audio trainer, CW Keyer** on, the rest off |
 
 ::: {.shots .one}
 ![Appearance: with "Hide status bar" on, the switch "Use the space at the top" appears](img/en/settings_appearance.png)

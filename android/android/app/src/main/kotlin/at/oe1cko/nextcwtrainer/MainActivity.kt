@@ -134,6 +134,7 @@ class MainActivity : FlutterActivity() {
         private const val OWN_PLAYBACK_EV = "at.oe1cko.nextcwtrainer/own_playback_events"
         private const val REMINDER_CHANNEL = "at.oe1cko.nextcwtrainer/reminder"
         private const val SHARE_CHANNEL    = "at.oe1cko.nextcwtrainer/share"
+        private const val SHORTCUT_CHANNEL = "at.oe1cko.nextcwtrainer/shortcuts"
     }
 
     // Text from another app's Share menu (issue #24), held until Dart takes it.
@@ -148,9 +149,21 @@ class MainActivity : FlutterActivity() {
         if (!t.isNullOrBlank()) pendingShared = t
     }
 
+    // Launcher shortcut (issue #151), held until Dart takes it.
+    private var pendingShortcut: String? = null
+    private var shortcutChannel: MethodChannel? = null
+
+    private fun captureShortcut(i: Intent?) {
+        val id = i?.getStringExtra(AppShortcuts.EXTRA) ?: return
+        if (i.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0) return
+        pendingShortcut = id
+        AppShortcuts.reportUsed(this, id)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         captureShared(intent)
+        captureShortcut(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -158,6 +171,8 @@ class MainActivity : FlutterActivity() {
         setIntent(intent)
         captureShared(intent)
         if (pendingShared != null) shareChannel?.invokeMethod("shared", null)
+        captureShortcut(intent)
+        if (pendingShortcut != null) shortcutChannel?.invokeMethod("opened", null)
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -575,6 +590,19 @@ class MainActivity : FlutterActivity() {
             it.setMethodCallHandler { call, result ->
                 when (call.method) {
                     "take" -> { result.success(pendingShared); pendingShared = null }
+                    else -> result.notImplemented()
+                }
+            }
+        }
+        shortcutChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SHORTCUT_CHANNEL).also {
+            it.setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "take" -> { result.success(pendingShortcut); pendingShortcut = null }
+                    "publish" -> {
+                        @Suppress("UNCHECKED_CAST")
+                        AppShortcuts.publish(this, call.arguments as? List<Map<String, Any?>> ?: emptyList())
+                        result.success(null)
+                    }
                     else -> result.notImplemented()
                 }
             }
