@@ -248,10 +248,14 @@ class _GoalSettingsScreenState extends State<GoalSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
+    // Full width, so a one-line text stays left-aligned instead of being
+    // centered by the card's Column.
     Widget desc(String key) => Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-          child: Text(Strings.t(key), style: TextStyle(
-              fontSize: 11, color: c.textMuted)),
+          child: SizedBox(width: double.infinity,
+            child: Text(Strings.t(key), style: TextStyle(
+                fontSize: 11, color: c.textMuted)),
+          ),
         );
     return Scaffold(
       backgroundColor: c.background,
