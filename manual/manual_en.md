@@ -75,6 +75,11 @@ At the very top sits the **daily goal card**: a ring with your active
 practice minutes today, your streak, and the week Monday to Sunday as dots.
 Tap it to open the [Achievements page](#daily-goal).
 
+Below it there is a note on the [training goals](#training-goals) at first:
+**Tip: set your own training goals!** on a new install, **New: training
+goals** after the update. A tap on it opens the training goals; the ✕ hides
+the note for good. The app also hides the tip by itself once you set a goal.
+
 The **Listen** and **Send** tiles show your current Koch lesson and speed,
 and – from the sixth block on – the trend of your last blocks (see
 [Trend](#trend)).
@@ -331,20 +336,23 @@ until you have it.
 
 ### When it moves on
 
-You do **not have to raise the lesson yourself**. As soon as every character of
-the lesson has at least 20 attempts and was recently 90 % correct, the app
-suggests the next character (see
+You do **not have to raise the lesson yourself** if you set the
+[training goal](#training-goals) **New characters**. As soon as every character
+of the lesson has at least 20 attempts and was recently 90 % correct, the app
+then suggests the next character (see
 [When the next Koch character comes](#when-the-next-koch-character-comes)).
 You accept it or stay a while longer. If you are not sure yet, stay. You can
-set the thresholds higher or lower in the ⚙ sheet under **Adaptive mode**.
+set the thresholds higher or lower in the ⚙ sheet under **Training goals**.
 
 The [Character statistics](#character-statistics) show which characters aren't
 solid yet. If you keep confusing two characters, tap them one after the other
 and compare them directly.
 
-In this phase the app does **not** shorten the pauses and does not raise the
-speed (see [Pauses and speed](#pauses-and-speed)). You are meant to focus on
-new characters without everything getting faster at the same time.
+If **New characters** comes first in your goals, the app does **not** shorten
+the pauses or raise the speed in this phase, because it works through the
+goals one after the other (see [Training goals](#training-goals)). You are
+meant to focus on new characters without everything getting faster at the
+same time.
 
 ## Step 2: Words, abbreviations and sentences
 
@@ -434,22 +442,23 @@ later.
 ## Step 4: Shorten pauses, raise speed
 
 So far the effective speed (about 5 WPM) was much lower than the character
-speed (20 WPM). That changes now, in this order:
+speed (20 WPM). You change that now with the
+[training goals](#training-goals), for example in this order:
 
-1. **Shorten the pauses.** As soon as all characters of the Koch sequence are
-   unlocked (or you practice with **All characters**), the app suggests shorter
-   pauses after two good blocks in a row, one dit per step, down to the normal
-   3 / 7 dits (see [Pauses and speed](#pauses-and-speed)). You can also do this
-   yourself: with **Character spacing** and **Word spacing** in the card below
-   the practice area.
-2. **Only then raise the speed.** Once the pauses are at 3 / 7, the app suggests
-   +1 WPM when things go well. Small steps, no jumps.
-3. **If it goes badly, it goes back.** If the block EMA falls below the lower
-   threshold (70 %), the app suggests longer pauses. That is not a punishment
-   but the right move: better one step back than skipping everything.
+1. **Shorten the pauses.** Goals **Character spacing 3** and **Word spacing
+   7**. After good blocks the app suggests one dit shorter at a time until the
+   normal 3 / 7 dits are reached. You can also do this yourself: with
+   **Character spacing** and **Word spacing** in the card below the practice
+   area.
+2. **Then raise the speed.** A **Speed** goal, e.g. 25 WPM. The app then
+   suggests +1 WPM per step. Small steps, no jumps.
+3. **If it goes badly, it goes back.** If the last 100 characters are below the
+   lower threshold (70 %), the app offers to undo the last step. That is not a
+   punishment but the right move: better one step back than skipping
+   everything.
 
-All suggestions appear on the result page. You decide whether to accept them
-(see [Adaptive mode](#adaptive-mode)).
+All suggestions appear on the result page. You decide with **Apply** or **Not
+now** (see [Training goals](#training-goals)).
 
 ## Step 5: Add interference
 
@@ -726,9 +735,9 @@ usual result page.
   (`ABCE`, `AABC`) is still wrong, and the word is repeated.
 - **Pass** in the first attempt means every character of that word is wrong,
   like a blank on paper.
-- When typing, the pauses between words don't matter. The app therefore only
-  suggests changes to the **character spacing** (see
-  [Pauses and speed](#pauses-and-speed)).
+- When typing, the pauses between words don't matter. A **Word spacing** goal
+  is therefore skipped; the app suggests the next goal in your order instead
+  (see [Training goals](#training-goals)).
 
 The arrow at the top left cancels the block; nothing is saved then. The
 keyboard is portrait-only for now.
@@ -745,23 +754,27 @@ From top to bottom, the result page shows:
   buttons (the same on the start view).
 - The **speed and spacing card** (not in the result list): − and + change
   **Character spacing** and **Word spacing** by 1 dit each, the slider the
-  speed. This takes effect immediately and doesn't depend on the suggestions.
-  Once you started **Typing**, the word spacing is missing, because it has no
-  effect there.
+  speed. This takes effect immediately. If a value has a training goal, it is
+  shown small next to it ("goal 3"). Once you started **Typing**, the word
+  spacing is missing, because it has no effect there.
 - **Weak characters:** the characters that cause you the most errors over
   time, with their error rate (see [Weak characters](#weak-characters)).
-- **On the way to "X"** (Koch lesson only): what you still need before the
-  next character (see
+- **On the way to …:** follows your active training goal. With **New
+  characters** (Koch lesson) it shows what you still need before the next
+  character, with any other goal (spacing, group length, speed) how far you
+  are towards it (see
   [Progress card](#progress-card-on-the-way-to-x)).
-- **Suggestions:** what the app recommends for the next block (see
-  [Accepting, rejecting, adjusting suggestions](#accepting-rejecting-adjusting-suggestions)).
+- **Suggestion:** at most one, the next step towards your active training
+  goal or undoing the last step, with **Apply** and **Not now** (see
+  [Accepting a suggestion or later](#accepting-a-suggestion)). Without training
+  goals there is no suggestion.
 
 At the bottom there are two buttons:
 
-- **Next block** applies the ticked suggestions and starts the next block
-  right away.
-- **Finish** also applies the ticked suggestions but doesn't start a new
-  block.
+- **Next block** starts the next block right away.
+- **Finish** returns to the start view.
+
+Neither changes speed, spacing or lesson. Only **Apply** does that.
 
 How the app arrives at its suggestions is explained in the chapter
 [Adaptive mode](#adaptive-mode).
@@ -848,11 +861,15 @@ to: …" tells you which combination you are setting up.
 | Attempts per word | **Type** and **Repeat** only: how often you may try a word; 1 = no second attempt | 1 / **2** / 3 |
 | Vibrate on key press | **Type** only: short vibration on every active key | Off / **On** |
 
-### Adaptive mode
+### Training goals
 
-These are the thresholds the app bases its suggestions on. They apply to
-**Listen and Send** together and are described in detail in
-[Adaptive mode settings](#adaptive-mode-settings).
+The ⚙ sheet contains the [training goals](#training-goals) of **Listen**: the
+list of goals, in which you set each target by tapping and the order by
+dragging, and below it the rules for when a suggestion comes (thresholds,
+occurrences for unlock, see
+[Adaptive mode settings](#adaptive-mode-settings)). The goals change nothing
+by themselves: what you set in the ⚙ sheet and in the **speed and spacing**
+card applies at once, and the goals read it at the next block.
 
 ::: {.shots .one}
 ![⚙ sheet: After a wrong answer, Adaptive mode](img/en/hear_sheet4.png)
@@ -956,19 +973,20 @@ After the last word of a block the result page appears:
   **Send** and **Listen** (with the effective speed in brackets), plus
   **Character spacing**. The answer pause is not on this screen but in the ⚙
   sheet; the effective speed counts it at the normal 7. The spacing belongs to the
-  Listen speed directly above it. A change here replaces the matching
-  suggestion.
-- **Suggestions** and **Weak characters** (see
-  [Adaptive mode](#adaptive-mode)).
+  Listen speed directly above it. If a value has a training goal, it is shown
+  small next to it.
+- **Weak characters** (see [Weak characters](#weak-characters)) and the
+  **suggestion** for your active training goal with **Apply** and **Not now**
+  (see [Accepting a suggestion or later](#accepting-a-suggestion)).
 
-**Next block** (right) applies the ticked suggestions, boosts the ticked weak
-characters in the next block, and starts it. **Finish** applies the ticked
-suggestions without a boost and returns to the start view.
+**Next block** (right) boosts the ticked weak characters in the next block and
+starts it. **Finish** (left) returns to the start view without a boost. Only
+**Apply** changes speed, spacing or lesson.
 
 ::: {.shots}
 ![Result page: accuracy, progress, weak characters](img/en/echo_result.png)
 
-![A suggestion (here: new character unlocked), ticked](img/en/echo_result2.png)
+![A training-goal suggestion (here: new character)](img/en/echo_result2.png)
 :::
 
 ## Settings in the ⚙ sheet (Send) {#settings-send}
@@ -1018,6 +1036,13 @@ for example to drill new characters.
 ![Send ⚙ sheet: the Echo Trainer section](img/en/echo_sheet.png)
 :::
 
+### Training goals (Send)
+
+At the very bottom the ⚙ sheet contains the [training goals](#training-goals)
+of **Send**: your goals with their order, and the rules for when a suggestion
+comes. The rules are the same as in Listen. As in Listen, the goals change
+nothing by themselves; the values here apply at once.
+
 ## Practicing a single character
 
 In Listen or Send, long press a Koch character (locked ones too) to open
@@ -1052,10 +1077,11 @@ This corresponds to "Learn New Chr" or "Preview Char" on the Morserino.
 # Adaptive mode
 
 Listen and Send always run in **blocks**. After each block the app evaluates
-how it went and gives you **suggestions**. It may suggest unlocking the next
-Koch character, making the pauses shorter or longer, or raising the speed.
-**None of this happens behind your back.** Every suggestion appears on the
-result page, and you decide whether to accept it.
+how it went and gives you at most **one suggestion**: the next step towards
+your [training goal](#training-goals) (e.g. the next Koch character, a shorter
+spacing, +1 WPM) or, if it goes badly, undoing the last step. **None of this
+happens behind your back.** The suggestion appears on the result page, and you
+decide whether to accept it. Without training goals there are no suggestions.
 
 This chapter explains exactly how the app calculates. You don't need it to
 practice, but it helps you understand the suggestions and set the thresholds
@@ -1070,7 +1096,7 @@ The app keeps statistics for every character, separately for **Listen** and
 
 - **attempts**: how often the character was graded,
 - **errors**: how many of those were wrong,
-- **moving error rate**: the basis for all decisions.
+- **moving error rate**: the basis for the Koch unlock and the weak characters.
 
 The **moving error rate** is an exponential moving average (EMA). On every
 attempt:
@@ -1096,42 +1122,46 @@ A character's **accuracy** is 100 % minus its moving error rate.
   an error. The characters after it aren't counted, because it's unclear
   whether you heard them correctly. Repeats of the same word don't count.
 
-### Per block
+### Since the last change
 
-Every block has a **block rate**:
+For the training goals the app counts how well the **last 100 characters**
+went, in Listen and Send alike:
 
-- **Listen:** characters copied correctly / all characters.
-- **Send:** words correct on the first attempt / all words.
+- **Listen:** every character played, correct or marked as an error,
+- **Send:** every character of the words you keyed. A character counts as
+  correct if it was right on the **first** attempt: in a word with an error,
+  the characters before the first error count, the rest doesn't.
 
-From the block rates the app forms another moving average, the **block
-EMA**:
-
-  block EMA = α × block rate + (1 − α) × previous block EMA
-
-α is the **EMA smoothing** setting (default 30 %). The block EMA starts at
-100 %. It is kept across sessions, separately for Listen and Send.
+Only what you practised **since the last change** counts. When speed, spacing,
+group length, lesson or sending speed change (by **Apply** or by hand),
+counting starts over. So only what you managed at the current level counts.
+Until 100 characters are together there is no suggestion; after that the
+most recent 100 always count. The size of your blocks doesn't
+matter: short blocks simply need more rounds. The count is kept across
+sessions, separately for Listen and Send.
 
 ## The two thresholds
 
 With **Success threshold low/high** (default **70 % / 90 %**) the app divides
-the block EMA into three ranges:
+the accuracy of the last 100 characters into three ranges. The
+thresholds are the same for all goals:
 
-| Block EMA | Meaning | Suggestion |
+| Accuracy | Meaning | Suggestion |
 |---|---|---|
-| **90 % and above** (high) | Going well | After **2 blocks in a row** in this range: shorten the pauses, or raise the speed if the pauses are already normal |
-| **70 % to below 90 %** | About right | Change nothing |
-| **below 70 %** (low) | Too hard | Immediately: lengthen the pauses |
+| **90 % and above** (high) | Going well | One step towards the active goal |
+| **70 % to below 90 %** | About right | None |
+| **below 70 %** (low) | Too hard | Undo the last step |
 
 The high threshold is also the accuracy every character has to reach before
 the next Koch character unlocks.
 
 ## When the next Koch character comes
 
-The next Koch character is suggested when **every** character of the current
-lesson meets two conditions. That means all of them, not just the most recently
-learned one:
+The next Koch character is suggested when the **New characters** goal is
+active and **every** character of the current lesson meets two conditions.
+That means all of them, not just the most recently learned one:
 
-1. at least **20 attempts** (the **Occurrences for unlock** setting), and
+1. at least **20 attempts** (the **Occurrences per character** setting), and
 2. an **accuracy of at least 90 %** (the high success threshold).
 
 Two points matter here:
@@ -1144,70 +1174,95 @@ Two points matter here:
   character right 20 times at some point. Your **recent** attempts have to be
   good.
 
-The unlock appears as a highlighted suggestion with a star: **New character
-unlocked: "X"**. The 🔊 icon next to it plays the new character three
-times, without leaving the result page. It shows the same tile as tapping a
-Koch character: the character with its code below, each element lighting up
-as it sounds. A tap closes it early. If you untick it, you stay in the current
-lesson.
+The suggestion shows **New characters + "X"**. The 🔊 icon next to it plays
+the new character three times, without leaving the result page. It shows the
+same tile as tapping a Koch character: the character with its code below,
+each element lighting up as it sounds. A tap closes it early. With **Not now**
+you stay in the current lesson. A new character is never taken away again,
+even if it goes badly afterwards; the [weak characters](#weak-characters) and
+the mix-ups help with that instead.
 
-## Pauses and speed
+## Training goals {#training-goals}
 
-The app always changes the **pauses** first, and only then the speed:
+For **Listen** and **Send** you set your own goals separately and decide in
+which order to work on them. The app works through them one after the other:
+when things go well enough, it suggests the next step towards the **active**
+goal on the result page, and you approve it with a tap. **No goal, no
+suggestion**, for each lever on its own. If you set no goals at all, you get
+no suggestions.
 
-- **Shorten:** character spacing and word spacing each get 1 dit shorter, down to
-  the normal 3 / 7 dits. In Send only the character spacing changes; the
-  answer pause stays as you set it.
-- **Raise the speed:** only once the pauses are already at 3 / 7 dits does
-  the app suggest **+1 WPM**.
-- **Lengthen:** character spacing and word spacing each get 1 dit longer, but
-  never longer than at the start of the session. In Listen that is when you
-  opened the training. In Send it is the value from the ⚙ sheet.
+You find the training goals on the [Achievements page](#daily-goal), via
+the ⚙ sheet of Listen (its goals) and of Send (its goals), and via the note on
+the home screen. The Achievements page and the home screen show both
+trainings next to each other.
 
-When copying on the **on-screen keyboard**, the app only changes the
-**character spacing**; the word spacing stays, because the app waits for you
-after every word there anyway. The pauses then count as normal as soon as the
-character spacing is at 3 dits. For the same reason the **speed and spacing**
-card shows only the character spacing once you start **Typing**, and the ⚙
-sheet notes at the word spacing that it only applies to **Paper**.
+### The levers
 
-**While you are still working through the Koch sequence, the app neither
-shortens the pauses nor raises the speed.** You should be able to concentrate
-on new characters without everything getting faster at the same time.
-Lengthening is always possible. Shortening and raising the speed only start
-once one of these is true:
+| Lever | Step | Listen | Send | Notes |
+|---|---|---|---|---|
+| **New characters** | +1 character | ✓ | ✓ | Koch character set only; goal *all* or a number of characters |
+| **Character spacing** | −1 dit | ✓ | ✓ | Send: not with a straight key |
+| **Word spacing** | −1 dit | ✓ | – | never below the character spacing; no effect when typing, so skipped. In Send it only sets the answer pause |
+| **Group length** | +1 character | ✓ | ✓ | character groups only; one fixed length, a step sets *from* and *to* to the next length |
+| **Speed** (Send: **Listening speed**) | +1 WPM | ✓ | ✓ | |
+| **Sending speed** | +1 WPM | – | ✓ | only with an own sending speed below the listening speed, not with a straight key |
 
-- all characters of the Koch sequence are unlocked, or
-- you practice with **All characters** or a **Practice set**.
+### Order and active goal
 
-The block in which a new character is added also never shortens the pauses or
-raises the speed.
+Exactly **one** goal is active at any time: the first one in your order that
+is set, not yet reached and in effect right now. A lever that does nothing at
+the moment (e.g. **New characters** while practising words, **Word spacing**
+while typing) is skipped. So two things never get harder at once, and the app
+doesn't have to weigh anything up.
 
-You can step in yourself at any time, independently of these rules. In Listen
-use the **speed and spacing** card, and in Send use the speed controls.
+In the training goals you drag a lever by its handle **≡** to its place. A tap
+on the lever sets its goal; **No goal** switches it off. Each row shows the
+current value and the goal, e.g. **5 dits (goal: 3 dits)**, plus **active**,
+**reached** or why a goal is resting.
 
-### Sending speed in Send
+### Goals and settings
 
-Send has one extra suggestion: **Sending speed increased** (+1 WPM). It only
-appears if you have set a sending speed **below** the listening speed and the
-block reached at least the high threshold. It starts **unticked**, because the
-sending speed is a deliberate choice. With the straight key this suggestion
-is dropped, and so are the tighter/wider spacing suggestions; listening
-speed and new characters are still suggested.
+What applies right now is in the settings of Listen and Send, as before. The
+goals only store the target value and the order:
 
-## Accepting, rejecting, adjusting suggestions
+- **Apply** changes the normal setting, the same one you change with − and +.
+- You can set values by hand at any time. The goals read the current value at
+  the next block.
+- If you set a value to or beyond the goal, the goal counts as reached and the
+  next one comes up. If you turn it back, the goal is open again by itself.
+- The app never suggests anything beyond the goal.
 
-Each suggestion is a row on the result page:
+### Accepting a suggestion or later {#accepting-a-suggestion}
 
-- The **checkbox** on the left accepts or rejects it. Most suggestions start
-  ticked.
-- **−** and **+** adjust the size. The speed goes up to at most 5 WPM above
-  the current one. The pauses can be anywhere between 3 / 7 dits and the value
-  at the start of the session.
-- The status line immediately shows the values for the next block.
+The suggestion on the result page shows which goal is up and where it is in
+your order (**Your goal 2 of 5**), the old and new value, the goal with the
+steps still needed, and why now (**Last 100 characters: 93 % right**).
 
-Nothing is applied until you leave the result page with **Next block** or
-**Finish**.
+- **Apply** sets the new value. It applies from the next block on. If the step
+  reached the goal, the card names the next goal.
+- **Not now** leaves everything as it is. The next suggestion for this
+  training then comes **in 15 minutes at the earliest**.
+- If it goes badly, the suggestion reads **Undo the last step?** and restores
+  the value from before your last applied step. New characters are never
+  undone.
+
+After every applied step, counting starts over (see
+[Since the last change](#since-the-last-change)).
+
+### After the update
+
+If you used the app before, your previous behaviour becomes goals, separately
+for Listen and Send: **New characters** (all), **Character spacing 3**, and in
+Listen also **Word spacing 7**, in this order. There is no speed goal; speed
+suggestions only come once you set one yourself. A new install has no goals
+set.
+
+### In the statistics
+
+The [Progress tab](#character-statistics) of the statistics shows **Your
+goals** (start → now → goal with a bar for each goal) and the **Steps** (date,
+lever, from → to, including undos and reached goals). A speed goal appears as
+a dashed line in the speed chart.
 
 ## Weak characters
 
@@ -1251,7 +1306,8 @@ through), or to include it again.
 
 In addition to the weak characters, the app suggests mix-ups that keep
 recurring (e.g. K → R). The suggestions appear where the weak characters do
-(start view and result page in both) and only where the boost
+(start view and result page in both), as a second section of the same card,
+and only where the boost
 works (random groups). There are at most three pairs. A pair is suggested when
 
 - the mix-up is **rising** or **new** (see the *Trends* tab of the character statistics), or
@@ -1278,31 +1334,52 @@ next block, the same in Listen and Send.
 
 ## Progress card "On the way to X"
 
-On the **Listen** result page with the Koch lesson, a card shows what is still
-missing before the next character:
+In **Listen** and **Send** (start view and result page) this card follows your
+active [training goal](#training-goals). With any goal other than **New
+characters** it is titled after that goal, for example "On the way to:
+Character spacing 3 dits", and shows two bars:
 
-- The **bar** shows how many of the required attempts you have made, added up
+- The **goal bar** runs from the value you had when you set the goal to the
+  goal, with "Now …" below it; the goal is already in the title.
+- The **readiness bar** shows how close you are to the next suggestion. It
+  grows with the amount you have practised (up to 100 characters) **and** with
+  your hit rate: many characters with a poor rate keep it low, and it is only
+  full with 100 characters and a rate at or above the required percentage. A
+  word below it says where you are: **Still at the start** (under 30
+  characters), **Not solid enough yet**, **Almost there** (just below the
+  required value) or **On a good track**. The bar is amber while the rate is
+  still clearly too low. Tap it to see the numbers: characters collected, hit
+  rate so far, required value and how many characters are missing until the
+  window is full. A change of the settings or an applied step starts counting
+  anew.
+
+If space is tight, the card is spaced more tightly. Without an active
+goal there is no card; the weak characters then appear in their own card.
+
+With the goal **New characters** (Koch lesson) the card looks the same. The
+title reads "On the way to: 39 characters", with "Now 26 characters" below
+it. If another goal comes first, no new character is added anyway, so that
+goal's card is shown instead. With **New characters**:
+
+- The **second bar** shows how many of the required attempts you have made, added up
   over all characters that still lack attempts. If no attempts are missing any
   more and only accuracy is, it shows the weakest character's accuracy
-  relative to the threshold.
+  relative to the threshold. Below it: "Next character "v": 66 % there".
 - **Still to practice (repetitions)** lists characters that still lack
   attempts, each as a small chip with the number missing, for example `q 7`.
   Those missing the most come first.
-- **Accuracy below 90 % · practice more?** shows the weak characters with too
-  low an accuracy, for example `y 84%`, the weakest first. These are the same
-  characters that come up more often in the next block. **Tap a character** to
-  exclude it (struck through). There is no separate "Weak characters" card in
-  addition.
 
 The "Still to practice" list shows at most 10 characters; the rest appear as
-"+N more". If the card isn't visible (shrunk, last Koch level, right after an
-unlock) or you aren't practicing with the Koch lesson, the weak characters
-appear in their own card as before.
+"+N more".
+
+The **weak characters** and **recurring mix-ups** look the same for every
+goal: in their own card **above** "On the way to", as two sections with a thin
+line between them. **Tap a character or pair** to exclude it (struck through).
 
 The **start page** of Listen (before the first block) shows the same card as
 at the end of a block, as long as everything fits on the screen. If space gets
-tight (small display, large font, many weak characters), it shrinks to just
-the title and the bar, without the character lists. The weak characters and
+tight (small display, large font, many weak characters), the card
+is spaced more tightly and leaves out the character lists. The weak characters and
 mix-ups then appear in **one row**
 ("Practice focus: E 5 Q · 2 mix-ups"). Tapping it opens a sheet from the bottom
 with all characters and pairs to tick or leave out; **Done** closes it. The
@@ -1369,22 +1446,23 @@ carrying on.
 
 ## Adaptive mode settings
 
-These are in the ⚙ sheet of **Listen** under **Adaptive mode**. They apply to
-Listen and Send together.
+These are in the ⚙ sheet of **Listen** and of **Send** under **Training goals**,
+below the list of goals. Listen and Send each have their own values: what you
+set in Listen applies only there, and the other way round. Within one training
+they apply to all training goals alike. Send takes over the values of Listen
+until you change them in Send once yourself.
 
 | Setting | Meaning | Values |
 |---|---|---|
-| Success threshold low/high | Below *low* the pauses are lengthened. At *high* (2 blocks in a row) they are shortened or the speed is raised. *High* is also the accuracy each character needs for the Koch unlock | 30–99 %, at least 5 points apart (**70 % / 90 %**) |
-| EMA smoothing | How strongly the last block counts in the block EMA. Higher reacts faster, but is also jumpier | 5–100 % (**30 %**) |
-| Occurrences for unlock | Minimum attempts per character before the next Koch character can come | 5–50 (**20**) |
+| Success threshold low/high | Accuracy of the last 100 characters since the last change: from *high* one step towards the active training goal, below *low* undoing the last step. *High* is also the accuracy each character needs for the Koch unlock | 30–99 %, at least 5 points apart (**70 % / 90 %**) |
+| Occurrences per character ("New characters") | Minimum attempts per character before the next Koch character can come (only the goal **New characters**) | 5–50 (**20**) |
 
 Some notes:
 
 - The high threshold can't be set to 100 %. The moving error rate of a
   character that ever had an error never quite returns to 0. At 100 % that
   character would block the unlock forever.
-- **EMA smoothing 100 %** means only the last block counts.
-- If unlocking goes too fast for you, raise **Occurrences for unlock** or the
+- If unlocking goes too fast for you, raise **Occurrences per character** or the
   high threshold. If it's too slow, lower them.
 
 # Daily goal and streak {#daily-goal}
@@ -1409,8 +1487,9 @@ shrinks to one line, so all tiles stay visible.
 streak. It is not counted as a practice day, it only bridges the gap. A second
 miss in the same week ends the streak. You can switch this off.
 
-**Achievements page.** Tap the card. It shows today and this week in minutes
-and below them the **awards** (see below).
+**Achievements page.** Tap the card. It shows today and this week in minutes,
+a **Training goals** card (see [Training goals](#training-goals)) and below
+them the **awards** (see below).
 The gear icon opens its settings:
 
 | Setting | Meaning | Values |
@@ -1567,6 +1646,10 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
 - **Days practised**: one box per day (4 weeks), otherwise a bar per week or
   month. Tap one to see the number of days, this training's time and the
   total time of that period.
+- **Your goals** and **Steps**, once you set [training goals](#training-goals):
+  start → now → goal with a bar for each goal, and the applied steps with their
+  date (including undos and reached goals). A speed goal is a dashed line in
+  the speed chart.
 - **Practised characters, week by week**: a heatmap, characters down, weeks across,
   the characters coloured by kind (letters, digits, punctuation/prosigns) so
   O and 0 are easy to tell apart,
@@ -3088,9 +3171,10 @@ up the unlock. Usually it's a character with too few attempts or recent errors.
 See [When the next Koch character comes](#when-the-next-koch-character-comes).
 
 **The pauses never get shorter.**
-That's intended while you work through the Koch sequence (see
-[Pauses and speed](#pauses-and-speed)). You can shorten them yourself at any
-time with the **speed and spacing** card.
+The app only suggests steps towards your [training goals](#training-goals),
+one after the other. Set a **Character spacing** or **Word spacing** goal; if
+**New characters** comes before it, the pauses only come up after that. You
+can shorten them yourself at any time with the **speed and spacing** card.
 
 **The decoder only writes garbage.**
 Check pitch, bandwidth and threshold (see

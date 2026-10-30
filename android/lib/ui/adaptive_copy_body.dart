@@ -4,15 +4,14 @@
 // block plays, errors are tapped afterwards) or typed on CwKeyboard (one
 // word per step, graded from the first attempt, errors pre-marked).
 //
-// Tempo/spacing/Koch-level auto-adaptation is driven by AdaptiveCopyEngine
-// (adaptive_copy_engine.dart) at the end of each block. The engine only
-// computes decisions — this widget owns applying them (via the
-// on*Changed callbacks, since wpm/kochLevel/spacing are GeneratorScreen's
-// state, shared with the Classic flow) and persisting the blockquote EMA.
+// Proposals come from the training goals (training_goals.dart) at the end
+// of each block: one step towards the active goal, or undoing the last step.
+// Nothing is applied without "Apply"; this widget then pushes the value via
+// the on*Changed callbacks (wpm/kochLevel/spacing/group length are
+// GeneratorScreen's state).
 import 'dart:async';
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
-import 'widgets/setting_rows.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
@@ -25,6 +24,7 @@ import '../content/cw_content.dart'
     show glyphToken, glyphsToPlayText, isProsignGlyph, keyGlyph, kochActiveChars,
         parsePracticeChars, prosignsToGlyphs;
 import '../content/adaptive_copy_engine.dart';
+import '../content/training_goals.dart';
 import '../content/copy_grading.dart';
 import 'widgets/cw_keyboard.dart';
 import 'widgets/char_playback_overlay.dart';
@@ -35,6 +35,8 @@ import 'widgets/mixup_boost_chips.dart';
 import 'widgets/unlock_outlook_card.dart';
 import 'widgets/boost_summary.dart';
 import 'widgets/fit_or_compact.dart';
+import 'widgets/goal_progress_card.dart';
+import 'widgets/goal_suggestion_card.dart';
 import '../util/char_color.dart';
 import '../util/confirm_tone.dart';
 import '../util/interference_profile.dart';
@@ -105,12 +107,14 @@ class AdaptiveCopyBody extends StatefulWidget {
   final int abbrevLengthMax;
   final int interCharSpace;
   final int interWordSpace;
-  // Applies the adaptive engine's decisions back to the caller's state
-  // (GeneratorScreen owns wpm/kochLevel/spacing, shared with the Classic
-  // flow) — null-safe no-ops if the caller doesn't wire them up.
+  // Applies an accepted goal step back to the caller's state
+  // (GeneratorScreen owns wpm/kochLevel/spacing/group length) — null-safe
+  // no-ops if the caller doesn't wire them up.
   final ValueChanged<int>? onWpmChanged;
   final ValueChanged<int>? onKochLevelChanged;
   final void Function(int interCharSpace, int interWordSpace)? onSpacingChanged;
+  // Group length goal: one fixed length, min and max set together.
+  final ValueChanged<int>? onGroupLengthChanged;
   // Lets the parent hide its setup controls (mode selector, Learn New/
   // Preview/Practice Echo, Classic/Adaptiv toggle) while a block is active,
   // and reset back to idle from its own back button — see
@@ -127,6 +131,10 @@ class AdaptiveCopyBody extends StatefulWidget {
   final AdaptiveCopyController? controller;
   // Profile's practice set: the keyboard's active keys for that charset.
   final String practiceChars;
+
+  // The training goals of Hören, in the user's order: the "On the way to"
+  // card shows only while new characters is the active goal.
+  final List<LeverGoal> goalOrder;
 
   const AdaptiveCopyBody({
     super.key,
@@ -152,10 +160,12 @@ class AdaptiveCopyBody extends StatefulWidget {
     this.onWpmChanged,
     this.onKochLevelChanged,
     this.onSpacingChanged,
+    this.onGroupLengthChanged,
     this.onActiveChanged,
     this.onKeyboardChanged,
     this.controls,
     this.controller,
+    this.goalOrder = const [],
     this.practiceChars = '',
   });
 
@@ -197,25 +207,15 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // block has created the engine.
   AdaptiveCopyThresholds? _startThresholds;
 
-  static AdaptiveCopyThresholds _thresholdsFrom(SharedPreferences p) =>
-      AdaptiveCopyThresholds(
-        // Clamped to 99 even though Settings now caps the slider there too —
-        // guards a value already persisted as 100 before that cap existed
-        // (100% is an unreachable trap, see ADAPTIVE-COPY.md).
-        highThreshold: ((p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99)) / 100,
-        lowThreshold: (p.getInt('adaptiveLowThresholdPct') ?? 70) / 100,
-        blockEmaAlpha: (p.getInt('adaptiveEmaAlphaPct') ?? 30) / 100,
-        unlockOccurrences: p.getInt('adaptiveUnlockOccurrences') ?? 20,
-      );
-  // Floor for the spacing "step down" direction — never make spacing wider
-  // (slower/easier) than what the screen started with (docs/ADAPTIVE-COPY.md
-  // "Success-rate high/low thresholds": "not below the configured start
-  // value"). Captured once; independent of later widget.interCharSpace
-  // changes driven by our own onSpacingChanged calls.
-  late final int _startInterCharSpace = widget.interCharSpace;
-  late final int _startInterWordSpace = widget.interWordSpace;
-  TempoDecision? _lastDecision;
-  bool _unlockedThisBlock = false;
+  static AdaptiveCopyThresholds _thresholdsFrom(SharedPreferences p) {
+    // Clamped (high to 99): 100% is an unreachable trap, see ADAPTIVE-COPY.md.
+    final r = goalRules(p, 'hear');
+    return AdaptiveCopyThresholds(
+      highThreshold: r.high,
+      lowThreshold: r.low,
+      unlockOccurrences: r.unlockOccurrences,
+    );
+  }
   // Guards the "hear it" preview button against overlapping taps while a
   // preview is already playing (see _previewNewChar).
   bool _previewingNewChar = false;
@@ -223,21 +223,16 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // about, captured explicitly (not read back from `widget`, to not depend
   // on parent-rebuild timing).
   BlockTrend? _trend; // Trend über die letzten Blöcke, erst ab 6 Blöcken
-  // Before values for the change notices, only set on a block where that
-  // value actually changed.
-  int? _wpmBefore;
-  int? _interCharBefore, _interWordBefore;
-  // Engine's proposed post-block values — not applied yet. The result
-  // screen lets the user accept/reject each one (default: accepted, same
-  // as the old fully-automatic behavior) and nudge the magnitude before
-  // it's applied on "Next Block"/"Finish" (docs/ADAPTIVE-COPY.md, "User
-  // override on the result screen" TODO). Null when the engine made no
-  // proposal of that kind this block.
-  int? _pendingWpm;
-  int? _pendingInterChar, _pendingInterWord;
-  bool _acceptCharSpeed = true;
-  bool _acceptSpacing = true;
-  bool _acceptUnlock = true;
+  // The goal proposal of the finished block (null = none) and what became
+  // of it on the result page.
+  GoalSuggestion? _goal;
+  GoalCardState _goalState = GoalCardState.open;
+  bool _goalReached = false;
+  GoalLever? _goalNext;
+  // Readiness window of the goal (graded characters) and the settings it
+  // belongs to, for the "On the way to" card.
+  List<bool> _goalWin = const [];
+  String? _goalWinSig;
   // Weak characters (lifetime EMA, not just this block) shown on the result
   // screen, keyed to error rate. Each is tapped on/off to control whether
   // it's included in the boosted draw for the next block — the "eingreifen
@@ -397,10 +392,13 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   Future<void> _loadInitialWeakChars() async {
     final p = await SharedPreferences.getInstance();
     await _charStats.load(p);
+    final goals = await GoalStore.open(TrainingProfile.hear);
     if (!mounted) return;
     setState(() {
       _outputCase = (p.getInt('outputCase') ?? 0).clamp(0, 1);
       _startThresholds = _thresholdsFrom(p);
+      _goalWin = goals.window;
+      _goalWinSig = goals.windowSignature;
       _refreshBoost();
     });
   }
@@ -427,10 +425,6 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // the idle/start phase (and its setup controls) instead of leaving the
   // screen, without tearing down this whole widget.
   void _resetToIdle() {
-    // Leaving from the result screen (back button) counts as accepting the
-    // proposals shown there — otherwise a Koch unlock earned in the last
-    // block would be lost unless another block was started.
-    if (_phase == _Phase.result) _applyPendingDecision();
     _sessionActive = false;
     _checkTimer?.cancel();
     _completeSubmit(null);
@@ -461,49 +455,67 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // nothing stored (0) means 10.
   int get _blockSize => widget.maxWords == 0 ? 10 : widget.maxWords.clamp(1, 50);
 
-  // Resolved target for the *next* block: the pending proposal if accepted,
-  // otherwise the unchanged current value. Drives both the status line and
-  // what actually gets pushed to the generator in _startBlock().
-  int get _effectiveWpm =>
-      (_acceptCharSpeed && _pendingWpm != null) ? _pendingWpm! : widget.wpm;
-  int get _effectiveInterChar =>
-      (_acceptSpacing && _pendingInterChar != null) ? _pendingInterChar! : widget.interCharSpace;
-  int get _effectiveInterWord =>
-      (_acceptSpacing && _pendingInterWord != null) ? _pendingInterWord! : widget.interWordSpace;
+  // The current values as the training goals read them.
+  GoalValues get _goalValues => GoalValues(
+    koch: widget.kochLesson,
+    kochLevel: widget.kochLevel,
+    kochTotal: widget.activeKochChars.length,
+    interChar: widget.interCharSpace,
+    interWord: widget.interWordSpace,
+    groups: _playsGroups,
+    groupLength: widget.groupLength,
+    wpm: widget.wpm,
+    typing: _typing,
+  );
 
-  void _stepPendingWpm(int delta) {
-    if (_pendingWpm == null) return;
-    setState(() => _pendingWpm = (_pendingWpm! + delta).clamp(widget.wpm, widget.wpm + 5));
-  }
-
-  void _stepPendingSpacing(int delta) {
-    if (_pendingInterChar == null || _pendingInterWord == null) return;
+  // "Apply" on the goal card: the step goes into the normal setting, the
+  // same one the −/+ controls change by hand.
+  Future<void> _acceptGoal() async {
+    final s = _goal;
+    if (s == null || _goalState != GoalCardState.open) return;
+    final before = _goalValues;
+    switch (s.lever) {
+      case GoalLever.newChars:
+        widget.onKochLevelChanged?.call(s.to);
+        PracticeClock.instance.milestone(MilestoneKind.kochHear, s.to);
+      case GoalLever.charSpacing:
+        widget.onSpacingChanged?.call(
+          s.to,
+          before.interWord < s.to ? s.to : before.interWord,
+        );
+      case GoalLever.wordSpacing:
+        widget.onSpacingChanged?.call(before.interChar, s.to);
+      case GoalLever.groupLength:
+        widget.onGroupLengthChanged?.call(s.to);
+      case GoalLever.wpm:
+        widget.onWpmChanged?.call(s.to);
+        PracticeClock.instance.milestone(
+          MilestoneKind.wpmHear,
+          s.to,
+          onlyIfHigher: true,
+        );
+      case GoalLever.giveWpm:
+        break;
+    }
+    final after = before.withValue(s.lever, s.to);
+    final store = await GoalStore.open(TrainingProfile.hear);
+    final reached = await store.accept(s, after, DateTime.now());
+    final next = reached ? activeGoal(store.order, after)?.lever : null;
+    if (!mounted) return;
     setState(() {
-      _pendingInterChar = (_pendingInterChar! + delta).clamp(3, _startInterCharSpace);
-      // Typing mode: the word gap has no effect there, only the char gap
-      // is suggested (DECISIONS.md "Hören: typing mode").
-      if (!_typing) {
-        _pendingInterWord = (_pendingInterWord! + delta).clamp(7, _startInterWordSpace);
-      }
+      _goalWin = store.window;
+      _goalWinSig = store.windowSignature;
+      _goalState = GoalCardState.accepted;
+      _goalReached = reached;
+      _goalNext = next;
     });
   }
 
-  // Pushes the accepted proposals to the shared state the caller
-  // (GeneratorScreen) owns. Called right before leaving the result screen,
-  // not inside _finishBlock() — that's the whole point of the override UI.
-  void _applyPendingDecision() {
-    if (_acceptCharSpeed && _pendingWpm != null && _pendingWpm != widget.wpm) {
-      widget.onWpmChanged?.call(_pendingWpm!);
-      PracticeClock.instance.milestone(MilestoneKind.wpmHear, _pendingWpm!, onlyIfHigher: true);
-    }
-    if (_acceptSpacing && _pendingInterChar != null && _pendingInterWord != null &&
-        (_pendingInterChar != widget.interCharSpace || _pendingInterWord != widget.interWordSpace)) {
-      widget.onSpacingChanged?.call(_pendingInterChar!, _pendingInterWord!);
-    }
-    if (_acceptUnlock && _unlockedThisBlock) {
-      widget.onKochLevelChanged?.call(widget.kochLevel + 1);
-      PracticeClock.instance.milestone(MilestoneKind.kochHear, widget.kochLevel + 1);
-    }
+  Future<void> _snoozeGoal() async {
+    if (_goalState != GoalCardState.open) return;
+    final store = await GoalStore.open(TrainingProfile.hear);
+    await store.snooze(DateTime.now());
+    if (mounted) setState(() => _goalState = GoalCardState.snoozed);
   }
 
   // Random content (ordinal 0 random chars, 4 practice set) plays groups,
@@ -1027,20 +1039,10 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     }
     await _charStats.save(p);
 
-    // Adaptive engine: blockquote EMA -> spacing/char-speed step, plus an
-    // independent per-character unlock decision — both can fire on the same
-    // block (docs/ADAPTIVE-COPY.md "Decisions: weighting/recency questions").
-    _engine ??= AdaptiveCopyEngine(
-      thresholds: _thresholdsFrom(p),
-      initialBlockEma: p.getDouble('adaptiveBlockEma') ?? 1.0,
-    );
+    _engine ??= AdaptiveCopyEngine(thresholds: _thresholdsFrom(p));
     // Typing mode: only the char gap matters (DECISIONS.md "Hören: typing
-    // mode"), so the word gap is neither suggested nor waited for.
+    // mode"), so the word gap goal is skipped there.
     final typing = _typing;
-    final spacingAtCharSpeed = widget.interCharSpace <= 3 && (typing || widget.interWordSpace <= 7);
-    final decision = _engine!.recordBlock(results, spacingAtCharSpeed: spacingAtCharSpeed);
-    final newEma = _engine!.blockEma;
-    await p.setDouble('adaptiveBlockEma', newEma);
     final trend = await const BlockHistory('hear')
         .record(p, total == 0 ? 0 : correct / total);
     if (total > 0) {
@@ -1055,76 +1057,33 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     final activeChars = kochActiveChars(widget.kochLevel, widget.activeKochChars)
         .map((ch) => _charStats.stats[ch] ?? CharStat())
         .toList();
-    final unlocked = widget.kochLesson && widget.kochLevel < widget.activeKochChars.length &&
+    final unlockReady =
+        widget.kochLesson &&
+        widget.kochLevel < widget.activeKochChars.length &&
         _engine!.shouldUnlockNextChar(activeChars);
 
-    // Proposals only — not applied here. The result screen shows them as
-    // accept/reject/adjust suggestions; _applyPendingDecision() pushes
-    // whatever's still accepted once the user leaves the result screen.
-    // A new Koch character is enough to absorb on its own — don't also
-    // tighten spacing or raise char speed in the same block it unlocks
-    // ("in dem moment wo ein neues zeichen hinzukommt wird mir das zu
-    // schnell"). Widening/slowing down is unaffected, since that only ever
-    // makes the next block easier.
-    //
-    // Beyond that single block: suppress tighten/speed-up proposals for the
-    // whole time the user is still working through Koch lessons (not all
-    // sequence characters unlocked yet) — user feedback 2026-09-22: pausing
-    // reduction pressure on top of still-being-introduced-to-new-characters
-    // felt like a constant nag. The manual spacing +/- control
-    // (TempoSpacingSection) is untouched by this — it's independent of the
-    // engine's proposals and still lets the user tighten by hand any time.
-    // Once the full sequence is unlocked, the (now hysteresis-gated, see
-    // AdaptiveCopyThresholds.spacingUpConsecutiveBlocks) tighten/speed-up
-    // proposals resume normally.
-    final rampingUpKoch = widget.kochLesson && widget.kochLevel < widget.activeKochChars.length;
-    int? newInterChar, newInterWord, interCharBefore, interWordBefore;
-    if (decision.spacingStep == TempoStep.up && !unlocked && !rampingUpKoch) {
-      final ic = (widget.interCharSpace - 1).clamp(3, _startInterCharSpace);
-      final iw = typing ? widget.interWordSpace
-          : (widget.interWordSpace - 1).clamp(7, _startInterWordSpace);
-      // Already at the floor — clamping produced no real change, so don't
-      // propose a no-op ("tightened: 3→3") suggestion row.
-      if (ic != widget.interCharSpace || iw != widget.interWordSpace) {
-        interCharBefore = widget.interCharSpace;
-        interWordBefore = widget.interWordSpace;
-        newInterChar = ic;
-        newInterWord = iw;
-      }
-    } else if (decision.spacingStep == TempoStep.down) {
-      final ic = (widget.interCharSpace + 1).clamp(3, _startInterCharSpace);
-      final iw = typing ? widget.interWordSpace
-          : (widget.interWordSpace + 1).clamp(7, _startInterWordSpace);
-      // Already at the ceiling (this session's starting spacing) — same
-      // no-op guard for "widened: 11→11".
-      if (ic != widget.interCharSpace || iw != widget.interWordSpace) {
-        interCharBefore = widget.interCharSpace;
-        interWordBefore = widget.interWordSpace;
-        newInterChar = ic;
-        newInterWord = iw;
-      }
-    }
-    int? newWpm, wpmBefore;
-    if (decision.charSpeedStep == TempoStep.up && !unlocked && !rampingUpKoch) {
-      wpmBefore = widget.wpm;
-      newWpm = widget.wpm + 1;
-    }
+    // Training goals: the window of the last 100 characters since the last
+    // change decides; only a proposal, applied on "Apply".
+    final goals = await GoalStore.open(TrainingProfile.hear);
+    final goal = await goals.afterBlock(
+      results: results,
+      values: _goalValues,
+      high: _engine!.thresholds.highThreshold,
+      low: _engine!.thresholds.lowThreshold,
+      unlockReady: unlockReady,
+      now: DateTime.now(),
+    );
     if (!mounted) return;
     setState(() {
       _resultCorrect = correct;
       _resultTotal = total;
-      _lastDecision = decision;
-      _unlockedThisBlock = unlocked;
       _trend = trend;
-      _wpmBefore = wpmBefore;
-      _interCharBefore = interCharBefore;
-      _interWordBefore = interWordBefore;
-      _pendingWpm = newWpm;
-      _pendingInterChar = newInterChar;
-      _pendingInterWord = newInterWord;
-      _acceptCharSpeed = true;
-      _acceptSpacing = true;
-      _acceptUnlock = true;
+      _goal = goal;
+      _goalWin = goals.window;
+      _goalWinSig = goals.windowSignature;
+      _goalState = GoalCardState.open;
+      _goalReached = false;
+      _goalNext = null;
       // Excluding a char only makes sense while it's actually on the list —
       // stale exclusions are dropped (e.g. its EMA recovered since).
       _refreshBoost();
@@ -1132,22 +1091,15 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     });
   }
 
-  bool get _hasSuggestions =>
-      _pendingWpm != null || _pendingInterChar != null || _unlockedThisBlock;
 
   void _finish() {
-    _applyPendingDecision();
     if (mounted) setState(() => _phase = _Phase.idle);
     widget.onActiveChanged?.call(false);
   }
 
   void _nextBlock() {
-    final wpm = _effectiveWpm;
-    final interChar = _effectiveInterChar;
-    final interWord = _effectiveInterWord;
-    _applyPendingDecision();
     _blockNumber++;
-    _startBlock(wpm: wpm, interCharSpace: interChar, interWordSpace: interWord);
+    _startBlock();
   }
 
   // ── Build ──────────────────────────────────────────────────────────────

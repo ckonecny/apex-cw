@@ -23,6 +23,12 @@ import 'package:next_cw_trainer/ui/q_groups_screen.dart';
 import 'package:next_cw_trainer/ui/understand_screen.dart';
 import 'package:next_cw_trainer/ui/q_groups_sheet_screen.dart';
 import 'package:next_cw_trainer/ui/home_screen.dart';
+import 'package:next_cw_trainer/ui/training_goals_screen.dart';
+import 'package:next_cw_trainer/content/training_goals.dart';
+import 'package:next_cw_trainer/ui/widgets/goal_progress_card.dart';
+import 'package:next_cw_trainer/ui/widgets/unlock_outlook_card.dart';
+import 'package:next_cw_trainer/content/adaptive_copy_engine.dart';
+import 'package:next_cw_trainer/ui/widgets/goal_suggestion_card.dart';
 import 'package:next_cw_trainer/ui/invaders_screen.dart';
 import 'package:next_cw_trainer/ui/keyer_screen.dart';
 import 'package:next_cw_trainer/content/char_stats.dart';
@@ -125,6 +131,81 @@ void main() {
     'wifi_trx': () => const WifiTrxScreen(),
     'pileup': () => const PileupScreen(),
     'home': () => const HomeScreen(),
+    // With the training goals note (prefs below).
+    'home_goals_note': () => const HomeScreen(),
+    'training_goals': () => const TrainingGoalsScreen(),
+    'training_goals_echo': () => const TrainingGoalsScreen(initialKind: 'echo'),
+    // "On the way to" card of a non-Koch goal: collecting, full window, compact.
+    'goal_progress': () => Scaffold(
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(children: [
+              for (final (kind, goal, w, compact) in [
+                ('hear', const LeverGoal(GoalLever.charSpacing, target: 3, start: 8), <bool>[true, false], false),
+                ('echo', const LeverGoal(GoalLever.giveWpm, target: 30, start: 15),
+                    List<bool>.filled(20, true), false),
+                ('hear', const LeverGoal(GoalLever.wordSpacing, target: 7, start: 20), <bool>[], true),
+              ])
+                GoalProgressCard(
+                    kind: kind,
+                    goal: goal,
+                    values: const GoalValues(interChar: 5, interWord: 11, wpm: 20, giveCap: 18),
+                    window: w,
+                    high: 0.9,
+                    compact: compact),
+            ]))),
+    // Goal "New characters": same card, with the practice lists below.
+    'goal_unlock': () => Scaffold(
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(children: [
+              for (final compact in [false, true])
+                Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: UnlockOutlookCard(
+                        kind: 'hear',
+                        goal: const LeverGoal(GoalLever.newChars, target: 0, start: 20),
+                        values: const GoalValues(
+                            koch: true, kochLevel: 26, kochTotal: 41, interChar: 20, interWord: 40, wpm: 21),
+                        next: 'k',
+                        chars: const ['e', 's', 'n', 'o', 't'],
+                        stats: {
+                          'e': CharStat()..attempts = 3,
+                          's': CharStat()..attempts = 50,
+                          'n': CharStat()..attempts = 50..emaErrorRate = 0.3,
+                        },
+                        thresholds: const AdaptiveCopyThresholds(highThreshold: 0.9, unlockOccurrences: 20),
+                        display: (ch) => ch,
+                        compact: compact)),
+            ]))),
+    // Goal proposal on the result page: step, undo, applied with goal reached.
+    'goal_cards': () => Scaffold(
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(children: [
+              GoalSuggestionCard(
+                  suggestion: const GoalSuggestion(lever: GoalLever.wordSpacing, from: 105, to: 104,
+                      position: 12, count: 15, target: 7, stepsLeft: 97, rate: 0.93),
+                  kind: 'hear', state: GoalCardState.open, onAccept: () {}, onLater: () {},
+                  newChar: null),
+              GoalSuggestionCard(
+                  suggestion: const GoalSuggestion(lever: GoalLever.newChars, from: 12, to: 13,
+                      position: 1, count: 5, target: 40, stepsLeft: 27),
+                  kind: 'echo', state: GoalCardState.open, onAccept: () {}, onLater: () {},
+                  newChar: '?', onPreview: () {}),
+              GoalSuggestionCard(
+                  suggestion: const GoalSuggestion(lever: GoalLever.giveWpm, from: 18, to: 17,
+                      back: true, rate: 0.55),
+                  kind: 'echo', state: GoalCardState.open, onAccept: () {}, onLater: () {}),
+              GoalSuggestionCard(
+                  suggestion: const GoalSuggestion(lever: GoalLever.charSpacing, from: 4, to: 3,
+                      target: 3, rate: 0.95),
+                  kind: 'hear', state: GoalCardState.accepted, onAccept: () {}, onLater: () {},
+                  reached: true, nextGoal: GoalLever.groupLength),
+              GoalSuggestionCard(
+                  suggestion: const GoalSuggestion(lever: GoalLever.wpm, from: 20, to: 21, target: 25),
+                  kind: 'hear', state: GoalCardState.snoozed, onAccept: () {}, onLater: () {}),
+            ]))),
     // Mix-up trends tab (#101): populated, and only fresh data (empty state).
     'mixup_trends': () => Scaffold(
         body: MixupTrendView(days: _mixupDays(), outputCase: 1, onChar: (_) {})),
@@ -163,6 +244,20 @@ void main() {
     'mixup_trends_none': () => Scaffold(
         body: MixupTrendView(days: const {}, outputCase: 0, onChar: (_) {})),
   };
+  // Stored values some entries start from (default: none).
+  final prefs = <String, Map<String, Object>>{
+    'home_goals_note': {'goalsVersion': 1, GoalStore.homeCardKey: 2},
+    'training_goals': {
+      'goalsVersion': 1,
+      'goals.hear.order': 'newChars:0:5,charSpacing:3:28,wordSpacing:7:40,groupLength:5:2,wpm:25:20',
+      'profile.hear.copyMode': 1,
+    },
+    'training_goals_echo': {
+      'goalsVersion': 1,
+      'goals.echo.order': 'giveWpm:30:12,newChars:20:5,charSpacing:3:28,groupLength:8:2,wpm:60:20',
+      'keyerMode': 4,
+    },
+  };
   for (final e in screens.entries) {
     for (final lang in [0, 1]) {
       for (final scale in [1.0, 1.3]) {
@@ -173,7 +268,7 @@ void main() {
           const Size(360, 8000),
         ]) {
           testWidgets('${e.key} lang $lang scale $scale $size', (tester) async {
-            SharedPreferences.setMockInitialValues({});
+            SharedPreferences.setMockInitialValues(prefs[e.key] ?? {});
             Strings.lang.value = lang;
             tester.view.physicalSize = size * 3;
             tester.view.devicePixelRatio = 3;

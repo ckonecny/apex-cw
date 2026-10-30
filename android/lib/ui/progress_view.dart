@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import '../content/char_stats.dart';
 import '../content/practice_log.dart' show PracticeDay;
 import '../content/progress_series.dart';
+import '../content/training_goals.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/char_color.dart';
+import 'widgets/goal_suggestion_card.dart';
 import 'widgets/progress_charts.dart';
 
 class ProgressView extends StatefulWidget {
@@ -19,6 +21,12 @@ class ProgressView extends StatefulWidget {
   final Map<String, PracticeDay> practice;
   /// 'hear' or 'echo': whose practice time is shown beside the total.
   final String track;
+
+  /// Training goals of this track: the goals in order, the current values
+  /// and the accepted steps (DECISIONS.md "Training goals").
+  final List<LeverGoal> goals;
+  final GoalValues? goalValues;
+  final List<GoalStep> goalLog;
   const ProgressView({
     super.key,
     required this.days,
@@ -27,6 +35,9 @@ class ProgressView extends StatefulWidget {
     required this.onChar,
     this.practice = const {},
     this.track = 'hear',
+    this.goals = const [],
+    this.goalValues,
+    this.goalLog = const [],
   });
 
   @override
@@ -112,11 +123,143 @@ class _ProgressViewState extends State<ProgressView> {
         ),
       );
 
+  // "Your goals": per goal start → now → goal with a bar.
+  Widget? _goalsCard(AppColors c) {
+    final v = widget.goalValues;
+    final set = setGoals(widget.goals);
+    if (v == null || set.isEmpty) return null;
+    final rows = <Widget>[];
+    for (final g in set) {
+      final now = v.valueOf(g.lever), t = effectiveTarget(g, v);
+      final start = g.start ?? now;
+      final span = (t - start).abs();
+      final done = goalReached(g, v);
+      final frac = done
+          ? 1.0
+          : span == 0
+          ? 0.0
+          : ((now - start).abs() / span).clamp(0.0, 1.0);
+      final text = done
+          ? '✓ ${leverValue(g.lever, now)}'
+          : '${g.start == null ? '' : '$start → '}$now → ${leverValue(g.lever, t)}';
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      leverLabel(g.lever, widget.track),
+                      style: TextStyle(fontSize: 13, color: c.textPrimary),
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      text,
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: done ? c.accent : c.textMuted,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(2),
+                child: LinearProgressIndicator(
+                  value: frac,
+                  minHeight: 4,
+                  color: c.accent,
+                  backgroundColor: c.border,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return _card(c, Strings.t('tg_stats_goals'), Column(children: rows));
+  }
+
+  // "Steps": the accepted proposals, newest first.
+  Widget? _stepsCard(AppColors c) {
+    if (setGoals(widget.goals).isEmpty && widget.goalLog.isEmpty) return null;
+    final steps = widget.goalLog.reversed.take(20).toList();
+    final mono12 = TextStyle(fontSize: 12, color: c.textFaint);
+    if (steps.isEmpty) {
+      return _card(
+        c,
+        Strings.t('tg_stats_steps'),
+        Text(Strings.t('tg_stats_no_steps'), style: mono12),
+      );
+    }
+    String date(DateTime d) =>
+        '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.';
+    return _card(
+      c,
+      Strings.t('tg_stats_steps'),
+      Column(
+        children: [
+          for (final st in steps)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(width: 52, child: Text(date(st.at), style: mono12)),
+                  Expanded(
+                    child: Text(
+                      Strings.t(
+                                st.kind == GoalStepKind.back
+                                    ? 'tg_log_back'
+                                    : 'tg_log_step',
+                              )
+                              .replaceFirst(
+                                '{l}',
+                                leverLabel(st.lever, widget.track),
+                              )
+                              .replaceFirst('{f}', '${st.from}')
+                              .replaceFirst('{t}', '${st.to}') +
+                          (st.reached ? '  ✓ ${Strings.t('tg_reached')}' : ''),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: st.kind == GoalStepKind.back
+                            ? c.warning
+                            : c.textPrimary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final now = DateTime.now();
-    final s = buildSeries(widget.days, _range, now, practice: widget.practice, track: widget.track);
+    final goalsCard = _goalsCard(c);
+    final stepsCard = _stepsCard(c);
+    final wpmGoal = setGoals(widget.goals)
+        .where((g) => g.lever == GoalLever.wpm)
+        .firstOrNull
+        ?.target
+        ?.toDouble();
+    final s = buildSeries(
+      widget.days,
+      _range,
+      now,
+      practice: widget.practice,
+      track: widget.track,
+    );
     final g = s.granularity;
     final unit = unitName(g);
     final mono12 = TextStyle(fontSize: 12, color: c.textFaint);
@@ -143,7 +286,11 @@ class _ProgressViewState extends State<ProgressView> {
         chips,
         const SizedBox(height: 16),
         Text(Strings.t('pr_empty'), style: mono12),
-      ]);
+          const SizedBox(height: 16),
+          ?goalsCard,
+          ?stepsCard,
+        ],
+      );
     }
 
     final latest = s.latest!;
@@ -208,7 +355,8 @@ class _ProgressViewState extends State<ProgressView> {
       const SizedBox(height: 4),
       Text(Strings.t('pr_note_${g.name}'), style: mono12),
       const SizedBox(height: 12),
-      _card(
+        ?goalsCard,
+        _card(
           c,
           Strings.t('pr_rate_title').replaceFirst('{u}', unit),
           ProgressLineChart(
@@ -226,11 +374,23 @@ class _ProgressViewState extends State<ProgressView> {
             c,
             Strings.t('pr_wpm_title').replaceFirst('{u}', unit),
             () {
-              final lo = wpmPresent.reduce((a, b) => a < b ? a : b).floorToDouble() - 1;
-              final hi = wpmPresent.reduce((a, b) => a > b ? a : b).ceilToDouble() + 1;
+            // The speed goal as a dashed line, inside the range.
+            final lo =
+                [
+                  ...wpmPresent,
+                  ?wpmGoal,
+                ].reduce((a, b) => a < b ? a : b).floorToDouble() -
+                1;
+            final hi =
+                [
+                  ...wpmPresent,
+                  ?wpmGoal,
+                ].reduce((a, b) => a > b ? a : b).ceilToDouble() +
+                1;
               return ProgressLineChart(
                 values: wpms,
-                yMin: lo,
+              threshold: wpmGoal,
+              yMin: lo,
                 yMax: hi < lo + 2 ? lo + 2 : hi,
                 yLabel: (v) => v.round().toString(),
                 firstLabel: labels.first,
@@ -293,7 +453,8 @@ class _ProgressViewState extends State<ProgressView> {
                     .replaceFirst('{t}', '${s.daysTotal}'),
                 style: mono12),
           ])),
-      _buildHeatmap(c, now),
+        ?stepsCard,
+        _buildHeatmap(c, now),
     ]);
   }
 

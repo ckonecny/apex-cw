@@ -24,6 +24,9 @@ import 'widgets/mixup_trend_view.dart';
 import '../util/char_color.dart';
 import '../util/practice_clock.dart';
 
+import '../content/training_goals.dart';
+import 'training_goals_screen.dart' show loadGoalValues;
+
 class CharStatsScreen extends StatefulWidget {
   // `track`: CharStatsStore.hear or .echo — each training shows its own.
   final String track;
@@ -43,6 +46,10 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
   int _outputCase = 0;
   int _tab = 0; // 0 = Zeichen, 1 = Verlauf, 2 = Trends (Verwechslungen)
 
+  List<LeverGoal> _goals = const [];
+  List<GoalStep> _goalLog = const [];
+  GoalValues? _goalValues;
+
   @override
   void initState() {
     super.initState();
@@ -60,11 +67,17 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
     final licwCarouselStart = (p.getInt('licwCarouselStart') ?? 0).clamp(0, 13);
     final sequence = kochSequenceChars(kochSeq, customKochChars, licwCarouselStart: licwCarouselStart);
     final active = kochActiveChars(kochLevel, sequence);
+    final goals = await GoalStore.open(widget.track);
+    final goalValues = await loadGoalValues(widget.track);
     if (!mounted) return;
     setState(() {
       _active = active;
-      _unlockOccurrences = p.getInt('adaptiveUnlockOccurrences') ?? 20;
-      _highThreshold = ((p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99)) / 100;
+      _goals = goals.order;
+      _goalLog = goals.log;
+      _goalValues = goalValues;
+      final rules = goalRules(p, widget.track);
+      _unlockOccurrences = rules.unlockOccurrences;
+      _highThreshold = rules.high;
       _outputCase = (p.getInt('outputCase') ?? 0).clamp(0, 1);
       _loading = false;
     });
@@ -208,7 +221,10 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
                         onChar: _openChar,
                         practice: PracticeClock.instance.log.days,
                         track: widget.track,
-                      ),
+                          goals: _goals,
+                          goalValues: _goalValues,
+                          goalLog: _goalLog,
+                        ),
               ),
             ]),
     );

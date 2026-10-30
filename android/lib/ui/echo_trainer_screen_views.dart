@@ -89,7 +89,7 @@ extension _EchoViews on _EchoTrainerScreenState {
               ],
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Column(children: _buildSuggestionRows(c, MediaQuery.of(context).size.width - 40, cs)),
+                    child: Column(children: _buildSuggestionRows(c, cs)),
               ),
             ]),
           ),
@@ -148,7 +148,10 @@ extension _EchoViews on _EchoTrainerScreenState {
             ),
             builder: (compact) => Column(children: [
               const KeyAdapterHint(),
-              if (weak.isNotEmpty || mixups.isNotEmpty || (_boostApplies && _koch))
+                if (weak.isNotEmpty ||
+                    mixups.isNotEmpty ||
+                    _newCharsAhead ||
+                    _otherActiveGoal != null)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                   child: compact
@@ -156,7 +159,8 @@ extension _EchoViews on _EchoTrainerScreenState {
                           // Like Listen: the "On the way to" bar first, the row below it.
                           ..._proposalCards(c, weak, mixups, compactOutlook: true),
                           if (weak.isNotEmpty || mixups.isNotEmpty) ...[
-                            if (_boostApplies && _koch) const SizedBox(height: 12),
+                                if (_newCharsAhead || _otherActiveGoal != null)
+                                  const SizedBox(height: 12),
                             BoostSummaryRow(
                               chars: [
                                 for (final ch in weak.keys)
