@@ -27,7 +27,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Play Store**: graphics, screenshots and texts rebuilt 2026-10-08 (palette now navy, 8 shots per language, `docs/PLAY-LISTING.md` updated). Still to do in the Play Console: upload `store/out/*` (icon_512, feature graphic, shots in order) and paste the texts, for DE and EN.
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
-## Training goals (branch `feature/training-goals`, not merged)
+## Training goals (PR #165, open)
 Built per the concept with Sia (DECISIONS.md "Training goals"): model + tests, Hören/Geben result cards, goals screen, ⚙ links, start-page card, statistics, migration, manual DE+EN. Still to check on the test phone: "On the way to" card for each active goal (spacing, group length, speed; Hören and Geben), migration of the existing install (goals and "New" card), a full step and an undo in Hören and Geben, "Not now" for 15 min, reordering.
 
 ## Manual: pending for next release
