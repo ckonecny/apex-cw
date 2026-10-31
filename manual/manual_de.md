@@ -886,7 +886,7 @@ Zeile „Gilt für: …“ zeigt, für welche Kombination du gerade einstellst.
 | Versuche pro Wort | Nur bei **Tippen** und **Wiederholen**: wie oft du ein Wort versuchen darfst; 1 = kein zweiter Versuch | 1 / **2** / 3 |
 | Vibration bei Tastendruck | Nur bei **Tippen**: kurze Vibration bei jeder aktiven Taste | Aus / **Ein** |
 
-### Trainingsziele
+### Trainingsziele im ⚙-Blatt (Hören)
 
 Das ⚙-Blatt enthält die [Trainingsziele](#trainingsziele) von **Hören**: die
 Liste der Ziele, in der du jedes Ziel per Tippen setzt und die Reihenfolge per
@@ -898,6 +898,10 @@ Abstände** einstellst, gilt sofort, und die Ziele lesen es beim nächsten Block
 
 ::: {.shots .one}
 ![⚙-Blatt: Nach falscher Antwort, Adaptiver Modus](img/de/hear_sheet4.png)
+:::
+
+::: {.shots .one}
+![Trainingsziele: Liste für Hören und Geben](img/de/goals.png)
 :::
 
 # Geben – Echo Trainer
@@ -1740,6 +1744,10 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
 ![Darunter die Heatmap: trainierte Zeichen, Woche für Woche](img/de/hear_progress2.png)
 
 ![Reiter Verlauf (Geben)](img/de/echo_progress.png)
+:::
+
+::: {.shots .one}
+![Reiter Verlauf (Geben): Timing der Handtaste im Zeitverlauf](img/de/echo_timing.png)
 :::
 
 **Reiter Trends.** Zeigt, ob eine bestimmte Verwechslung häufiger oder

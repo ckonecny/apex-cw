@@ -28,17 +28,10 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
-- Keyer screen (Straight key + adapter): new tip, the "Rhythm" panel and the Keyer settings row "Timing analysis in the CW Keyer" (#164, no shot yet; needs a VBand adapter).
-- Geben result page: new "Timing" card, only with a straight key on an adapter (#166, no shot yet; needs a VBand adapter).
-- `echo_progress.png`: new "Timing" card in the Geben progress tab once adapter blocks exist (#167, no shot yet; needs a VBand adapter).
-- `hear_result.png`, `echo_result2.png`: suggestion rows replaced by the training-goal card (Apply / Not now).
-- `hear_sheet4.png`: EMA smoothing slider gone, new section "Training goals".
-- `achievements.png`: new "Training goals" card; `home.png`: start-page note (only while not dismissed).
-- `hear_progress.png`, `echo_progress.png`: "Your goals" card once goals are set.
-- `hear_sheet4.png` and the Geben sheet shot: the "Adaptive mode" section is gone, the sheet ends with "Training goals" (list + "When does a suggestion come?").
-- Hören/Geben start and result views (`hear_start*`, `hear_result*`, `echo_*`): the "On the way to" card now follows any active goal (goal bar + readiness bar), not just new characters. Readiness bar now with a status word; tap opens a numbers sheet (new, no shot yet).
-- New, not yet in the manual: a shot of the training goals screen (Hören tab).
-- `audio_trainer.png`, `audio_trainer_run.png` (both languages): umlaut note removed from the start view; solution now in character-type colors (shots of 1.10.0 still show the old view).
+Retaken for 1.11.0 (2026-10-31, DE+EN): home, achievements, hear/echo start, hear/echo progress, echo timing card (new, with sample data), training goals screen (new), ⚙ sheets (goals), audio trainer, settings3. Still open:
+- Keyer screen (Straight key + adapter): the "Rhythm" panel and the Keyer settings row "Timing analysis in the CW Keyer" (#164, no shot yet; needs keying by hand on the adapter).
+- Geben result page: "Timing" card (#166, no shot yet; same).
+- `hear_result.png`, `echo_result2.png`, `hear_start*`/`echo_*` result views: the training-goal card (Apply / Not now) and the numbers sheet of the readiness bar (need played blocks).
 
 ## Prosign set (#156, in 1.10.0)
 Not yet checked on the phone: tiles, typing keyboard row, chart, tree row, audio trainer with the set and the spoken meanings for AR, BT, HH, SOS.

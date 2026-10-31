@@ -861,7 +861,7 @@ to: …" tells you which combination you are setting up.
 | Attempts per word | **Type** and **Repeat** only: how often you may try a word; 1 = no second attempt | 1 / **2** / 3 |
 | Vibrate on key press | **Type** only: short vibration on every active key | Off / **On** |
 
-### Training goals
+### Training goals in the ⚙ sheet (Listen)
 
 The ⚙ sheet contains the [training goals](#training-goals) of **Listen**: the
 list of goals, in which you set each target by tapping and the order by
@@ -873,6 +873,10 @@ card applies at once, and the goals read it at the next block.
 
 ::: {.shots .one}
 ![⚙ sheet: After a wrong answer, Adaptive mode](img/en/hear_sheet4.png)
+:::
+
+::: {.shots .one}
+![Training goals: list for Listen and Send](img/en/goals.png)
 :::
 
 # Send: Echo Trainer
@@ -1685,6 +1689,10 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
 ![Below it the heatmap: practised characters, week by week](img/en/hear_progress2.png)
 
 ![Progress tab (Send)](img/en/echo_progress.png)
+:::
+
+::: {.shots .one}
+![Progress tab (Send): timing of the straight key over time](img/en/echo_timing.png)
 :::
 
 **Trends tab.** Shows whether a specific mix-up is becoming more or less

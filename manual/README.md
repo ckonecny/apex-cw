@@ -2,8 +2,8 @@
 
 | | Deutsch | English |
 |---|---|---|
-| PDF | [APEXCW_Handbuch_v1.10.0.pdf](APEXCW_Handbuch_v1.10.0.pdf) | [APEXCW_Manual_v1.10.0.pdf](APEXCW_Manual_v1.10.0.pdf) |
-| HTML | [APEXCW_Handbuch_v1.10.0.html](APEXCW_Handbuch_v1.10.0.html) | [APEXCW_Manual_v1.10.0.html](APEXCW_Manual_v1.10.0.html) |
+| PDF | [APEXCW_Handbuch_v1.11.0.pdf](APEXCW_Handbuch_v1.11.0.pdf) | [APEXCW_Manual_v1.11.0.pdf](APEXCW_Manual_v1.11.0.pdf) |
+| HTML | [APEXCW_Handbuch_v1.11.0.html](APEXCW_Handbuch_v1.11.0.html) | [APEXCW_Manual_v1.11.0.html](APEXCW_Manual_v1.11.0.html) |
 | Source (Markdown) | [manual_de.md](manual_de.md) | [manual_en.md](manual_en.md) |
 
 The title page states the app version and source commit the manual was built
@@ -61,7 +61,7 @@ release"* in `docs/STATUS.md`.
    If the manual sources changed after the tag (e.g. screenshot blocks), run
    `MANUAL_COMMIT=<tagged hash> ./build.sh` so the title page names the release
    commit, not `-dirty`. The version is taken from `android/pubspec.yaml` and goes into the file
-   names (`APEXCW_Handbuch_v1.10.0.pdf`, …); the previous release's
+   names (`APEXCW_Handbuch_v1.11.0.pdf`, …); the previous release's
    files are deleted and the links in both READMEs are updated. Attach the
    PDFs to the GitHub release under these versioned names.
 5. Clear the list in `docs/STATUS.md` and commit screenshots, built manual
