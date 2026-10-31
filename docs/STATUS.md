@@ -71,5 +71,5 @@ Built: tempo/spacing −/+ instead of prev/next in the audio trainer's media con
   release build isn't debuggable. Back up and restore the prefs
   (`shared_prefs/FlutterSharedPreferences.xml`) and `files/owntexts/`.
 
-## Timing history (#167, branch `feature/timing-history`)
+## Timing history (#167, PR #170)
 Built: record per Geben block with adapter, card in the Geben progress tab, manual DE+EN, tests. Open: check on the test phone with the VBand adapter (play a few blocks, then look at the Verlauf tab), review/merge; then move this entry to the archive.
