@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Latest: v1.10.0 (pubspec 1.10.0+13, 2026-10-25, notes `docs/release-notes-v1.10.0.md`): everything of the betas `v1.9.1-beta1` and `v1.10.0-beta1` plus the Prosigns set (#156), original Koch sequences, Q-groups tempo only. AAB for the Play upload built; manual, screenshots and Play texts (`docs/PLAY-LISTING.md`) in the release steps below. Previous: v1.9.0 (2026-10-24), v1.8.0 (2026-10-21), v1.7.0 (2026-10-12); older versions in `docs/STATUS-ARCHIVE.md`.
+Latest: v1.11.0 (pubspec 1.11.0+14, 2026-10-31, notes `docs/release-notes-v1.11.0.md`): training goals (#165), straight-key timing (#164, #166, #167), audio trainer colours. Play texts in `docs/PLAY-LISTING.md`; manual, screenshots and AAB in the release steps. Previous: v1.10.0 (2026-10-25), v1.9.0 (2026-10-24), v1.8.0 (2026-10-21); older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -70,6 +70,3 @@ Built: tempo/spacing −/+ instead of prev/next in the audio trainer's media con
 - Seeding statistics for screenshots needs a debug build (`run-as`); the
   release build isn't debuggable. Back up and restore the prefs
   (`shared_prefs/FlutterSharedPreferences.xml`) and `files/owntexts/`.
-
-## Timing history (#167, PR #170)
-Built: record per Geben block with adapter, card in the Geben progress tab, manual DE+EN, tests. Open: check on the test phone with the VBand adapter (play a few blocks, then look at the Verlauf tab), review/merge; then move this entry to the archive.

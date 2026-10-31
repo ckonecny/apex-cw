@@ -907,3 +907,6 @@ All screenshots retaken (light theme, DE+EN), `settings3` from Store build 437 (
 
 ## Fist analyzer (#164) and Timing index in the Geben result (#166)
 Both merged to main (PR #168, PR #169, 2026-10-31). Fist analyzer: rhythm panel for the straight key in the CW Keyer. Geben result: "Timing" card with the index and breakdown for a straight key on an adapter. Details: `docs/DECISIONS.md`.
+
+## Timing history (#167)
+Merged to main (PR #170, 2026-10-31), checked on the test phone: a record per Geben block with a straight key on an adapter, "Timing" card in the Geben progress tab. Details: `docs/DECISIONS.md`.
