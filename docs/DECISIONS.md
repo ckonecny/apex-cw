@@ -2391,6 +2391,7 @@ Optional rhythm panel in the CW Keyer for a straight key on an adapter (`lib/key
 - **Bars** on a ±1 octave scale, dot = median, grey zone = ±10 %, thin line = min/max of the window (peak-hold idea; no time decay). All five rows always shown (empty track and "–" without data) because rows that came and went looked misleading.
 - **Hints** (`FistHints`): medians, hysteresis (on at 0.26 octaves ≈ 20 %, off below 0.18 ≈ 13 %), dwell of 4 updates for any change, minimum counts per kind, at most two (largest miss first), none for dit (it is the unit). Reason: the text must not jump on outliers.
 - **Tips** use the existing lightbulb tip style: activation tip (adapter + straight, analysis off; tap → Settings, ✕ = `fistHintSeen`) and no-adapter note (analysis on, no adapter; tap → adapter manual, ✕ = `fistNoAdapterHintSeen`).
+- **Pauses (1.11.1):** a gap of more than `FistAnalyzer.maxGapDits` (15) dits is a break, not keying, and stays out of the report; unbounded it counted as a word gap of hundreds of dits and cost ~28 index points per 30 s pause. The panel also restarts when the analysis is switched off or the adapter goes (stale presses would join new keying across minutes). The Keyer panel and the Geben block share one calculation (`fistReport`). The Geben block's `_fistRated` is fixed at block start.
 - Not done on purpose: timeline of single elements (own issue), per-character alignment (#166), long-term statistics (#167).
 
 ## Timing index in the Geben result (#166, 2026-10-31, branch `feature/echo-timing-index`)

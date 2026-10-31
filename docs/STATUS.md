@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Latest: v1.11.0 (pubspec 1.11.0+14, 2026-10-31, notes `docs/release-notes-v1.11.0.md`): training goals (#165), straight-key timing (#164, #166, #167), audio trainer colours. Play texts in `docs/PLAY-LISTING.md`; manual, screenshots and AAB in the release steps. Previous: v1.10.0 (2026-10-25), v1.9.0 (2026-10-24), v1.8.0 (2026-10-21); older versions in `docs/STATUS-ARCHIVE.md`.
+Latest: v1.11.1 (pubspec 1.11.1+15, 2026-10-31, notes `docs/release-notes-v1.11.1.md`; fixes found by the review gate of 1.11.0). v1.11.0 (+14, notes `docs/release-notes-v1.11.0.md`): training goals (#165), straight-key timing (#164, #166, #167), audio trainer colours. Play texts in `docs/PLAY-LISTING.md`; manual, screenshots and AAB in the release steps. Previous: v1.10.0 (2026-10-25), v1.9.0 (2026-10-24), v1.8.0 (2026-10-21); older versions in `docs/STATUS-ARCHIVE.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds

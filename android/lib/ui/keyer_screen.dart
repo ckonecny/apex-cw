@@ -39,7 +39,8 @@ class _KeyerScreenState extends State<KeyerScreen> {
   // Straight-key timing (#164): only fed by a physical key on an adapter.
   final _fist = FistAnalyzer();
   final _fistHints = FistHints();
-  FistReport _fistReport = FistAnalyzer().report();
+  FistReport _fistReport = const FistReport(
+      ditMs: 0, wpm: 0, index: null, stats: {}, elements: 0);
   int _measuredWpm = 15;   // straight key: display only, never saved
 
   // Decoded text (mirrors the real device's CW Keyer, which decodes keyed
@@ -83,7 +84,10 @@ class _KeyerScreenState extends State<KeyerScreen> {
       if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
     });
     _edgeSub = _edgeStream.receiveBroadcastStream().listen((e) {
-      if (!_fistActive || !KeyAdapterState.detected.value) return;
+      if (!_fistActive || !KeyAdapterState.detected.value) {
+        _resetFist();
+        return;
+      }
       final l = e as List;
       _fist.add(l[0] == 1, l[1] as int);
       if (l[0] == 0 && mounted) {
@@ -93,7 +97,12 @@ class _KeyerScreenState extends State<KeyerScreen> {
         });
       }
     }, onError: (_) {});
+    KeyAdapterState.detected.addListener(_onAdapterChange);
     _loadPrefsAndInit();
+  }
+
+  void _onAdapterChange() {
+    if (!KeyAdapterState.detected.value) _resetFist();
   }
 
   // A tip line with a lightbulb; the X closes it for good (see _closeTip).
@@ -133,6 +142,16 @@ class _KeyerScreenState extends State<KeyerScreen> {
         MaterialPageRoute(builder: (_) => const SettingsScreen(scrollToKeyer: true)));
     final p = await SharedPreferences.getInstance();
     if (mounted) setState(() => _fistOn = p.getBool('fistAnalyzer') ?? false);
+    if (!_fistActive) _resetFist();
+  }
+
+  // Nothing from an earlier stretch (analysis off, adapter out) may mix with
+  // new keying.
+  void _resetFist() {
+    if (_fist.presses.isEmpty && _fistReport.elements == 0) return;
+    _fist.clear();
+    _fistHints.clear();
+    if (mounted) setState(() => _fistReport = _fist.report());
   }
 
   bool get _fistActive => _keyerMode == 4 && _fistOn;
@@ -178,6 +197,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
     PracticeClock.instance.leave();
     _wpmSub?.cancel();
     _edgeSub?.cancel();
+    KeyAdapterState.detected.removeListener(_onAdapterChange);
     _keyerChannel.invokeMethod('stop');
     super.dispose();
   }
@@ -279,11 +299,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
                   child: FistPanel(
                       report: _fistReport,
                       hints: _fistHints.shown,
-                      onReset: () => setState(() {
-                            _fist.clear();
-                            _fistHints.clear();
-                            _fistReport = _fist.report();
-                          })),
+                      onReset: _resetFist),
                 );
               }
               return const SizedBox.shrink();
