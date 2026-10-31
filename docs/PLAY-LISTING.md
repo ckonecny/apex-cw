@@ -126,6 +126,24 @@ No ads, no accounts, no data collection. Free software (GPL-3.0), source code on
 Many ideas and much of the training logic come from the open-source Morserino-32 firmware by Willi Kraml, OE1WKL – many thanks for that. APEX CW is an independent project, not affiliated with the Morserino-32 team. Zork is a trademark of its owners; this app is not affiliated with them.
 ```
 
+## What's new (1.11.0, max. 500 characters each)
+
+**DE** (381)
+```
+• Neu: Trainingsziele – nach einem Block schlägt die App den nächsten Schritt vor (neue Zeichen, Abstände, Gruppenlänge, Tempo), du übernimmst oder lehnst ab
+• Neu für die Handtaste am USB-Adapter: Rhythmus-Anzeige im CW-Keyer, Timing-Index im Geben-Ergebnis und Verlaufskurve über viele Blöcke
+• Audio-Trainer: Lösung nach Zeichenart eingefärbt
+• Zieleinstellungen übersichtlicher
+```
+
+**EN** (373)
+```
+• New: training goals – after a block the app suggests the next step (new characters, spacing, group length, speed); you apply or decline
+• New for a straight key on a USB adapter: rhythm panel in the CW Keyer, timing index on the Send result page and a long-term curve in the progress tab
+• Audio trainer: solution coloured by character type
+• Goal settings easier to read
+```
+
 ## What's new (1.10.0, max. 500 characters each)
 
 The store last got 1.8.0 (1.9.0 never went live), so this covers everything since 1.8.0.

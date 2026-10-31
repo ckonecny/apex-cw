@@ -19,8 +19,13 @@ By Christian Konecny, OE1CKO.
   keyboard that offers only the characters of the current lesson, with a
   second attempt for wrong words.
 - **Progress you can see:** statistics per character, weekly curves and a
-  heatmap, weak characters that come back in the next block, and adaptive
-  suggestions that you accept or reject.
+  heatmap, weak characters that come back in the next block, and training
+  goals (new characters, spacing, group length, speed) with one suggestion
+  after a block that you accept or reject.
+- **Straight-key timing:** with a straight key on a USB adapter, the CW Keyer
+  shows how even your dits, dahs and gaps are, the Send result page gives a
+  timing index with a breakdown, and the progress tab keeps the long-term
+  curve.
 - **Habit support:** a daily goal for active practice time, a streak with a
   free day per week, optional spreading over several sessions, a reminder
   that only fires if the goal is still open, and awards for single steps
