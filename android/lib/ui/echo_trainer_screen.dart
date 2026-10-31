@@ -10,6 +10,7 @@ import 'widgets/tempo_spacing_section.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
+import '../content/timing_history.dart';
 import '../keyer/echo_fist.dart';
 import '../keyer/fist_analyzer.dart';
 import 'widgets/echo_fist_card.dart';
@@ -525,6 +526,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     final n = _blockResults.length;
     final echoRate = n == 0 ? 0.0 : firstTry.where((r) => r).length / n;
     _trend = await const BlockHistory('echo').record(p, echoRate);
+    if (_fistRated) await const TimingHistory().record(p, _blockFist.report(), DateTime.now());
     final interf = await InterferenceProfile.load();
     if (n > 0) {
       PracticeClock.instance.block('echo', echoRate, interference: interf.enabled);

@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/char_stats.dart';
+import '../content/timing_history.dart';
 import '../content/cw_content.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
@@ -48,6 +49,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
 
   List<LeverGoal> _goals = const [];
   List<GoalStep> _goalLog = const [];
+  List<TimingRecord> _timing = const [];
   GoalValues? _goalValues;
 
   @override
@@ -74,6 +76,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
       _active = active;
       _goals = goals.order;
       _goalLog = goals.log;
+      _timing = widget.track == 'echo' ? const TimingHistory().load(p) : const [];
       _goalValues = goalValues;
       final rules = goalRules(p, widget.track);
       _unlockOccurrences = rules.unlockOccurrences;
@@ -224,6 +227,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
                           goals: _goals,
                           goalValues: _goalValues,
                           goalLog: _goalLog,
+                          timing: _timing,
                         ),
               ),
             ]),
