@@ -5,6 +5,21 @@ import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import '../../util/key_adapter_state.dart';
 
+/// Opens the manual section about a real Morse key / straight key on an adapter.
+Future<void> openKeyAdapterManual(BuildContext context) async {
+  final de = Strings.lang.value == 0;
+  final url = 'https://ckonecny.github.io/apex-cw/'
+      '${de ? 'manual-de.html#echte-morsetaste-oder-handtaste' : 'manual-en.html#a-real-morse-key-or-straight-key'}';
+  var ok = false;
+  try {
+    ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  } catch (_) {}
+  if (!ok && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(Strings.t('link_open_failed'))));
+  }
+}
+
 /// One-time tip for new users in Send (#58): keying feels much better with a
 /// real Morse key on an adapter than on the touch paddles. Shown until it is
 /// closed once; tapping it opens the matching section of the online manual.
@@ -31,19 +46,7 @@ class _KeyAdapterHintState extends State<KeyAdapterHint> {
     (await SharedPreferences.getInstance()).setBool(_prefKey, true);
   }
 
-  Future<void> _openManual() async {
-    final de = Strings.lang.value == 0;
-    final url = 'https://ckonecny.github.io/apex-cw/'
-        '${de ? 'manual-de.html#echte-morsetaste-oder-handtaste' : 'manual-en.html#a-real-morse-key-or-straight-key'}';
-    var ok = false;
-    try {
-      ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    } catch (_) {}
-    if (!ok && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(Strings.t('link_open_failed'))));
-    }
-  }
+  Future<void> _openManual() => openKeyAdapterManual(context);
 
   // Pointless once a real key is in use (#95).
   @override
