@@ -28,7 +28,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
-Retaken for 1.11.0 (2026-10-31, DE+EN): home, achievements, hear/echo start, hear/echo progress, echo timing card (new, with sample data), training goals screen (new), ⚙ sheets (goals), audio trainer, settings3. Still open:
+Retaken for 1.11.0/1.11.1 (2026-10-31, DE+EN): home, achievements, hear/echo start, hear/echo progress, echo timing card (new, with sample data), training goals screen (new), ⚙ sheets (goals), audio trainer, settings3. Still open:
 - Keyer screen (Straight key + adapter): the "Rhythm" panel and the Keyer settings row "Timing analysis in the CW Keyer" (#164, no shot yet; needs keying by hand on the adapter).
 - Geben result page: "Timing" card (#166, no shot yet; same).
 - `hear_result.png`, `echo_result2.png`, `hear_start*`/`echo_*` result views: the training-goal card (Apply / Not now) and the numbers sheet of the readiness bar (need played blocks).
