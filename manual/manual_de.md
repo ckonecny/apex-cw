@@ -3096,6 +3096,7 @@ Diese Einstellungen gelten überall, wo du tastest.
 | CurtisB Dah-Timing | Dasselbe für Dahs | 0–100 % in 5er-Schritten (**45 %**) |
 | Auto-Zeichenabstand | Erzwingt eine Mindestpause zwischen Zeichen, damit sie nicht zusammenlaufen. Bei Straight nicht verfügbar | **Aus** / 2 / 3 / 4 Dits |
 | Starttempo Handtaste | Nur bei Straight (ersetzt Auto-Zeichenabstand): erste Schätzung für die Tempo-Messung, siehe [Handtaste](#handtaste-automatisches-tempo) | 5–40 WPM (**15**) |
+| Timing-Analyse im CW Keyer | Nur bei Straight: schaltet die Rhythmus-Anzeige im CW Keyer ein, siehe [Handtaste: Rhythmus-Analyse](#handtaste-rhythmus-analyse). Wirkt nur mit einer Taste am Adapter | **Aus** / An |
 
 **Die Keyer-Modi**
 
@@ -3133,6 +3134,49 @@ Pausen zugelassen.
   gespeichert und ändert das Keyer-Tempo nicht.
 - WiFi Trx sendet das gemessene Tempo mit. Die Statistik beim Echo Trainer
   speichert es als dein Gebetempo.
+
+### Handtaste: Rhythmus-Analyse
+
+Mit einer Handtaste am USB-Adapter (z. B. VBand) kann der CW Keyer zeigen, wie
+gleichmäßig du tastest. Die Analyse ist **standardmäßig aus**: Einstellungen →
+Keyer → **Timing-Analyse im CW Keyer** (nur sichtbar bei Keyer-Modus Straight).
+Sobald ein Adapter mit Straight-Taste erkannt ist und die Analyse noch aus ist,
+zeigt der CW Keyer einen Tipp; Antippen springt in die Einstellungen, das ✕
+blendet ihn dauerhaft aus. Ist die Analyse an, aber keine Taste am Adapter
+erkannt, erscheint ein ausblendbarer Hinweis mit Link zur Anleitung. Mit den
+Touch-Tasten gibt es keine Analyse, weil der Touchscreen zu viel Verzögerung
+hat; mit Paddles ergibt sie keinen Sinn.
+
+Die App misst die Zeiten über den Zeitstempel des Tastendrucks vom System, nicht
+über ihre eigene Uhr. Kurze Kontaktprellungen des Adapters (unter 20 ms)
+werden herausgefiltert.
+
+Das Feld **Rhythmus** zeigt:
+
+- **Fünf Balken** für Dit, Dah, Pause im Zeichen (zwischen zwei Tönen
+  desselben Zeichens), Zeichenabstand und Wortabstand. Die Mitte ist der
+  Sollwert (Dit 1, Dah 3, Pausen 1 / 3 / 7 Dit-Längen), der graue Bereich dort
+  ist die Zielzone von etwa ±10 %. Der Punkt ist der mittlere Wert deiner
+  letzten Elemente; links bedeutet zu kurz, rechts zu lang (Skala: eine
+  Verdopplung bzw. Halbierung am Rand).
+- Die **dünne Linie** mit Endmarken ist die Streuung: das kürzeste und das
+  längste Element der letzten 48 Tastungen (wie die Spitzenwert-Anzeige eines
+  Aussteuerungsmessers).
+- Die **Zahl von 0 bis 100** neben dem Titel: 100 heißt, alle Elemente liegen
+  genau auf dem Sollwert. Sie erscheint nach etwa 20 Elementen. Alles wird an
+  deiner eigenen Dit-Länge gemessen: ein gleichmäßiges, aber langsames Tasten
+  bekommt also auch 100. Das Tempo steht getrennt unten (WPM).
+- Bis zu zwei **Hinweise in Klartext** (z. B. „Dahs zu kurz – länger halten“).
+  Sie nutzen mittlere Werte und erscheinen erst bei etwa 20 % Abweichung, die
+  über mehrere Tastungen anhält. Sie verschwinden erst, wenn die Abweichung
+  unter etwa 13 % fällt. Einzelne Ausreißer ändern den Text nicht. Passt alles,
+  steht dort „Schön gleichmäßig“.
+- Mit dem Pfeil-Symbol setzt du die Auswertung zurück.
+
+Pausen unter zwei Dit-Längen zählen als „Pause im Zeichen“. Lässt du zwischen
+zwei Zeichen eine sehr kurze Pause, siehst du deshalb eine zu lange
+„Pause im Zeichen“ oder verschmolzene Elemente, nicht einen zu kurzen
+Zeichenabstand.
 
 ## USB-CW-Adapter und Key-Events analysieren
 

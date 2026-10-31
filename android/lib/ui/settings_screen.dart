@@ -65,6 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // Iambic B (Ultimatic ignores them, as in the firmware) — how far into the
   // current element (as a % of its length) the keyer starts looking ahead for
   // the opposite paddle.
+  bool _fistAnalyzer = false;  // straight key: timing panel in the CW Keyer (#164)
   int  _curtisBDitTiming = 75;
   int  _curtisBDahTiming = 45;
   // "AutoChar Spc" (M32 posACS, default 0=off): minimum pause enforced
@@ -171,6 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _toneSoftness   = (p.getInt('toneSoftness')  ?? 4).clamp(0, 8);
       _confirmTone    = ConfirmTone.fromPrefs(p);
       _keyerMode      = p.getInt('keyerMode')      ?? 0;
+      _fistAnalyzer   = p.getBool('fistAnalyzer')  ?? false;
       _curtisBDitTiming = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
       _curtisBDahTiming = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
       _acs              = (p.getInt('acs') ?? 0).clamp(0, 3);
@@ -657,6 +659,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 selected: _acs,
                 onChanged: _applyAcs,
               ),
+            if (_keyerMode == 4) ...[
+              const SettingsDivider(),
+              ToggleRow(
+                label: Strings.t('settings_fist_analyzer'),
+                value: _fistAnalyzer,
+                onChanged: (v) async {
+                  setState(() => _fistAnalyzer = v);
+                  (await SharedPreferences.getInstance()).setBool('fistAnalyzer', v);
+                },
+              ),
+            ],
           ]),
 
           const SizedBox(height: 24),

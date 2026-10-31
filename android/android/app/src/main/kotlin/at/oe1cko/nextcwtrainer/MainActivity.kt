@@ -116,6 +116,7 @@ class MainActivity : FlutterActivity() {
         private const val KEYER_CHANNEL    = "at.oe1cko.nextcwtrainer/cw_keyer"
         private const val GEN_CHANNEL      = "at.oe1cko.nextcwtrainer/cw_generator"
         private const val STRAIGHT_WPM_CHANNEL = "at.oe1cko.nextcwtrainer/cw_straight_wpm"
+        private const val STRAIGHT_EDGE_CHANNEL = "at.oe1cko.nextcwtrainer/cw_straight_edges"
         private const val GEN_EV_CHANNEL   = "at.oe1cko.nextcwtrainer/cw_gen_events"
         private const val SETTINGS_CHANNEL = "at.oe1cko.nextcwtrainer/settings"
         private const val SETTINGS_EV      = "at.oe1cko.nextcwtrainer/settings_events"
@@ -221,6 +222,15 @@ class MainActivity : FlutterActivity() {
                     keyer.resendMeasuredWpm()
                 }
                 override fun onCancel(args: Any?) { keyer.onMeasuredWpm = null }
+            })
+
+        // ── Straight-key edges with system timestamps → Dart (fist analyzer) ───
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, STRAIGHT_EDGE_CHANNEL)
+            .setStreamHandler(object : EventChannel.StreamHandler {
+                override fun onListen(args: Any?, events: EventChannel.EventSink) {
+                    keyer.onStraightEdge = { down, t -> runOnUiThread { events.success(listOf(if (down) 1 else 0, t)) } }
+                }
+                override fun onCancel(args: Any?) { keyer.onStraightEdge = null }
             })
 
         // ── Generator events → Dart ────────────────────────────────────────────
@@ -703,7 +713,8 @@ class MainActivity : FlutterActivity() {
             }
             keyer.setInputs(
                 if (isDit) down else keyer.ditState,
-                if (isDah) down else keyer.dahState
+                if (isDah) down else keyer.dahState,
+                if (event.repeatCount == 0) event.eventTime else -1
             )
             return true
         }

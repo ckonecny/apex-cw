@@ -77,6 +77,14 @@ class CwKeyer(
     // (own channel, so the symbol stream stays untouched). null = nobody listens.
     var onMeasuredWpm: ((Int) -> Unit)? = null
     @Volatile private var reportedWpm = -1
+
+    /**
+     * Straight key only: every key edge of a physical key with the time the
+     * system stamped it (KeyEvent.eventTime, uptime ms) — much steadier than the
+     * polling clock, which lags up to ~40 ms behind on the main thread. Feeds
+     * the fist analyzer; the decoder keeps using [clock].
+     */
+    var onStraightEdge: ((down: Boolean, eventTimeMs: Long) -> Unit)? = null
     fun resendMeasuredWpm() { reportedWpm = -1 }
 
     private val ditMs  get() = (1200.0 / wpm).roundToInt()
@@ -181,9 +189,11 @@ class CwKeyer(
         }
     }
 
-    fun setInputs(newDit: Boolean, newDah: Boolean) {
+    /** [eventTimeMs]: stamp of the physical key event, -1 for on-screen input. */
+    fun setInputs(newDit: Boolean, newDah: Boolean, eventTimeMs: Long = -1) {
         synchronized(lock) {
             if (mode == Mode.STRAIGHT) {
+                if (eventTimeMs >= 0 && newDit != dit) onStraightEdge?.invoke(newDit, eventTimeMs)
                 dit = newDit   // keyer thread reads dit to drive straight key
                 return
             }

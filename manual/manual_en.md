@@ -2994,6 +2994,7 @@ These settings apply wherever you key.
 | CurtisB dah timing | The same for dahs | 0–100 % in steps of 5 (**45 %**) |
 | Auto character spacing | Enforces a minimum pause between characters so they don't run together. Not available for Straight | **Off** / 2 / 3 / 4 dits |
 | Straight key start speed | Straight only (replaces Auto character spacing): first estimate for the speed measurement, see [Straight key](#straight-key-automatic-speed) | 5–40 WPM (**15**) |
+| Timing analysis in the CW Keyer | Straight only: turns on the rhythm display in the CW Keyer, see [Straight key: rhythm analysis](#straight-key-rhythm-analysis). Works only with a key on an adapter | **Off** / On |
 
 **The keyer modes**
 
@@ -3029,6 +3030,46 @@ word gaps. If you key more slowly, longer pauses are allowed automatically.
   does not change the keyer speed.
 - WiFi Trx sends the measured speed along. The Echo Trainer statistics store
   it as your sending speed.
+
+### Straight key: rhythm analysis
+
+With a straight key on a USB adapter (e.g. VBand) the CW Keyer can show how
+evenly you key. The analysis is **off by default**: Settings → Keyer →
+**Timing analysis in the CW Keyer** (only visible in keyer mode Straight). As
+soon as an adapter with a straight key is detected and the analysis is still
+off, the CW Keyer shows a tip; tapping it jumps to the settings, the ✕ hides
+it for good. If the analysis is on but no key on an adapter is detected, a
+dismissible note with a link to the guide appears. With the touch keys there is
+no analysis, because the touch screen lags too much; with paddles it would make
+no sense.
+
+The app measures the times from the system's timestamp of the key press, not
+from its own clock. Short contact bounce of the adapter (under 20 ms) is
+filtered out.
+
+The **Rhythm** panel shows:
+
+- **Five bars** for dit, dah, gap in character (between two tones of the same
+  character), letter gap and word gap. The centre is the target (dit 1, dah 3,
+  gaps 1 / 3 / 7 dit lengths); the grey zone there is the target zone of about
+  ±10 %. The dot is the typical value of your last elements; left means too
+  short, right too long (scale: a doubling or halving at the edge).
+- The **thin line** with end marks is the spread: the shortest and the longest
+  element of the last 48 keyings (like the peak hold of a level meter).
+- The **number from 0 to 100** next to the title: 100 means every element is
+  exactly on target. It appears after about 20 elements. Everything is measured
+  against your own dit length, so steady but slow keying scores 100 as well.
+  The speed is shown separately at the bottom (WPM).
+- Up to two **plain-language hints** (e.g. "Dahs too short – hold them
+  longer"). They use typical values and appear only at about 20 % deviation
+  that holds over several keyings. They go only when the deviation falls below
+  about 13 %. Single outliers don't change the text. If everything fits, it
+  says "Nice and even".
+- The arrow icon resets the analysis.
+
+Gaps under two dit lengths count as "gap in character". If you leave a very
+short gap between two characters, you therefore see a too long "gap in
+character" or merged elements, not a too short letter gap.
 
 ## USB CW adapter and Analyze key events
 

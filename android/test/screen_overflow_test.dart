@@ -1,6 +1,8 @@
 // Overflow guard (issues #29, #38): every no-argument screen must survive the
 // longest (German) labels, small phones and the largest font scale the app
 // allows (1.3, see text_scale_test.dart). A new screen goes into [screens].
+import 'package:next_cw_trainer/keyer/fist_analyzer.dart';
+import 'package:next_cw_trainer/ui/widgets/fist_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/l10n/strings.dart';
@@ -73,6 +75,20 @@ Map<String, DayStat> _mixupDays() {
   };
 }
 
+FistReport _fistReport() {
+  final a = FistAnalyzer();
+  var t = 0;
+  for (var r = 0; r < 6; r++) {
+    for (final (p, g) in [(60, 60), (150, 60), (60, 60), (170, 180), (60, 400)]) {
+      a.add(true, t);
+      t += p;
+      a.add(false, t);
+      t += g;
+    }
+  }
+  return a.report();
+}
+
 void main() {
   final screens = <String, Widget Function()>{
     'generator': () => const GeneratorScreen(),
@@ -118,6 +134,16 @@ void main() {
     'games': () => const GamesScreen(),
     'morse_chart': () => const MorseChartScreen(),
     'keyer': () => const KeyerScreen(),
+    // Straight key without an adapter: the hint instead of the timing panel (#164).
+    'keyer_straight': () => const KeyerScreen(),
+    'fist_panel': () => Scaffold(
+        body: ListView(padding: const EdgeInsets.all(16), children: [
+          FistPanel(report: _fistReport(), hints: const [
+            FistHint(FistElement.dah, false),
+            FistHint(FistElement.letterGap, false),
+          ], onReset: () {}),
+          FistPanel(report: FistAnalyzer().report(), hints: const [], onReset: () {}),
+        ])),
     // Setting inside the CW Keyer / CW Decoder settings sheets (issue #52).
     'decoder_chars_setting': () => const Scaffold(
         body: SingleChildScrollView(child: DecoderCharsSetting())),
@@ -252,6 +278,7 @@ void main() {
       'goals.hear.order': 'newChars:0:5,charSpacing:3:28,wordSpacing:7:40,groupLength:5:2,wpm:25:20',
       'profile.hear.copyMode': 1,
     },
+    'keyer_straight': {'keyerMode': 4, 'fistAnalyzer': true},
     'training_goals_echo': {
       'goalsVersion': 1,
       'goals.echo.order': 'giveWpm:30:12,newChars:20:5,charSpacing:3:28,groupLength:8:2,wpm:60:20',

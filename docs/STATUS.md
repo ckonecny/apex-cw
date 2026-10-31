@@ -28,6 +28,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
+- Keyer screen (Straight key + adapter): new tip, the "Rhythm" panel and the Keyer settings row "Timing analysis in the CW Keyer" (#164, no shot yet; needs a VBand adapter).
 - `hear_result.png`, `echo_result2.png`: suggestion rows replaced by the training-goal card (Apply / Not now).
 - `hear_sheet4.png`: EMA smoothing slider gone, new section "Training goals".
 - `achievements.png`: new "Training goals" card; `home.png`: start-page note (only while not dismissed).
@@ -67,3 +68,6 @@ Built: tempo/spacing −/+ instead of prev/next in the audio trainer's media con
 - Seeding statistics for screenshots needs a debug build (`run-as`); the
   release build isn't debuggable. Back up and restore the prefs
   (`shared_prefs/FlutterSharedPreferences.xml`) and `files/owntexts/`.
+
+## Fist analyzer (#164, branch `feature/fist-analyzer`)
+Implemented and tested on the test phone with a VBand adapter; manual DE+EN and DECISIONS written. Open: commit/PR (`Closes #164`), measurement result as comment on #164. Details: `docs/DECISIONS.md`.

@@ -7,6 +7,11 @@ import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
 import '../content/training_profile.dart';
 import '../keyer/decoder_chars.dart';
+import '../keyer/fist_analyzer.dart';
+import '../util/key_adapter_state.dart';
+import 'widgets/fist_panel.dart';
+import 'widgets/key_adapter_hint.dart';
+import 'settings_screen.dart';
 import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
@@ -28,7 +33,13 @@ class _KeyerScreenState extends State<KeyerScreen> {
   static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
   static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
   static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  static const _edgeStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_edges');
   StreamSubscription? _wpmSub;
+  StreamSubscription? _edgeSub;
+  // Straight-key timing (#164): only fed by a physical key on an adapter.
+  final _fist = FistAnalyzer();
+  final _fistHints = FistHints();
+  FistReport _fistReport = FistAnalyzer().report();
   int _measuredWpm = 15;   // straight key: display only, never saved
 
   // Decoded text (mirrors the real device's CW Keyer, which decodes keyed
@@ -40,6 +51,9 @@ class _KeyerScreenState extends State<KeyerScreen> {
   int    _outputCase  = 0;   // 0=lower, 1=UPPER — display only
   bool   _ready    = false;
   int    _wpm      = 20;
+  bool   _fistNoAdapterSeen = true;
+  bool   _fistHintSeen = true;  // closed once with the X, never shown again
+  bool   _fistOn   = false;   // Settings → Keyer: timing analysis (straight key only)
   int    _keyerMode = 0;   // 0=Iambic A, 1=Iambic B, 2=Ultimatic, 3=Non-Squeeze, 4=Straight
 
   bool _touchDit = false;
@@ -68,8 +82,60 @@ class _KeyerScreenState extends State<KeyerScreen> {
     _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
       if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
     });
+    _edgeSub = _edgeStream.receiveBroadcastStream().listen((e) {
+      if (!_fistActive || !KeyAdapterState.detected.value) return;
+      final l = e as List;
+      _fist.add(l[0] == 1, l[1] as int);
+      if (l[0] == 0 && mounted) {
+        setState(() {
+          _fistReport = _fist.report();
+          _fistHints.update(_fistReport);
+        });
+      }
+    }, onError: (_) {});
     _loadPrefsAndInit();
   }
+
+  // A tip line with a lightbulb; the X closes it for good (see _closeTip).
+  Widget _tip(String key, VoidCallback onTap, VoidCallback onClose) {
+    final c = AppColors.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: Row(children: [
+        Expanded(
+          child: InkWell(
+            onTap: onTap,
+            child: Row(children: [
+              Icon(Icons.lightbulb_outline, size: 16, color: c.info),
+              const SizedBox(width: 8),
+              Expanded(
+                  child: Text(Strings.t(key),
+                      style: TextStyle(fontSize: 13, color: c.textMuted))),
+            ]),
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.close, size: 18, color: c.textFaint),
+          visualDensity: VisualDensity.compact,
+          onPressed: onClose,
+        ),
+      ]),
+    );
+  }
+
+  Future<void> _closeTip(String pref, VoidCallback mark) async {
+    setState(mark);
+    (await SharedPreferences.getInstance()).setBool(pref, true);
+  }
+
+  Future<void> _openFistSettings() async {
+    await Navigator.push(context,
+        MaterialPageRoute(builder: (_) => const SettingsScreen(scrollToKeyer: true)));
+    final p = await SharedPreferences.getInstance();
+    if (mounted) setState(() => _fistOn = p.getBool('fistAnalyzer') ?? false);
+  }
+
+  bool get _fistActive => _keyerMode == 4 && _fistOn;
 
   Future<void> _loadPrefsAndInit() async {
     final prefs = await SharedPreferences.getInstance();
@@ -77,6 +143,9 @@ class _KeyerScreenState extends State<KeyerScreen> {
       setState(() {
       _wpm        = prefs.getInt('wpm')        ?? 20;
       _keyerMode  = prefs.getInt('keyerMode')  ?? 0;
+      _fistOn     = prefs.getBool('fistAnalyzer') ?? false;
+      _fistHintSeen = prefs.getBool('fistHintSeen') ?? false;
+      _fistNoAdapterSeen = prefs.getBool('fistNoAdapterHintSeen') ?? false;
       _outputCase = (prefs.getInt('outputCase') ?? 0).clamp(0, 1);
       _decoder.chars = DecoderChars.values[(prefs.getInt(decoderCharsKey) ?? 0).clamp(0, DecoderChars.values.length - 1)];
     });
@@ -108,6 +177,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
     KeepScreenOn.disable();
     PracticeClock.instance.leave();
     _wpmSub?.cancel();
+    _edgeSub?.cancel();
     _keyerChannel.invokeMethod('stop');
     super.dispose();
   }
@@ -188,6 +258,37 @@ class _KeyerScreenState extends State<KeyerScreen> {
             ),
           ),
         ),
+
+        // Straight key on an adapter, analysis still off: point to the switch.
+        // Analysis on but no adapter: say why nothing is measured.
+        if (_keyerMode == 4)
+          ValueListenableBuilder<bool>(
+            valueListenable: KeyAdapterState.detected,
+            builder: (context, adapter, _) {
+              if (!adapter && _fistOn && !_fistNoAdapterSeen) {
+                return _tip('fist_no_adapter', () => openKeyAdapterManual(context),
+                    () => _closeTip('fistNoAdapterHintSeen', () => _fistNoAdapterSeen = true));
+              }
+              if (adapter && !_fistOn && !_fistHintSeen) {
+                return _tip('fist_hint', _openFistSettings,
+                    () => _closeTip('fistHintSeen', () => _fistHintSeen = true));
+              }
+              if (adapter && _fistOn) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: FistPanel(
+                      report: _fistReport,
+                      hints: _fistHints.shown,
+                      onReset: () => setState(() {
+                            _fist.clear();
+                            _fistHints.clear();
+                            _fistReport = _fist.report();
+                          })),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
 
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
