@@ -14,14 +14,6 @@ class FistPanel extends StatelessWidget {
   final List<FistHint> hints;
   final VoidCallback onReset;
 
-  static const _rows = [
-    (FistElement.dit, 'fist_dit'),
-    (FistElement.dah, 'fist_dah'),
-    (FistElement.elementGap, 'fist_gap_el'),
-    (FistElement.letterGap, 'fist_gap_letter'),
-    (FistElement.wordGap, 'fist_gap_word'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
@@ -57,8 +49,7 @@ class FistPanel extends StatelessWidget {
           else ...[
             // All rows stay: one without an element in the window (e.g. no word
             // gap lately) shows an empty track, it must not jump in and out.
-            for (final (kind, key) in _rows)
-              _BarRow(label: Strings.t(key), stat: report.stats[kind]),
+            FistBars(report: report),
             Padding(
               padding: const EdgeInsets.only(top: 6, right: 6),
               child: hints.isEmpty
@@ -82,6 +73,28 @@ class FistPanel extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The five bars (dit, dah, three gaps), shared by the CW Keyer panel and the
+/// Geben result sheet.
+class FistBars extends StatelessWidget {
+  const FistBars({super.key, required this.report});
+
+  final FistReport report;
+
+  static const _rows = [
+    (FistElement.dit, 'fist_dit'),
+    (FistElement.dah, 'fist_dah'),
+    (FistElement.elementGap, 'fist_gap_el'),
+    (FistElement.letterGap, 'fist_gap_letter'),
+    (FistElement.wordGap, 'fist_gap_word'),
+  ];
+
+  @override
+  Widget build(BuildContext context) => Column(children: [
+        for (final (kind, key) in _rows)
+          _BarRow(label: Strings.t(key), stat: report.stats[kind]),
+      ]);
 }
 
 class _BarRow extends StatelessWidget {

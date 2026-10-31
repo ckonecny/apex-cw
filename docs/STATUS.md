@@ -29,6 +29,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 
 ## Manual: pending for next release
 - Keyer screen (Straight key + adapter): new tip, the "Rhythm" panel and the Keyer settings row "Timing analysis in the CW Keyer" (#164, no shot yet; needs a VBand adapter).
+- Geben result page: new "Timing" card, only with a straight key on an adapter (#166, no shot yet; needs a VBand adapter).
 - `hear_result.png`, `echo_result2.png`: suggestion rows replaced by the training-goal card (Apply / Not now).
 - `hear_sheet4.png`: EMA smoothing slider gone, new section "Training goals".
 - `achievements.png`: new "Training goals" card; `home.png`: start-page note (only while not dismissed).
@@ -70,4 +71,7 @@ Built: tempo/spacing −/+ instead of prev/next in the audio trainer's media con
   (`shared_prefs/FlutterSharedPreferences.xml`) and `files/owntexts/`.
 
 ## Fist analyzer (#164, branch `feature/fist-analyzer`)
-Implemented and tested on the test phone with a VBand adapter; manual DE+EN and DECISIONS written. Open: commit/PR (`Closes #164`), measurement result as comment on #164. Details: `docs/DECISIONS.md`.
+PR #168 open (`Closes #164`), waiting for review/merge; then move this entry to the archive. Details: `docs/DECISIONS.md`.
+
+## Timing index in the Geben result (#166, branch `feature/echo-timing-index`, built on `feature/fist-analyzer`)
+PR #169 open (`Closes #166`, base `feature/fist-analyzer`, retarget to `main` once #168 is merged). Open: check on the test phone with the VBand adapter, review/merge; then move this entry to the archive.

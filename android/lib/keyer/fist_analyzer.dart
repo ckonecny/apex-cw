@@ -79,6 +79,9 @@ class FistAnalyzer {
     _downAt = null;
   }
 
+  /// The presses kept so far (start, end in ms), bounce already merged.
+  List<(int start, int end)> get presses => List.unmodifiable(_presses);
+
   /// One key edge; [timeMs] is the system's event time (any monotonic base).
   void add(bool down, int timeMs) {
     if (down) {
@@ -256,6 +259,19 @@ class FistHints {
       if ((_active[k] ?? 0) != 0) _dev[k] = dev;
     }
     _active.removeWhere((_, v) => v == 0);
+  }
+
+  /// One-shot remarks for a finished set (no hysteresis): every kind that is
+  /// [on] or more off the ideal, biggest miss first, at most [maxShown].
+  static List<FistHint> once(FistReport r) {
+    final hits = <(FistElement, double)>[];
+    for (final k in _minCount.keys) {
+      final s = r.stats[k];
+      if (s == null || s.count < _minCount[k]!) continue;
+      if (s.deviation.abs() >= on) hits.add((k, s.deviation));
+    }
+    hits.sort((a, b) => b.$2.abs().compareTo(a.$2.abs()));
+    return [for (final h in hits.take(maxShown)) FistHint(h.$1, h.$2 > 0)];
   }
 
   /// The remarks to show, biggest miss first.

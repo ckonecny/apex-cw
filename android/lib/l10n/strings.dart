@@ -136,6 +136,8 @@ class Strings {
     'fist_h_letterGap_long': ['Pause zwischen Zeichen zu lang', 'Space between characters too long'],
     'fist_h_wordGap_short': ['Wörter laufen zusammen – mehr Pause dazwischen', 'Words run together – leave more space between them'],
     'fist_h_wordGap_long': ['Pause zwischen Wörtern sehr lang', 'Space between words very long'],
+    'echo_fist_title': ['Timing', 'Timing'],
+    'echo_fist_skipped': ['{n} Wörter mit fehlendem oder zusätzlichem Element zählen hier nicht mit – sie stehen bei den Fehlern.', '{n} words with a missing or extra element are not counted here – they show up as errors.'],
     'fist_title': ['Rhythmus', 'Rhythm'],
     'fist_index_pending': ['Noch zu wenig Daten – einfach weiter tasten.', 'Not enough data yet – keep keying.'],
     'fist_reset': ['Zurücksetzen', 'Reset'],
