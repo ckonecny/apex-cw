@@ -1710,6 +1710,16 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
   gesetzt hast: je Ziel Start → jetzt → Ziel mit Balken, und die übernommenen
   Schritte mit Datum (auch Zurücknahmen und erreichte Ziele). Ein Tempoziel ist
   im Tempo-Diagramm eine gestrichelte Linie.
+- **Timing der Handtaste** (nur Geben, nur Blöcke mit Handtaste am Adapter):
+  ein Punkt pro Block. Du schaltest zwischen dem **Index** und einem Wert um
+  (Dah, Pause im Zeichen, Zeichenabstand, Wortabstand; als Verhältnis zur
+  Punktlänge, Ideal 3 / 1 / 3 / 7) und filterst nach **Tempo** (die Chips
+  erscheinen, sobald es Blöcke aus mehr als einem Tempobereich gibt). Gestrichelt:
+  sauberer Index (90) bzw. das ideale Verhältnis. Ein Block zählt ab 20
+  Elementen; Eingabe per Touch wird nicht gespeichert. Tippe auf einen Punkt für
+  Datum, Wert, Tempo und Elementzahl. Es bleiben die letzten 300 Blöcke
+  gespeichert, das Diagramm zeigt die letzten 60. Wie der Index entsteht, steht
+  unter [Handtaste: Rhythmus-Analyse](#handtaste-rhythmus-analyse).
 - **Trainierte Zeichen, Woche für Woche**: eine Heatmap, Zeichen untereinander
   (nach Art eingefärbt: Buchstaben, Ziffern, Satzzeichen/Prosigns – so sind
   O und 0 leicht zu unterscheiden),

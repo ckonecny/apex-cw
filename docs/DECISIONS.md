@@ -2401,4 +2401,11 @@ Card "Timing" between the trend line and the suggestions of the Geben result pag
 - **Shown from 20 elements** (`FistAnalyzer.minElements`) so the number means something; a short block shows no card.
 - **Tempo accuracy against the set WPM is not shown:** with a straight key the Geben speed is measured from the keying itself (no set value), so the sheet shows the keyed WPM only. Revisit if a set tempo is ever used with the adapter.
 - **Remarks** `FistHints.once`: the same thresholds and minimum counts as the live hints, without hysteresis/dwell (one finished set).
-- Long-term statistics stay #167.
+- Long-term statistics: #167 (next section).
+
+## Timing history (#167, 2026-10-31, branch `feature/timing-history`)
+One record per Geben block with a straight key on an adapter, `lib/content/timing_history.dart` (`TimingHistory`, SharedPreferences key `timingHistory`, JSON list, newest 300): time, keyed WPM, index, element count and the median ratio of dah / gap in character / letter gap / word gap. Written after the block from `EchoFistBlock.report()` when `_fistRated` and the report has an index (>= 20 elements), so a short block stores nothing.
+- **Adapter and touch kept apart by not storing touch at all.** Only `_fistRated` blocks are recorded; nothing else is mixed in, so no flag per record is needed.
+- **View:** card `TimingHistoryCard` in the Geben "Verlauf" tab (`ProgressView.timing`, only while there are records). One point per block (last 60), chips for index or one ratio, speed-band chips (<10, 10-15, 15-20, 20-25, 25+ WPM) shown with more than one band present. Dashed line: index 90 or the ideal ratio.
+- **Not stored:** dit spread and tempo accuracy. The dit is the unit itself (its median is 1 by definition), and there is no set tempo with a straight key (see the Geben section above).
+- Not tied to the time-range chips of the progress tab: blocks, not days, are the unit, and the history is short.

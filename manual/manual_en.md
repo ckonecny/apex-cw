@@ -1659,6 +1659,15 @@ practice is not included. Choose **4 weeks**, **12 weeks** or **All**:
   start → now → goal with a bar for each goal, and the applied steps with their
   date (including undos and reached goals). A speed goal is a dashed line in
   the speed chart.
+- **Straight-key timing** (Send only, only blocks with a straight key on an
+  adapter): one point per block. Switch between the **index** and one value
+  (dah, gap in character, letter gap, word gap; as a ratio to the dit length,
+  ideal 3 / 1 / 3 / 7) and filter by **speed** (the chips appear once there are
+  blocks from more than one speed band). Dashed: a clean index (90) or the ideal
+  ratio. A block counts from 20 elements; touch input is not stored. Tap a point
+  for date, value, speed and number of elements. The last 300 blocks are kept,
+  the chart shows the last 60. How the index comes about is described under
+  [Straight key: rhythm analysis](#straight-key-rhythm-analysis).
 - **Practised characters, week by week**: a heatmap, characters down, weeks across,
   the characters coloured by kind (letters, digits, punctuation/prosigns) so
   O and 0 are easy to tell apart,

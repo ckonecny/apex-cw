@@ -904,3 +904,6 @@ Tag `v1.7.0` = 4fffaa4 (Version 1.7.0+7). Done and archived with it: the "Manual
 
 ## Manual 1.8.0 (2026-10-21)
 All screenshots retaken (light theme, DE+EN), `settings3` from Store build 437 (commit 039560f); manual HTML/PDF built (`APEXCW_Handbuch_v1.8.0.*`, `APEXCW_Manual_v1.8.0.*`), READMEs linked. Closed test: build 437 published to Sia and the developer; app language now follows the phone.
+
+## Fist analyzer (#164) and Timing index in the Geben result (#166)
+Both merged to main (PR #168, PR #169, 2026-10-31). Fist analyzer: rhythm panel for the straight key in the CW Keyer. Geben result: "Timing" card with the index and breakdown for a straight key on an adapter. Details: `docs/DECISIONS.md`.

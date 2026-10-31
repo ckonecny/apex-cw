@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import '../content/char_stats.dart';
 import '../content/practice_log.dart' show PracticeDay;
 import '../content/progress_series.dart';
+import '../content/timing_history.dart';
 import '../content/training_goals.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/char_color.dart';
 import 'widgets/goal_suggestion_card.dart';
 import 'widgets/progress_charts.dart';
+import 'widgets/timing_history_card.dart';
 
 class ProgressView extends StatefulWidget {
   final Map<String, DayStat> days;
@@ -27,6 +29,9 @@ class ProgressView extends StatefulWidget {
   final List<LeverGoal> goals;
   final GoalValues? goalValues;
   final List<GoalStep> goalLog;
+
+  /// Timing records of blocks keyed with an adapter (Geben only, #167).
+  final List<TimingRecord> timing;
   const ProgressView({
     super.key,
     required this.days,
@@ -38,6 +43,7 @@ class ProgressView extends StatefulWidget {
     this.goals = const [],
     this.goalValues,
     this.goalLog = const [],
+    this.timing = const [],
   });
 
   @override
@@ -356,6 +362,7 @@ class _ProgressViewState extends State<ProgressView> {
       Text(Strings.t('pr_note_${g.name}'), style: mono12),
       const SizedBox(height: 12),
         ?goalsCard,
+        if (widget.timing.isNotEmpty) TimingHistoryCard(records: widget.timing),
         _card(
           c,
           Strings.t('pr_rate_title').replaceFirst('{u}', unit),
