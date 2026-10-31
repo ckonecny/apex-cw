@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import '../content/cw_content.dart';
 import 'fist_analyzer.dart';
 import 'morse_decoder.dart';
@@ -14,6 +12,7 @@ import 'morse_decoder.dart';
 /// "dah too short". The numbers are the same as in the CW Keyer panel
 /// ([FistReport]), measured against the player's own dit.
 class EchoFistBlock {
+  static final _prosign = RegExp(r'<([A-Z]+)>', caseSensitive: false);
   static final _codes = {
     for (final e in MorseDecoder.table.entries) e.value: e.key,
     ...kProsignCodes,
@@ -36,11 +35,11 @@ class EchoFistBlock {
     final out = <String?>[];
     var i = 0;
     while (i < target.length) {
-      final m = RegExp(r'^<([A-Z]+)>', caseSensitive: false).firstMatch(target.substring(i));
+      final m = _prosign.matchAsPrefix(target, i);
       final String tok;
       if (m != null) {
         tok = m.group(1)!.toUpperCase();
-        i += m.end;
+        i = m.end;
       } else {
         tok = target[i].toUpperCase();
         i++;
@@ -97,46 +96,14 @@ class EchoFistBlock {
     final dits = of(FistElement.dit);
     final dahs = of(FistElement.dah);
     final unit = dits.isNotEmpty
-        ? _median(dits)
+        ? fistMedian(dits)
         : dahs.isNotEmpty
-            ? _median(dahs) / 3
+            ? fistMedian(dahs) / 3
             : 0.0;
     if (unit <= 0 || _marks.isEmpty) {
       return FistReport(
           ditMs: 0, wpm: 0, index: null, stats: const {}, elements: _marks.length);
     }
-    const ideal = {
-      FistElement.dit: 1.0,
-      FistElement.dah: 3.0,
-      FistElement.elementGap: 1.0,
-      FistElement.letterGap: 3.0,
-      FistElement.wordGap: 7.0,
-    };
-    final stats = <FistElement, FistStat>{};
-    var sum = 0.0;
-    for (final k in FistElement.values) {
-      final v = of(k);
-      if (v.isEmpty) continue;
-      stats[k] = FistStat(k, v.length, _median(v) / unit, ideal[k]!,
-          minRatio: v.reduce(math.min) / unit, maxRatio: v.reduce(math.max) / unit);
-      for (final x in v) {
-        sum += (math.log(x / unit / ideal[k]!) / math.ln2).abs();
-      }
-    }
-    final miss = sum / _marks.length;
-    return FistReport(
-        ditMs: unit,
-        wpm: 1200 / unit,
-        index: _marks.length < FistAnalyzer.minElements
-            ? null
-            : (100 * (1 - miss / 0.5)).clamp(0, 100).round(),
-        stats: stats,
-        elements: _marks.length);
-  }
-
-  static double _median(List<double> v) {
-    final s = [...v]..sort();
-    final n = s.length;
-    return n.isOdd ? s[n ~/ 2] : (s[n ~/ 2 - 1] + s[n ~/ 2]) / 2;
+    return fistReport(_marks, unit);
   }
 }

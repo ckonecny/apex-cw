@@ -95,6 +95,16 @@ void main() {
     expect(r.stats[FistElement.dit]!.ratio, closeTo(1, 0.1));
   });
 
+  test('a long pause between phrases is not a word gap', () {
+    final seq = cq(60, reps: 6);
+    // 30 s of thinking after the 3rd repeat of "CQ"
+    final i = seq.length ~/ 2 - 1;
+    seq[i] = (seq[i].$1, 30000);
+    final r = keyed(seq).report();
+    expect(r.index, 100);
+    expect(r.stats[FistElement.wordGap]!.maxRatio, lessThan(8));
+  });
+
   test('too little data gives no index', () {
     final r = keyed(cq(60, reps: 1)).report(); // 8 presses + gaps < 20 elements
     expect(r.elements, lessThan(FistAnalyzer.minElements));

@@ -3177,7 +3177,10 @@ hat; mit Paddles ergibt sie keinen Sinn.
 
 Die App misst die Zeiten über den Zeitstempel des Tastendrucks vom System, nicht
 über ihre eigene Uhr. Kurze Kontaktprellungen des Adapters (unter 20 ms)
-werden herausgefiltert.
+werden herausgefiltert. Eine Pause von mehr als 15 Punktlängen (Nachdenken,
+Ende einer Phrase) zählt nicht als Abstand, eine Pause senkt die Zahl also
+nicht. Wird die Analyse ausgeschaltet oder der Adapter abgezogen, beginnt die
+Anzeige von vorn.
 
 Das Feld **Rhythmus** zeigt:
 

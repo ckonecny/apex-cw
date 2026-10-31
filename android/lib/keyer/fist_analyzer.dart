@@ -50,6 +50,47 @@ class FistReport {
   final int elements;
 }
 
+const _fistIdeal = {
+  FistElement.dit: 1.0,
+  FistElement.dah: 3.0,
+  FistElement.elementGap: 1.0,
+  FistElement.letterGap: 3.0,
+  FistElement.wordGap: 7.0,
+};
+
+/// Report from classified elements (kind, length in ms) measured against the
+/// player's dit [unit]; shared by the CW Keyer and the Geben block.
+FistReport fistReport(List<(FistElement, double)> marks, double unit) {
+  final stats = <FistElement, FistStat>{};
+  var sum = 0.0;
+  for (final k in FistElement.values) {
+    final v = [for (final m in marks) if (m.$1 == k) m.$2];
+    if (v.isEmpty) continue;
+    final ideal = _fistIdeal[k]!;
+    stats[k] = FistStat(k, v.length, fistMedian(v) / unit, ideal,
+        minRatio: v.reduce(math.min) / unit, maxRatio: v.reduce(math.max) / unit);
+    for (final x in v) {
+      sum += (math.log(x / unit / ideal) / math.ln2).abs();
+    }
+  }
+  // Mean miss in octaves: 0 -> 100, half an octave (~41 %) and worse -> 0.
+  final meanMiss = sum / marks.length;
+  return FistReport(
+      ditMs: unit,
+      wpm: 1200 / unit,
+      index: marks.length < FistAnalyzer.minElements
+          ? null
+          : (100 * (1 - meanMiss / 0.5)).clamp(0, 100).round(),
+      stats: stats,
+      elements: marks.length);
+}
+
+double fistMedian(List<double> v) {
+  final s = [...v]..sort();
+  final n = s.length;
+  return n.isOdd ? s[n ~/ 2] : (s[n ~/ 2 - 1] + s[n ~/ 2]) / 2;
+}
+
 /// Judges the rhythm of a straight-key fist from key edges.
 ///
 /// Everything is measured against the player's *own* dit, so a steady but
@@ -70,6 +111,9 @@ class FistAnalyzer {
 
   /// Elements needed before an index is shown.
   static const minElements = 20;
+
+  /// Gaps longer than this (in dits) are pauses and stay out of the report.
+  static const maxGapDits = 15;
 
   final List<(int start, int end)> _presses = [];
   int? _downAt;
@@ -134,60 +178,29 @@ class FistAnalyzer {
     final dits = sorted.where((x) => x <= split).toList();
     final dit = _median(dits);
 
-    final byKind = <FistElement, List<double>>{
-      for (final k in FistElement.values) k: <double>[],
-    };
-    for (final l in lengths) {
-      byKind[l <= split ? FistElement.dit : FistElement.dah]!.add(l);
-    }
+    // A gap this many dits long is a pause (thinking, end of a phrase), not
+    // keying: it would count as a huge word gap and wreck the index.
+    final marks = <(FistElement, double)>[
+      for (final l in lengths) (l <= split ? FistElement.dit : FistElement.dah, l),
+    ];
     for (final g in gaps) {
       final r = g / dit;
-      final kind = r < 2
-          ? FistElement.elementGap
-          : r < 5
-              ? FistElement.letterGap
-              : FistElement.wordGap;
-      byKind[kind]!.add(g);
+      if (r > maxGapDits) continue;
+      marks.add((
+        r < 2
+            ? FistElement.elementGap
+            : r < 5
+                ? FistElement.letterGap
+                : FistElement.wordGap,
+        g
+      ));
     }
-
-    const ideal = {
-      FistElement.dit: 1.0,
-      FistElement.dah: 3.0,
-      FistElement.elementGap: 1.0,
-      FistElement.letterGap: 3.0,
-      FistElement.wordGap: 7.0,
-    };
-    final stats = <FistElement, FistStat>{};
-    var sum = 0.0;
-    for (final k in FistElement.values) {
-      final v = byKind[k]!;
-      if (v.isEmpty) continue;
-      stats[k] = FistStat(k, v.length, _median(v) / dit, ideal[k]!,
-          minRatio: v.reduce(math.min) / dit, maxRatio: v.reduce(math.max) / dit);
-      for (final x in v) {
-        sum += (math.log(x / dit / ideal[k]!) / math.ln2).abs();
-      }
-    }
-    // Mean miss in octaves: 0 -> 100, half an octave (~41 %) and worse -> 0.
-    final meanMiss = sum / elements;
-    final index = elements < minElements
-        ? null
-        : (100 * (1 - meanMiss / 0.5)).clamp(0, 100).round();
-    return FistReport(
-        ditMs: dit,
-        wpm: 1200 / dit,
-        index: index,
-        stats: stats,
-        elements: elements);
+    return fistReport(marks, dit);
   }
 
   static double _mean(List<double> v) => v.reduce((a, b) => a + b) / v.length;
 
-  static double _median(List<double> v) {
-    final s = [...v]..sort();
-    final n = s.length;
-    return n.isOdd ? s[n ~/ 2] : (s[n ~/ 2 - 1] + s[n ~/ 2]) / 2;
-  }
+  static double _median(List<double> v) => fistMedian(v);
 }
 
 /// One plain-language remark about the fist.

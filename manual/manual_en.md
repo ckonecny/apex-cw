@@ -3071,7 +3071,9 @@ no sense.
 
 The app measures the times from the system's timestamp of the key press, not
 from its own clock. Short contact bounce of the adapter (under 20 ms) is
-filtered out.
+filtered out. A pause of more than 15 dit lengths (thinking, the end of a
+phrase) is not counted as a gap, so a break doesn't lower the number. When the
+analysis is switched off or the adapter is unplugged, the panel starts afresh.
 
 The **Rhythm** panel shows:
 

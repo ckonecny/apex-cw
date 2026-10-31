@@ -182,13 +182,13 @@ int? nextValue(LeverGoal g, GoalValues v) {
     GoalLever.wpm => now + 1,
     GoalLever.giveWpm => v.giveCap + 1,
   };
-  final (lo, hi) = goalRange(g.lever);
+  final (lo0, hi) = goalRange(g.lever);
+  // A Koch sequence shorter than the range's minimum must not invert it.
+  final newChars = g.lever == GoalLever.newChars;
+  final lo = newChars && v.kochTotal < lo0 ? v.kochTotal : lo0;
   final clamped = lowerIsHarder(g.lever)
       ? (next < t ? t : next).clamp(lo, hi)
-      : (next > t ? t : next).clamp(
-          lo,
-          g.lever == GoalLever.newChars ? v.kochTotal : hi,
-        );
+      : (next > t ? t : next).clamp(lo, newChars ? v.kochTotal : hi);
   final from = g.lever == GoalLever.giveWpm ? v.giveCap : now;
   return clamped == from ? null : clamped;
 }

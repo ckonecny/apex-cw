@@ -209,7 +209,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       .replaceAll(RegExp('[<>]'), '');
   String _attempt = '';
   // Timing index only for a straight key on an adapter (touch lags too much).
-  bool get _fistRated => _keyerMode == 4 && KeyAdapterState.detected.value;
+  bool get _fistRatedNow => _keyerMode == 4 && KeyAdapterState.detected.value;
+  // Fixed when the block starts, so an adapter pulled mid-block doesn't
+  // drop the block's timing.
+  bool _fistRated = false;
 
   // "repeats" in m32_v6.ino: how many times the CURRENT word has been
   // presented (first play counts as 1) — compared against Echo Repeats to
@@ -889,6 +892,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _wordCounter = 0;
     _blockResults.clear();
     _blockFist.clear();
+    _fistRated = _fistRatedNow;
     BreakReminder.dismiss();
     _blockPairs.clear();
     _showResult = false;

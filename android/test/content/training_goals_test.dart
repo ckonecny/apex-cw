@@ -87,6 +87,18 @@ void main() {
   });
 
   group('nextValue', () {
+    test('a Koch sequence of one character gives no step and no error', () {
+      const tiny = GoalValues(
+        koch: true,
+        kochLevel: 1,
+        kochTotal: 1,
+        interChar: 5,
+        interWord: 11,
+        wpm: 20,
+      );
+      expect(nextValue(const LeverGoal(GoalLever.newChars, target: 0), tiny), isNull);
+    });
+
     test('one step, never past the goal', () {
       expect(
         nextValue(const LeverGoal(GoalLever.charSpacing, target: 3), v),
