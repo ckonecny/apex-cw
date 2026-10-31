@@ -10,6 +10,10 @@ import 'widgets/tempo_spacing_section.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
+import '../keyer/echo_fist.dart';
+import '../keyer/fist_analyzer.dart';
+import 'widgets/echo_fist_card.dart';
+import 'widgets/fit_full.dart';
 import '../content/echo_timing.dart';
 import '../content/cw_content.dart';
 import '../content/block_history.dart';
@@ -84,6 +88,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   static const _symbolStream  = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
   static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
   StreamSubscription? _wpmSub;
+  static const _edgeStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_edges');
+  StreamSubscription? _edgeSub;
+  // Timing index (#166): edges of the current first attempt, and the block.
+  final _wordFist = FistAnalyzer();
+  final _blockFist = EchoFistBlock();
   int _measuredWpm = 15;   // straight key: measured speed, display and timeouts only
   static const _toneChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
@@ -198,6 +207,8 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       .replaceAll('<BT>', '=')
       .replaceAll(RegExp('[<>]'), '');
   String _attempt = '';
+  // Timing index only for a straight key on an adapter (touch lags too much).
+  bool get _fistRated => _keyerMode == 4 && KeyAdapterState.detected.value;
 
   // "repeats" in m32_v6.ino: how many times the CURRENT word has been
   // presented (first play counts as 1) — compared against Echo Repeats to
@@ -270,6 +281,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _wpmSub = _straightWpmStream.receiveBroadcastStream().listen((w) {
       if (mounted) setState(() => _measuredWpm = (w as int).clamp(5, 60));
     });
+    _edgeSub = _edgeStream.receiveBroadcastStream().listen((e) {
+      if (_state != _State.receiving || _repeats != 1) return;
+      final l = e as List;
+      _wordFist.add(l[0] == 1, l[1] as int);
+    }, onError: (_) {});
     _loadPrefs();
   }
 
@@ -818,6 +834,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     _paddleSub?.cancel();
     _genChannel.invokeMethod('setPaddleChoice', false);
     _wpmSub?.cancel();
+    _edgeSub?.cancel();
     _genChannel.invokeMethod('stop');
     _keyerChannel.invokeMethod('stop');
     // Don't leave the long echo word gap on the shared keyer (rule 2).
@@ -869,6 +886,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     InterferenceProfile.requestAmbient(this);
     _wordCounter = 0;
     _blockResults.clear();
+    _blockFist.clear();
     BreakReminder.dismiss();
     _blockPairs.clear();
     _showResult = false;
@@ -1038,6 +1056,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // so the two are audibly distinguishable — matches MorseDecoder::ON_()/
     // m32_v6.ino's KEY_START, both gated on morseState==echoTrainer there.
     _toneChannel.invokeMethod('setFreq', _answerPitch);
+    _wordFist.clear();
     _applyAnswerConfig();
     _keyerChannel.invokeMethod('start');
     setState(() => _state = _State.receiving);
@@ -1088,6 +1107,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     final ok = _attempt.trim().toUpperCase() == _targetPlain.toUpperCase();
     if (_repeats == 1) _firstAttempt = _attempt.trim();
     if (_repeats == 1) _applyBlockFeedback(_targetPlain, _attempt);
+    if (_repeats == 1 && _fistRated) _blockFist.addWord(_target, _wordFist.presses);
 
     setState(() => _state = ok ? _State.correct : _State.wrong);
     _confirmTone.play(_toneChannel, ok);

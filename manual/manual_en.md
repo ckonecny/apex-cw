@@ -969,6 +969,15 @@ After the last word of a block the result page appears:
 - **Accuracy** is the share of words correct on the **first attempt**. The
   colours are the same as in Listen. Below it come "x of y correct" and the
   [trend](#trend). As in Listen, there is no list of the single words.
+- **Timing** (only with a straight key on an adapter, e.g. VBand, and only
+  from about 20 keyed elements in the block): a number from 0 to 100 – how
+  evenly you keyed, measured against your own dit length. Slow but clean
+  keying is not punished. Tap it to open the breakdown with the same five
+  bars as the [rhythm analysis in the CW Keyer](#straight-key-rhythm-analysis)
+  and a hint in plain words. Because the target word is known, a dah keyed
+  as short as a dit counts as a timing error ("dahs too short"). Words with
+  a missing or extra element are left out – they are real errors and already
+  in the accuracy.
 - The **speed and spacing** card (at the bottom, above the buttons): sliders
   **Send** and **Listen** (with the effective speed in brackets), plus
   **Character spacing**. The answer pause is not on this screen but in the ⚙

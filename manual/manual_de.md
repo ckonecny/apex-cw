@@ -996,6 +996,16 @@ Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
 - **Trefferquote** – Anteil der Wörter, die beim **ersten Versuch** richtig
   waren (Farben wie bei Hören), darunter „x von y richtig“ und der
   [Trend](#trend). Wie bei Hören gibt es keine Liste der einzelnen Wörter.
+- **Timing** (nur mit Handtaste an einem Adapter, z. B. VBand, und erst ab
+  etwa 20 getasteten Elementen im Block): eine Zahl von 0 bis 100 – wie
+  gleichmäßig du getastet hast, gemessen an deiner eigenen Dit-Länge. Ein
+  langsames, aber sauberes Tasten wird nicht bestraft. Tippen öffnet die
+  Aufschlüsselung mit denselben fünf Balken wie die
+  [Rhythmus-Analyse im CW Keyer](#handtaste-rhythmus-analyse) und einem
+  Hinweis in einfachen Worten. Weil das Zielwort bekannt ist, zählt ein Dah,
+  das so kurz getastet wurde wie ein Dit, als Timing-Fehler („Dahs zu
+  kurz“). Wörter mit fehlendem oder zusätzlichem Element zählen nicht
+  mit – sie sind echte Fehler und stehen schon in der Trefferquote.
 - Die Karte **Tempo und Abstände** (unten, über den Schaltflächen): Regler
   **Geben** und **Hören** (mit dem effektiven Tempo in Klammern) sowie
   **Zeichenabstand**. Die Antwortpause steht nicht hier, sondern im ⚙-Blatt;

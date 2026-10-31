@@ -65,11 +65,13 @@ extension _EchoViews on _EchoTrainerScreenState {
             ),
           ]),
         ),
+        // The timing card shows its bars right on the page while they fit.
         Expanded(
-          child: ScrollHint(
-            center: true,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
+          child: LayoutBuilder(
+            builder: (context, box) => FitFull(
+              availableHeight: box.maxHeight,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              builder: (full) => Column(mainAxisSize: MainAxisSize.min, children: [
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: SizedBox(width: double.infinity, child: BreakHintCard()),
@@ -87,11 +89,20 @@ extension _EchoViews on _EchoTrainerScreenState {
                         .replaceFirst('{arrow}', _trend!.arrow),
                     style: TextStyle(fontSize: 13, color: c.textMuted)),
               ],
+              if (_fistRated && _blockFist.report().index != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                  child: EchoFistCard(
+                      report: _blockFist.report(),
+                      skipped: _blockFist.skipped,
+                      full: full),
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                     child: Column(children: _buildSuggestionRows(c, cs)),
               ),
             ]),
+            ),
           ),
         ),
         Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Column(children: [

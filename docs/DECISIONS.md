@@ -2392,3 +2392,13 @@ Optional rhythm panel in the CW Keyer for a straight key on an adapter (`lib/key
 - **Hints** (`FistHints`): medians, hysteresis (on at 0.26 octaves ≈ 20 %, off below 0.18 ≈ 13 %), dwell of 4 updates for any change, minimum counts per kind, at most two (largest miss first), none for dit (it is the unit). Reason: the text must not jump on outliers.
 - **Tips** use the existing lightbulb tip style: activation tip (adapter + straight, analysis off; tap → Settings, ✕ = `fistHintSeen`) and no-adapter note (analysis on, no adapter; tap → adapter manual, ✕ = `fistNoAdapterHintSeen`).
 - Not done on purpose: timeline of single elements (own issue), per-character alignment (#166), long-term statistics (#167).
+
+## Timing index in the Geben result (#166, 2026-10-31, branch `feature/echo-timing-index`)
+Card "Timing" between the trend line and the suggestions of the Geben result page (`lib/ui/widgets/echo_fist_card.dart`), tap opens a sheet with the five bars of #164 (`FistBars`), one-shot remarks and the keyed WPM. Model: `lib/keyer/echo_fist.dart` (`EchoFistBlock`), same numbers and index formula as the CW Keyer panel (`FistReport`), so both read alike.
+- **Only straight key (keyerMode 4) with `KeyAdapterState.detected`.** Paddles on the adapter are timed by the keyer, nothing to rate; touch lags. Edges come from `cw_straight_edges` (eventTime, bounce guard in `FistAnalyzer`), collected for the **first attempt** of each word only (repeats are not graded either).
+- **Alignment by element count.** The target gives each press its intended kind (dit/dah) and each gap its kind (inside a character / between characters / between words). Same number of presses as target elements: the word counts, even if a dah keyed like a dit made the answer wrong (timing error, "dahs too short"). Different number: real error (missing/extra element), left out of the index and counted as "skipped" (the sheet says so). No finer alignment (e.g. a swapped dit/dah of equal length) because the count is the only reliable criterion without guessing.
+- **Dit unit of the block** = median of the intended dits across all included words (a single word is too noisy); dahs only if the block has no dit.
+- **Shown from 20 elements** (`FistAnalyzer.minElements`) so the number means something; a short block shows no card.
+- **Tempo accuracy against the set WPM is not shown:** with a straight key the Geben speed is measured from the keying itself (no set value), so the sheet shows the keyed WPM only. Revisit if a set tempo is ever used with the adapter.
+- **Remarks** `FistHints.once`: the same thresholds and minimum counts as the live hints, without hysteresis/dwell (one finished set).
+- Long-term statistics stay #167.
