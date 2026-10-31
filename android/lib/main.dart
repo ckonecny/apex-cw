@@ -18,6 +18,10 @@ import 'util/share_intake.dart';
 import 'ui/home_screen.dart';
 import 'ui/widgets/app_ui.dart';
 
+import 'content/training_goals.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
@@ -33,6 +37,8 @@ void main() async {
   InterferenceProfile.pushSaved();
   await PracticeClock.instance.init();
   await FocusMode.init();
+  // Before any screen reads goals: today's behaviour becomes goals once.
+  await GoalStore.migrateIfNeeded(await SharedPreferences.getInstance());
   PracticeClock.instance.onIdle = () {
     Reminder.refresh();
     FocusMode.release();

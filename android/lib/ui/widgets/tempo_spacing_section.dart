@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../content/effective_wpm.dart';
+import '../../content/training_goals.dart';
 import '../../content/training_profile.dart';
 import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
@@ -27,6 +28,9 @@ import 'setting_rows.dart';
 /// sub line, otherwise the sub line stays so the block looks the same
 /// everywhere. [showUndo] switches off the
 /// "Changed … Undo" snackbar of the slider (it would cover buttons below).
+///
+/// [goals] adds a small "goal …" hint to the values that have a training
+/// goal (DECISIONS.md "Training goals"); the goals only read these values.
 /// One −/+ step of the character spacing, as on the row below: 3..45 dits,
 /// and the word gap is raised with it so it never drops below. Also used by
 /// the audio trainer's lock-screen buttons (#152).
@@ -43,6 +47,8 @@ class TempoSpacingSection extends StatelessWidget {
   final ValueChanged<int> onWpm;
   final void Function(int interChar, int interWord) onSpacing;
 
+  final Map<GoalLever, int> goals;
+
   const TempoSpacingSection({
     super.key,
     required this.wpm,
@@ -57,7 +63,13 @@ class TempoSpacingSection extends StatelessWidget {
     this.showUndo = true,
     this.leading,
     this.speedLabel,
+    this.goals = const {},
   });
+
+
+  String _hint(GoalLever l) => goals[l] == null
+      ? ''
+      : ' · ${Strings.t('tg_hint').replaceFirst('{t}', '${goals[l]}')}';
 
   void _step(int delta) {
     final (ic, iw) = stepCharSpacing(interChar, interWord, delta);
@@ -72,7 +84,7 @@ class TempoSpacingSection extends StatelessWidget {
     return Column(mainAxisSize: MainAxisSize.min, children: [
       if (leading != null) ...[leading!, const SettingsDivider()],
       LabeledSlider(
-        label: speedLabel ?? Strings.t('hc_speed'),
+          label: (speedLabel ?? Strings.t('hc_speed')) + _hint(GoalLever.wpm),
         display: showSpacing ? '$wpm WPM (eff. $eff)' : '$wpm WPM',
         value: wpm.toDouble(),
         min: TrainingProfile.minWpm.toDouble(),
@@ -90,7 +102,9 @@ class TempoSpacingSection extends StatelessWidget {
           _StepRow(
             label: Strings.t('settings_char_spacing'),
             value: '$interChar',
-            sub: showSub ? 'Dits · ${ditsToSeconds(interChar, wpm)}' : null,
+                  sub: showSub
+                      ? 'Dits · ${ditsToSeconds(interChar, wpm)}${_hint(GoalLever.charSpacing)}'
+                      : null,
             compact: compact,
             onMinus: interChar > 3 ? () => _step(-1) : null,
             onPlus: interChar < 45 ? () => _step(1) : null,
@@ -99,7 +113,9 @@ class TempoSpacingSection extends StatelessWidget {
             _StepRow(
               label: Strings.t('settings_word_spacing'),
               value: '$interWord',
-              sub: showSub ? 'Dits · ${ditsToSeconds(interWord, wpm)}' : null,
+                    sub: showSub
+                        ? 'Dits · ${ditsToSeconds(interWord, wpm)}${_hint(GoalLever.wordSpacing)}'
+                        : null,
               compact: compact,
               onMinus: interWord > 6 && interWord > interChar
                   ? () => onSpacing(interChar, interWord - 1)

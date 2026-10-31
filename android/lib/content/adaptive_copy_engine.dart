@@ -1,100 +1,38 @@
-// Pure-Dart, unit-testable adaptation logic for Adaptive Copy mode. See
-// docs/ADAPTIVE-COPY.md ("Decisions: weighting/recency questions", answered
-// 2026-09-21) for the design this implements:
-//   - EMA-based (not last-block-only, not full trend detection yet).
-//   - Blockquote-level tempo/spacing decision and per-character unlock
-//     decision are independent and apply simultaneously, never conflicting.
-// Takes generic inputs, not an AdaptiveCopyBody-shaped object, so Echo
-// Trainer's own "Adaptive Speed" can eventually call into the same tempo
-// logic instead of its own parallel implementation.
+// Pure-Dart, unit-testable thresholds and the Koch unlock rule shared by
+// Hören (Adaptive Copy) and Geben (Echo Trainer). Which setting a block may
+// change is decided by the training goals (training_goals.dart), which grade
+// a fixed window of the last items instead of the former block EMA
+// (DECISIONS.md "Training goals").
 import 'char_stats.dart' show CharStat;
 
 class AdaptiveCopyThresholds {
+  // Hit rate at or above which a step towards the active goal is offered,
+  // and below which undoing the last step is offered. Settings → Adaptive
+  // mode, the same for every goal.
   final double highThreshold;
   final double lowThreshold;
-  // Smoothing factor for the blockquote-level success-rate EMA. Per-char
-  // EMA smoothing is CharStat's own emaErrorRate (char_stats.dart), reused
-  // as-is rather than duplicated here.
-  final double blockEmaAlpha;
   // Minimum attempts a character needs (its last-N-occurrences window,
   // approximated by CharStatsStore's continuous per-char EMA plus this
   // attempts floor) before it's eligible to unlock the next Koch character.
   final int unlockOccurrences;
-  // Consecutive blocks the EMA must stay >= highThreshold before a
-  // spacing-up (tighten) step is proposed — the unlock decision already
-  // needs ~unlockOccurrences per character to fire, so a single-block EMA
-  // crossing let spacing-up fire far more readily than unlock, which is
-  // what made it feel like a constant nag during Koch progression (user
-  // feedback, 2026-09-22: "das verringern des abstands macht mir stress").
-  // spacing-down (widen) stays a same-block safety net, unaffected by this.
-  final int spacingUpConsecutiveBlocks;
 
   const AdaptiveCopyThresholds({
     this.highThreshold = 0.90,
     this.lowThreshold = 0.70,
-    this.blockEmaAlpha = 0.3,
     this.unlockOccurrences = 20,
-    this.spacingUpConsecutiveBlocks = 2,
   });
 }
 
-enum TempoStep { up, down, none }
-
-class TempoDecision {
-  final TempoStep spacingStep;
-  final TempoStep charSpeedStep;
-  const TempoDecision(this.spacingStep, this.charSpeedStep);
-
-  @override
-  String toString() => 'TempoDecision(spacing: $spacingStep, charSpeed: $charSpeedStep)';
-}
-
-// Drives the two adaptation signals for Adaptive Copy mode. Not tied to any
-// UI or persistence — the caller (AdaptiveCopyBody) owns loading/saving the
-// blockquote EMA and CharStatsStore, and passes results in per block.
 class AdaptiveCopyEngine {
   final AdaptiveCopyThresholds thresholds;
-  double _blockEma;
-  // Consecutive blocks so far with blockEma >= highThreshold — see
-  // AdaptiveCopyThresholds.spacingUpConsecutiveBlocks.
-  int _consecutiveHigh = 0;
 
-  // `initialBlockEma` lets a caller resume a persisted EMA across sessions;
-  // defaults to 1.0 (assume success) so the first block doesn't immediately
-  // read as a low-threshold miss before any data exists.
-  AdaptiveCopyEngine({AdaptiveCopyThresholds? thresholds, double initialBlockEma = 1.0})
-      : thresholds = thresholds ?? const AdaptiveCopyThresholds(),
-        _blockEma = initialBlockEma;
+  AdaptiveCopyEngine({AdaptiveCopyThresholds? thresholds})
+    : thresholds = thresholds ?? const AdaptiveCopyThresholds();
 
-  double get blockEma => _blockEma;
-
-  // Feeds one block's per-character (char, correct) results. Updates the
-  // blockquote-level EMA and returns the tempo/spacing decision for this
-  // block. `spacingAtCharSpeed` is true once spacing speed has caught up to
-  // char speed — only then does a further "up" also step char speed itself
-  // (see docs/ADAPTIVE-COPY.md "Success-rate high/low thresholds").
-  TempoDecision recordBlock(List<bool> results, {required bool spacingAtCharSpeed}) {
-    if (results.isEmpty) return const TempoDecision(TempoStep.none, TempoStep.none);
-    final successRate = results.where((r) => r).length / results.length;
-    _blockEma = thresholds.blockEmaAlpha * successRate + (1 - thresholds.blockEmaAlpha) * _blockEma;
-
-    if (_blockEma >= thresholds.highThreshold) {
-      _consecutiveHigh++;
-      final up = _consecutiveHigh >= thresholds.spacingUpConsecutiveBlocks;
-      return TempoDecision(
-          up ? TempoStep.up : TempoStep.none, up && spacingAtCharSpeed ? TempoStep.up : TempoStep.none);
-    }
-    _consecutiveHigh = 0;
-    if (_blockEma < thresholds.lowThreshold) {
-      return const TempoDecision(TempoStep.down, TempoStep.none);
-    }
-    return const TempoDecision(TempoStep.none, TempoStep.none);
-  }
-
-  // Per-character unlock decision (Koch level +1), independent of
-  // recordBlock's tempo decision — both can fire in the same block. A
-  // character counts only once it has enough occurrences (its last-N
-  // window); an empty or not-yet-attempted active set never unlocks.
+  // Per-character unlock decision (Koch level +1): drives the "new
+  // characters" goal. A character counts only once it has enough
+  // occurrences (its last-N window); an empty or not-yet-attempted active
+  // set never unlocks.
   bool shouldUnlockNextChar(Iterable<CharStat> activeChars) {
     if (activeChars.isEmpty) return false;
     return activeChars.every((s) =>

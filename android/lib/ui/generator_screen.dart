@@ -17,6 +17,7 @@ import '../util/practice_clock.dart';
 import '../l10n/strings.dart';
 import '../content/training_profile.dart';
 import '../content/charset_content.dart';
+import '../content/training_goals.dart';
 import 'widgets/charset_header.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'widgets/training_settings_sheet.dart';
@@ -68,6 +69,10 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
   // highlighted one (DECISIONS.md "Hören: typing mode").
   int _copyMode = 0;
 
+  // Training goal values for the hints in the tempo card.
+  Map<GoalLever, int> _goalHints = const {};
+  List<LeverGoal> _goalOrder = const [];
+
   @override
   void initState() {
     super.initState();
@@ -108,6 +113,16 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     });
     }
     _genChannel.invokeMethod('setKochChars', _activeKochChars);
+    final goals = (await GoalStore.open(TrainingProfile.hear)).order;
+    if (mounted) {
+      setState(() {
+        _goalOrder = goals;
+        _goalHints = {
+          for (final g in goals)
+            if (g.target != null) g.lever: g.target!,
+        };
+      });
+    }
     await _restorePracticeCharsAndBoost();
     // Sidetone pitch/envelope: left at whatever another screen last set otherwise.
     final pitch = p.getInt('pitch') ?? 600;
@@ -132,7 +147,8 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           typing: _practiceActive && _copyMode == 1,
           compact: true,
           showUndo: false,
-          onWpm: (v) {
+            goals: _goalHints,
+            onWpm: (v) {
             setState(() => _wpm = v);
             _savePrefs();
           },
@@ -159,7 +175,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
           TrainingSection.spacing,
           TrainingSection.wordSelection,
           TrainingSection.hearFlow,
-          TrainingSection.adaptive,
+        TrainingSection.goals,
         ]);
     if (mounted) await _loadPrefs();
   }
@@ -313,7 +329,8 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               kochLevel: _kochLevel,
               activeKochChars: _activeKochChars,
               kochLesson: _koch,
-              randomOption: _randomOption,
+                  goalOrder: _goalOrder,
+                  randomOption: _randomOption,
               wordLengthMax: _wordLengthMax,
               stopEachGroup: _stopEach,
               contentModeIndex: allowedContents(_choice.set).indexOf(_choice.content),
@@ -337,7 +354,16 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
               onSpacingChanged: (ic, iw) {
                 setState(() { _interCharSpace = ic; _interWordSpace = iw; });
                 _savePrefs();
-              },
+                  },
+                  onGroupLengthChanged: (v) async {
+                    setState(() {
+                      _groupLength = v;
+                      _groupLengthMax = v;
+                    });
+                    final pf = await TrainingProfile.open(TrainingProfile.hear);
+                    await pf.setInt('groupLength', v);
+                    await pf.setInt('groupLengthMax', v);
+                  },
               controller: _adaptiveController,
               practiceChars: joinCharTokens(
                   effectivePracticeChars(_choice.set, _practiceChars)),

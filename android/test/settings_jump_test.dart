@@ -26,7 +26,6 @@ void main() {
                   TrainingSection.spacing,
                   TrainingSection.wordSelection,
                   TrainingSection.hearFlow,
-                  TrainingSection.adaptive,
                 ]),
             child: const Text('open'),
           ),

@@ -13,33 +13,30 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       // (directly above the start buttons when there is room) and scrolls
       // with the rest on small phones instead of overflowing.
       return SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        // No bottom padding: the tempo block sits close to the start buttons.
+        padding: const EdgeInsets.only(top: 16),
         child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
+          constraints: BoxConstraints(minHeight: constraints.maxHeight - 16),
           // The card is judged against the room left above the tempo block, so
           // the two never need scrolling when the compact card would fit.
           child: FitOrCompact(
-            availableHeight: constraints.maxHeight - 32,
+            availableHeight: constraints.maxHeight - 16,
             below: widget.controls,
             builder: (compact) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              // Same side margin as the cards on the result page.
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                if (!compact && _weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
-                  _buildWeakCharsSection(context, scale: 1.2),
-                if (_mixups.isNotEmpty && !compact) ...[
-                  if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact))
-                    const SizedBox(height: 16),
-                  _buildMixupSection(context, scale: 1.2, small: _outlookHostsWeakChars(compact)),
-                ],
+                if (!compact) ..._boostCards(context),
                 if (_buildUnlockOutlook(context, compact: compact) case final outlook?) ...[
-                  if (_weakChars.isNotEmpty && !_outlookHostsWeakChars(compact) && !compact)
+                  if (!compact && (_mixups.isNotEmpty || _weakChars.isNotEmpty))
                     const SizedBox(height: 12),
                   outlook,
                 ],
                 // Tight: one row below the bar (in the full card the weak
                 // characters sit at its bottom too), chips in a sheet (#109).
                 if (compact && (_weakChars.isNotEmpty || _mixups.isNotEmpty)) ...[
-                  if (_outlookAvailable) const SizedBox(height: 12),
+                      if (_outlookAvailable || _goalCardAvailable)
+                        const SizedBox(height: 12),
                   _buildBoostSummary(context),
                 ],
               ]),
@@ -65,8 +62,9 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
   // start) and the result screen (boosts the block after that one), see
   // docs/ADAPTIVE-COPY.md. scale bumps text size for the result screen.
   Widget _buildWeakCharsSection(BuildContext context,
-      {double scale = 1, VoidCallback? onChanged}) {
+      {double scale = 1, VoidCallback? onChanged, Widget? extra}) {
     return WeakCharsCard(
+        extra: extra,
         chips: WeakCharChips(
             weak: _weakChars,
             excluded: _excludedBoostChars,
@@ -81,18 +79,44 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
     return SizedBox(
         width: double.infinity,
         child: AppCard(
-            child: MixupBoostChips(
-                small: small,
-                pairs: _mixups,
-                excluded: _excludedMixups,
-                outputCase: _outputCase,
-                scale: scale,
-                onToggle: (p) {
-                  _update(() {
-                    if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
-                  });
-                  onChanged?.call();
-                })));
+            child: _buildMixupChips(context,
+                scale: scale, small: small, onChanged: onChanged)));
+  }
+
+  Widget _buildMixupChips(BuildContext context,
+      {double scale = 1, bool small = false, VoidCallback? onChanged}) {
+    return MixupBoostChips(
+        small: small,
+        pairs: _mixups,
+        excluded: _excludedMixups,
+        outputCase: _outputCase,
+        scale: scale,
+        onToggle: (p) {
+          _update(() {
+            if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+          });
+          onChanged?.call();
+        });
+  }
+
+  // Weak characters and recurring mix-ups: one card with both blocks (less
+  // height than two cards), the same above every goal's "On the way to" card.
+  List<Widget> _boostCards(BuildContext context, {VoidCallback? onChanged}) {
+    if (_weakChars.isNotEmpty) {
+      return [
+        _buildWeakCharsSection(context,
+            scale: 1.0,
+            onChanged: onChanged,
+            extra: _mixups.isEmpty
+                ? null
+                : _buildMixupChips(context, scale: 1.0, onChanged: onChanged)),
+      ];
+    }
+    if (_mixups.isEmpty) return [];
+    return [
+      _buildMixupSection(context,
+          scale: 1.0, onChanged: onChanged),
+    ];
   }
 
   // Compact start view (#109): what is ticked in one row; a tap opens the sheet
@@ -105,8 +129,7 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
       ],
       pairs: _mixups.where((m) => !_excludedMixups.contains(m.pair)).length,
       onTap: () => showBoostSheet(context, cards: (refresh) => [
-            if (_weakChars.isNotEmpty) _buildWeakCharsSection(context, onChanged: refresh),
-            if (_mixups.isNotEmpty) _buildMixupSection(context, onChanged: refresh),
+            ..._boostCards(context, onChanged: refresh),
           ]),
     );
   }
@@ -528,24 +551,20 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
                       .replaceFirst('{arrow}', _trend!.arrow),
                   style: TextStyle(fontSize: 13, color: c.textMuted)),
             ],
-            if (weak.isNotEmpty && !_outlookHostsWeakChars(false)) ...[
+            if (weak.isNotEmpty || _mixups.isNotEmpty) ...[
               const SizedBox(height: 20),
-              _buildWeakCharsSection(context, scale: 1.2),
-            ],
-            if (_mixups.isNotEmpty) ...[
-              const SizedBox(height: 20),
-              _buildMixupSection(context, scale: 1.2, small: _outlookHostsWeakChars(false)),
+              ..._boostCards(context),
             ],
             if (_buildUnlockOutlook(context) case final outlook?) ...[
               const SizedBox(height: 20),
               outlook,
             ],
-            if (_hasSuggestions) ...[
+                if (_goal != null) ...[
               const SizedBox(height: 20),
-              Text(Strings.t('ac_suggestions_title'),
-                  style: TextStyle(fontSize: 13, color: c.textMuted)),
-              const SizedBox(height: 8),
-              ..._buildSuggestionRows(context),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildGoalCard(),
+                  ),
             ],
           ]),
         ),
@@ -564,92 +583,88 @@ extension _AdaptiveCopyViews on _AdaptiveCopyBodyState {
 
   // Motivation: what is still missing before the next Koch character
   // unlocks (mirrors AdaptiveCopyEngine.shouldUnlockNextChar: every active
-  // char needs enough attempts AND accuracy >= high threshold).
+  // char needs enough attempts AND accuracy >= high threshold). Only while
+  // new characters is the active training goal: otherwise no character
+  // unlocks, however good (DECISIONS.md "Training goals").
   bool get _outlookAvailable =>
       widget.kochLesson &&
+      activeGoal(widget.goalOrder, _goalValues)?.lever == GoalLever.newChars &&
       widget.kochLevel < widget.activeKochChars.length &&
-      !_unlockedThisBlock &&
+      !(_goal?.lever == GoalLever.newChars &&
+          _goalState == GoalCardState.open) &&
       (_engine?.thresholds ?? _startThresholds) != null &&
       kochActiveChars(widget.kochLevel, widget.activeKochChars).isNotEmpty;
 
-  // True when the unlock card shows the weak characters itself (as the
-  // tappable chips of its "Accuracy below X %" row), so the separate weak
-  // characters card is left out. Not in the compact card (no lists there)
-  // nor when the card isn't shown at all.
-  bool _outlookHostsWeakChars(bool compact) =>
-      !compact && _weakChars.isNotEmpty && _outlookAvailable;
+  // The active goal when it is not new characters: its own "On the way to"
+  // card (the unlock card belongs to new characters). Not while the open
+  // suggestion for that very goal is on the page.
+  LeverGoal? get _otherActiveGoal {
+    final g = activeGoal(widget.goalOrder, _goalValues);
+    if (g == null || g.lever == GoalLever.newChars) return null;
+    if (_goal?.lever == g.lever &&
+        !_goal!.back &&
+        _goalState == GoalCardState.open) {
+      return null;
+    }
+    return g;
+  }
+
+  bool get _goalCardAvailable =>
+      _otherActiveGoal != null &&
+      (_engine?.thresholds ?? _startThresholds) != null;
 
   Widget? _buildUnlockOutlook(BuildContext context, {bool compact = false}) {
+    if (_goalCardAvailable) {
+      final v = _goalValues;
+      return GoalProgressCard(
+        kind: TrainingProfile.hear,
+        goal: _otherActiveGoal!,
+        values: v,
+        window: _goalWinSig == v.signature ? _goalWin : const [],
+        high: (_engine?.thresholds ?? _startThresholds)!.highThreshold,
+        compact: compact,
+      );
+    }
     if (!_outlookAvailable) return null;
     return UnlockOutlookCard(
+      kind: TrainingProfile.hear,
+      goal: activeGoal(widget.goalOrder, _goalValues)!,
+      values: _goalValues,
       next: _displayChar(widget.activeKochChars[widget.kochLevel]),
       chars: kochActiveChars(widget.kochLevel, widget.activeKochChars),
       stats: _charStats.stats,
       thresholds: (_engine?.thresholds ?? _startThresholds)!,
       display: _displayChar,
-      weak: _weakChars,
-      excluded: _excludedBoostChars,
-      onToggle: (ch) => _toggleWeakChar(ch, null),
       compact: compact,
     );
   }
 
-  // Result screen sits in a mainAxisSize.min Center column, so rows here
-  // get loose (not stretched) width constraints — size explicitly instead
-  // of relying on Expanded, which would need a bounded incoming width.
-  List<Widget> _buildSuggestionRows(BuildContext context) {
-    final rowWidth = MediaQuery.of(context).size.width - 32;
-    final rows = <Widget>[];
-    // Unlock goes first and stands out (star icon, bolder styling) — it's a
-    // bigger deal than a tempo/spacing nudge, and names the actual character
-    // so it's clear what's being proposed, not just that "something" unlocked.
-    if (_unlockedThisBlock) {
-      final nextChar = widget.kochLevel < widget.activeKochChars.length
-          ? widget.activeKochChars[widget.kochLevel]
-          : null;
-      rows.add(SuggestionRow(
-        width: rowWidth,
-        accepted: _acceptUnlock,
-        onToggle: (v) => _update(() => _acceptUnlock = v),
-        label: nextChar == null
-            ? Strings.t('ac_char_unlocked')
-            : '${Strings.t('ac_char_unlocked')}: "${_displayChar(nextChar)}"',
-        highlight: true,
-        // Lets the user hear the brand-new character right here, without
-        // leaving Adaptive Copy for the separate Learn New Chr screen — user
-        // feedback 2026-09-22: they want to stay "im Lern-Flow". Plays
-        // in-place over the same channels _startBlock() already uses.
-        onPreview: nextChar == null || _previewingNewChar ? null : () => _previewNewChar(nextChar),
-      ));
-    }
-    if (_pendingWpm != null) {
-      rows.add(SuggestionRow(
-        width: rowWidth,
-        accepted: _acceptCharSpeed,
-        onToggle: (v) => _update(() => _acceptCharSpeed = v),
-        label: '${Strings.t('ac_char_speed_up')}: $_wpmBefore→${_acceptCharSpeed ? _pendingWpm : _wpmBefore}',
-        onDecrement: _acceptCharSpeed ? () => _stepPendingWpm(-1) : null,
-        onIncrement: _acceptCharSpeed ? () => _stepPendingWpm(1) : null,
-      ));
-    }
-    if (_pendingInterChar != null) {
-      final spacingWpm = (_acceptCharSpeed && _pendingWpm != null) ? _pendingWpm! : (_wpmBefore ?? widget.wpm);
-      final label = _lastDecision!.spacingStep == TempoStep.up
-          ? Strings.t('ac_spacing_up')
-          : Strings.t('ac_spacing_down');
-      rows.add(SuggestionRow(
-        width: rowWidth,
-        accepted: _acceptSpacing,
-        onToggle: (v) => _update(() => _acceptSpacing = v),
-        label: '$label: $_interCharBefore→${_acceptSpacing ? _pendingInterChar : _interCharBefore} '
-            '(${ditsToSeconds(_acceptSpacing ? _pendingInterChar! : _interCharBefore!, spacingWpm)})'
-            '${_typing ? '' : ' / '
-            '$_interWordBefore→${_acceptSpacing ? _pendingInterWord : _interWordBefore} '
-            '(${ditsToSeconds(_acceptSpacing ? _pendingInterWord! : _interWordBefore!, spacingWpm)})'}',
-        onDecrement: _acceptSpacing ? () => _stepPendingSpacing(-1) : null,
-        onIncrement: _acceptSpacing ? () => _stepPendingSpacing(1) : null,
-      ));
-    }
-    return rows;
+  Widget _buildGoalCard() {
+    final s = _goal!;
+    final next =
+        s.lever == GoalLever.newChars &&
+            widget.kochLevel < widget.activeKochChars.length &&
+            _goalState == GoalCardState.open
+        ? widget.activeKochChars[widget.kochLevel]
+        : null;
+    return GoalSuggestionCard(
+      suggestion: s,
+      kind: TrainingProfile.hear,
+      state: _goalState,
+      onAccept: _acceptGoal,
+      onLater: _snoozeGoal,
+      newChar:
+          s.lever == GoalLever.newChars &&
+              s.from < widget.activeKochChars.length
+          ? _displayChar(widget.activeKochChars[s.from])
+          : null,
+      // Lets the user hear the brand-new character right here, without
+      // leaving Adaptive Copy (user feedback 2026-09-22: "im Lern-Flow").
+      onPreview: next == null || _previewingNewChar
+          ? null
+          : () => _previewNewChar(next),
+      reached: _goalReached,
+      nextGoal: _goalNext,
+    );
   }
 }

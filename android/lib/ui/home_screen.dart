@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
 import '../content/charset_content.dart';
 import '../content/daily_goal.dart';
+import '../content/training_goals.dart';
+import 'training_goals_screen.dart';
 import '../util/practice_clock.dart';
 import 'daily_goal_card.dart';
 import 'goals_screen.dart';
@@ -40,6 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
   BlockTrend? _trend;
   DailyGoalSettings _goal = DailyGoalSettings();
 
+  // Training goals card (GoalStore.homeCardKey): 1 tip, 2 "new", 0 none.
+  int _goalsCard = 0;
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final hearTrend = trendOf(await const BlockHistory('hear').load(p));
     final trend = trendOf(await const BlockHistory('echo').load(p));
     final goal = await DailyGoalSettings.load(p);
+    final goalsCard = p.getInt(GoalStore.homeCardKey) ?? 0;
     if (!mounted) return;
     setState(() {
       _hear = hear;
@@ -77,7 +83,15 @@ class _HomeScreenState extends State<HomeScreen> {
       _hearTrend = hearTrend;
       _trend = trend;
       _goal = goal;
+      _goalsCard = goalsCard;
     });
+  }
+
+  // The X: the card never comes back.
+  Future<void> _dismissGoalsCard() async {
+    setState(() => _goalsCard = 0);
+    final p = await SharedPreferences.getInstance();
+    await p.setInt(GoalStore.homeCardKey, 0);
   }
 
   Future<void> _open(Widget screen) async {
@@ -129,7 +143,11 @@ class _HomeScreenState extends State<HomeScreen> {
           final fs = f < 1 ? 1.0 : f; // the ring itself does not shrink
           final fullH = 100 * fs, compactH = 56 * fs;
           final compactGoal = showGoal && box.maxHeight < base + fullH + 12;
-          final needed = base + (showGoal ? (compactGoal ? compactH : fullH) + 12 : 0);
+              final tipH = _goalsCard == 0 ? 0.0 : 64 * fs + 12;
+              final needed =
+                  base +
+                  tipH +
+                  (showGoal ? (compactGoal ? compactH : fullH) + 12 : 0);
           final scroll = box.maxHeight < needed;
           Widget card(Widget w) => scroll ? SizedBox(height: minCard, child: w) : Expanded(child: w);
           final column = Column(
@@ -143,7 +161,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   compact: compactGoal,
                   onTap: () => _open(const GoalsScreen()),
                 ),
-              ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  if (_goalsCard != 0) ...[
+                    _GoalsTipCard(
+                      news: _goalsCard == 2,
+                      onTap: () => _open(const TrainingGoalsScreen()),
+                      onClose: _dismissGoalsCard,
+                    ),
               const SizedBox(height: 12),
             ],
             _SectionLabel(Strings.t('home_section_practice')),
@@ -279,3 +305,67 @@ class _ModeCard extends StatelessWidget {
     );
   }
 }
+
+/// Start page note on the training goals: a tip for new users, a "new"
+/// notice after the update (their old proposals became goals). The X
+/// dismisses it for good; setting a goal ends the tip too.
+class _GoalsTipCard extends StatelessWidget {
+  final bool news;
+  final VoidCallback onTap, onClose;
+  const _GoalsTipCard({
+    required this.news,
+    required this.onTap,
+    required this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Material(
+      color: c.accent.withValues(alpha: 0.12),
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 10, 4, 10),
+          child: Row(
+            children: [
+              Icon(Icons.flag_outlined, color: c.accent),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      Strings.t(news ? 'tg_new_title' : 'tg_tip_title'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: c.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      Strings.t(news ? 'tg_new_body' : 'tg_tip_body'),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 12, color: c.textMuted),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.close, size: 20, color: c.textMuted),
+                tooltip: Strings.t('tg_close'),
+                onPressed: onClose,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
