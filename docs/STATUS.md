@@ -74,4 +74,4 @@ Built: tempo/spacing −/+ instead of prev/next in the audio trainer's media con
 PR #168 open (`Closes #164`), waiting for review/merge; then move this entry to the archive. Details: `docs/DECISIONS.md`.
 
 ## Timing index in the Geben result (#166, branch `feature/echo-timing-index`, built on `feature/fist-analyzer`)
-Implemented, analyzer and tests green; manual DE+EN and DECISIONS written. Open: check on the test phone with the VBand adapter (a block with a straight key: card "Timing", tap → bars), commit/PR (`Closes #166`, base `feature/fist-analyzer` until #168 is merged).
+PR #169 open (`Closes #166`, base `feature/fist-analyzer`, retarget to `main` once #168 is merged). Open: check on the test phone with the VBand adapter, review/merge; then move this entry to the archive.
