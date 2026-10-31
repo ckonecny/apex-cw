@@ -28,6 +28,13 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 - **Manual**: checked at v1.7.0 (no old icon in cover/info).
 
 ## Manual: pending for next release
+- `hear_result.png`, `echo_result2.png`: suggestion rows replaced by the training-goal card (Apply / Not now).
+- `hear_sheet4.png`: EMA smoothing slider gone, new section "Training goals".
+- `achievements.png`: new "Training goals" card; `home.png`: start-page note (only while not dismissed).
+- `hear_progress.png`, `echo_progress.png`: "Your goals" card once goals are set.
+- `hear_sheet4.png` and the Geben sheet shot: the "Adaptive mode" section is gone, the sheet ends with "Training goals" (list + "When does a suggestion come?").
+- Hören/Geben start and result views (`hear_start*`, `hear_result*`, `echo_*`): the "On the way to" card now follows any active goal (goal bar + readiness bar), not just new characters. Readiness bar now with a status word; tap opens a numbers sheet (new, no shot yet).
+- New, not yet in the manual: a shot of the training goals screen (Hören tab).
 - `audio_trainer.png`, `audio_trainer_run.png` (both languages): umlaut note removed from the start view; solution now in character-type colors (shots of 1.10.0 still show the old view).
 
 ## Prosign set (#156, in 1.10.0)

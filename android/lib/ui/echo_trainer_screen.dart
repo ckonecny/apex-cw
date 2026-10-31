@@ -18,7 +18,9 @@ import '../content/mixup_suggest.dart';
 import '../content/mixup_trend.dart';
 import '../content/adaptive_copy_engine.dart';
 import '../content/echo_suggestions.dart';
-import 'adaptive_copy_body.dart' show SuggestionRow;
+import '../content/training_goals.dart';
+import 'widgets/goal_progress_card.dart';
+import 'widgets/goal_suggestion_card.dart';
 import 'char_stats_screen.dart';
 import 'char_practice_screen.dart';
 import '../content/training_profile.dart';
@@ -156,12 +158,19 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   // Pushed to the shared generator singleton on every prompt (CLAUDE.md rule 2).
   int  _interCharSpace = 28;
   int  _interWordSpace = 40;
-  // Widening cap for block suggestions: spacing as loaded/set in the sheet.
-  int  _capInterChar = 28;
-  EchoSuggestions? _suggestions;
-  // Proposals shown on the result page. Accepting has no effect yet (6d).
-  int? _pendWpm, _pendAnswer, _pendIC;
-  bool _accUnlock = true, _accWpm = true, _accSpacing = true, _accAnswer = false;
+  // Result page: weak characters of the finished block (lifetime EMA) and
+  // the training-goal proposal with what became of it.
+  Map<String, double>? _resultWeak;
+  GoalSuggestion? _goal;
+  GoalCardState _goalState = GoalCardState.open;
+  bool _goalReached = false;
+  GoalLever? _goalNext;
+  // Training goal values for the hints in the tempo card.
+  Map<GoalLever, int> _goalHints = const {};
+  List<LeverGoal> _goalOrder = const [];
+  // Readiness window (first-try words) and the settings it belongs to.
+  List<bool> _goalWin = const [];
+  String? _goalWinSig;
   final Set<String> _excludedBoost = {};
   // Recurring mix-ups offered for the same boost (#102), pairs left out by the user.
   List<MixupTrend> _mixups = [];
@@ -278,11 +287,14 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           TrainingSection.spacing,
           TrainingSection.wordSelection,
           TrainingSection.echoFlow,
-        ]);
+        TrainingSection.goals,
+      ],
+    );
     if (mounted) await _loadPrefs();
   }
 
   Future<void> _loadPrefs() async {
+    _echoEngine = null; // thresholds may have changed in the settings sheet
     final p = await SharedPreferences.getInstance();
     final pf = await TrainingProfile.open(TrainingProfile.echo);
     if (mounted) {
@@ -296,7 +308,6 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _answerWpmMax   = kGiveWpmCap(p.getInt('echoAnswerWpmMax') ?? 0);
       _interCharSpace = (pf.getInt('interCharSpace') ?? 28).clamp(3, 45);
       _interWordSpace = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
-      _capInterChar = _interCharSpace;
       _practiceChars  = parsePracticeChars(pf.getString('practiceChars') ?? '');
       _boostLevel     = (pf.getInt('boostLevel') ?? 0).clamp(0, 2);
       _choice         = CharsetChoice.load(pf);
@@ -319,8 +330,9 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       _callRegionOpt   = (p.getInt('callRegionOpt') ?? 0).clamp(0, 7);
       _callCommonOnly  = p.getBool('callCommonOnly') ?? true;
       _outputCase      = (p.getInt('outputCase') ?? 0).clamp(0, 1);
-      _highThreshold   = (p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99) / 100;
-      _unlockOccurrences = p.getInt('adaptiveUnlockOccurrences') ?? 20;
+      final rules      = goalRules(p, 'echo');
+      _highThreshold   = rules.high;
+      _unlockOccurrences = rules.unlockOccurrences;
       _groupLength     = pf.getInt('groupLength')    ?? 5;
       _groupLengthMax  = (pf.getInt('groupLengthMax') ?? _groupLength).clamp(_groupLength, 8);
       _wordLengthMin   = (pf.getInt('wordLengthMin') ?? 0).clamp(0, 8);
@@ -334,7 +346,19 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
     _genChannel.invokeMethod('setKochChars', _activeKochChars);
     await _charStats.load(p);
-    if (mounted) setState(() {});
+    final goalStore = await GoalStore.open(TrainingProfile.echo);
+    final goals = goalStore.order;
+    if (mounted) {
+      setState(() {
+        _goalOrder = goals;
+        _goalWin = goalStore.window;
+        _goalWinSig = goalStore.windowSignature;
+        _goalHints = {
+          for (final g in goals)
+            if (g.target != null) g.lever: g.target!,
+        };
+      });
+    }
   }
 
   // Long press on a chip: select it (as a tap would), then open the settings
@@ -367,7 +391,29 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   // Char-based content only: weak characters and mix-up pairs need a char set
   // (Koch lesson · Random, where the boost works).
-  bool get _boostApplies => _choice.set != CharSet.practice && _choice.content == ContentKind.random;
+  // The "On the way to" card: Koch with characters left, and new characters
+  // is the active training goal (otherwise none unlocks, however good).
+  bool get _newCharsAhead =>
+      _boostApplies &&
+      _koch &&
+      _kochLevel < _activeKochChars.length &&
+      activeGoal(_goalOrder, _goalValues)?.lever == GoalLever.newChars;
+
+  // The active goal when it is not new characters: it gets its own "On the
+  // way to" card (not while its open suggestion is on the result page).
+  LeverGoal? get _otherActiveGoal {
+    final g = activeGoal(_goalOrder, _goalValues);
+    if (g == null || g.lever == GoalLever.newChars) return null;
+    if (_goal?.lever == g.lever &&
+        !_goal!.back &&
+        _goalState == GoalCardState.open) {
+      return null;
+    }
+    return g;
+  }
+
+  bool get _boostApplies =>
+      _choice.set != CharSet.practice && _choice.content == ContentKind.random;
 
   // The characters a boosted draw can pick from: the active Koch set, or with
   // all characters those seen so far (as in Listen).
@@ -401,63 +447,89 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _startSession();
   }
 
-  // Block end: feed the first-try results to the adaptive engine and keep
-  // the proposals for the result page (docs/archive/training/P6). Nothing is applied.
+  // The current values as the training goals read them.
+  GoalValues get _goalValues => GoalValues(
+    koch: _koch,
+    kochLevel: _kochLevel,
+    kochTotal: _activeKochChars.length,
+    interChar: _interCharSpace,
+    interWord: _interWordSpace,
+    groups: const {0, 4}.contains(_choice.engine.mode),
+    groupLength: _groupLength,
+    wpm: _wpm,
+    giveCap: _answerWpmMax,
+    straightKey: _keyerMode == 4,
+  );
+
+  // Block end: first-try results go into the training-goal window, the
+  // proposal is kept for the result page (DECISIONS.md "Training goals").
+  // Nothing is applied here.
   Future<void> _computeSuggestions() async {
     _boostChars = [];   // a boost lasts one block
     final p = await SharedPreferences.getInstance();
     _echoEngine ??= AdaptiveCopyEngine(
       thresholds: AdaptiveCopyThresholds(
-        highThreshold: ((p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99)) / 100,
-        lowThreshold: (p.getInt('adaptiveLowThresholdPct') ?? 70) / 100,
-        blockEmaAlpha: (p.getInt('adaptiveEmaAlphaPct') ?? 30) / 100,
-        unlockOccurrences: p.getInt('adaptiveUnlockOccurrences') ?? 20,
+        highThreshold: goalRules(p, 'echo').high,
+        lowThreshold: goalRules(p, 'echo').low,
+        unlockOccurrences: goalRules(p, 'echo').unlockOccurrences,
       ),
-      initialBlockEma: p.getDouble('echoBlockEma') ?? 1.0,
     );
+    final th = _echoEngine!.thresholds;
     await _charStats.load(p);
     // Char-based content only: unlock check and weak chars need a char set.
     final charContent = _boostApplies;
-    final s = evaluateEchoBlock(
-      _echoEngine!,
-      EchoSuggestionInput(
-        firstTry: _blockResults.map((r) => r.outcome == WordOutcome.first).toList(),
-        wpm: _wpm,
-        answerWpmMax: _answerWpmMax,
-        interCharSpace: _interCharSpace,
-        maxInterCharSpace: max(_capInterChar, _interCharSpace),
-        kochLevel: _koch ? _kochLevel : 0,
-        kochTotal: _koch ? _activeKochChars.length : 0,
-        activeChars: charContent ? _boostCandidates : const [],
-        stats: _charStats,
-        straightKey: _keyerMode == 4,
-      ),
+    final firstTry = _blockResults
+        .map((r) => r.outcome == WordOutcome.first)
+        .toList();
+    // One entry per target character: right up to the first wrong one of the
+    // first attempt; a word without a first try counts fully wrong. Feeds the
+    // goal window and the break reminder.
+    final chars = <bool>[
+      for (final r in _blockResults)
+        for (var i = 0; i < r.target.length; i++)
+          r.outcome == WordOutcome.first ||
+              (r.firstWrongIndex >= 0 && i < r.firstWrongIndex),
+    ];
+    final unlockReady =
+        charContent &&
+        _koch &&
+        _kochLevel < _activeKochChars.length &&
+        _echoEngine!.shouldUnlockNextChar(
+          _boostCandidates.map((c) => _charStats.stats[c] ?? CharStat()),
+        );
+    final goals = await GoalStore.open(TrainingProfile.echo);
+    final goal = await goals.afterBlock(
+      results: chars,
+      values: _goalValues,
+      high: th.highThreshold,
+      low: th.lowThreshold,
+      unlockReady: unlockReady,
+      now: DateTime.now(),
     );
-    await p.setDouble('echoBlockEma', s.blockEma);
     final n = _blockResults.length;
-    final echoRate = n == 0 ? 0.0 : _blockResults.where((r) => r.outcome == WordOutcome.first).length / n;
+    final echoRate = n == 0 ? 0.0 : firstTry.where((r) => r).length / n;
     _trend = await const BlockHistory('echo').record(p, echoRate);
     final interf = await InterferenceProfile.load();
     if (n > 0) {
       PracticeClock.instance.block('echo', echoRate, interference: interf.enabled);
       // Everything that sets the difficulty of this block (issue #5).
-      // One entry per target character: right up to the first wrong one of the
-      // first attempt; a word without a first try counts fully wrong.
-      final chars = <bool>[
-        for (final r in _blockResults)
-          for (var i = 0; i < r.target.length; i++)
-            r.outcome == WordOutcome.first || (r.firstWrongIndex >= 0 && i < r.firstWrongIndex),
-      ];
       BreakReminder.onBlock('echo', chars,
           '$_wpm|$_answerWpmMax|$_interCharSpace|$_interWordSpace|${_koch ? _kochLevel : 0}'
           '|${_choice.set.name}|${_choice.content.name}|$_keyerMode|${interf.difficultySignature}');
     }
-    _suggestions = s;
-    _pendWpm = s.newWpm;
-    _pendAnswer = s.newAnswerWpmMax;
-    _pendIC = s.newInterChar;
-    _accUnlock = _accWpm = _accSpacing = true;
-    _accAnswer = false;
+    _resultWeak = charContent
+        ? weakCharsLifetime(
+            _charStats,
+            _boostCandidates,
+            threshold: weakCharErrorThreshold(th.highThreshold),
+          )
+        : const {};
+    _goal = goal;
+    _goalWin = goals.window;
+    _goalWinSig = goals.windowSignature;
+    _goalState = GoalCardState.open;
+    _goalReached = false;
+    _goalNext = null;
     _excludedBoost.clear();
     _excludedMixups.clear();
     _mixups = charContent
@@ -467,37 +539,72 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
 
   AdaptiveCopyEngine? _echoEngine;
 
-  // Result page -> next block: writes what is still ticked into the profile
-  // / prefs and sets the boost set (docs/archive/training/P6, step 6d). Native
-  // values are pushed by _applyPromptConfig/_applyAnswerConfig at start.
-  Future<void> _applyAccepted({required bool boost}) async {
-    final s = _suggestions;
-    if (s == null) return;
-    final p = await SharedPreferences.getInstance();
-    final pf = await TrainingProfile.open(TrainingProfile.echo);
-    if (s.unlockNext && _accUnlock && _kochLevel < _activeKochChars.length) {
-      _kochLevel++;
-      PracticeClock.instance.milestone(MilestoneKind.kochEcho, _kochLevel);
-    }
-    if (_pendWpm != null && _accWpm) {
-      _wpm = _pendWpm!;
-      PracticeClock.instance.milestone(MilestoneKind.wpmEcho, _wpm, onlyIfHigher: true);
-    }
-    if (_pendIC != null && _accSpacing) {
-      _interCharSpace = _pendIC!;
-      await pf.setInt('interCharSpace', _interCharSpace);
-    }
-    if (_pendAnswer != null && _accAnswer) {
-      _answerWpmMax = _pendAnswer!;
-      await p.setInt('echoAnswerWpmMax', _answerWpmMax);
-    }
-    _currentWpm = _wpm;
-    await _savePrefs();
+  // Result page -> next block: sets the boost set from the chips still
+  // ticked. Goal steps were already applied on "Apply"; native values are
+  // pushed by _applyPromptConfig/_applyAnswerConfig at start.
+  void _applyAccepted({required bool boost}) {
+    final weak = _resultWeak;
+    if (weak == null) return;
     // Weak characters plus both characters of the mix-up pairs still ticked;
     // one set, so a character in both is not boosted any harder.
-    _boostChars = boost ? _chosenBoost(s.weakChars.keys, _mixups) : [];
-    _suggestions = null;
-    _pendWpm = _pendAnswer = _pendIC = null;
+    _boostChars = boost ? _chosenBoost(weak.keys, _mixups) : [];
+    _resultWeak = null;
+    _goal = null;
+  }
+
+  // "Apply" on the goal card: the step goes into the normal setting, the
+  // same one the sliders and −/+ change by hand.
+  Future<void> _acceptGoal() async {
+    final s = _goal;
+    if (s == null || _goalState != GoalCardState.open) return;
+    final before = _goalValues;
+    final p = await SharedPreferences.getInstance();
+    final pf = await TrainingProfile.open(TrainingProfile.echo);
+    switch (s.lever) {
+      case GoalLever.newChars:
+        _kochLevel = s.to.clamp(2, _activeKochChars.length);
+        PracticeClock.instance.milestone(MilestoneKind.kochEcho, _kochLevel);
+      case GoalLever.charSpacing:
+        _interCharSpace = s.to;
+        await pf.setInt('interCharSpace', _interCharSpace);
+      case GoalLever.groupLength:
+        _groupLength = _groupLengthMax = s.to;
+        await pf.setInt('groupLength', s.to);
+        await pf.setInt('groupLengthMax', s.to);
+      case GoalLever.wpm:
+        _wpm = s.to;
+        _currentWpm = _wpm;
+        PracticeClock.instance.milestone(
+          MilestoneKind.wpmEcho,
+          _wpm,
+          onlyIfHigher: true,
+        );
+      case GoalLever.giveWpm:
+        _answerWpmMax = s.to;
+        await p.setInt('echoAnswerWpmMax', _answerWpmMax);
+      case GoalLever.wordSpacing:
+        break;
+    }
+    await _savePrefs();
+    final after = before.withValue(s.lever, s.to);
+    final store = await GoalStore.open(TrainingProfile.echo);
+    final reached = await store.accept(s, after, DateTime.now());
+    final next = reached ? activeGoal(store.order, after)?.lever : null;
+    if (!mounted) return;
+    setState(() {
+      _goalWin = store.window;
+      _goalWinSig = store.windowSignature;
+      _goalState = GoalCardState.accepted;
+      _goalReached = reached;
+      _goalNext = next;
+    });
+  }
+
+  Future<void> _snoozeGoal() async {
+    if (_goalState != GoalCardState.open) return;
+    final store = await GoalStore.open(TrainingProfile.echo);
+    await store.snooze(DateTime.now());
+    if (mounted) setState(() => _goalState = GoalCardState.snoozed);
   }
 
   // Plays the proposed new Koch char twice, in place (like Adaptive Copy).
@@ -518,13 +625,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     }
   }
 
-  // Manual tempo changes (idle slider / result page). They override the
-  // matching suggestion of the finished block.
+  // Manual tempo changes (idle slider / result page).
   Future<void> _setHearWpm(int v) async {
     setState(() {
       _wpm = v.clamp(TrainingProfile.minWpm, 60);
       _currentWpm = _wpm;
-      _pendWpm = null;
     });
     await _savePrefs();
   }
@@ -532,19 +637,16 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<void> _setGiveWpm(int v) async {
     setState(() {
       _answerWpmMax = v.clamp(0, 60);
-      _pendAnswer = null;
     });
     final p = await SharedPreferences.getInstance();
     await p.setInt('echoAnswerWpmMax', _answerWpmMax);
   }
 
-  // Manual spacing change (idle / result card). Like a manual tempo change it
-  // overrides the matching suggestion of the finished block.
+  // Manual spacing change (idle / result card).
   Future<void> _setSpacing(int ic, int iw) async {
     // The answer pause (iw) is not on this screen and stays untouched.
     setState(() {
       _interCharSpace = ic;
-      _pendIC = null;
     });
     final pf = await TrainingProfile.open(TrainingProfile.echo);
     await pf.setInt('interCharSpace', _interCharSpace);
@@ -557,7 +659,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Widget _giveSlider() {
     final straight = _keyerMode == 4;
     return LabeledSlider(
-      label: Strings.t('block_give'),
+      label:
+          Strings.t('block_give') +
+          (_goalHints[GoalLever.giveWpm] == null
+              ? ''
+              : ' · ${Strings.t('tg_hint').replaceFirst('{t}', '${_goalHints[GoalLever.giveWpm]}')}'),
       display: straight
           ? '$_measuredWpm WPM'
           : _answerWpmMax == 0
@@ -591,80 +697,52 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
           compact: true,
           showWordGap: false,
           showUndo: false,
-          onWpm: _setHearWpm,
+        goals: _goalHints,
+        onWpm: _setHearWpm,
           onSpacing: _setSpacing,
         ),
       ]);
 
-  void _stepSpacing(int d) => setState(() {
-        _pendIC = (_pendIC! + d).clamp(3, max(_capInterChar, _interCharSpace));
-      });
-
-  List<Widget> _buildSuggestionRows(AppColors c, double width, String Function(String) cs) {
-    final s = _suggestions;
-    if (s == null) return const [];
-    final rows = <Widget>[];
-    if (s.unlockNext && _kochLevel < _activeKochChars.length) {
-      final next = _activeKochChars[_kochLevel];
-      rows.add(SuggestionRow(
-        width: width,
-        accepted: _accUnlock,
-        onToggle: (v) => setState(() => _accUnlock = v),
-        label: '${Strings.t('ac_char_unlocked')}: "${cs(next)}"',
-        highlight: true,
-        onPreview: _previewing ? null : () => _previewChar(next),
+  // Result page: the training-goal proposal, then the boost cards (weak
+  // characters, mix-ups, "On the way to").
+  List<Widget> _buildSuggestionRows(AppColors c, String Function(String) cs) {
+    final weak = _resultWeak;
+    if (weak == null) return const [];
+    final s = _goal;
+    final offersUnlock =
+        s?.lever == GoalLever.newChars && _goalState == GoalCardState.open;
+    final rows = <Widget>[
+      ..._proposalCards(c, weak, _mixups, unlockNow: offersUnlock),
+    ];
+    if (s != null) {
+      final next = offersUnlock && _kochLevel < _activeKochChars.length
+          ? _activeKochChars[_kochLevel]
+          : null;
+      if (rows.isNotEmpty) rows.add(const SizedBox(height: 16));
+      rows.add(
+        GoalSuggestionCard(
+          suggestion: s,
+          kind: TrainingProfile.echo,
+          state: _goalState,
+          onAccept: _acceptGoal,
+          onLater: _snoozeGoal,
+          newChar:
+              s.lever == GoalLever.newChars && s.from < _activeKochChars.length
+              ? cs(_activeKochChars[s.from])
+              : null,
+          onPreview: next == null || _previewing
+              ? null
+              : () => _previewChar(next),
+          reached: _goalReached,
+          nextGoal: _goalNext,
       ));
     }
-    if (_pendWpm != null) {
-      rows.add(SuggestionRow(
-        width: width,
-        accepted: _accWpm,
-        onToggle: (v) => setState(() => _accWpm = v),
-        label: '${Strings.t('echo_hear_speed_up')}: $_wpm→${_accWpm ? _pendWpm : _wpm}',
-        onDecrement: _accWpm ? () => setState(() => _pendWpm = max(_wpm, _pendWpm! - 1)) : null,
-        onIncrement: _accWpm ? () => setState(() => _pendWpm = min(_wpm + 5, _pendWpm! + 1)) : null,
-      ));
-    }
-    if (_pendIC != null) {
-      final tighter = _pendIC! < _interCharSpace;
-      rows.add(SuggestionRow(
-        width: width,
-        accepted: _accSpacing,
-        onToggle: (v) => setState(() => _accSpacing = v),
-        label: '${Strings.t(tighter ? 'ac_spacing_up' : 'ac_spacing_down')}: '
-            '$_interCharSpace→${_accSpacing ? _pendIC : _interCharSpace} '
-            '(${ditsToSeconds(_accSpacing ? _pendIC! : _interCharSpace, _wpm)})',
-        onDecrement: _accSpacing ? () => _stepSpacing(-1) : null,
-        onIncrement: _accSpacing ? () => _stepSpacing(1) : null,
-      ));
-    }
-    if (_pendAnswer != null) {
-      rows.add(SuggestionRow(
-        width: width,
-        accepted: _accAnswer,
-        onToggle: (v) => setState(() => _accAnswer = v),
-        label: '${Strings.t('echo_give_speed_up')}: $_answerWpmMax→${_accAnswer ? _pendAnswer : _answerWpmMax}',
-        onDecrement: _accAnswer ? () => setState(() => _pendAnswer = max(_answerWpmMax, _pendAnswer! - 1)) : null,
-        onIncrement: _accAnswer ? () => setState(() => _pendAnswer = min(_wpm, _pendAnswer! + 1)) : null,
-      ));
-    }
-    // Title only over real suggestions; the weak-character block has its own
-    // title (same as in Hören).
-    if (rows.isNotEmpty) {
-      rows.insert(0, Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(Strings.t('ac_suggestions_title'), textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 11, color: c.textMuted)),
-      ));
-    }
-    final cards = _proposalCards(c, s.weakChars, _mixups, unlockNow: s.unlockNext);
-    if (cards.isNotEmpty) rows.insertAll(0, [...cards, const SizedBox(height: 16)]);
     return rows;
   }
 
   // The proposal cards of Listen's start/result view, same look: weak
   // characters (amber chips), recurring mix-up pairs, and in Koch the "On the
-  // way to" card, which then hosts the weak characters itself. Shared by the
+  // way to" card. Shared by the
   // start view and the result page (#107).
   List<Widget> _proposalCards(AppColors c, Map<String, double> weak, List<MixupTrend> mixups,
       {bool unlockNow = false, bool includeOutlook = true, bool compactOutlook = false, VoidCallback? onChanged}) {
@@ -675,41 +753,51 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       });
       onChanged?.call();
     }
-    final outlook = includeOutlook && _boostApplies && _koch && !unlockNow && _kochLevel < _activeKochChars.length;
-    final hosted = outlook && weak.isNotEmpty && !compactOutlook;
+    final outlook = includeOutlook && _newCharsAhead && !unlockNow;
+    final other = includeOutlook ? _otherActiveGoal : null;
+    Widget mixupChips(bool small) => MixupBoostChips(
+        pairs: mixups,
+        excluded: _excludedMixups,
+        outputCase: _outputCase,
+        scale: 1.0,
+        small: small,
+        onToggle: (p) {
+          setState(() {
+            if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
+          });
+          onChanged?.call();
+        });
     final cards = <Widget>[
-      if (weak.isNotEmpty && !hosted && !compactOutlook)
+      if (!compactOutlook && weak.isNotEmpty)
+        // One card for both blocks: less height than two.
         WeakCharsCard(
             chips: WeakCharChips(
-                weak: weak, excluded: _excludedBoost, display: cs, onToggle: toggle, scale: 1.2)),
-      if (mixups.isNotEmpty && !compactOutlook)
-        SizedBox(
-            width: double.infinity,
-            child: AppCard(
-                child: MixupBoostChips(
-                    pairs: mixups,
-                    excluded: _excludedMixups,
-                    outputCase: _outputCase,
-                    scale: 1.2,
-                    small: hosted,
-                    onToggle: (p) {
-                      setState(() {
-                        if (!_excludedMixups.remove(p)) _excludedMixups.add(p);
-                      });
-                      onChanged?.call();
-                    }))),
+                weak: weak, excluded: _excludedBoost, display: cs, onToggle: toggle, scale: 1.0),
+            extra: mixups.isEmpty ? null : mixupChips(false))
+      else if (!compactOutlook && mixups.isNotEmpty)
+        SizedBox(width: double.infinity, child: AppCard(child: mixupChips(false))),
       if (outlook)
         UnlockOutlookCard(
+            kind: TrainingProfile.echo,
+            goal: activeGoal(_goalOrder, _goalValues)!,
+            values: _goalValues,
             next: cs(_activeKochChars[_kochLevel]),
             chars: kochActiveChars(_kochLevel, _activeKochChars),
             stats: _charStats.stats,
             thresholds: _echoEngine?.thresholds ??
                 AdaptiveCopyThresholds(highThreshold: _highThreshold, unlockOccurrences: _unlockOccurrences),
             display: cs,
-            weak: weak,
-            excluded: _excludedBoost,
-            onToggle: toggle,
-            compact: compactOutlook),
+          compact: compactOutlook,
+        ),
+      if (other != null)
+        GoalProgressCard(
+          kind: TrainingProfile.echo,
+          goal: other,
+          values: _goalValues,
+          window: _goalWinSig == _goalValues.signature ? _goalWin : const [],
+          high: _echoEngine?.thresholds.highThreshold ?? _highThreshold,
+          compact: compactOutlook,
+        ),
     ];
     return [
       for (var i = 0; i < cards.length; i++) ...[
@@ -930,7 +1018,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<void> _finishBlock() async {
     if (!_showResult) return;
     _stopResultPaddles();
-    await _applyAccepted(boost: false);
+    _applyAccepted(boost: false);
     if (!mounted) return;
     setState(() => _showResult = false);
   }
@@ -939,7 +1027,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   Future<void> _nextBlock() async {
     if (!_showResult) return;
     _stopResultPaddles();
-    await _applyAccepted(boost: true);
+    _applyAccepted(boost: true);
     if (mounted) setState(() {});
     await _startSession();
   }

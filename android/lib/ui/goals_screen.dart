@@ -8,6 +8,7 @@ import '../theme/app_colors.dart';
 import '../util/practice_clock.dart';
 import '../util/reminder.dart';
 import 'daily_goal_card.dart';
+import 'training_goals_screen.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/setting_rows.dart';
 
@@ -61,7 +62,52 @@ class _GoalsScreenState extends State<GoalsScreen> {
           _row(c, Strings.t('goal_today'), _min(g.todaySeconds)),
           const SettingsDivider(),
           _row(c, Strings.t('goal_week'), _min(g.weekSeconds)),
-        ]),
+            ],
+          ),
+          const SizedBox(height: 16),
+          SettingsCard(
+            children: [
+              InkWell(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const TrainingGoalsScreen(),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
+                  child: Row(
+                    children: [
+                      Icon(Icons.flag_outlined, color: c.accent),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              Strings.t('tg_title'),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: c.textPrimary,
+                              ),
+                            ),
+                            Text(
+                              Strings.t('tg_card_sub'),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: c.textMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.chevron_right, color: c.textMuted),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ..._review(c),
         const SizedBox(height: 24),
         Padding(

@@ -26,7 +26,7 @@ class _FitOrCompactState extends State<FitOrCompact> {
       final h = _fullKey.currentContext?.size?.height;
       final below = _belowKey.currentContext?.size?.height ?? 0;
       if (!mounted || h == null) return;
-      final compact = h + below + 12 > widget.availableHeight;
+      final compact = h + below + 4 > widget.availableHeight;
       if (compact != _compact) setState(() => _compact = compact);
     });
     return Column(

@@ -1,5 +1,7 @@
 # Adaptive Copy Mode — Design Notes
 
+> **Stand seit 2026-10-29:** Welche Einstellung ein Block ändern darf, entscheiden die Trainingsziele (`docs/DECISIONS.md` "Training goals"): festes Fenster der letzten 100 Zeichen statt Block-EMA, keine EMA-Glättung mehr. Die Freischaltregel pro Zeichen bleibt.
+
 > **Stand seit Phase 7:** Der Klassisch-Ablauf und der Klassisch/Adaptiv-Umschalter sind entfernt; Hören läuft immer als adaptiver Block, für Koch, Alle Zeichen und Übungsset (`docs/archive/training/P7-zeichenvorrat-startseite.md`). Die Abschnitte unten beschreiben die Entstehung und nennen teils Klassisch, `kochMode` und die alten Home-Karten.
 
 Status: implemented (see the banner above; kept as design history). Not a firmware port — this concept has no

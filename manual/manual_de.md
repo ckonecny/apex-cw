@@ -77,6 +77,12 @@ Ganz oben steht die **Tagesziel-Karte**: ein Ring mit deinen aktiven
 Übungsminuten von heute, deine Serie und die Woche von Montag bis Sonntag als
 Punkte. Tippe darauf, um die [Erfolge-Seite](#tagesziel) zu öffnen.
 
+Darunter steht anfangs ein Hinweis zu den
+[Trainingszielen](#trainingsziele): bei einer neuen Installation **Tipp: Setz
+dir individuelle Trainingsziele!**, nach dem Update **Neu: Trainingsziele**.
+Ein Tipp darauf öffnet die Trainingsziele, das ✕ blendet den Hinweis für immer
+aus. Den Tipp blendet die App auch von selbst aus, sobald du ein Ziel gesetzt hast.
+
 Unter **Hören** und **Geben** zeigt die Kachel deine aktuelle Koch-Lektion und
 dein Tempo und – ab dem sechsten Block – den Trend der letzten Blöcke (siehe
 [Trend](#trend)).
@@ -342,21 +348,23 @@ Gruppe anhalten** ein. Dann kannst du jede Gruppe mit **Dit** oder
 
 ### Wann es weitergeht
 
-Du musst die Lektion **nicht selbst erhöhen**. Sobald alle Zeichen der
+Du musst die Lektion **nicht selbst erhöhen**, wenn du dir das
+[Trainingsziel](#trainingsziele) **Neue Zeichen** setzt. Sobald alle Zeichen der
 Lektion mindestens 20 Versuche hinter sich haben und zuletzt zu 90 % richtig
-waren, schlägt die App das nächste Zeichen vor (siehe
+waren, schlägt die App dann das nächste Zeichen vor (siehe
 [Wann das nächste Koch-Zeichen kommt](#wann-das-nächste-koch-zeichen-kommt)).
 Du nimmst es an oder bleibst noch eine Weile. Wenn du dir noch nicht sicher
-bist, bleib. Die Schwellen kannst du im ⚙-Blatt unter **Adaptiver Modus**
+bist, bleib. Die Schwellen kannst du im ⚙-Blatt unter **Trainingsziele**
 höher oder niedriger setzen.
 
 Die [Zeichenstatistik](#zeichenstatistik) zeigt dir, welche Zeichen noch nicht
 sitzen. Verwechselst du zwei Zeichen immer wieder, hilft es, sie hintereinander
 einzeln anzutippen und direkt zu vergleichen.
 
-Die Pausen verkürzt die App in dieser Phase **nicht** und das Tempo erhöht
-sie auch nicht (siehe [Pausen und Tempo](#pausen-und-tempo)). Du sollst dich
-auf neue Zeichen konzentrieren, ohne dass sich gleichzeitig alles
+Steht **Neue Zeichen** in deinen Zielen vorne, verkürzt die App in dieser Phase
+die Pausen **nicht** und erhöht auch das Tempo nicht, denn sie arbeitet die
+Ziele der Reihe nach ab (siehe [Trainingsziele](#trainingsziele)). Du sollst
+dich auf neue Zeichen konzentrieren, ohne dass sich gleichzeitig alles
 beschleunigt.
 
 ## Schritt 2: Wörter, Abkürzungen und Sätze
@@ -452,23 +460,22 @@ eine echte Taste ein.
 ## Schritt 4: Pausen verkürzen, Tempo erhöhen
 
 Bisher war das effektive Tempo (rund 5 WPM) viel niedriger als das
-Zeichentempo (20 WPM). Das ändert sich jetzt, in dieser Reihenfolge:
+Zeichentempo (20 WPM). Das änderst du jetzt mit den
+[Trainingszielen](#trainingsziele), zum Beispiel in dieser Reihenfolge:
 
-1. **Pausen verkürzen.** Sobald alle Zeichen der Koch-Reihenfolge freigeschaltet
-   sind (oder du mit **Alle Zeichen** übst), schlägt die App nach zwei guten
-   Blöcken in Folge kürzere Pausen vor, je einen Dit pro Schritt, bis zu den
-   normalen 3 / 7 Dits (siehe [Pausen und Tempo](#pausen-und-tempo)). Du kannst
-   das auch selbst tun: mit **Zeichenabstand** und **Wortabstand** in der Karte
-   unter der Übungsfläche.
-2. **Erst dann das Tempo erhöhen.** Sind die Pausen bei 3 / 7, schlägt die App
-   +1 WPM vor, wenn es gut läuft. Kleine Schritte, keine Sprünge.
-3. **Läuft es schlecht, geht es zurück.** Fällt die Block-EMA unter die untere
-   Schwelle (70 %), schlägt die App längere Pausen vor. Das ist keine Strafe,
-   sondern der richtige Gang: Lieber einen Schritt zurück als alles
-   überspringen.
+1. **Pausen verkürzen.** Ziele **Zeichenabstand 3** und **Wortabstand 7**. Nach
+   guten Blöcken schlägt die App je einen Dit kürzer vor, bis die normalen
+   3 / 7 Dits erreicht sind. Du kannst das auch selbst tun: mit
+   **Zeichenabstand** und **Wortabstand** in der Karte unter der Übungsfläche.
+2. **Dann das Tempo erhöhen.** Ein Ziel **Tempo**, z. B. 25 WPM. Die App schlägt
+   dann +1 WPM pro Schritt vor. Kleine Schritte, keine Sprünge.
+3. **Läuft es schlecht, geht es zurück.** Liegen die letzten 100 Zeichen unter
+   der unteren Schwelle (70 %), bietet die App an, den letzten Schritt
+   zurückzunehmen. Das ist keine Strafe, sondern der richtige Gang: Lieber
+   einen Schritt zurück als alles überspringen.
 
-Alle Vorschläge erscheinen auf der Ergebnisseite. Du entscheidest, ob du sie
-annimmst (siehe [Der adaptive Modus](#der-adaptive-modus)).
+Alle Vorschläge erscheinen auf der Ergebnisseite. Du entscheidest mit
+**Übernehmen** oder **Nicht jetzt** (siehe [Trainingsziele](#trainingsziele)).
 
 ## Schritt 5: Störungen hinzufügen
 
@@ -751,9 +758,9 @@ und Markierungen ändern, etwa wenn du dich nur vertippt hast. **Fertig ·
   zusätzliche Zeichen (`ABCE`, `AABC`) bleibt falsch, das Wort wird wiederholt.
 - **Passen** im ersten Versuch heißt: alle Zeichen dieses Wortes falsch, wie
   eine leere Stelle auf dem Papier.
-- Beim Tippen spielen die Pausen zwischen den Wörtern keine Rolle. Die App
-  schlägt deshalb nur Änderungen am **Zeichenabstand** vor (siehe
-  [Pausen und Tempo](#pausen-und-tempo)).
+- Beim Tippen spielen die Pausen zwischen den Wörtern keine Rolle. Ein Ziel
+  **Wortabstand** wird deshalb übersprungen; die App schlägt dann das nächste
+  Ziel in deiner Reihenfolge vor (siehe [Trainingsziele](#trainingsziele)).
 
 Mit dem Pfeil oben links brichst du den Block ab; dann wird nichts gespeichert.
 Die Tastatur gibt es vorerst nur im Hochformat.
@@ -769,23 +776,29 @@ Die Ergebnisseite zeigt von oben nach unten:
   Schaltflächen (so auch auf der Startansicht).
 - Die **Karte Tempo und Abstände** (nicht in der Ergebnisliste): mit − und +
   änderst du **Zeichenabstand** und **Wortabstand** um je 1 Dit, mit dem Regler
-  das Tempo. Das gilt sofort und unabhängig von den Vorschlägen. Hast du
-  **Tippen** gestartet, fehlt der Wortabstand, weil er dort ohne Wirkung ist.
+  das Tempo. Das gilt sofort. Hat ein Wert ein Trainingsziel, steht es klein
+  daneben („Ziel 3“). Hast du **Tippen** gestartet, fehlt der Wortabstand,
+  weil er dort ohne Wirkung ist.
 - **Schwache Zeichen** – die Zeichen, die dir auf Dauer die meisten Fehler
   machen, mit ihrer Fehlerquote (siehe
   [Schwache Zeichen](#schwache-zeichen)).
-- **Auf dem Weg zu „X“** – nur bei der Koch-Lektion: Was dir noch bis zum
-  nächsten Zeichen fehlt (siehe
+- **Auf dem Weg zu …** – folgt deinem aktiven Trainingsziel. Bei **Neue
+  Zeichen** (Koch-Lektion) zeigt sie, was dir noch bis zum nächsten Zeichen
+  fehlt, bei jedem anderen Ziel (Abstand, Gruppenlänge, Tempo), wie weit du
+  schon bist (siehe
   [Fortschrittsanzeige](#fortschrittsanzeige-auf-dem-weg-zu-x)).
-- **Vorschläge** – was die App für den nächsten Block empfiehlt (siehe
-  [Vorschläge annehmen, ablehnen, anpassen](#vorschläge-annehmen-ablehnen-anpassen)).
+- **Vorschlag** – höchstens einer: der nächste Schritt zu deinem aktiven
+  Trainingsziel oder das Zurücknehmen des letzten Schritts, mit **Übernehmen**
+  und **Nicht jetzt** (siehe [Vorschlag annehmen oder später](#vorschlag-annehmen)).
+  Ohne Trainingsziele gibt es keinen Vorschlag.
 
 Unten stehen zwei Schaltflächen:
 
-- **Nächster Block** übernimmt die angehakten Vorschläge und startet sofort den
-  nächsten Block.
-- **Beenden** übernimmt die angehakten Vorschläge ebenfalls, startet aber
-  keinen neuen Block.
+- **Nächster Block** startet sofort den nächsten Block.
+- **Beenden** kehrt zur Startansicht zurück.
+
+Beide ändern nichts an Tempo, Abständen oder Lektion. Das macht nur
+**Übernehmen**.
 
 ::: {.shots}
 ![Ergebnisseite mit Trefferquote, Abstand, schwachen Zeichen und Fortschrittsanzeige](img/de/hear_result.png)
@@ -873,12 +886,15 @@ Zeile „Gilt für: …“ zeigt, für welche Kombination du gerade einstellst.
 | Versuche pro Wort | Nur bei **Tippen** und **Wiederholen**: wie oft du ein Wort versuchen darfst; 1 = kein zweiter Versuch | 1 / **2** / 3 |
 | Vibration bei Tastendruck | Nur bei **Tippen**: kurze Vibration bei jeder aktiven Taste | Aus / **Ein** |
 
-### Adaptiver Modus
+### Trainingsziele
 
-Die Schwellenwerte, nach denen die App ihre Vorschläge macht. Sie gelten für
-**Hören und Geben** gemeinsam und sind ausführlich im Kapitel
-[Einstellungen des adaptiven Modus](#einstellungen-des-adaptiven-modus)
-beschrieben.
+Das ⚙-Blatt enthält die [Trainingsziele](#trainingsziele) von **Hören**: die
+Liste der Ziele, in der du jedes Ziel per Tippen setzt und die Reihenfolge per
+Ziehen änderst, darunter die Regeln, wann ein Vorschlag kommt (Schwellen,
+Vorkommen für die Freischaltung, siehe
+[Einstellungen des adaptiven Modus](#einstellungen-des-adaptiven-modus)). Die
+Ziele ändern selbst nichts: Was du im ⚙-Blatt und in der Karte **Tempo und
+Abstände** einstellst, gilt sofort, und die Ziele lesen es beim nächsten Block.
 
 ::: {.shots .one}
 ![⚙-Blatt: Nach falscher Antwort, Adaptiver Modus](img/de/hear_sheet4.png)
@@ -984,19 +1000,19 @@ Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
   **Geben** und **Hören** (mit dem effektiven Tempo in Klammern) sowie
   **Zeichenabstand**. Die Antwortpause steht nicht hier, sondern im ⚙-Blatt;
   das effektive Tempo rechnet sie mit dem normalen Wert 7. Der Abstand gehört zum Hören-Tempo
-  direkt darüber. Eine Änderung hier ersetzt den passenden Vorschlag.
-- **Vorschläge** und **Schwache Zeichen** (siehe
-  [Der adaptive Modus](#der-adaptive-modus)).
+  direkt darüber. Hat ein Wert ein Trainingsziel, steht es klein daneben.
+- **Schwache Zeichen** (siehe [Schwache Zeichen](#schwache-zeichen)) und der
+  **Vorschlag** zu deinem aktiven Trainingsziel mit **Übernehmen** und
+  **Nicht jetzt** (siehe [Vorschlag annehmen oder später](#vorschlag-annehmen)).
 
-**Nächster Block** (rechts) übernimmt die angehakten Vorschläge, verstärkt die
-angehakten schwachen Zeichen im nächsten Block und startet ihn. **Beenden** (links)
-übernimmt die angehakten Vorschläge ohne Verstärkung und kehrt zur
-Startansicht zurück.
+**Nächster Block** (rechts) verstärkt die angehakten schwachen Zeichen im
+nächsten Block und startet ihn. **Beenden** (links) kehrt ohne Verstärkung zur
+Startansicht zurück. Tempo, Abstände und Lektion ändert nur **Übernehmen**.
 
 ::: {.shots}
 ![Ergebnisseite: Trefferquote, Fortschritt, schwache Zeichen](img/de/echo_result.png)
 
-![Ein Vorschlag (hier: neues Zeichen freigeschaltet), angehakt](img/de/echo_result2.png)
+![Ein Vorschlag zum Trainingsziel (hier: neues Zeichen)](img/de/echo_result2.png)
 :::
 
 ## Einstellungen im ⚙-Blatt (Geben) {#einstellungen-geben}
@@ -1047,6 +1063,13 @@ Geben zu kommen, etwa zum Einschleifen neuer Zeichen.
 ![⚙-Blatt von Geben: Abschnitt Echo Trainer](img/de/echo_sheet.png)
 :::
 
+### Trainingsziele (Geben)
+
+Ganz unten enthält das ⚙-Blatt die [Trainingsziele](#trainingsziele) von
+**Geben**: deine Ziele mit ihrer Reihenfolge und die Regeln, wann ein Vorschlag
+kommt. Die Regeln sind dieselben wie bei Hören. Wie bei Hören ändern die Ziele
+selbst nichts; die Werte hier gelten sofort.
+
 ## Einzelzeichen üben
 
 Drückst du in Hören oder Geben lange auf ein Koch-Zeichen (auch auf ein noch
@@ -1082,10 +1105,12 @@ Das entspricht „Learn New Chr“ bzw. „Preview Char“ am Morserino.
 # Der adaptive Modus
 
 Hören und Geben laufen immer in **Blöcken**. Nach jedem Block wertet die App
-aus, wie es gelaufen ist, und macht dir **Vorschläge**: das nächste
-Koch-Zeichen freischalten, die Pausen verkürzen oder verlängern, das Tempo
-erhöhen. **Nichts davon passiert heimlich.** Jeder Vorschlag erscheint auf der
-Ergebnisseite, und du entscheidest, ob du ihn annimmst.
+aus, wie es gelaufen ist, und macht dir höchstens **einen Vorschlag**: den
+nächsten Schritt zu deinem [Trainingsziel](#trainingsziele) (z. B. das nächste
+Koch-Zeichen, einen kürzeren Abstand, +1 WPM) oder, wenn es schlecht läuft,
+das Zurücknehmen des letzten Schritts. **Nichts davon passiert heimlich.** Der
+Vorschlag erscheint auf der Ergebnisseite, und du entscheidest, ob du ihn
+annimmst. Ohne Trainingsziele gibt es keine Vorschläge.
 
 Dieses Kapitel erklärt genau, wie die App rechnet. Du brauchst das nicht, um zu
 üben. Es hilft aber, die Vorschläge zu verstehen und die Schwellenwerte bewusst
@@ -1100,7 +1125,7 @@ Für jedes Zeichen führt die App eine Statistik, getrennt für **Hören** und
 
 - **Versuche** – wie oft das Zeichen bewertet wurde,
 - **Fehler** – wie oft davon falsch,
-- **gleitende Fehlerquote** – die Grundlage für alle Entscheidungen.
+- **gleitende Fehlerquote** – die Grundlage für die Koch-Freischaltung und die schwachen Zeichen.
 
 Die **gleitende Fehlerquote** ist ein exponentiell gleitender Mittelwert
 (EMA). Bei jedem Versuch gilt:
@@ -1127,43 +1152,47 @@ Fehlerquote.
   Zeichen danach werden nicht gezählt, weil unklar ist, ob du sie richtig
   gehört hast. Wiederholungen desselben Wortes zählen nicht.
 
-### Pro Block
+### Seit der letzten Änderung
 
-Jeder Block hat eine **Blockquote**:
+Für die Trainingsziele zählt die App, wie gut die **letzten 100 Zeichen**
+waren, in Hören und Geben gleich:
 
-- **Hören:** richtig mitgeschriebene Zeichen / alle Zeichen,
-- **Geben:** beim ersten Versuch richtige Wörter / alle Wörter.
+- **Hören:** jedes gespielte Zeichen, richtig oder als Fehler markiert,
+- **Geben:** jedes Zeichen der getasteten Wörter. Ein Zeichen zählt als richtig,
+  wenn es beim **ersten** Versuch stimmte: In einem Wort mit Fehler zählen die
+  Zeichen vor dem ersten Fehler, der Rest nicht.
 
-Aus den Blockquoten bildet die App wieder einen gleitenden Mittelwert, die
-**Block-EMA**:
-
-  Block-EMA = α × Blockquote + (1 − α) × bisherige Block-EMA
-
-α ist die Einstellung **EMA-Glättung** (Voreinstellung 30 %). Die Block-EMA
-beginnt bei 100 % und wird über alle Sitzungen hinweg gespeichert, getrennt für
+Gezählt wird nur, was du **seit der letzten Änderung** geübt hast. Ändert sich
+Tempo, Abstand, Gruppenlänge, Lektion oder Gebetempo (durch **Übernehmen** oder
+von Hand), beginnt die Zählung von vorn. Es zählt also nur, was du auf dem
+aktuellen Stand geschafft hast. Bis 100 Zeichen beisammen sind,
+gibt es keinen Vorschlag; danach zählen immer die jüngsten 100. Wie groß
+deine Blöcke sind, spielt dabei keine Rolle: Kurze Blöcke brauchen einfach mehr
+Durchgänge. Der Stand bleibt über Sitzungen hinweg erhalten, getrennt für
 Hören und Geben.
 
 ## Die zwei Schwellen
 
 Mit **Erfolgsschwelle niedrig/hoch** (Voreinstellung **70 % / 90 %**) teilt die
-App die Block-EMA in drei Bereiche:
+App die Trefferquote der letzten 100 Zeichen in drei Bereiche.
+Die Schwellen gelten für alle Ziele gleich:
 
-| Block-EMA | Bedeutung | Vorschlag |
+| Trefferquote | Bedeutung | Vorschlag |
 |---|---|---|
-| **ab 90 %** (hoch) | Läuft gut | Nach **2 Blöcken in Folge** in diesem Bereich: Pausen verkürzen – bzw. Tempo erhöhen, wenn die Pausen schon normal sind |
-| **70 % bis unter 90 %** | Passt | Nichts ändern |
-| **unter 70 %** (niedrig) | Zu schwer | Sofort: Pausen verlängern |
+| **ab 90 %** (hoch) | Läuft gut | Ein Schritt zum aktiven Ziel |
+| **70 % bis unter 90 %** | Passt | Keiner |
+| **unter 70 %** (niedrig) | Zu schwer | Den letzten Schritt zurücknehmen |
 
 Die obere Schwelle ist zugleich die Trefferquote, die jedes Zeichen für die
 Freischaltung des nächsten Koch-Zeichens erreichen muss.
 
 ## Wann das nächste Koch-Zeichen kommt
 
-Das nächste Koch-Zeichen wird vorgeschlagen, wenn **alle** Zeichen der
-aktuellen Lektion – nicht nur das zuletzt gelernte – zwei Bedingungen
-erfüllen:
+Das nächste Koch-Zeichen wird vorgeschlagen, wenn das Ziel **Neue Zeichen**
+gerade aktiv ist und **alle** Zeichen der aktuellen Lektion – nicht nur das
+zuletzt gelernte – zwei Bedingungen erfüllen:
 
-1. mindestens **20 Versuche** (Einstellung **Vorkommen für Freischaltung**), und
+1. mindestens **20 Versuche** (Einstellung **Vorkommen je Zeichen**), und
 2. eine **Trefferquote von mindestens 90 %** (die obere Erfolgsschwelle).
 
 Zwei Dinge sind dabei wichtig:
@@ -1176,71 +1205,98 @@ Zwei Dinge sind dabei wichtig:
   einmal 20-mal richtig gehabt zu haben. Die **letzten** Versuche müssen gut
   sein.
 
-Die Freischaltung erscheint als hervorgehobener Vorschlag mit Stern:
-**Neues Zeichen freigeschaltet: „X“**. Über das 🔊-Symbol daneben hörst du
-das neue Zeichen dreimal, ohne die Ergebnisseite zu verlassen. Dabei
+Der Vorschlag zeigt **Neue Zeichen + „X“**. Über das 🔊-Symbol daneben hörst
+du das neue Zeichen dreimal, ohne die Ergebnisseite zu verlassen. Dabei
 erscheint dieselbe Kachel wie beim Antippen eines Koch-Zeichens: das Zeichen
 und darunter sein Code, dessen Elemente mitleuchten. Tippen schließt sie
-vorzeitig. Wenn du den
-Haken entfernst, bleibst du in der aktuellen Lektion.
+vorzeitig. Mit **Nicht jetzt** bleibst du in der aktuellen Lektion. Ein neues
+Zeichen wird nie wieder weggenommen, auch wenn es danach schlecht läuft; dafür
+helfen die [schwachen Zeichen](#schwache-zeichen) und die Verwechslungen.
 
-## Pausen und Tempo
+## Trainingsziele {#trainingsziele}
 
-Die App verändert immer zuerst die **Pausen**, erst dann das Tempo:
+Für **Hören** und **Geben** setzt du dir getrennt eigene Ziele und legst fest,
+in welcher Reihenfolge du sie angehen willst. Die App arbeitet sie der Reihe
+nach ab: Läuft es gut genug, schlägt sie auf der Ergebnisseite den nächsten
+Schritt zum **aktiven** Ziel vor, und du gibst ihn mit einem Tipp frei.
+**Ohne Ziel gibt es keinen Vorschlag**, für jeden Hebel einzeln. Wer gar keine
+Ziele setzt, bekommt keine Vorschläge.
 
-- **Verkürzen:** Zeichenabstand und Wortabstand werden je um 1 Dit kürzer,
-  bis hinunter zu den normalen 3 / 7 Dits. In Geben ändert sich nur der
-  Zeichenabstand; die Antwortpause bleibt, wie du sie eingestellt hast.
-- **Tempo erhöhen:** Erst wenn die Pausen bereits bei 3 / 7 Dits angekommen
-  sind, schlägt die App **+1 WPM** vor.
-- **Verlängern:** Zeichenabstand und Wortabstand werden je um 1 Dit länger –
-  aber nie länger als zu Beginn der Sitzung (bei Hören: als du das Training
-  geöffnet hast; bei Geben: der Wert aus dem ⚙-Blatt).
+Du findest die Trainingsziele auf der [Erfolge-Seite](#tagesziel), über
+das ⚙-Blatt von Hören (dessen Ziele) und von Geben (dessen Ziele) und über den
+Hinweis auf der Startseite. Die Erfolge-Seite und die Startseite zeigen beide
+Trainings nebeneinander.
 
-Beim Mitschreiben mit der **Bildschirmtastatur** ändert die App nur den
-**Zeichenabstand**; der Wortabstand bleibt, weil die App dort ohnehin nach jedem
-Wort auf dich wartet. Die Pausen gelten dann als normal, sobald der
-Zeichenabstand bei 3 Dits ist. Aus demselben Grund zeigt die Karte **Tempo und
-Abstände** nach dem Start von **Tippen** nur noch den Zeichenabstand, und
-im ⚙-Blatt steht beim Wortabstand ein Hinweis, dass er nur für **Papier** gilt.
+### Die Hebel
 
-**Solange du die Koch-Reihenfolge noch durcharbeitest, verkürzt die App die
-Pausen nicht und erhöht auch das Tempo nicht.** Du sollst dich auf neue Zeichen
-konzentrieren können, ohne dass gleichzeitig alles schneller wird. Verlängern
-ist dagegen immer möglich. Verkürzen und Tempo erhöhen kommen erst, wenn
+| Hebel | Schritt | Hören | Geben | Bemerkung |
+|---|---|---|---|---|
+| **Neue Zeichen** | +1 Zeichen | ✓ | ✓ | nur mit Zeichenvorrat Koch; Ziel *alle* oder eine Anzahl Zeichen |
+| **Zeichenabstand** | −1 Dit | ✓ | ✓ | Geben: nicht mit Handtaste |
+| **Wortabstand** | −1 Dit | ✓ | – | nie unter dem Zeichenabstand; beim Tippen ohne Wirkung und übersprungen. Bei Geben bestimmt er nur die Antwortpause |
+| **Gruppenlänge** | +1 Zeichen | ✓ | ✓ | nur bei Zeichengruppen; eine feste Länge, ein Schritt setzt *von* und *bis* auf die nächste Länge |
+| **Tempo** (Geben: **Hörtempo**) | +1 WPM | ✓ | ✓ | |
+| **Gebetempo** | +1 WPM | – | ✓ | nur mit eigenem Gebetempo unter dem Hörtempo, nicht mit Handtaste |
 
-- alle Zeichen der Koch-Reihenfolge freigeschaltet sind, oder
-- du mit **Alle Zeichen** oder einem **Übungsset** übst.
+### Reihenfolge und aktives Ziel
 
-Auch in dem Block, in dem ein neues Zeichen dazukommt, gibt es kein
-Verkürzen und keine Tempoerhöhung.
+Es ist immer genau **ein** Ziel aktiv: das erste in deiner Reihenfolge, das
+gesetzt, noch nicht erreicht und gerade wirksam ist. Ein Hebel, der gerade
+nichts bewirkt (z. B. **Neue Zeichen** beim Üben mit Wörtern, **Wortabstand**
+beim Tippen), wird übersprungen. So kommen nie zwei Erschwernisse auf einmal,
+und die App muss nichts abwägen.
 
-Mit der Karte **Tempo und Abstände** (Hören) bzw. den Tempo-Reglern (Geben) kannst du
-jederzeit selbst eingreifen, unabhängig von diesen Regeln.
+In den Trainingszielen ziehst du einen Hebel am Griff **≡** an seine Stelle.
+Ein Tipp auf den Hebel setzt sein Ziel; **Kein Ziel** schaltet ihn aus. Jede
+Zeile zeigt den aktuellen Wert und das Ziel, z. B. **5 Dits (Ziel: 3 Dits)**,
+dazu **aktiv**, **erreicht** oder warum ein Ziel gerade ruht.
 
-### Gebetempo bei Geben
+### Ziele und Einstellungen
 
-Bei Geben gibt es einen zusätzlichen Vorschlag: **Gebetempo erhöht**
-(+1 WPM). Er erscheint nur, wenn du ein Gebetempo **unterhalb** des Hörtempos
-eingestellt hast und der Block mindestens die obere Schwelle erreicht hat. Er
-ist anfangs **nicht angehakt**, weil das Gebetempo eine bewusste Entscheidung
-ist. Mit der Handtaste (Straight) entfällt dieser Vorschlag, ebenso die
-Vorschläge zu engeren oder weiteren Abständen; Hörtempo und neue Zeichen
-werden weiterhin vorgeschlagen.
+Was gerade gilt, steht wie bisher in den Einstellungen von Hören bzw. Geben.
+Die Ziele speichern nur Zielwert und Reihenfolge:
 
-## Vorschläge annehmen, ablehnen, anpassen
+- **Übernehmen** ändert die normale Einstellung, dieselbe, die du auch mit
+  − und + stellst.
+- Von Hand stellen geht jederzeit. Die Ziele lesen beim nächsten Block den
+  aktuellen Wert.
+- Stellst du einen Wert auf oder über das Ziel, gilt es als erreicht, und das
+  nächste Ziel kommt dran. Drehst du ihn wieder zurück, ist das Ziel von selbst
+  wieder offen.
+- Über das Ziel hinaus schlägt die App nichts vor.
 
-Jeder Vorschlag ist eine Zeile auf der Ergebnisseite:
+### Vorschlag annehmen oder später {#vorschlag-annehmen}
 
-- Das **Kästchen** links nimmt den Vorschlag an oder lehnt ihn ab. Die meisten
-  Vorschläge sind anfangs angehakt.
-- Mit **−** und **+** passt du die Größe an: das Tempo bis höchstens 5 WPM
-  über dem aktuellen, die Pausen zwischen 3 / 7 Dits und dem Wert vom Beginn
-  der Sitzung.
-- Die Statuszeile zeigt sofort die Werte, die im nächsten Block gelten.
+Der Vorschlag auf der Ergebnisseite zeigt, welches Ziel dran ist und an welcher
+Stelle deiner Reihenfolge (**Dein Ziel 2 von 5**), den alten und neuen Wert,
+das Ziel mit den noch nötigen Schritten und warum jetzt (**Letzte 100 Zeichen:
+93 % richtig**).
 
-Übernommen wird erst beim Verlassen der Ergebnisseite, mit **Nächster Block**
-oder **Beenden**.
+- **Übernehmen** stellt den neuen Wert ein. Er gilt ab dem nächsten Block. Hat
+  der Schritt das Ziel erreicht, nennt die Karte das nächste Ziel.
+- **Nicht jetzt** lässt alles, wie es ist. Danach kommt **frühestens nach 15
+  Minuten** wieder ein Vorschlag, für dieses Training.
+- Läuft es schlecht, heißt der Vorschlag **Letzten Schritt zurücknehmen?** und
+  stellt den Wert von vor deinem letzten übernommenen Schritt wieder her.
+  Neue Zeichen werden nie zurückgenommen.
+
+Nach jedem übernommenen Schritt beginnt die Zählung von vorn (siehe
+[Seit der letzten Änderung](#seit-der-letzten-änderung)).
+
+### Nach dem Update
+
+Wer die App schon vorher benutzt hat, bekommt das bisherige Verhalten als
+Ziele, getrennt für Hören und Geben: **Neue Zeichen** (alle), **Zeichenabstand
+3**, bei Hören zusätzlich **Wortabstand 7**, in dieser Reihenfolge. Fürs Tempo
+gibt es kein Ziel; Tempovorschläge kommen erst, wenn du dir selbst eines setzt.
+Bei einer neuen Installation sind keine Ziele gesetzt.
+
+### In der Statistik
+
+Im [Reiter Verlauf](#zeichenstatistik) der Statistik stehen **Deine Ziele**
+(je Ziel Start → jetzt → Ziel mit Balken) und die **Schritte** (Datum, Hebel,
+von → nach, auch Zurücknahmen und erreichte Ziele). Ein Tempoziel erscheint
+im Tempo-Diagramm als gestrichelte Linie.
 
 ## Schwache Zeichen
 
@@ -1286,7 +1342,8 @@ mehrere Blöcke und Sitzungen.
 
 Zusätzlich zu den schwachen Zeichen schlägt die App Verwechslungen vor, die sich
 häufen (z. B. K → R). Die Vorschläge stehen am selben Ort wie die schwachen
-Zeichen (jeweils Startansicht und Ergebnisseite) und gelten nur,
+Zeichen (jeweils Startansicht und Ergebnisseite), als zweiter Abschnitt in
+derselben Karte, und gelten nur,
 wo auch die Verstärkung wirkt (Zufallsgruppen). Es sind höchstens drei Paare.
 Ein Paar wird vorgeschlagen, wenn
 
@@ -1315,31 +1372,53 @@ Block, sondern über die Statistik im nächsten Block, in Hören und Geben gleic
 
 ## Fortschrittsanzeige „Auf dem Weg zu X“
 
-Auf der Ergebnisseite von **Hören** mit der Koch-Lektion zeigt eine Karte, was
-bis zum nächsten Zeichen noch fehlt:
+In **Hören** und **Geben** (Startansicht und Ergebnisseite) folgt diese Karte
+deinem aktiven [Trainingsziel](#trainingsziele). Bei jedem anderen Ziel als
+**Neue Zeichen** trägt sie dessen Namen, z. B. „Auf dem Weg zu:
+Zeichenabstand 3 Dits“, und zeigt zwei Balken:
 
-- Der **Balken** zeigt, wie viele der nötigen Versuche schon gemacht sind,
+- Der **Zielbalken** läuft vom Wert, den du beim Setzen des Ziels hattest,
+  bis zum Ziel; darunter steht „Jetzt …“; das Ziel steht schon im Titel.
+- Der **Bereitschaftsbalken** zeigt, wie nah du am nächsten Vorschlag bist.
+  Er wächst mit der Menge der geübten Zeichen (bis 100) **und** mit deiner
+  Trefferquote: Viele Zeichen mit schlechter Quote halten ihn niedrig, voll
+  wird er erst mit 100 Zeichen und einer Quote ab dem nötigen Prozentwert.
+  Darunter steht ein Wort: **Noch am Anfang** (unter 30 Zeichen), **Noch nicht
+  sicher genug**, **Fast so weit** (knapp unter dem nötigen Wert) oder **Auf
+  gutem Weg**. Der Balken ist gelb, solange die Quote noch deutlich zu niedrig
+  ist. Tippst du darauf, siehst du die Zahlen: gesammelte Zeichen,
+  Trefferquote bisher, nötiger Wert und wie viele Zeichen bis zum vollen
+  Fenster fehlen. Eine Änderung der Einstellungen oder ein übernommener
+  Schritt beginnt das Zählen neu.
+
+Wird der Platz knapp, rückt die Karte enger zusammen. Ohne aktives Ziel gibt
+es keine Karte; die schwachen Zeichen stehen dann in ihrer eigenen Karte.
+
+Beim Ziel **Neue Zeichen** (Koch-Lektion) sieht die Karte genauso aus. Der
+Titel lautet „Auf dem Weg zu: 39 Zeichen“, darunter steht „Jetzt 26 Zeichen“.
+Steht davor ein anderes Ziel, kommt ohnehin kein neues Zeichen dazu, und
+stattdessen erscheint die Karte dieses Ziels. Bei **Neue Zeichen** gilt:
+
+- Der **zweite Balken** zeigt, wie viele der nötigen Versuche schon gemacht sind,
   zusammengezählt über alle Zeichen, denen noch Versuche fehlen. Fehlen keine
   Versuche mehr, sondern nur noch Treffsicherheit, zeigt er die Trefferquote
-  des schwächsten Zeichens im Verhältnis zur Schwelle.
+  des schwächsten Zeichens im Verhältnis zur Schwelle. Darunter steht
+  „Nächstes Zeichen „v“: 66 % geschafft“.
 - **Noch üben (Wiederholungen):** Zeichen, denen noch Versuche fehlen, je
   als kleines Kästchen mit der Zahl der fehlenden Versuche, z. B. `q 7`. Die
   mit den meisten fehlenden Versuchen stehen vorne.
-- **Trefferquote unter 90 % · öfter abfragen?:** die schwachen Zeichen mit
-  zu niedriger Trefferquote, z. B. `y 84%`, die schwächsten vorne. Das sind
-  dieselben Zeichen, die im nächsten Block öfter drankommen. **Tippe ein
-  Zeichen an**, um es davon auszunehmen (durchgestrichen). Eine eigene Karte
-  „Schwache Zeichen“ gibt es dann nicht zusätzlich.
 
 Die Liste „Noch üben“ zeigt höchstens 10 Zeichen, der Rest steht als „+N weitere“.
-Ist die Karte nicht sichtbar (zusammengeschrumpft, letzte Koch-Stufe, direkt nach
-einer Freischaltung) oder übst du nicht mit der Koch-Lektion, erscheinen die
-schwachen Zeichen wie bisher in einer eigenen Karte.
+
+Die **schwachen Zeichen** und **häufigen Verwechslungen** stehen bei jedem Ziel
+gleich: in einer eigenen Karte **über** „Auf dem Weg zu“, als zwei Abschnitte mit
+einer dünnen Linie dazwischen. **Tippe ein Zeichen oder Paar an**, um es
+auszunehmen (durchgestrichen).
 
 Auf der **Startseite** von Hören (vor dem ersten Block) zeigt die Karte
 dasselbe wie am Blockende, solange alles auf den Bildschirm passt. Wird der
-Platz knapp (kleines Display, große Schrift, viele schwache Zeichen), schrumpft
-sie auf Titel und Balken, ohne die Zeichenlisten. Die schwachen Zeichen und
+Platz knapp (kleines Display, große Schrift, viele schwache Zeichen), rückt
+die Karte enger zusammen und lässt die Zeichenlisten weg. Die schwachen Zeichen und
 Verwechslungen stehen dann in **einer Zeile**
 („Gezielt üben: E 5 Q · 2 Verwechslungen“). Ein Tipp darauf öffnet ein Fenster
 von unten mit allen Zeichen und Paaren zum An- und Abwählen; **Fertig** schließt es.
@@ -1407,14 +1486,16 @@ erkennen; oft bringt eine Pause mehr als Weitermachen.
 
 ## Einstellungen des adaptiven Modus
 
-Im ⚙-Blatt von **Hören** unter **Adaptiver Modus**. Sie gelten für Hören und
-Geben gemeinsam.
+Im ⚙-Blatt von **Hören** und von **Geben** unter **Trainingsziele**, unterhalb
+der Liste der Ziele. Hören und Geben haben je eigene Werte: Was du in Hören
+einstellst, gilt nur dort, und umgekehrt. Innerhalb eines Trainings gelten sie
+für alle Trainingsziele gleich. Geben übernimmt die Werte von Hören, bis du sie
+in Geben einmal selbst änderst.
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
-| Erfolgsschwelle niedrig/hoch | Unter *niedrig* werden die Pausen verlängert. Ab *hoch* (2 Blöcke in Folge) werden sie verkürzt bzw. das Tempo erhöht. *Hoch* ist außerdem die Trefferquote, die jedes Zeichen für die Koch-Freischaltung braucht | 30–99 %, mindestens 5 Punkte Abstand (**70 % / 90 %**) |
-| EMA-Glättung | Wie stark der letzte Block in die Block-EMA eingeht. Höher = reagiert schneller, aber auch nervöser | 5–100 % (**30 %**) |
-| Vorkommen für Freischaltung | Mindestzahl an Versuchen je Zeichen, bevor das nächste Koch-Zeichen kommen kann | 5–50 (**20**) |
+| Erfolgsschwelle niedrig/hoch | Trefferquote der letzten 100 Zeichen seit der letzten Änderung: ab *hoch* ein Schritt zum aktiven Trainingsziel, unter *niedrig* das Zurücknehmen des letzten Schritts. *Hoch* ist außerdem die Trefferquote, die jedes Zeichen für die Koch-Freischaltung braucht | 30–99 %, mindestens 5 Punkte Abstand (**70 % / 90 %**) |
+| Vorkommen je Zeichen („Neue Zeichen“) | Mindestzahl an Versuchen je Zeichen, bevor das nächste Koch-Zeichen kommen kann (nur beim Ziel **Neue Zeichen**) | 5–50 (**20**) |
 
 Einige Hinweise:
 
@@ -1422,9 +1503,8 @@ Einige Hinweise:
   Fehlerquote eines Zeichens, das je einen Fehler hatte, erreicht nie ganz
   wieder 0. Mit 100 % würde dieses Zeichen die Freischaltung für immer
   blockieren.
-- **EMA-Glättung 100 %** heißt: Nur der letzte Block zählt.
-- Wenn dir die Freischaltung zu schnell geht, erhöhe **Vorkommen für
-  Freischaltung** oder die hohe Schwelle. Geht sie dir zu langsam, senke die
+- Wenn dir die Freischaltung zu schnell geht, erhöhe **Vorkommen je
+  Zeichen** oder die hohe Schwelle. Geht sie dir zu langsam, senke die
   Werte.
 
 # Tagesziel und Serie {#tagesziel}
@@ -1451,7 +1531,8 @@ zweiter verpasster Tag in derselben Woche beendet die Serie. Das lässt sich
 abschalten.
 
 **Erfolge-Seite.** Tippe auf die Karte. Sie zeigt heute und diese Woche in
-Minuten und darunter die **Auszeichnungen** (siehe unten). Das Zahnrad öffnet die Einstellungen dazu:
+Minuten, eine Karte **Trainingsziele** (siehe [Trainingsziele](#trainingsziele))
+und darunter die **Auszeichnungen** (siehe unten). Das Zahnrad öffnet die Einstellungen dazu:
 
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
@@ -1615,6 +1696,10 @@ die Funktion gibt; frühere Übungen sind nicht enthalten. Wähle **4 Wochen**,
 - **Übungstage**: ein Kästchen pro Tag (4 Wochen), sonst ein Balken pro Woche
   oder Monat. Tippe darauf, um die Zahl der Tage, die Zeit dieses Trainings und
   die Gesamtzeit dieses Zeitraums zu sehen.
+- **Deine Ziele** und **Schritte**, sobald du [Trainingsziele](#trainingsziele)
+  gesetzt hast: je Ziel Start → jetzt → Ziel mit Balken, und die übernommenen
+  Schritte mit Datum (auch Zurücknahmen und erreichte Ziele). Ein Tempoziel ist
+  im Tempo-Diagramm eine gestrichelte Linie.
 - **Trainierte Zeichen, Woche für Woche**: eine Heatmap, Zeichen untereinander
   (nach Art eingefärbt: Buchstaben, Ziffern, Satzzeichen/Prosigns – so sind
   O und 0 leicht zu unterscheiden),
@@ -3190,9 +3275,10 @@ zuletzt Fehler hatte. Siehe
 [Wann das nächste Koch-Zeichen kommt](#wann-das-nächste-koch-zeichen-kommt).
 
 **Die Pausen werden nie kürzer.**
-Das ist Absicht, solange du die Koch-Reihenfolge durcharbeitest (siehe
-[Pausen und Tempo](#pausen-und-tempo)). Mit der Karte **Tempo und Abstände** kannst du sie
-jederzeit selbst verkürzen.
+Die App schlägt nur Schritte zu deinen [Trainingszielen](#trainingsziele) vor,
+der Reihe nach. Setz ein Ziel **Zeichenabstand** bzw. **Wortabstand**; steht
+**Neue Zeichen** davor, kommen die Pausen erst danach dran. Mit der Karte
+**Tempo und Abstände** kannst du sie jederzeit selbst verkürzen.
 
 **Der Decoder schreibt nur Unsinn.**
 Tonhöhe, Bandbreite und Schwelle prüfen (siehe

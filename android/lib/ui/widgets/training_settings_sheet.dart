@@ -11,9 +11,23 @@ import '../../l10n/strings.dart';
 import '../../theme/app_colors.dart';
 import 'setting_rows.dart';
 
+import '../../content/training_goals.dart';
+import '../training_goals_screen.dart';
+
 /// Parts of the per-training settings a screen can show, see
 /// docs/archive/training/P3-einstellungen-in-screens.md.
-enum TrainingSection { content, spacing, wordSpacing, wordSelection, echoFlow, hearFlow, adaptive, kochSequence, decoderChars, audioFlow }
+enum TrainingSection {
+  content,
+  spacing,
+  wordSpacing,
+  wordSelection,
+  echoFlow,
+  hearFlow,
+  goals,
+  kochSequence,
+  decoderChars,
+  audioFlow,
+}
 
 /// Opens the settings sheet for one training profile ([TrainingProfile.hear]
 /// or [TrainingProfile.echo]). Every change is saved immediately; the screen
@@ -126,7 +140,6 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
   // Adaptive Copy engine thresholds (global keys, as in Settings before).
   int _adaptiveLowPct = 70;
   int _adaptiveHighPct = 90;
-  int _adaptiveEmaAlphaPct = 30;
   int _adaptiveUnlockOcc = 20;
 
   @override
@@ -183,10 +196,10 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
       final ck = p.getString(_kk('customKochChars')) ?? '';
       if (ck.isNotEmpty) _customKochChars = ck;
       _licwCarouselStart = (p.getInt(_kk('licwCarouselStart')) ?? 0).clamp(0, 13);
-      _adaptiveHighPct = (p.getInt('adaptiveHighThresholdPct') ?? 90).clamp(50, 99);
-      _adaptiveLowPct = (p.getInt('adaptiveLowThresholdPct') ?? 70).clamp(30, 95);
-      _adaptiveEmaAlphaPct = (p.getInt('adaptiveEmaAlphaPct') ?? 30).clamp(5, 100);
-      _adaptiveUnlockOcc = (p.getInt('adaptiveUnlockOccurrences') ?? 20).clamp(5, 50);
+      final rules = goalRules(p, widget.profile);
+      _adaptiveHighPct = rules.highPct;
+      _adaptiveLowPct = rules.lowPct;
+      _adaptiveUnlockOcc = rules.unlockOccurrences;
     });
   }
 
@@ -486,12 +499,14 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
     ];
   }
 
-  List<Widget> _adaptive() {
+  // Thresholds and unlock rule behind the suggestions; global, so they are the
+  // same in Hören and Geben.
+  List<Widget> _rules() {
     final c = AppColors.of(context);
     return [
-      SettingsSectionHeader(Strings.t('settings_adaptive_mode')),
+      SettingsSectionHeader(Strings.t('tg_rules_title')),
       const SizedBox(height: 4),
-      Text(Strings.t('settings_adaptive_mode_desc'),
+      Text(Strings.t('tg_rules_desc'),
           style: TextStyle(fontSize: 11, color: c.textFaint)),
       const SizedBox(height: 12),
       SettingsCard(children: [
@@ -513,18 +528,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               }
             }
             setState(() { _adaptiveLowPct = low; _adaptiveHighPct = high; });
-            _p?.setInt('adaptiveLowThresholdPct', low);
-            _p?.setInt('adaptiveHighThresholdPct', high);
-          },
-        ),
-        const SettingsDivider(),
-        LabeledSlider(
-          label: Strings.t('settings_adaptive_ema_alpha'),
-          value: _adaptiveEmaAlphaPct.toDouble(),
-          min: 5, max: 100, divisions: 19, display: '$_adaptiveEmaAlphaPct%',
-          onChanged: (v) {
-            setState(() => _adaptiveEmaAlphaPct = v.round());
-            _p?.setInt('adaptiveEmaAlphaPct', _adaptiveEmaAlphaPct);
+            _p?.setInt(goalRuleKey(widget.profile, 'adaptiveLowThresholdPct'), low);
+            _p?.setInt(goalRuleKey(widget.profile, 'adaptiveHighThresholdPct'), high);
           },
         ),
         const SettingsDivider(),
@@ -534,11 +539,30 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
           min: 5, max: 50, divisions: 45, display: '$_adaptiveUnlockOcc',
           onChanged: (v) {
             setState(() => _adaptiveUnlockOcc = v.round());
-            _p?.setInt('adaptiveUnlockOccurrences', _adaptiveUnlockOcc);
+            _p?.setInt(goalRuleKey(widget.profile, 'adaptiveUnlockOccurrences'), _adaptiveUnlockOcc);
           },
-        ),
-      ]),
+          ),
+        ],
+      ),
       const SizedBox(height: 24),
+    ];
+  }
+
+  // The training goals of this profile, right in its settings: the goals in
+  // their order, then the rules that decide when a step is suggested.
+  List<Widget> _goals() {
+    final c = AppColors.of(context);
+    return [
+      SettingsSectionHeader(Strings.t('tg_title')),
+      const SizedBox(height: 4),
+      Text(
+        Strings.t('tg_settings_desc'),
+        style: TextStyle(fontSize: 11, color: c.textFaint),
+      ),
+      const SizedBox(height: 12),
+      GoalOrderEditor(kind: widget.profile, embedded: true),
+      const SizedBox(height: 12),
+      ..._rules(),
     ];
   }
 
@@ -835,8 +859,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
                 TrainingSection.wordSelection => _wordSelection(),
                 TrainingSection.echoFlow => _echoFlow(),
                 TrainingSection.hearFlow => _hearFlow(),
-                TrainingSection.adaptive => _adaptive(),
-                TrainingSection.kochSequence => _kochSequence(),
+                  TrainingSection.goals => _goals(),
+                  TrainingSection.kochSequence => _kochSequence(),
                 TrainingSection.decoderChars => _decoderChars(),
                 TrainingSection.audioFlow => _audioFlow(),
               },
