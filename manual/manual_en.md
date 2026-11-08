@@ -42,21 +42,28 @@ first: a practice plan that puts the app's features into a sensible order.
 
 ## Installation
 
-The app is currently handed out as an APK file, not through the Play Store.
-It needs Android 8.0 or newer and a 64-bit device (practically every phone
+The easiest way to install the app is through
+[Google Play](https://play.google.com/store/apps/details?id=at.oe1cko.nextcwtrainer), where
+you also get updates automatically. It needs Android 8.0 or newer and a 64-bit device (practically every phone
 since about 2017); it cannot be installed on 32-bit-only devices.
 
-1. Copy the APK file to your phone, for example by messenger, e-mail or USB
-   cable.
+It is also available as an APK file on
+[GitHub](https://github.com/ckonecny/apex-cw/releases/latest), for example for
+phones without Google services:
+
+1. Download the APK file to your phone or copy it there, for example by
+   messenger, e-mail or USB cable.
 2. Tap the file in your file manager. The first time, Android asks whether
    the app you install from may **install unknown apps**. That might be your
    file manager or browser. Allow it for that app.
 3. Confirm the installation.
 
-Updates work the same way: install the new APK over the old one, and your
-settings and statistics are kept. This only works if both APKs are signed
-with the same key. If Android reports a conflict, you first have to uninstall
-the old version, and that deletes your settings and statistics.
+APK updates work the same way: install the new APK over the old one, and your
+settings and statistics are kept. Google Play and the APK are signed with the
+same key, so you can switch between them as long as the new version is not
+older than the installed one. If Android still reports a conflict (for example
+with a very old version), you first have to uninstall the old version, and that
+deletes your settings and statistics.
 
 ## The home screen
 
