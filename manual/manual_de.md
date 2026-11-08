@@ -42,23 +42,30 @@ Wenn du neu bist, lies zuerst das Kapitel [Einstieg](#einstieg): ein
 
 ## Installation
 
-Die App wird derzeit als APK-Datei weitergegeben, nicht über den Play Store.
-Sie braucht Android 8.0 oder neuer und ein 64-Bit-Gerät (praktisch alle
+Am einfachsten installierst du die App über
+[Google Play](https://play.google.com/store/apps/details?id=at.oe1cko.nextcwtrainer); dort
+bekommst du auch Updates automatisch. Sie braucht Android 8.0 oder neuer und ein 64-Bit-Gerät (praktisch alle
 Handys seit etwa 2017); auf reinen 32-Bit-Geräten lässt sie sich nicht
 installieren.
 
-1. Kopiere die APK-Datei auf dein Handy (z. B. per Messenger, E-Mail oder
-   USB-Kabel).
+Alternativ gibt es sie als APK-Datei auf
+[GitHub](https://github.com/ckonecny/apex-cw/releases/latest), zum Beispiel für
+Handys ohne Google-Dienste:
+
+1. Lade die APK-Datei auf dein Handy oder kopiere sie dorthin (z. B. per
+   Messenger, E-Mail oder USB-Kabel).
 2. Tippe die Datei im Dateimanager an. Android fragt beim ersten Mal, ob die
    App, aus der du installierst (Dateimanager, Browser …), **unbekannte Apps
    installieren** darf – erlaube das für diese App.
 3. Bestätige die Installation.
 
-Ein Update installierst du genauso: Die neue APK einfach über die alte
-installieren, deine Einstellungen und Statistiken bleiben erhalten. Das
-funktioniert nur, wenn beide APKs mit demselben Schlüssel signiert sind. Meldet
-Android einen Konflikt, musst du die alte Version zuerst deinstallieren – dabei
-gehen Einstellungen und Statistiken verloren.
+Ein Update per APK installierst du genauso: Die neue APK einfach über die alte
+installieren, deine Einstellungen und Statistiken bleiben erhalten. Google Play
+und die APK sind mit demselben Schlüssel signiert, du kannst also zwischen beiden
+wechseln, solange die neue Version nicht älter ist als die installierte. Meldet
+Android trotzdem einen Konflikt (etwa bei einer sehr alten Version), musst du die
+alte Version zuerst deinstallieren – dabei gehen Einstellungen und Statistiken
+verloren.
 
 ## Die Startseite
 

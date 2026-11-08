@@ -7,20 +7,14 @@ Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
 only the current state, organisational steps and hints for the next session.
 
-## Next steps — Play Store (user, 2026-09-28)
-Done: upload key and signing, privacy policy, store texts and graphics
-(`docs/PLAY-LISTING.md`, `docs/DECISIONS.md` "Play Store preparation"); store
-raw shots and graphics rebuilt 2026-10-08 (dark, DE+EN, beta 1.6.1); AAB `releases/apex-cw-v1.7.0.aab` built.
-1. User: developer account (identity check passed).
-2. Store raw shots, graphics and the landing page retaken 2026-10-21 on beta 1.8.0 (`store/capture/README.md`; `python3 store/make_graphics.py` writes `store/out/`). Still to do: update the listing texts and "What's new" for 1.8.0 and upload (AAB with the release); closed test: 12 testers × 14 days. If the beta changes a shown screen, retake with the same scripts.
-3. Production.
+## Google Play
+Live in production (reported 2026-11-08): 1.11.1, versionCode 512, https://play.google.com/store/apps/details?id=at.oe1cko.nextcwtrainer. Content-rating (IARC) answers must stay accurate when features change.
 
 ## Manual: screenshots (v1.8.0)
 All retaken 2026-10-21 (light theme, DE+EN); `settings3` from the Store build 437. Exceptions: `echo_result2.png` (needs a hand-played 100 % block) and `decoder.png` (idle decoder) as before; not shown: Straight-key-only states (#17), exam result pages.
 
 ## Landing page (live, Pages source "GitHub Actions" set)
-Refreshed 2026-10-21 (new shots, themes section, "small things" cards); goes live with the next push to main. Open: replace the disabled "Google Play: coming soon" button with the store
-link once the app is live, and set the Play listing's website to the Pages URL.
+Refreshed 2026-10-21 (new shots, themes section, "small things" cards). Google Play is the main button since 2026-11-08, APK second. Training goals and audio trainer sections with their own shots added the same day (`*_goals.webp`, `*_audio.webp`; example goals, not from `store/capture/cap.sh`). Open: set the Play listing's website to the Pages URL.
 
 ## New logo (2026-10-06, on main): still to do
 Done and checked on the test phone: launcher icons, README, landing page. Pending:

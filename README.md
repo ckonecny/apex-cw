@@ -79,9 +79,13 @@ firmware changes aren't automatically reflected here.
 
 ## Download
 
-Ready-to-install APKs are attached to the
+Get APEX CW on [Google Play](https://play.google.com/store/apps/details?id=at.oe1cko.nextcwtrainer).
+
+Ready-to-install APKs are also attached to the
 [GitHub releases](https://github.com/ckonecny/apex-cw/releases)
-(sideload: allow "install unknown apps"). **Settings → Info** in the app
+(sideload: allow "install unknown apps"). They are signed with the same key as
+the Google Play version, so you can switch between the two and keep your data.
+**Settings → Info** in the app
 shows the version and the commit it was built from.
 
 ## User manual

@@ -64,8 +64,6 @@ h1 em{font-style:normal;color:var(--teal)}
 .btn:hover{text-decoration:none;border-color:var(--teal)}
 .btn.p{background:var(--teal);border-color:var(--teal);color:#06231b}
 .btn.p:hover{filter:brightness(1.08)}
-.btn[aria-disabled=true]{opacity:.55;cursor:default}
-.btn[aria-disabled=true]:hover{border-color:var(--line)}
 .small{font-size:14px;color:var(--muted)}
 .phone{border-radius:34px;border:1px solid var(--line);background:#000;padding:8px;
   box-shadow:0 30px 80px -20px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.03) inset;max-width:300px;margin:0 auto}
@@ -151,6 +149,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
     <a class="l" href="#qrm"><span data-l="en">Interference</span><span data-l="de">Störungen</span></a>
     <a class="l" href="#exam"><span data-l="en">Exam</span><span data-l="de">Prüfung</span></a>
     <a class="l" href="#open"><span data-l="en">Open source</span><span data-l="de">Open Source</span></a>
+    <a class="l" href="manual-en.html" data-l="en">Manual</a>
+    <a class="l" href="manual-de.html" data-l="de">Handbuch</a>
     <div class="lang" role="group" aria-label="Language">
       <button data-set="en" type="button">EN</button><button data-set="de" type="button">DE</button>
     </div>
@@ -168,14 +168,18 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
         <span data-l="de">Koch-Methode, Hör- und Gebetraining, Keyer für deine echte Morsetaste, realistische Störungen, Prüfungssimulation und Spiele. Kostenlos, werbefrei und Open Source.</span>
       </p>
       <div class="cta">
-        <a class="btn p" href="https://github.com/ckonecny/apex-cw/releases/latest">
+        <a class="btn p" href="https://play.google.com/store/apps/details?id=at.oe1cko.nextcwtrainer">
+          <span data-l="en">Get it on Google Play</span><span data-l="de">Bei Google Play laden</span></a>
+        <a class="btn" href="https://github.com/ckonecny/apex-cw/releases/latest">
           <span data-l="en">Download APK</span><span data-l="de">APK herunterladen</span></a>
-        <a class="btn" aria-disabled="true">
-          <span data-l="en">Google Play: coming soon</span><span data-l="de">Google Play: bald verfügbar</span></a>
       </div>
       <div class="small">
         <span data-l="en">Android · free · no account · no ads</span>
         <span data-l="de">Android · kostenlos · ohne Konto · ohne Werbung</span>
+      </div>
+      <div class="small">
+        <span data-l="en">User manual:</span><span data-l="de">Handbuch:</span>
+        <a href="manual-de.html" lang="de">Deutsch</a> · <a href="manual-en.html" lang="en">English</a> · <a href="https://github.com/ckonecny/apex-cw/releases/latest">PDF</a>
       </div>
       <div class="chips">
         <span class="chip">Koch</span><span class="chip">Iambic A/B</span><span class="chip">QRM / QSB</span>
@@ -249,7 +253,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
         <span data-l="de">Nach Gehör mitschreiben, zurückgeben, frei tasten, mit einem Bot oder anderen Funkamateuren sprechen. Alles baut auf der Koch-Methode auf und liegt an einem Ort.</span>
       </p>
       <ul>
-        <li><b><span data-l="en">Listen</span><span data-l="de">Hören</span></b> – <span data-l="en">Koch lessons with five sequences (LCWO, CW Academy, LICW, Morserino or your own), a set of all prosigns, random characters, groups, words, call signs</span><span data-l="de">Koch-Lektionen mit fünf Reihenfolgen (LCWO, CW Academy, LICW, Morserino oder eigene), ein Zeichenvorrat mit allen Prosigns, Zufallszeichen, Gruppen, Wörter, Rufzeichen</span></li>
+        <li><b><span data-l="en">Listen</span><span data-l="de">Hören</span></b> – <span data-l="en">Koch lessons with five sequences (LCWO, CW Academy, LICW, Morserino or your own), a set of all prosigns, random characters, groups, words, call signs. Copy on paper or type on screen</span><span data-l="de">Koch-Lektionen mit fünf Reihenfolgen (LCWO, CW Academy, LICW, Morserino oder eigene), ein Zeichenvorrat mit allen Prosigns, Zufallszeichen, Gruppen, Wörter, Rufzeichen. Auf Papier mitschreiben oder am Display tippen</span></li>
         <li><b><span data-l="en">Send</span><span data-l="de">Geben</span></b> – <span data-l="en">Echo Trainer: hear a word, send it back, get instant feedback</span><span data-l="de">Echo-Trainer: Wort hören, zurückgeben, sofort bewertet</span></li>
         <li><b><span data-l="en">One character</span><span data-l="de">Ein Zeichen</span></b> – <span data-l="en">long-press any Koch character to hear it again and again and key it back, with separate speeds for hearing and sending</span><span data-l="de">Zeichen gedrückt halten, um es immer wieder zu hören und zurückzugeben, mit getrennten Tempi für Hören und Geben</span></li>
         <li><b>CW Keyer &amp; Decoder</b> – <span data-l="en">live decoding from your key or through the microphone</span><span data-l="de">Live-Dekodierung von deiner Taste oder über das Mikrofon</span></li>
@@ -305,14 +309,13 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
       <div class="tag mono"><span data-l="en">Adaptive</span><span data-l="de">Adaptiv</span></div>
       <h2><span data-l="en">It watches every character, so you don't have to.</span><span data-l="de">Die App beobachtet jedes Zeichen, damit du es nicht musst.</span></h2>
       <p>
-        <span data-l="en">The app tracks your hit rate per character and per block. It tells you when the next Koch character is due, suggests spacing and speed, and brings your weak characters back. You accept or reject every suggestion.</span>
-        <span data-l="de">Die App misst deine Trefferquote pro Zeichen und pro Block. Sie sagt dir, wann das nächste Koch-Zeichen dran ist, schlägt Abstände und Tempo vor und bringt schwache Zeichen zurück. Jeden Vorschlag nimmst du an oder lehnst ihn ab.</span>
+        <span data-l="en">The app tracks your hit rate per character and per block. It shows where you are strong and where you are not, and brings your weak characters back.</span>
+        <span data-l="de">Die App misst deine Trefferquote pro Zeichen und pro Block. Sie zeigt, wo du sicher bist und wo noch nicht, und bringt schwache Zeichen zurück.</span>
       </p>
       <ul>
         <li><span data-l="en">Statistics per character with trend, curves and mix-ups, plus a card that drills the pairs you keep confusing</span><span data-l="de">Statistik pro Zeichen mit Trend, Kurven und Verwechslungen, dazu eine Karte, die die Paare übt, die du immer wieder verwechselst</span></li>
         <li><span data-l="en">Weak characters come back in the next block until they sit</span><span data-l="de">Schwache Zeichen kommen im nächsten Block wieder, bis sie sitzen</span></li>
         <li><span data-l="en">Your own texts: share anything from another app and let it play, even with the screen off</span><span data-l="de">Eigene Texte: teile etwas aus einer anderen App und lass es abspielen, auch bei ausgeschaltetem Bildschirm</span></li>
-        <li><span data-l="en">Audio trainer: hear a group, think along, then a voice spells the solution, eyes closed and nothing to type</span><span data-l="de">Audio-Trainer: eine Gruppe hören, mitdenken, dann buchstabiert eine Stimme die Lösung, Augen zu und nichts tippen</span></li>
         <li><span data-l="en">Learn from a mistake: the word replays with dots and dashes under each letter</span><span data-l="de">Aus Fehlern lernen: das Wort kommt noch einmal mit Punkten und Strichen unter jedem Buchstaben</span></li>
       </ul>
     </div>
@@ -323,13 +326,51 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
     </div>
   </section>
 
+<!-- training goals -->
+<section id="goals">
+  <div class="wrap row">
+    <div class="txt">
+      <div class="tag mono"><span data-l="en">Training goals</span><span data-l="de">Trainingsziele</span></div>
+      <h2><span data-l="en">You set the goal. The app finds the right moment.</span><span data-l="de">Du setzt das Ziel. Die App findet den richtigen Moment.</span></h2>
+      <p><span data-l="en">Decide where you want to get to, separately for Listen and Send: more characters, tighter spacing, longer groups, higher speed. The app works through your goals one at a time, so two things never get harder at once.</span><span data-l="de">Leg fest, wo du hinwillst, getrennt für Hören und Geben: mehr Zeichen, kürzere Abstände, längere Gruppen, höheres Tempo. Die App arbeitet deine Ziele der Reihe nach ab, so wird nie zweierlei gleichzeitig schwerer.</span></p>
+      <ul>
+        <li><b><span data-l="en">Your list, your order</span><span data-l="de">Deine Liste, deine Reihenfolge</span></b> – <span data-l="en">set a target for each step and drag the goals into place. No goal, no suggestion</span><span data-l="de">setz für jeden Schritt einen Zielwert und zieh die Ziele an ihren Platz. Kein Ziel, kein Vorschlag</span></li>
+        <li><b><span data-l="en">A step when you are ready</span><span data-l="de">Ein Schritt, wenn du so weit bist</span></b> – <span data-l="en">the result page suggests the next step and says why, for example 93 % right over the last 100 characters. A bar shows how close you are</span><span data-l="de">die Ergebnisseite schlägt den nächsten Schritt vor und sagt warum, etwa 93 % richtig bei den letzten 100 Zeichen. Ein Balken zeigt, wie nah du dran bist</span></li>
+        <li><b><span data-l="en">You decide</span><span data-l="de">Du entscheidest</span></b> – <span data-l="en">apply it, or choose Not now and hear about it again in 15 minutes at the earliest. If it goes badly, the app offers to undo the last step</span><span data-l="de">übernimm ihn oder wähl „Nicht jetzt“, dann kommt er frühestens in 15 Minuten wieder. Läuft es schlecht, bietet die App an, den letzten Schritt zurückzunehmen</span></li>
+        <li><b><span data-l="en">Your way so far</span><span data-l="de">Dein bisheriger Weg</span></b> – <span data-l="en">the statistics show your goals and every step</span><span data-l="de">die Statistik zeigt deine Ziele und jeden Schritt</span></li>
+      </ul>
+    </div>
+    <div class="single"><div class="phone">
+        <img data-l="en" src="img/en_goals.webp" alt="Training goals in your own order" loading="lazy" width="720" height="1489">
+        <img data-l="de" src="img/de_goals.webp" alt="Trainingsziele in eigener Reihenfolge" loading="lazy" width="720" height="1489">
+      </div></div>
+  </div>
+</section>
+
+<!-- audio trainer -->
+<section id="audio" class="alt">
+  <div class="wrap row rev">
+    <div class="txt">
+      <div class="tag mono"><span data-l="en">Audio trainer</span><span data-l="de">Audio-Trainer</span></div>
+      <h2><span data-l="en">Eyes closed, nothing to type.</span><span data-l="de">Augen zu, nichts tippen.</span></h2>
+      <p><span data-l="en">For head copy without looking at the screen. You hear Morse, think along, and a voice gives you the solution. Nothing is graded, and the time still counts towards your daily goal.</span><span data-l="de">Kopfhören, ohne aufs Display zu schauen. Du hörst Morse, denkst mit, und eine Stimme sagt dir die Lösung. Bewertet wird nichts, die Zeit zählt trotzdem für dein Tagesziel.</span></p>
+      <ul>
+        <li><b><span data-l="en">Hear</span><span data-l="de">Hören</span></b> – <span data-l="en">one group in Morse: random characters, words or abbreviations, at your own Koch level and speed, with interference if you like</span><span data-l="de">eine Gruppe in Morse: Zufallszeichen, Wörter oder Abkürzungen, auf deiner Koch-Stufe und in deinem Tempo, auf Wunsch mit Störungen</span></li>
+        <li><b><span data-l="en">Think</span><span data-l="de">Mitdenken</span></b> – <span data-l="en">a pause of 1 to 15 seconds to finish the characters in your head. No keyboard, no paper</span><span data-l="de">eine Pause von 1 bis 15 Sekunden, um die Zeichen im Kopf fertigzudenken. Keine Tastatur, kein Papier</span></li>
+        <li><b><span data-l="en">Compare</span><span data-l="de">Vergleichen</span></b> – <span data-l="en">a voice, Kristin or Bryce, spells every character: Alfa, Bravo, Charlie, punctuation and prosigns included. You judge for yourself</span><span data-l="de">eine Stimme, Kristin oder Bryce, buchstabiert jedes Zeichen: Alfa, Bravo, Charlie, auch Satzzeichen und Prosigns. Du beurteilst dich selbst</span></li>
+        <li><b><span data-l="en">Screen off</span><span data-l="de">Bildschirm aus</span></b> – <span data-l="en">it keeps running in the background. On the lock screen you change tempo and character spacing, a headset does play and pause</span><span data-l="de">es läuft im Hintergrund weiter. Am Sperrbildschirm änderst du Tempo und Zeichenabstand, ein Headset übernimmt Play und Pause</span></li>
+      </ul>
+    </div>
+    <div class="single"><div class="phone">
+        <img data-l="en" src="img/en_audio.webp" alt="Audio trainer: the voice spells the solution" loading="lazy" width="720" height="1489">
+        <img data-l="de" src="img/de_audio.webp" alt="Audio-Trainer: die Stimme buchstabiert die Lösung" loading="lazy" width="720" height="1489">
+      </div></div>
+  </div>
+</section>
+
 <!-- streak -->
 <section id="streak">
   <div class="wrap row">
-    <div class="single"><div class="phone">
-        <img data-l="en" src="img/en_streak.webp" alt="Achievements: daily goal, streak and awards" loading="lazy" width="720" height="1489">
-        <img data-l="de" src="img/de_streak.webp" alt="Erfolge: Tagesziel, Serie und Auszeichnungen" loading="lazy" width="720" height="1489">
-    </div></div>
     <div class="txt">
       <div class="tag mono"><span data-l="en">Stay on track</span><span data-l="de">Dranbleiben</span></div>
       <h2><span data-l="en">Ten minutes a day beat one long session a month.</span><span data-l="de">Zehn Minuten täglich schlagen eine lange Session im Monat.</span></h2>
@@ -343,6 +384,10 @@ footer .links{display:flex;flex-wrap:wrap;gap:6px 22px}
         <li><span data-l="en">Weekly review and awards for real steps, like a new character</span><span data-l="de">Wochenrückblick und Auszeichnungen für echte Schritte, etwa ein neues Zeichen</span></li>
       </ul>
     </div>
+    <div class="single"><div class="phone">
+        <img data-l="en" src="img/en_streak.webp" alt="Achievements: daily goal, streak and awards" loading="lazy" width="720" height="1489">
+        <img data-l="de" src="img/de_streak.webp" alt="Erfolge: Tagesziel, Serie und Auszeichnungen" loading="lazy" width="720" height="1489">
+    </div></div>
   </div>
 </section>
 

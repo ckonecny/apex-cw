@@ -910,3 +910,13 @@ Both merged to main (PR #168, PR #169, 2026-10-31). Fist analyzer: rhythm panel 
 
 ## Timing history (#167)
 Merged to main (PR #170, 2026-10-31), checked on the test phone: a record per Geben block with a straight key on an adapter, "Timing" card in the Geben progress tab. Details: `docs/DECISIONS.md`.
+
+## Play Store steps up to production (done 2026-11-08)
+Moved from STATUS.md once the app was live; the plan as it stood:
+
+Done: upload key and signing, privacy policy, store texts and graphics
+(`docs/PLAY-LISTING.md`, `docs/DECISIONS.md` "Play Store preparation"); store
+raw shots and graphics rebuilt 2026-10-08 (dark, DE+EN, beta 1.6.1); AAB `releases/apex-cw-v1.7.0.aab` built.
+1. User: developer account (identity check passed).
+2. Store raw shots, graphics and the landing page retaken 2026-10-21 on beta 1.8.0 (`store/capture/README.md`; `python3 store/make_graphics.py` writes `store/out/`). Still to do: update the listing texts and "What's new" for 1.8.0 and upload (AAB with the release); closed test: 12 testers × 14 days. If the beta changes a shown screen, retake with the same scripts.
+3. Production.
