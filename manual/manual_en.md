@@ -189,7 +189,8 @@ As on the Morserino, the pauses are set **in dit lengths**:
 - **Character spacing** is the pause between two characters of a word. Normal
   Morse is 3 dits. You can set 3 to 45.
 - **Word spacing** is the pause between two words or groups. Normal Morse is
-  7 dits. You can set 6 to 105.
+  7 dits. You can set 6 to 105. At least character spacing + 4 dits is always
+  played, even if you set less (as on the Morserino).
 
 The pause between the elements (dits and dahs) *inside* a character is always
 1 dit. So the characters themselves always come at the set speed, and only

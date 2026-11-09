@@ -11,6 +11,7 @@
 #include <thread>
 
 #include "interference.h"
+#include "key_schedule.h"
 
 #define TAG "CwAudio"
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
@@ -40,6 +41,10 @@ static std::atomic<int>     gLatencyMs {-1};   // cached after open, read withou
 // Interference on the other station's signal (noise, QSB, ...); see interference.h.
 static Interference gInterference;
 
+// The generator's tones and pauses, counted off in samples; see key_schedule.h.
+// gPlaying stays for what needs an immediate reaction (keyer sidetone, effects).
+static KeySchedule gKeySchedule;
+
 // These are only touched by the callback thread — no atomics needed.
 static double gPhase = 0.0;
 static double gGain  = 0.0;
@@ -61,8 +66,11 @@ static aaudio_data_callback_result_t audioCallback(
     gInterference.beginBlock(sampleRate, freq, vol, numFrames);
     const double step = 2.0 * M_PI * (freq + gInterference.freqOffsetHz()) / sampleRate;
 
+    gKeySchedule.beginBlock(sampleRate);
     for (int i = 0; i < numFrames; ++i) {
-        if (playing) {
+        // Always advance the schedule, or a keyer press would stretch the queue.
+        const bool scheduled = gKeySchedule.nextSample() == KeySchedule::kOn;
+        if (playing || scheduled) {
             gGain = (gGain + rampUp  < 1.0) ? gGain + rampUp  : 1.0;
         } else {
             gGain = (gGain - rampDown > 0.0) ? gGain - rampDown : 0.0;
@@ -76,6 +84,7 @@ static aaudio_data_callback_result_t audioCallback(
             gPhase  = 0.0;   // reset at zero crossing so next onset is clean
         }
     }
+    gKeySchedule.endBlock();
     return AAUDIO_CALLBACK_RESULT_CONTINUE;
 }
 
@@ -193,6 +202,30 @@ JNIEXPORT void JNICALL
 Java_at_oe1cko_nextcwtrainer_CwAudioNative_setPlaying(JNIEnv*, jclass, jboolean on)
 {
     gPlaying.store(on, std::memory_order_release);
+}
+
+JNIEXPORT void JNICALL
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_setKeyEpoch(JNIEnv*, jclass, jint epoch)
+{
+    gKeySchedule.setEpoch(epoch);
+}
+
+JNIEXPORT jboolean JNICALL
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_enqueueKey(JNIEnv*, jclass, jint epoch, jboolean on, jint ms)
+{
+    return gKeySchedule.push(epoch, on, ms) ? JNI_TRUE : JNI_FALSE;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_enqueueIdleGap(JNIEnv*, jclass, jint epoch, jint ms)
+{
+    return gKeySchedule.pushIdleGap(epoch, ms) ? JNI_TRUE : JNI_FALSE;
+}
+
+JNIEXPORT jlong JNICALL
+Java_at_oe1cko_nextcwtrainer_CwAudioNative_keyPlayedMs(JNIEnv*, jclass, jint epoch)
+{
+    return gKeySchedule.playedMs(epoch);
 }
 
 JNIEXPORT void JNICALL

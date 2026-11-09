@@ -197,7 +197,8 @@ Wie am Morserino werden die Pausen **in Dit-Längen** eingestellt:
 - **Zeichenabstand** – die Pause zwischen zwei Zeichen eines Wortes. Normales
   Morse: 3 Dits. Einstellbar von 3 bis 45.
 - **Wortabstand** – die Pause zwischen zwei Wörtern bzw. Gruppen. Normales
-  Morse: 7 Dits. Einstellbar von 6 bis 105.
+  Morse: 7 Dits. Einstellbar von 6 bis 105. Gespielt wird immer mindestens
+  Zeichenabstand + 4 Dits, auch wenn weniger eingestellt ist (wie am Morserino).
 
 Die Pause zwischen den Elementen (Dits und Dahs) *innerhalb* eines Zeichens ist
 immer 1 Dit. Die Zeichen selbst kommen also immer im eingestellten Tempo; nur

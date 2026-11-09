@@ -13,6 +13,12 @@ object CwAudioNative {
     external fun restartStream(): Int
     external fun setPreferredDeviceId(deviceId: Int)
     external fun setPlaying(on: Boolean)
+    // CwGenerator's sample-accurate queue, see key_schedule.h. Changing the
+    // epoch drops what is queued or playing.
+    external fun setKeyEpoch(epoch: Int)
+    external fun enqueueKey(epoch: Int, on: Boolean, ms: Int): Boolean
+    external fun enqueueIdleGap(epoch: Int, ms: Int): Boolean
+    external fun keyPlayedMs(epoch: Int): Long
     external fun setFreqHz(hz: Double)
     external fun setVolume(vol: Float)
     external fun setEnvelopeMs(ms: Float)
