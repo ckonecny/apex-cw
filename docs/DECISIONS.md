@@ -2411,6 +2411,13 @@ One record per Geben block with a straight key on an adapter, `lib/content/timin
 - **Not stored:** dit spread and tempo accuracy. The dit is the unit itself (its median is 1 by definition), and there is no set tempo with a straight key (see the Geben section above).
 - Not tied to the time-range chips of the progress tab: blocks, not days, are the unit, and the history is short.
 
+## Word gap: no setting below the played minimum (2026-11-10, branch `fix/sample-accurate-keying`)
+The firmware offers InterWord Spc 6..105 but plays max(InterWord Spc, Interchar Spc + 4) (`updateTimings()`, m32_v6.ino). With Interchar Spc at least 3, a 6 always played as 7, and any value below Interchar Spc + 4 showed one number and played another. Tester feedback: "6 dits, although the norm is 7?"
+- **Generator spacing (all −/+ rows, the ⚙ sheet slider, the training goals) only offers Interchar Spc + 4 and up** (`minWordSpaceDits` / `playedWordSpaceDits` in `content/effective_wpm.dart`). Raising the character gap raises the word gap with it. A value stored below that from before is shown, stepped and counted for goals as the played value; nothing is migrated, it plays as before.
+- **eff. WPM counts the played word gap**, as the firmware's effWpm does (it used the raw setting, so 9/7 showed 14 instead of 13).
+- **Keyer, WiFi Trx and QSO Bot keep 6..105.** Their word gap is the decoder's `interWordTimer = (InterWord Spc - 1)` dits and doesn't use the +4 rule, so 6 has an effect there.
+- Deviation from the firmware: only in what can be set, not in what is heard.
+
 ## Generator keying: sample-accurate queue (2026-11-09, branch `fix/sample-accurate-keying`)
 A tester measured uneven element lengths over Bluetooth with Audacity (dits 60-76 ms, dahs 165-197 ms at 20 WPM). Cause: the generator flipped `gPlaying` around `Thread.sleep`, and the AAudio callback read it once per block, so every edge snapped to a block boundary. Measured on the test phone: `Thread.sleep` itself is within about 1 ms; rendered lengths sit on a grid of the block size (2 ms speaker, 5 ms Bluetooth), and a recording at the ear matched the app-side numbers, so the error is created in the app, not by Bluetooth.
 - **`CwGenerator` queues segments, the callback counts them** (`cpp/key_schedule.h`, `KeySchedule`): "on/off for N ms", converted to samples at the current rate. Afterwards every dit, dah, element gap and character gap on the test phone over Bluetooth was exact (0.00 ms spread). `gPlaying` stays for keyer sidetone and effects, which need an immediate reaction; the schedule is advanced even while `gPlaying` is set, or a keyer press would stretch it.

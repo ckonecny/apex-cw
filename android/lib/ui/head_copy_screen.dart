@@ -17,6 +17,7 @@ import '../content/head_copy_data.dart';
 import '../content/head_copy_engine.dart';
 import '../content/head_copy_log.dart';
 import '../content/training_profile.dart';
+import '../content/effective_wpm.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/interference_profile.dart';
@@ -53,7 +54,7 @@ class HcSettings {
     s.level = (p.getInt('hc.level') ?? 1).clamp(1, 3);
     s.wpm = TrainingProfile.clampWpm(p.getInt('hc.wpm'));
     s.interChar = (p.getInt('hc.interCharSpace') ?? 3).clamp(3, 45);
-    s.interWord = (p.getInt('hc.interWordSpace') ?? 7).clamp(s.interChar < 6 ? 6 : s.interChar, 105);
+    s.interWord = (p.getInt('hc.interWordSpace') ?? 7).clamp(minWordSpaceDits(s.interChar), 105);
     return s;
   }
 

@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'effective_wpm.dart';
 
 // Echo Trainer deadlines, as in m32_v6.ino (V9.0). All spacing values are in
 // dits; the firmware's interWordSpace is max(InterWord Spc, Interchar Spc + 4)
@@ -6,7 +6,7 @@ import 'dart:math';
 
 /// Dits of the effective word space.
 double effectiveWordSpaceDits(int interChar, int interWord) =>
-    max(interWord, interChar + 4).toDouble();
+    playedWordSpaceDits(interChar, interWord).toDouble();
 
 /// Time from the end of the prompt in which the answer must BEGIN:
 /// 1400 ms + inter-char + inter-word / 3 (at the prompt speed) + think time

@@ -912,7 +912,7 @@ Both merged to main (PR #168, PR #169, 2026-10-31). Fist analyzer: rhythm panel 
 Merged to main (PR #170, 2026-10-31), checked on the test phone: a record per Geben block with a straight key on an adapter, "Timing" card in the Geben progress tab. Details: `docs/DECISIONS.md`.
 
 ## Play Store steps up to production (done 2026-11-08)
-Moved from STATUS.md once the app was live; the plan as it stood:
+Play listing's website set to the Pages URL by the user (reported 2026-11-08). Moved from STATUS.md once the app was live; the plan as it stood:
 
 Done: upload key and signing, privacy policy, store texts and graphics
 (`docs/PLAY-LISTING.md`, `docs/DECISIONS.md` "Play Store preparation"); store

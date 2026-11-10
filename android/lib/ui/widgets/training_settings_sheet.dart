@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../content/cw_content.dart';
+import '../../content/effective_wpm.dart';
 import '../../content/echo_suggestions.dart';
 import '../../content/audio_trainer_engine.dart' show audioTrainerVoices, ProsignIntro;
 import '../../content/training_profile.dart';
@@ -269,8 +270,8 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
               final newChar = v.round();
               setState(() {
                 _interCharSpace = newChar;
-                if (widget.profile != TrainingProfile.echo && _interWordSpace < newChar) {
-                  _interWordSpace = newChar.clamp(6, 105);
+                if (widget.profile != TrainingProfile.echo) {
+                  _interWordSpace = playedWordSpaceDits(newChar, _interWordSpace);
                 }
               });
               _setInt('interCharSpace', _interCharSpace);
@@ -279,10 +280,13 @@ class _TrainingSettingsBodyState extends State<_TrainingSettingsBody> {
         if (widget.profile != TrainingProfile.echo) ...[
         const SettingsDivider(),
         LabeledSlider(
-            label: Strings.t('settings_word_spacing'), value: _interWordSpace.toDouble(),
-            min: 6, max: 105, divisions: 99, display: '${_dits(_interWordSpace)} · ${ditsToSeconds(_interWordSpace, _wpm)} @\u00A0$_wpm\u00A0WPM',
+            label: Strings.t('settings_word_spacing'),
+            value: playedWordSpaceDits(_interCharSpace, _interWordSpace).toDouble(),
+            min: minWordSpaceDits(_interCharSpace).toDouble(), max: 105,
+            divisions: 105 - minWordSpaceDits(_interCharSpace),
+            display: '${_dits(playedWordSpaceDits(_interCharSpace, _interWordSpace))} · ${ditsToSeconds(playedWordSpaceDits(_interCharSpace, _interWordSpace), _wpm)} @\u00A0$_wpm\u00A0WPM',
             onChanged: (v) {
-              setState(() => _interWordSpace = v.round().clamp(_interCharSpace, 105));
+              setState(() => _interWordSpace = v.round().clamp(minWordSpaceDits(_interCharSpace), 105));
               _setInt('interWordSpace', _interWordSpace);
             }),
         ],

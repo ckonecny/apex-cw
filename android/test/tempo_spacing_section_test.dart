@@ -75,20 +75,36 @@ void main() {
     expect(find.textContaining('Dits ·'), findsNothing);
   });
 
-  testWidgets('char gap + keeps the word gap at least as large', (tester) async {
+  testWidgets('char gap + keeps the word gap at the played minimum', (tester) async {
     (int, int)? got;
     await tester.pumpWidget(_host(
-        interChar: 20, interWord: 20, onSpacing: (ic, iw) => got = (ic, iw)));
+        interChar: 20, interWord: 24, onSpacing: (ic, iw) => got = (ic, iw)));
     await tester.tap(find.byIcon(Icons.add_circle_outline).first);
-    expect(got, (21, 21));
+    expect(got, (21, 25));
+  });
+
+  // The firmware plays max(InterWord Spc, Interchar Spc + 4): 6 at 3 plays 7.
+  testWidgets('word gap: shows what is played, no step below it', (tester) async {
+    (int, int)? got;
+    await tester.pumpWidget(_host(
+        interChar: 3, interWord: 6, onSpacing: (ic, iw) => got = (ic, iw)));
+    expect(find.text('7'), findsOneWidget);
+    expect(find.text('6'), findsNothing);
+    final minus = find.byIcon(Icons.remove_circle_outline).last;
+    await tester.tap(minus);
+    expect(got, isNull);
+    await tester.tap(find.byIcon(Icons.add_circle_outline).last);
+    expect(got, (3, 8));
   });
 
   // Shared with the audio trainer's lock-screen buttons (#152).
-  test('stepCharSpacing: 3..45 dits, word gap never below', () {
-    expect(stepCharSpacing(3, 7, 1), (4, 7));
-    expect(stepCharSpacing(7, 7, 1), (8, 8));
-    expect(stepCharSpacing(8, 8, -1), (7, 8));
+  test('stepCharSpacing: 3..45 dits, word gap never below char gap + 4', () {
+    expect(stepCharSpacing(3, 7, 1), (4, 8));
+    expect(stepCharSpacing(3, 20, 1), (4, 20));
+    expect(stepCharSpacing(7, 11, 1), (8, 12));
+    expect(stepCharSpacing(8, 12, -1), (7, 12));
     expect(stepCharSpacing(3, 7, -1), (3, 7));
     expect(stepCharSpacing(45, 50, 1), (45, 50));
+    expect(stepCharSpacing(44, 48, 1), (45, 49));
   });
 }

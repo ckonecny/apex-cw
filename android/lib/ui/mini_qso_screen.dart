@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../content/head_copy_log.dart';
 import '../content/mini_qso_engine.dart';
 import '../content/training_profile.dart';
+import '../content/effective_wpm.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/interference_profile.dart';
@@ -55,7 +56,7 @@ class MqSettings {
     s.level = (p.getInt('mq.level') ?? 1).clamp(1, mqLevels);
     s.wpm = TrainingProfile.clampWpm(p.getInt('mq.wpm'));
     s.interChar = (p.getInt('mq.interCharSpace') ?? 3).clamp(3, 45);
-    s.interWord = (p.getInt('mq.interWordSpace') ?? 7).clamp(s.interChar < 6 ? 6 : s.interChar, 105);
+    s.interWord = (p.getInt('mq.interWordSpace') ?? 7).clamp(minWordSpaceDits(s.interChar), 105);
     return s;
   }
 
