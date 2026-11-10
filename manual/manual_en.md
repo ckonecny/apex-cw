@@ -189,7 +189,11 @@ As on the Morserino, the pauses are set **in dit lengths**:
 - **Character spacing** is the pause between two characters of a word. Normal
   Morse is 3 dits. You can set 3 to 45.
 - **Word spacing** is the pause between two words or groups. Normal Morse is
-  7 dits. You can set 6 to 105.
+  7 dits. You can set up to 105, and down to character spacing + 4 dits (so
+  from 7 with 3 dits character spacing): the Morserino doesn't play a shorter
+  word gap either. When the character spacing grows, the word spacing grows
+  with it if needed. In the CW Keyer, WiFi Trx and the QSO Bot, where you
+  send yourself, the word spacing still goes down to 6.
 
 The pause between the elements (dits and dahs) *inside* a character is always
 1 dit. So the characters themselves always come at the set speed, and only
@@ -209,6 +213,8 @@ Because the pauses are longer, whole words arrive more slowly. The app shows
 this as **eff.** (effective WPM):
 
   eff. WPM = 50 × WPM / (31 + 4 × character spacing + word spacing)
+
+The word spacing counted is the played one, so at least character spacing + 4.
 
 Example: 20 WPM with 28/40 dits gives 50 × 20 / (31 + 112 + 40) ≈ 5 WPM.
 The characters sound like 20 WPM, but you have as much time as at 5 WPM. With

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../adventure/adventure_store.dart';
 import '../adventure/cw_text.dart';
+import '../content/effective_wpm.dart';
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import 'adventure_screen.dart' show AdventureSettings;
@@ -63,13 +64,17 @@ List<Widget> _tempoRows(AppColors c, AdventureSettings s, void Function(VoidCall
         s.interChar < 45
             ? () => change(() {
                   s.interChar++;
-                  if (s.interWord < s.interChar) s.interWord = s.interChar;
+                  s.interWord = playedWordSpaceDits(s.interChar, s.interWord);
                 })
             : null),
-    _stepper(c, Strings.t('settings_word_spacing'), '${s.interWord}',
-        'Dits · ${ditsToSeconds(s.interWord, s.wpm)}',
-        s.interWord > 6 && s.interWord > s.interChar ? () => change(() => s.interWord--) : null,
-        s.interWord < 105 ? () => change(() => s.interWord++) : null),
+    _stepper(c, Strings.t('settings_word_spacing'), '${playedWordSpaceDits(s.interChar, s.interWord)}',
+        'Dits · ${ditsToSeconds(playedWordSpaceDits(s.interChar, s.interWord), s.wpm)}',
+        playedWordSpaceDits(s.interChar, s.interWord) > minWordSpaceDits(s.interChar)
+            ? () => change(() => s.interWord = playedWordSpaceDits(s.interChar, s.interWord) - 1)
+            : null,
+        s.interWord < 105
+            ? () => change(() => s.interWord = playedWordSpaceDits(s.interChar, s.interWord) + 1)
+            : null),
     _hint(c, Strings.t('adv_spacing_desc')),
   ];
 }

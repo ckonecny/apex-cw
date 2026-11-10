@@ -15,12 +15,22 @@ interface GenTone {
 
 /** Where generated CW goes. The default is the native audio engine; tests record it. */
 interface GenOut {
-    fun setPlaying(on: Boolean)
+    /** Starts a new playback: whatever is queued or playing is dropped. */
+    fun setKeyEpoch(epoch: Int)
+    /** Queues one tone or pause; false if the queue is full. */
+    fun enqueueKey(epoch: Int, on: Boolean, ms: Int): Boolean
+    /** Silence until [ms] have passed since the previous playback's last sample. */
+    fun enqueueIdleGap(epoch: Int, ms: Int): Boolean
+    /** How much of this epoch's queue has been rendered so far; -1 before it has started. */
+    fun keyPlayedMs(epoch: Int): Long
     fun setRx(on: Boolean)
 }
 
 object NativeGenOut : GenOut {
-    override fun setPlaying(on: Boolean) = CwAudioNative.setPlaying(on)
+    override fun setKeyEpoch(epoch: Int) = CwAudioNative.setKeyEpoch(epoch)
+    override fun enqueueKey(epoch: Int, on: Boolean, ms: Int) = CwAudioNative.enqueueKey(epoch, on, ms)
+    override fun enqueueIdleGap(epoch: Int, ms: Int) = CwAudioNative.enqueueIdleGap(epoch, ms)
+    override fun keyPlayedMs(epoch: Int) = CwAudioNative.keyPlayedMs(epoch)
     override fun setRx(on: Boolean) = CwAudioNative.setRx(on)
 }
 
@@ -192,10 +202,14 @@ class CwGenerator(
     // found by tracing a real, intermittent repro via logcat.
     @Volatile private var generation = 0
 
-    /** Play a single string (for Echo Trainer). Calls onDone when finished. */
-    fun playOne(text: String) {
+    /**
+     * Play a single string (for Echo Trainer). Calls onDone when finished.
+     * With [afterWordGap] it starts exactly one word gap after the end of the
+     * previous playback, however late this call arrives within that gap.
+     */
+    fun playOne(text: String, afterWordGap: Boolean = false) {
         if (running) return
-        val myGen = ++generation
+        val t = newTrack(++generation)
         running = true
         out.setRx(true)
         thread = Thread({
@@ -209,13 +223,13 @@ class CwGenerator(
                 // Trainer / Learn New Char / Preview) — before the operator was
                 // allowed to key their echo. Now onDone fires right after the
                 // last element's own natural key-up.
-                playWord(text, myGen, trailingGap = false)
+                if (afterWordGap) out.enqueueIdleGap(t.epoch, wordGapMs())
+                playWord(text, t, trailingGap = false)
+                drain(t)
             } catch (_: InterruptedException) {
                 Thread.currentThread().interrupt()
             } finally {
-                running = false
-                out.setPlaying(false)
-                if (myGen == generation) { out.setRx(false); onDone?.invoke(false) }
+                finishPlayback(t)
             }
         }, "cw-gen-one").also { it.isDaemon = true; it.start() }
     }
@@ -232,42 +246,39 @@ class CwGenerator(
      */
     fun playPatterns(patterns: List<String>) {
         if (running) return
-        val myGen = ++generation
+        val t = newTrack(++generation)
         running = true
         out.setRx(true)
         thread = Thread({
             try {
                 for ((i, p) in patterns.withIndex()) {
                     if (!running) break
-                    playPattern(p)
-                    if (i < patterns.size - 1) sleepMs(jitterGap(ditMs() * interCharSpace, hesitate = true))
+                    playPattern(p, t)
+                    if (i < patterns.size - 1) key(t, false, jitterGap(ditMs() * interCharSpace, hesitate = true))
                 }
+                drain(t)
             } catch (_: InterruptedException) {
                 Thread.currentThread().interrupt()
             } finally {
-                running = false
-                out.setPlaying(false)
-                if (myGen == generation) { out.setRx(false); onDone?.invoke(false) }
+                finishPlayback(t)
             }
         }, "cw-gen-patterns").also { it.isDaemon = true; it.start() }
     }
 
-    private fun playPattern(morse: String) {
+    private fun playPattern(morse: String, t: Track) {
         for ((idx, sym) in morse.withIndex()) {
             if (!running) break
-            out.setPlaying(true)
-            sleepMs(jitterTone(sym == '.'))
-            out.setPlaying(false)
-            if (idx < morse.length - 1) sleepMs(jitterGap(ditMs()))
+            key(t, true, jitterTone(sym == '.'))
+            if (idx < morse.length - 1) key(t, false, jitterGap(ditMs()))
         }
     }
 
     fun start() {
         if (running) return
-        val myGen = ++generation
+        val t = newTrack(++generation)
         running = true
         out.setRx(true)
-        thread = Thread({ generatorLoop(myGen) }, "cw-generator").also {
+        thread = Thread({ generatorLoop(t) }, "cw-generator").also {
             it.isDaemon = true; it.start()
         }
     }
@@ -276,7 +287,7 @@ class CwGenerator(
         generation++
         running = false
         thread?.interrupt()
-        out.setPlaying(false)
+        out.setKeyEpoch(nextEpoch())
         out.setRx(false)
     }
 
@@ -288,7 +299,7 @@ class CwGenerator(
     }
 
     // ── Main loop ─────────────────────────────────────────────────────────────
-    private fun generatorLoop(myGen: Int) {
+    private fun generatorLoop(t: Track) {
         var stoppedByMaxWords = false
         try {
             var lastText: String? = null
@@ -300,10 +311,10 @@ class CwGenerator(
                 repeatNext = false
                 wordCount++
 
-                playWord(text, myGen)
+                playWord(text, t)
                 if (eachWordTwice && running) {
-                    sleepMs(jitterGap(ditMs() * wordGapExtra()))
-                    playWord(text, myGen)
+                    key(t, false, jitterGap(ditMs() * wordGapExtra()))
+                    playWord(text, t)
                 }
 
                 if (!running) break
@@ -311,27 +322,28 @@ class CwGenerator(
                 if (stopAfterItem) {
                     // Pause and wait for the operator's paddle choice (dit=repeat, dah=next),
                     // exactly like the real device's autoStop "halt" state.
+                    drain(t)
                     awaitingChoice = true
-                    if (myGen == generation) onWaiting?.invoke()
+                    if (t.gen == generation) onWaiting?.invoke()
                     while (awaitingChoice && running) Thread.sleep(20)
                     repeatNext = pendingRepeat
                 } else if (maxWords > 0 && wordCount >= maxWords) {
                     // "Max # of Words": stops the generator, like the real device's
                     // maxSequence limit — not applied together with Stop<Next>Rep,
                     // matching "no maxSequence in autostop mode".
-                    running = false
+                    drain(t)
+                    if (t.gen == generation) running = false
                     stoppedByMaxWords = true
                     break
                 } else {
-                    sleepMs(jitterGap(ditMs() * wordGapExtra()))
+                    key(t, false, jitterGap(ditMs() * wordGapExtra()))
                 }
             }
         } catch (_: InterruptedException) {
             Thread.currentThread().interrupt()
         } finally {
             awaitingChoice = false
-            out.setPlaying(false)
-            if (myGen == generation) { out.setRx(false); onDone?.invoke(stoppedByMaxWords) }
+            if (t.gen == generation) { out.setRx(false); onDone?.invoke(stoppedByMaxWords) }
         }
     }
 
@@ -548,8 +560,8 @@ class CwGenerator(
     // gap after the WORD's very last character — that gap only exists to space
     // this word from whatever plays next, which for a standalone single-word
     // playback is nothing, so keeping it just adds dead time before onDone.
-    private fun playWord(text: String, myGen: Int, trailingGap: Boolean = true) {
-        if (myGen == generation) onWord?.invoke(text)
+    private fun playWord(text: String, t: Track, trailingGap: Boolean = true) {
+        at(t) { onWord?.invoke(text) }
         val upper = text.uppercase()
         // A prosign must be written as an explicit <XX> token; a plain letter
         // pair is always two letters (START used to play as S T <AR> T, the
@@ -562,13 +574,13 @@ class CwGenerator(
             val nextIndex = if (isProsign) close + 1 else i + 1
             val isLastToken = nextIndex >= upper.length
             if (isProsign) {
-                playChar(prosign!!, myGen, trailingGap || !isLastToken)
+                playChar(prosign!!, t, trailingGap || !isLastToken)
             } else {
                 val c = upper[i].toString()
                 if (c == " ") {
-                    sleepMs(jitterGap(ditMs() * wordGapExtra(), hesitate = true))
+                    key(t, false, jitterGap(ditMs() * wordGapExtra(), hesitate = true))
                 } else {
-                    playChar(c, myGen, trailingGap || !isLastToken)
+                    playChar(c, t, trailingGap || !isLastToken)
                 }
             }
             i = nextIndex
@@ -576,40 +588,140 @@ class CwGenerator(
     }
 
     /** Test hook: plays one word synchronously on the calling thread. */
-    internal fun playWordNow(text: String, trailingGap: Boolean = true) {
+    internal fun playWordNow(text: String, trailingGap: Boolean = true, afterWordGap: Boolean = false) {
         running = true
-        try { playWord(text, generation, trailingGap) } finally { running = false }
+        val t = newTrack(generation)
+        try {
+            if (afterWordGap) out.enqueueIdleGap(t.epoch, wordGapMs())
+            playWord(text, t, trailingGap)
+            drain(t)
+        } finally { running = false }
     }
 
-    private fun playChar(ch: String, myGen: Int, withTrailingGap: Boolean = true) {
+    private fun playChar(ch: String, t: Track, withTrailingGap: Boolean = true) {
         val morse = morseTable[ch] ?: return
         for ((idx, sym) in morse.withIndex()) {
             if (!running) break
-            val toneDur = jitterTone(sym == '.')
-            out.setPlaying(true)
-            if (myGen == generation) onElement?.invoke(idx, true)
-            sleepMs(toneDur)
-            out.setPlaying(false)
-            if (myGen == generation) onElement?.invoke(idx, false)
+            at(t) { onElement?.invoke(idx, true) }
+            key(t, true, jitterTone(sym == '.'))
+            at(t) { onElement?.invoke(idx, false) }
             // inter-element gap (skip after last symbol — inter-char gap follows)
-            if (idx < morse.length - 1) sleepMs(jitterGap(ditMs()))
+            if (idx < morse.length - 1) key(t, false, jitterGap(ditMs()))
         }
         // Fire only once the character has actually finished playing — matches the
         // real device's dispGeneratedChar(), called at KEY_DOWN→KEY_UP once keying
         // for that char is done, not when it starts.
-        if (myGen == generation) onChar?.invoke(ch)
+        at(t) { onChar?.invoke(ch) }
         // Inter-character gap: Interchar Spc dits counted from the end of the last
         // tone (generateCW(): genTimer = interCharacterSpace). There is no
         // inter-element gap after the last element of a character (it was
         // once subtracted here as "already consumed", which made every
         // character gap, and with it every word gap, one dit too short).
-        if (withTrailingGap) sleepMs(jitterGap(ditMs() * interCharSpace, hesitate = true))
+        if (withTrailingGap) key(t, false, jitterGap(ditMs() * interCharSpace, hesitate = true))
+    }
+
+    // ── Keying queue ──────────────────────────────────────────────────────────
+    // Tones and pauses go into a queue that the audio callback counts off in
+    // samples (key_schedule.h), so their length no longer depends on when this
+    // thread wakes up or on the size of the audio blocks. This thread only keeps
+    // the queue LEAD_MS ahead; anything that happens "when the sound gets there"
+    // (display callbacks, end of playback) waits for the played position.
+
+    /** One playback, confined to its generator thread. */
+    private class Track(val gen: Int, var epoch: Int) {
+        var queuedMs = 0L                                     // total length queued so far
+        val events = ArrayDeque<Pair<Long, () -> Unit>>()     // (queue position, action)
+    }
+
+    private var lastEpoch = 0
+
+    @Synchronized private fun nextEpoch(): Int = ++lastEpoch
+
+    private fun newTrack(gen: Int): Track {
+        val epoch = nextEpoch()
+        out.setKeyEpoch(epoch)
+        return Track(gen, epoch)
+    }
+
+    private fun isCurrent(t: Track) = running && t.gen == generation
+
+    // `running` belongs to the newest playback: a stopped thread reaching this
+    // after the next playOne() has started must not end that one too.
+    private fun finishPlayback(t: Track) {
+        if (t.gen != generation) return
+        running = false
+        out.setRx(false)
+        onDone?.invoke(false)
+    }
+
+    /** Runs [action] when playback reaches the current end of the queue. */
+    private fun at(t: Track, action: () -> Unit) {
+        t.events.addLast(t.queuedMs to { if (t.gen == generation) action() })
+    }
+
+    private fun key(t: Track, on: Boolean, ms: Int) {
+        if (ms <= 0) return
+        while (!out.enqueueKey(t.epoch, on, ms)) {
+            if (!isCurrent(t)) return
+            sleeper(POLL_MS)
+        }
+        t.queuedMs += ms
+        pace(t, LEAD_MS)
+    }
+
+    /** Waits until everything queued has been played, and fires what is still due. */
+    private fun drain(t: Track) {
+        pace(t, 0)
+        if (isCurrent(t)) fireEvents(t, t.queuedMs)
+    }
+
+    // Waits until at most [keepMs] of the queue is still unplayed. If the audio
+    // stream stops moving (a route change that never recovers) the queue is
+    // given up, so that stop() and onDone never depend on a working stream.
+    private fun pace(t: Track, keepMs: Long) {
+        var pos = out.keyPlayedMs(t.epoch)
+        var last = pos
+        var stalledMs = 0L
+        fireEvents(t, pos)
+        while (isCurrent(t) && t.queuedMs - maxOf(pos, 0L) > keepMs) {
+            val waitMs = nextWakeMs(t, pos, keepMs)
+            sleeper(waitMs)
+            pos = out.keyPlayedMs(t.epoch)
+            fireEvents(t, pos)
+            if (pos != last) {
+                last = pos
+                stalledMs = 0
+            } else {
+                stalledMs += waitMs
+                if (stalledMs >= STALL_MS) {
+                    fireEvents(t, t.queuedMs)
+                    t.epoch = nextEpoch()
+                    out.setKeyEpoch(t.epoch)
+                    t.queuedMs = 0
+                    return
+                }
+            }
+        }
+    }
+
+    // Sleeps only as long as nothing is due, so long playback with the screen
+    // off doesn't wake this thread hundreds of times a second.
+    private fun nextWakeMs(t: Track, pos: Long, keepMs: Long): Long {
+        val played = maxOf(pos, 0L)
+        val untilTopUp = t.queuedMs - played - keepMs
+        val untilEvent = t.events.firstOrNull()?.let { it.first - played } ?: untilTopUp
+        return minOf(untilTopUp, untilEvent).coerceIn(POLL_MS, MAX_WAIT_MS)
+    }
+
+    private fun fireEvents(t: Track, pos: Long) {
+        while (t.events.isNotEmpty() && t.events.first().first <= pos) t.events.removeFirst().second()
     }
 
     // Extra dits needed after the inter-char gap to reach the full inter-word
     // gap, which the firmware computes in updateTimings() as
     // max(InterWord Spc, Interchar Spc + 4) dits, counted from the last tone.
     private fun wordGapExtra(): Int = maxOf(interWordSpace, interCharSpace + 4) - interCharSpace
+    private fun wordGapMs(): Int = ditMs() * maxOf(interWordSpace, interCharSpace + 4)
 
     // ── Timing helpers ────────────────────────────────────────────────────────
     private fun ditMs()  = (1200.0 / wpm).roundToInt()
@@ -640,8 +752,10 @@ class CwGenerator(
         return v.roundToInt().coerceAtLeast(1)
     }
 
-    private fun sleepMs(ms: Int) {
-        if (ms <= 0) return
-        sleeper(ms.toLong())
+    private companion object {
+        const val LEAD_MS = 100L    // how far the queue stays ahead of the audio
+        const val POLL_MS = 2L
+        const val MAX_WAIT_MS = 20L
+        const val STALL_MS = 1500L  // no audio progress for this long: stream is gone
     }
 }

@@ -16,6 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../content/training_profile.dart';
+import '../content/effective_wpm.dart';
 import '../l10n/strings.dart';
 import '../owntexts/own_text_store.dart';
 import '../owntexts/text_passage.dart';
@@ -48,7 +49,7 @@ class OwnTextSettings {
     }
     s.wpm = TrainingProfile.clampWpm(p.getInt('own.wpm'));
     s.interChar = (p.getInt('own.interCharSpace') ?? 3).clamp(3, 45);
-    s.interWord = (p.getInt('own.interWordSpace') ?? 7).clamp(s.interChar < 6 ? 6 : s.interChar, 105);
+    s.interWord = (p.getInt('own.interWordSpace') ?? 7).clamp(minWordSpaceDits(s.interChar), 105);
     s.show = (p.getInt('own.show') ?? 1).clamp(0, 2);
     return s;
   }

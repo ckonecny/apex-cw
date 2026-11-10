@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
+import '../content/echo_timing.dart' show effectiveWordSpaceDits;
 import '../content/char_stats.dart';
 import '../content/mixup_suggest.dart';
 import '../content/mixup_trend.dart';
@@ -178,6 +179,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   void _update(VoidCallback fn) => setState(fn);
 
   static const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
+  // How long before the end of a word gap the next group goes to the engine.
+  static const _wordGapHandoverMs = 150;
   static const _genEvents = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
   static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
 
@@ -709,6 +712,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       return;
     }
 
+    var afterWordGap = false;
     for (var i = 0; i < _blockSize; i++) {
       if (!_sessionActive) return;
       await _waitIfPaused();
@@ -723,7 +727,8 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
 
       final completer = Completer<void>();
       _doneCompleter = completer;
-      await _genChannel.invokeMethod('playOne', glyphsToPlayText(group));
+      await _genChannel.invokeMethod(
+          afterWordGap ? 'playOneAfterWordGap' : 'playOne', glyphsToPlayText(group));
       await completer.future;
       if (!_sessionActive) return;
 
@@ -740,11 +745,18 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
         if (!_sessionActive) return;
       }
 
-      // playOne() plays with trailingGap=false (see CwGenerator.kt) — same
-      // reasoning as the Classic flow's start-marker gap: insert the
-      // inter-word gap ourselves between groups.
+      // playOne() plays with trailingGap=false (see CwGenerator.kt), so the
+      // inter-word gap between groups is ours to arrange: a Dart timer alone
+      // came out about 14 ms long. The next group is handed over a little
+      // before the gap ends and the audio engine starts it on the exact
+      // sample. After a repeat/next choice the pause is simply ours again.
       final ditMs = (1200 / _activeWpm).round();
-      await Future.delayed(Duration(milliseconds: ditMs * activeInterWord));
+      final wordGapMs = ditMs * effectiveWordSpaceDits(activeInterChar, activeInterWord).round();
+      afterWordGap = !widget.stopEachGroup && i < _blockSize - 1;
+      await Future.delayed(Duration(
+          milliseconds: afterWordGap
+              ? (wordGapMs - _wordGapHandoverMs).clamp(0, wordGapMs)
+              : wordGapMs));
     }
     if (!_sessionActive || !mounted) return;
     _revealBlock();

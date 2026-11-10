@@ -32,11 +32,12 @@ import 'setting_rows.dart';
 /// [goals] adds a small "goal …" hint to the values that have a training
 /// goal (DECISIONS.md "Training goals"); the goals only read these values.
 /// One −/+ step of the character spacing, as on the row below: 3..45 dits,
-/// and the word gap is raised with it so it never drops below. Also used by
+/// and the word gap is raised with it so it never drops below the played
+/// minimum ([minWordSpaceDits]). Also used by
 /// the audio trainer's lock-screen buttons (#152).
 (int, int) stepCharSpacing(int interChar, int interWord, int delta) {
   final ic = (interChar + delta).clamp(3, 45);
-  return (ic, interWord < ic ? ic : interWord);
+  return (ic, playedWordSpaceDits(ic, interWord));
 }
 
 class TempoSpacingSection extends StatelessWidget {
@@ -79,6 +80,9 @@ class TempoSpacingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final eff = effectiveWpm(wpm, interChar, interWord, typing: typing || !showWordGap);
+    // A word gap below the played minimum (stored before it was a limit) is
+    // shown and stepped from what is actually played.
+    final iw = playedWordSpaceDits(interChar, interWord);
     // Compact + short screen: the sub line goes first when height is tight.
     final showSub = !compact || MediaQuery.sizeOf(context).height >= 700;
     return Column(mainAxisSize: MainAxisSize.min, children: [
@@ -112,15 +116,15 @@ class TempoSpacingSection extends StatelessWidget {
           if (!typing && showWordGap)
             _StepRow(
               label: Strings.t('settings_word_spacing'),
-              value: '$interWord',
+              value: '$iw',
                     sub: showSub
-                        ? 'Dits · ${ditsToSeconds(interWord, wpm)}${_hint(GoalLever.wordSpacing)}'
+                        ? 'Dits · ${ditsToSeconds(iw, wpm)}${_hint(GoalLever.wordSpacing)}'
                         : null,
               compact: compact,
-              onMinus: interWord > 6 && interWord > interChar
-                  ? () => onSpacing(interChar, interWord - 1)
+              onMinus: iw > minWordSpaceDits(interChar)
+                  ? () => onSpacing(interChar, iw - 1)
                   : null,
-              onPlus: interWord < 105 ? () => onSpacing(interChar, interWord + 1) : null,
+              onPlus: iw < 105 ? () => onSpacing(interChar, iw + 1) : null,
             ),
         ]),
       ),

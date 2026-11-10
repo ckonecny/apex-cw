@@ -111,12 +111,17 @@ void main() {
       );
     });
 
-    test('word gap never below the character gap', () {
-      const tight = GoalValues(interChar: 7, interWord: 7, wpm: 20);
+    test('word gap never below the character gap + 4', () {
+      const tight = GoalValues(interChar: 7, interWord: 11, wpm: 20);
       expect(
-        nextValue(const LeverGoal(GoalLever.wordSpacing, target: 6), tight),
+        nextValue(const LeverGoal(GoalLever.wordSpacing, target: 7), tight),
         isNull,
       );
+      // A stored 6 at Interchar Spc 3 plays 7 and counts as 7.
+      const old = GoalValues(interChar: 3, interWord: 6, wpm: 20);
+      expect(old.valueOf(GoalLever.wordSpacing), 7);
+      expect(goalReached(const LeverGoal(GoalLever.wordSpacing, target: 7), old), isTrue);
+      expect(goalRange(GoalLever.wordSpacing), (7, 105));
     });
 
     test('give speed only with an own cap below the listening speed', () {

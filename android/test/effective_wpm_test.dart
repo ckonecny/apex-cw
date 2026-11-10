@@ -23,4 +23,15 @@ void main() {
     expect(effectiveWpm(20, 28, 40, typing: true),
         lessThan(effectiveWpm(20, 3, 40, typing: true)));
   });
+
+  // m32_v6.ino updateTimings(): interWordSpace = max(InterWord Spc, Interchar Spc + 4)
+  test('played word gap is at least the character gap + 4', () {
+    expect(minWordSpaceDits(3), 7);
+    expect(playedWordSpaceDits(3, 6), 7);
+    expect(playedWordSpaceDits(3, 9), 9);
+    expect(playedWordSpaceDits(9, 7), 13);
+    // eff. counts what is played: 50 * 20 / (31 + 36 + 13) = 12.5 -> 13
+    expect(effectiveWpm(20, 9, 7), 13);
+    expect(effectiveWpm(20, 3, 6), 20);
+  });
 }

@@ -367,6 +367,11 @@ class MainActivity : FlutterActivity() {
                         generator.playOne(call.arguments as? String ?: "")
                         result.success(null)
                     }
+                    // Next group of a block: starts exactly one word gap after the last one.
+                    "playOneAfterWordGap" -> {
+                        generator.playOne(call.arguments as? String ?: "", afterWordGap = true)
+                        result.success(null)
+                    }
                     "playPatterns" -> {
                         @Suppress("UNCHECKED_CAST")
                         generator.playPatterns((call.arguments as? List<String>) ?: emptyList())

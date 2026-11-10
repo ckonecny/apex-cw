@@ -7,3 +7,8 @@ out="${TMPDIR:-/tmp}/apex_cw_interference_test"
 c++ -std=c++17 -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=undefined \
     -Wall -Wextra android/android/app/src/test/cpp/interference_test.cpp -o "$out"
 "$out"
+
+out="${TMPDIR:-/tmp}/apex_cw_key_schedule_test"
+c++ -std=c++17 -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=undefined \
+    -Wall -Wextra android/android/app/src/test/cpp/key_schedule_test.cpp -o "$out"
+"$out"

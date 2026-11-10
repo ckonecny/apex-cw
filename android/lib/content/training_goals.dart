@@ -4,6 +4,7 @@
 // ever changed without a tap. No goal = no proposal (DECISIONS.md "Training
 // goals"). Pure Dart apart from the SharedPreferences store at the bottom.
 import 'package:shared_preferences/shared_preferences.dart';
+import 'effective_wpm.dart';
 
 enum GoalLever { newChars, charSpacing, wordSpacing, groupLength, wpm, giveWpm }
 
@@ -34,7 +35,7 @@ bool lowerIsHarder(GoalLever l) =>
 (int, int) goalRange(GoalLever l) => switch (l) {
   GoalLever.newChars => (2, 60),
   GoalLever.charSpacing => (3, 45),
-  GoalLever.wordSpacing => (6, 105),
+  GoalLever.wordSpacing => (7, 105),   // 3 + 4: the shortest played gap
   GoalLever.groupLength => (1, 8),
   GoalLever.wpm || GoalLever.giveWpm => (10, 60),
 };
@@ -106,7 +107,7 @@ class GoalValues {
   int valueOf(GoalLever l) => switch (l) {
     GoalLever.newChars => kochLevel,
     GoalLever.charSpacing => interChar,
-    GoalLever.wordSpacing => interWord,
+    GoalLever.wordSpacing => playedWordSpaceDits(interChar, interWord),
     GoalLever.groupLength => groupLength,
     GoalLever.wpm => wpm,
     GoalLever.giveWpm => giveWpm,
@@ -120,8 +121,8 @@ class GoalValues {
     interChar: l == GoalLever.charSpacing ? v : interChar,
     interWord: l == GoalLever.wordSpacing
         ? v
-        : l == GoalLever.charSpacing && interWord < v
-        ? v
+        : l == GoalLever.charSpacing
+        ? playedWordSpaceDits(v, interWord)
         : interWord,
     groups: groups,
     groupLength: l == GoalLever.groupLength ? v : groupLength,
@@ -176,8 +177,8 @@ int? nextValue(LeverGoal g, GoalValues v) {
   final int next = switch (g.lever) {
     GoalLever.newChars => now + 1,
     GoalLever.charSpacing => now - 1,
-    // The word gap never drops below the character gap.
-    GoalLever.wordSpacing => now - 1 < v.interChar ? now : now - 1,
+    // The word gap never drops below the played minimum.
+    GoalLever.wordSpacing => now - 1 < minWordSpaceDits(v.interChar) ? now : now - 1,
     GoalLever.groupLength => now + 1,
     GoalLever.wpm => now + 1,
     GoalLever.giveWpm => v.giveCap + 1,

@@ -197,7 +197,11 @@ Wie am Morserino werden die Pausen **in Dit-Längen** eingestellt:
 - **Zeichenabstand** – die Pause zwischen zwei Zeichen eines Wortes. Normales
   Morse: 3 Dits. Einstellbar von 3 bis 45.
 - **Wortabstand** – die Pause zwischen zwei Wörtern bzw. Gruppen. Normales
-  Morse: 7 Dits. Einstellbar von 6 bis 105.
+  Morse: 7 Dits. Einstellbar bis 105, nach unten bis Zeichenabstand + 4 Dits
+  (bei 3 Dits Zeichenabstand also ab 7): Kürzer spielt auch der Morserino den
+  Wortabstand nicht. Wird der Zeichenabstand größer, wächst der Wortabstand
+  bei Bedarf mit. Beim CW Keyer, bei WiFi Trx und im QSO Bot, wo du selbst
+  gibst, geht der Wortabstand weiter ab 6.
 
 Die Pause zwischen den Elementen (Dits und Dahs) *innerhalb* eines Zeichens ist
 immer 1 Dit. Die Zeichen selbst kommen also immer im eingestellten Tempo; nur
@@ -218,6 +222,8 @@ Weil die Pausen länger werden, sinkt das Tempo, mit dem ganze Wörter
 ankommen. Die App zeigt es als **eff.** (effektive WPM) an:
 
   eff. WPM = 50 × WPM / (31 + 4 × Zeichenabstand + Wortabstand)
+
+Als Wortabstand zählt der gespielte, also mindestens Zeichenabstand + 4.
 
 Beispiel: 20 WPM mit 28/40 Dits ergibt 50 × 20 / (31 + 112 + 40) ≈ 5 WPM.
 Die Zeichen klingen also nach 20 WPM, aber du hast Zeit wie bei 5 WPM. Mit

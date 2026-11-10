@@ -219,13 +219,17 @@ extension _OwnTextPlayerViews on _OwnTextPlayerScreenState {
                 s.interChar < 45
                     ? () => change(() {
                           s.interChar++;
-                          if (s.interWord < s.interChar) s.interWord = s.interChar;
+                          s.interWord = playedWordSpaceDits(s.interChar, s.interWord);
                         })
                     : null),
-            stepper(Strings.t('settings_word_spacing'), '${s.interWord}',
-                'Dits · ${ditsToSeconds(s.interWord, s.wpm)}',
-                s.interWord > 6 && s.interWord > s.interChar ? () => change(() => s.interWord--) : null,
-                s.interWord < 105 ? () => change(() => s.interWord++) : null),
+            stepper(Strings.t('settings_word_spacing'), '${playedWordSpaceDits(s.interChar, s.interWord)}',
+                'Dits · ${ditsToSeconds(playedWordSpaceDits(s.interChar, s.interWord), s.wpm)}',
+                playedWordSpaceDits(s.interChar, s.interWord) > minWordSpaceDits(s.interChar)
+                    ? () => change(() => s.interWord = playedWordSpaceDits(s.interChar, s.interWord) - 1)
+                    : null,
+                s.interWord < 105
+                    ? () => change(() => s.interWord = playedWordSpaceDits(s.interChar, s.interWord) + 1)
+                    : null),
             const SizedBox(height: 8),
             SettingsSectionHeader(Strings.t('adv_show').toUpperCase()),
             SegmentRow(
