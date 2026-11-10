@@ -1,0 +1,46 @@
+APEX CW ist ein umfassender Morse-Trainer (CW) fürs Android-Handy: hören, geben und üben – unterwegs, ohne zusätzliche Hardware.
+
+HÖREN
+• Zufallszeichen, Gruppen, häufige Wörter, Abkürzungen, Rufzeichen, gemischte Inhalte
+• Koch-Methode mit den Reihenfolgen M32, LCWO, CW Academy, LICW oder einer eigenen
+• Blockweise mitschreiben, Fehler markieren, Auswertung mit Trend und schwachen Zeichen
+• Adaptive Vorschläge: nächstes Koch-Zeichen, Farnsworth-Abstände, Tempo, Pausenhinweis – du entscheidest
+• Verwechslungen werden erkannt: Die App zeigt, welche Zeichen du durcheinanderbringst, und übt genau diese Paare
+• Eigene Texte (z. B. Artikel oder Bücher) als CW anhören – auch im Hintergrund bei ausgeschaltetem Bildschirm
+
+GEBEN
+• Echo-Trainer: Wort hören, zurückgeben, sofortige Bewertung
+• Gleiche Ansicht wie beim Hören: schwache Zeichen, Verwechslungspaare, Fortschritt
+• Eigenes Profil fürs Geben, Gebe-Tempo
+
+PRÜFUNGSSIMULATION
+• Die freiwillige Morseprüfung üben: Österreich, Deutschland, UK, Neuseeland, Indien, USA oder ein eigenes Profil
+• Aufnehmen und Geben wie in der Prüfung: festes Tempo, Zeitlimit, Fehlergrenze, bestanden oder nicht
+• Verlauf deiner Versuche – die Werte stammen aus öffentlichen Quellen und ersetzen nicht die offizielle Prüfung
+
+VERSTEHEN OHNE MITSCHREIBEN
+• Sätze, Q-Gruppen und Mini-QSOs hören und Fragen dazu beantworten
+• Zwei Stationen mit zwei Tonhöhen, wie auf dem Band
+
+FREI MORSEN
+• CW-Keyer: Iambic A/B, Ultimatic, Non-Squeeze, Handtaste, mit Live-Dekodierung
+• CW-Decoder über das Mikrofon
+• WiFi Trx: CW übers Internet mit anderen Funkamateuren (MOPP-Server)
+• QSO-Bot: simulierter Funkpartner für SOTA/POTA-, Standard- und Contest-QSOs
+
+SPIELE
+• Morse Invaders, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave
+• Die Textadventures Zork I–III, komplett in CW gespielt
+
+DRAN BLEIBEN
+• Tagesziel und Serie, Statistik pro Zeichen, Verlaufskurven für Trefferquote, Tempo und Übungszeit
+
+AUSSERDEM
+• Touch-Keyer am Bildschirm oder echte Morsetaste über einen USB-Adapter, auf fast allen Bildschirmen erkannt
+• Sieben Farbthemen (hell, dunkel, Bernstein, Rot, Grün, Warmgrau, Marine) und optionaler Blaulichtfilter für die Nacht
+• Latenzarmer Mithörton, Ausgabe über Lautsprecher, Kopfhörer oder Bluetooth
+• Deutsch und Englisch, ausführliches Handbuch
+
+Keine Werbung, keine Konten, keine Datensammlung. Freie Software (GPL-3.0), Quellcode auf GitHub.
+
+Viele Ideen und ein Großteil der Trainingslogik stammen aus der Open-Source-Firmware des Morserino-32 von Willi Kraml, OE1WKL – herzlichen Dank dafür. APEX CW ist ein unabhängiges Projekt und steht in keiner Verbindung zum Morserino-32-Team. Zork ist eine Marke ihrer Inhaber; die App steht mit ihnen in keiner Verbindung.

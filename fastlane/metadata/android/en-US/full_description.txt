@@ -1,0 +1,46 @@
+APEX CW is a comprehensive Morse code (CW) trainer for your Android phone: copy, send and practise on the go, with no extra hardware.
+
+LISTEN
+• Random characters, groups, common words, abbreviations, call signs, mixed content
+• Koch method with M32, LCWO, CW Academy, LICW or your own sequence
+• Copy in blocks, mark your misses, results with trend and weak characters
+• Adaptive suggestions: next Koch character, Farnsworth spacing, speed, break hint – you decide
+• Mix-ups are tracked: the app shows which characters you confuse and drills exactly those pairs
+• Play your own texts (articles, books) as CW – also in the background with the screen off
+
+SEND
+• Echo Trainer: hear a word, key it back, instant grading
+• Same view as Listen: weak characters, mix-up pairs, progress
+• Separate sending profile, answer speed cap
+
+EXAM SIMULATION
+• Rehearse the voluntary Morse exam: Austria, Germany, UK, New Zealand, India, USA or your own profile
+• Receive and send as in the exam: fixed speed, time limit, error limit, pass or fail
+• History of your runs – values come from public sources and do not replace the official exam
+
+HEAD COPY, NO WRITING
+• Hear sentences, Q-groups and mini QSOs and answer questions about them
+• Two stations at two pitches, like on the band
+
+FREE KEYING
+• CW keyer: Iambic A/B, Ultimatic, Non-Squeeze, straight key, with live decoding
+• CW decoder using the microphone
+• WiFi Trx: CW over the internet with other hams (MOPP servers)
+• QSO Bot: a simulated partner for SOTA/POTA, standard and contest QSOs
+
+GAMES
+• Morse Invaders, Morsel, Memory Chain, Trailblazer, Fox Hunt, Fight the Pileup, Radio Cave
+• The text adventures Zork I–III, played entirely in CW
+
+STAY ON TRACK
+• Daily goal and streak, per-character statistics, progress charts for hit rate, speed and practice time
+
+ALSO
+• On-screen touch keyer, or a real Morse key via a USB adapter, recognised on almost every screen
+• Seven colour themes (light, dark, amber, red, green, warm grey, navy) and an optional blue-light filter for the night
+• Low-latency sidetone through speaker, headphones or Bluetooth
+• German and English, detailed manual
+
+No ads, no accounts, no data collection. Free software (GPL-3.0), source code on GitHub.
+
+Many ideas and much of the training logic come from the open-source Morserino-32 firmware by Willi Kraml, OE1WKL – many thanks for that. APEX CW is an independent project, not affiliated with the Morserino-32 team. Zork is a trademark of its owners; this app is not affiliated with them.

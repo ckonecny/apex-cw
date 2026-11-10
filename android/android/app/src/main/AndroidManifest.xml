@@ -11,7 +11,7 @@
     <!-- Optional "do not disturb while practising" (issue #55): only used once the user grants DND access. -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
     <application
-        android:label="APEX CW"
+        android:label="${appLabel}"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
