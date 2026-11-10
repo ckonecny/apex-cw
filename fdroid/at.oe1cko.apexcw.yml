@@ -1,7 +1,9 @@
 # DRAFT for the F-Droid data repo (https://gitlab.com/fdroid/fdroiddata,
-# metadata/at.oe1cko.nextcwtrainer.yml). Not used by this repo's build.
-# Locally built and scanned (0 problems). Finalise versionName/commit/versionCode
-# at the next tag and re-run `fdroid build -v -l at.oe1cko.nextcwtrainer` before the MR.
+# metadata/at.oe1cko.apexcw.yml). Not used by this repo's build.
+# F-Droid app id at.oe1cko.apexcw (own app, own signature, installs next to the
+# Play app at.oe1cko.nextcwtrainer); set at build time via the gradle property appId (prebuild), see
+# docs/DECISIONS.md. Locally built and scanned (0 problems). Finalise versionName/commit/versionCode
+# at the next tag and re-run `fdroid build -v -l at.oe1cko.apexcw` before the MR.
 Categories:
   - Science & Education
 License: GPL-3.0-or-later
@@ -26,6 +28,8 @@ Builds:
     output: build/app/outputs/flutter-apk/app-release.apk
     rm:
       - reference
+    prebuild:
+      - echo 'appId=at.oe1cko.apexcw' >> android/gradle.properties
     srclibs:
       - flutter@3.47.3
     build:

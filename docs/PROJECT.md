@@ -69,11 +69,15 @@ separate (`docs/DECISIONS.md`, "F-Droid distribution"). Betas
 - After tagging: versionCode of the tag = `git rev-list --count vX.Y.Z`
   (it is the commit count, F-Droid cannot read it); add the build entry
   (`versionName`, `commit`, `versionCode`) to our fdroiddata metadata
-  (`fdroid/at.oe1cko.nextcwtrainer.yml` is the template) and open the MR.
+  (`fdroid/at.oe1cko.apexcw.yml` is the template) and open the MR.
 - Changed the build (new native code, Gradle/Flutter/NDK version, new
   dependency)? Re-run the local `fdroid build` and `fdroid scanner` first, and
   keep `srclibs: flutter@` and `ndk:` in step with `FLUTTER_VERSION` in CI
   and `flutter.ndkVersion`.
+- The F-Droid app id is `at.oe1cko.apexcw` (gradle property `appId` set in
+  the entry's `prebuild`); never change the default `at.oe1cko.nextcwtrainer`
+  (Play, permanent). After touching `applicationId`/manifest placeholders
+  compare `signingReport` and the merged manifests with/without the property.
 - Keep `build.gradle.kts` `signingConfig` lines single-line (F-Droid strips
   them by regex) and check `./gradlew :app:signingReport` is unchanged.
 - Changed the Play texts or screenshots? Update `fastlane/metadata/android/`
