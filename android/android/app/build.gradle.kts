@@ -43,8 +43,12 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "at.oe1cko.nextcwtrainer"
+        // Google Play: at.oe1cko.nextcwtrainer, permanent, never change it.
+        // The F-Droid build sets -PappId=at.oe1cko.apexcw (its own app, own
+        // signature, installs next to the Play app); see docs/DECISIONS.md.
+        applicationId = (findProperty("appId") as String?) ?: "at.oe1cko.nextcwtrainer"
+        // Test builds can tell the two apps apart by label (-PappLabel="APEX CW (F)").
+        manifestPlaceholders["appLabel"] = (findProperty("appLabel") as String?) ?: "APEX CW"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 26  // AAudio requires API 26
@@ -104,8 +108,9 @@ android {
             if (uploadKey != null) signingConfig = signingConfigs.getByName("upload")
         }
         release {
-            signingConfig = signingConfigs.getByName(
-                if (uploadKey != null) "upload" else "debug")
+            // One line on purpose: F-Droid strips signingConfig lines by regex
+            // and would leave the second line of a split expression behind.
+            signingConfig = signingConfigs.getByName(if (uploadKey != null) "upload" else "debug")
         }
     }
 }

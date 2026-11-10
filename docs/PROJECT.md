@@ -61,6 +61,28 @@ a version git doesn't know. Re-uploading the same versionName with a higher
 build number (as with 1.8.0 build 435 → 437) is a one-off, not the schema.
 Betas for testers outside the store stay `vX.Y.Z-betaN` pre-releases.
 
+## F-Droid goes with every release (user, 2026-11-10)
+Once the app is in F-Droid (#188), every release `vX.Y.Z` is handled for both
+stores in the same step, to keep the overhead low. Signatures stay completely
+separate (`docs/DECISIONS.md`, "F-Droid distribution"). Betas
+(`vX.Y.Z-betaN`) are not offered on F-Droid.
+- After tagging: versionCode of the tag = `git rev-list --count vX.Y.Z`
+  (it is the commit count, F-Droid cannot read it); add the build entry
+  (`versionName`, `commit`, `versionCode`) to our fdroiddata metadata
+  (`fdroid/at.oe1cko.apexcw.yml` is the template) and open the MR.
+- Changed the build (new native code, Gradle/Flutter/NDK version, new
+  dependency)? Re-run the local `fdroid build` and `fdroid scanner` first, and
+  keep `srclibs: flutter@` and `ndk:` in step with `FLUTTER_VERSION` in CI
+  and `flutter.ndkVersion`.
+- The F-Droid app id is `at.oe1cko.apexcw` (gradle property `appId` set in
+  the entry's `prebuild`); never change the default `at.oe1cko.nextcwtrainer`
+  (Play, permanent). After touching `applicationId`/manifest placeholders
+  compare `signingReport` and the merged manifests with/without the property.
+- Keep `build.gradle.kts` `signingConfig` lines single-line (F-Droid strips
+  them by regex) and check `./gradlew :app:signingReport` is unchanged.
+- Changed the Play texts or screenshots? Update `fastlane/metadata/android/`
+  too (changelog per release: `changelogs/<versionCode>.txt`, max 500 bytes).
+
 ## Release consistency check
 Run before every beta or release (CLAUDE.md rule 16); fix drift right away.
 - `docs/STATUS.md`: latest tag/version line, "Manual: pending" list, open
@@ -76,6 +98,8 @@ Run before every beta or release (CLAUDE.md rule 16); fix drift right away.
   links, screenshots, licence section current.
 - Licences (rule 11): `android/lib/licenses.dart`, README, manual Info
   cover everything new; `flutter test` incl. `license_compat_test.dart` green.
+- F-Droid (once listed): `fastlane/metadata/android/` and the fdroiddata
+  entry match the release (see "F-Droid goes with every release").
 - `CLAUDE.md`, `manual/README.md`, `tools/` comments: script names, tag
   patterns (`vX.Y.Z`, `vX.Y.Z-betaN`) and paths still exist and are correct.
 - `flutter analyze` zero issues, `flutter test` green; the `CI` workflow is
