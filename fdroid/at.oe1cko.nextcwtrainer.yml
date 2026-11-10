@@ -34,7 +34,7 @@ Builds:
     ndk: r28c   # = flutter.ndkVersion 28.2.13676358 of Flutter 3.47.3
 
 AutoUpdateMode: Version
-UpdateCheckMode: Tags
+UpdateCheckMode: Tags ^v[0-9]+\.[0-9]+\.[0-9]+$   # release tags only, no -betaN
 # TODO: UpdateCheckData cannot read the commit count; AutoUpdateMode needs a fix
 # (e.g. `Tags` + versionCode computed in the build, or a fixed versionCode in pubspec).
 CurrentVersion: 1.11.2

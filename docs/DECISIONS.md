@@ -2418,4 +2418,4 @@ One record per Geben block with a straight key on an adapter, `lib/content/timin
 - **`reference/` is removed in the F-Droid build** (`rm:`), it is not part of the app. Flutter comes as srclib `flutter@3.47.3` (same as CI), NDK 28.2 = `flutter.ndkVersion` of that release.
 - **Checked:** local `fdroid build` builds the release APK, `fdroid scanner` finds 0 problems, no anti-features declared. WiFi Trx (optional, UDP/MOPP, user-editable server, `cq.morserino.info` only pre-filled) is described openly in the MR; the reviewers decide on NonFreeNet.
 - **fastlane metadata** in `fastlane/metadata/android/{en-US,de-DE}` is derived from `docs/PLAY-LISTING.md` and `store/out`; keep it in step when the Play texts change.
-- **Release timing:** no new version just for F-Droid; the draft `fdroid/at.oe1cko.nextcwtrainer.yml` is finalised at the next regular tag.
+- **Release timing:** no new version just for F-Droid; the draft `fdroid/at.oe1cko.nextcwtrainer.yml` is finalised at the next regular tag. From then on every release is handled for Play and F-Droid together (checklist in `docs/PROJECT.md`, "F-Droid goes with every release"); betas are not offered on F-Droid.
