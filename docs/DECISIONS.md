@@ -2410,3 +2410,12 @@ One record per Geben block with a straight key on an adapter, `lib/content/timin
 - **View:** card `TimingHistoryCard` in the Geben "Verlauf" tab (`ProgressView.timing`, only while there are records). One point per block (last 60), chips for index or one ratio, speed-band chips (<10, 10-15, 15-20, 20-25, 25+ WPM) shown with more than one band present. Dashed line: index 90 or the ideal ratio.
 - **Not stored:** dit spread and tempo accuracy. The dit is the unit itself (its median is 1 by definition), and there is no set tempo with a straight key (see the Geben section above).
 - Not tied to the time-range chips of the progress tab: blocks, not days, are the unit, and the history is short.
+
+## F-Droid distribution (#188, 2026-11-10)
+- **Separate signatures, no dependency between the stores.** Google Play keeps the upload key / Play App Signing; F-Droid builds from source and signs with its own key. Reproducible builds (to reuse our signature) are deliberately not pursued: Play and F-Droid installs cannot update each other, a switch means uninstalling (settings are lost). To be said in the README and the F-Droid description.
+- **Play signing untouched:** the release `signingConfig` in `app/build.gradle.kts` is one line on purpose, because F-Droid strips `signingConfig` lines by regex and would leave the second line of a split expression behind. Checked with `./gradlew :app:signingReport` before and after: identical.
+- **versionCode stays the git commit count** (not the pubspec `+N`); changing it would change the Play versioning. Consequence: F-Droid cannot read it, so no auto-update; versionCode is set per release in the fdroiddata merge request.
+- **`reference/` is removed in the F-Droid build** (`rm:`), it is not part of the app. Flutter comes as srclib `flutter@3.47.3` (same as CI), NDK 28.2 = `flutter.ndkVersion` of that release.
+- **Checked:** local `fdroid build` builds the release APK, `fdroid scanner` finds 0 problems, no anti-features declared. WiFi Trx (optional, UDP/MOPP, user-editable server, `cq.morserino.info` only pre-filled) is described openly in the MR; the reviewers decide on NonFreeNet.
+- **fastlane metadata** in `fastlane/metadata/android/{en-US,de-DE}` is derived from `docs/PLAY-LISTING.md` and `store/out`; keep it in step when the Play texts change.
+- **Release timing:** no new version just for F-Droid; the draft `fdroid/at.oe1cko.nextcwtrainer.yml` is finalised at the next regular tag.

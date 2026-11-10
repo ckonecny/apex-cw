@@ -104,8 +104,9 @@ android {
             if (uploadKey != null) signingConfig = signingConfigs.getByName("upload")
         }
         release {
-            signingConfig = signingConfigs.getByName(
-                if (uploadKey != null) "upload" else "debug")
+            // One line on purpose: F-Droid strips signingConfig lines by regex
+            // and would leave the second line of a split expression behind.
+            signingConfig = signingConfigs.getByName(if (uploadKey != null) "upload" else "debug")
         }
     }
 }

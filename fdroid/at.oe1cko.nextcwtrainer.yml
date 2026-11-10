@@ -1,0 +1,41 @@
+# DRAFT for the F-Droid data repo (https://gitlab.com/fdroid/fdroiddata,
+# metadata/at.oe1cko.nextcwtrainer.yml). Not used by this repo's build.
+# Locally built and scanned (0 problems). Finalise versionName/commit/versionCode
+# at the next tag and re-run `fdroid build -v -l at.oe1cko.nextcwtrainer` before the MR.
+Categories:
+  - Science & Education
+License: GPL-3.0-or-later
+WebSite: https://ckonecny.github.io/apex-cw/
+SourceCode: https://github.com/ckonecny/apex-cw
+IssueTracker: https://github.com/ckonecny/apex-cw/issues
+Changelog: https://github.com/ckonecny/apex-cw/releases
+
+AutoName: APEX CW
+
+RepoType: git
+Repo: https://github.com/ckonecny/apex-cw.git
+
+Builds:
+  - versionName: 1.11.2
+    versionCode: 0   # TODO: build.gradle.kts uses the git commit count (512 at v1.11.1), NOT the pubspec +N; set to the count at the tag
+    commit: v1.11.2
+    subdir: android
+    sudo:
+      - apt-get update
+      - apt-get install -y cmake
+    output: build/app/outputs/flutter-apk/app-release.apk
+    rm:
+      - reference
+    srclibs:
+      - flutter@3.47.3
+    build:
+      - $$flutter$$/bin/flutter config --no-analytics
+      - $$flutter$$/bin/flutter build apk --release
+    ndk: r28c   # = flutter.ndkVersion 28.2.13676358 of Flutter 3.47.3
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+# TODO: UpdateCheckData cannot read the commit count; AutoUpdateMode needs a fix
+# (e.g. `Tags` + versionCode computed in the build, or a fixed versionCode in pubspec).
+CurrentVersion: 1.11.2
+CurrentVersionCode: 0   # TODO: same as above
