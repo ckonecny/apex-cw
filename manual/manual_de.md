@@ -864,10 +864,11 @@ einzelne auf.
 | Einstellung | Bedeutung | Werte |
 |---|---|---|
 | Zeichenabstand | Pause zwischen den Zeichen, in Dits | 3–45 (**28**) |
-| Wortabstand | Pause zwischen den Gruppen/Wörtern, in Dits | 6–105 (**40**) |
+| Wortabstand | Pause zwischen den Gruppen/Wörtern, in Dits | Zeichenabstand + 4 bis 105 (**40**) |
 
-Der Wortabstand kann nie kleiner sein als der Zeichenabstand: Schiebst du den
-Zeichenabstand darüber hinaus, wird der Wortabstand mitgezogen.
+Der Wortabstand kann nie kleiner sein als der Zeichenabstand + 4 Dits (auch
+das Morserino spielt keine kürzere Wortlücke): Schiebst du den Zeichenabstand
+darüber hinaus, wird der Wortabstand mitgezogen.
 
 Der Wortabstand wirkt nur im Papier-Modus. Im Tipp-Modus wartet die App nach
 jedem Wort auf deine Eingabe, dort zählt nur der Zeichenabstand. Das ⚙-Blatt
@@ -2707,7 +2708,7 @@ reicht). Mehrere Befehle in einer Zeile trennst du mit einem Punkt:
 | Hören | Tempo der CW-Ausgabe | 10–60 WPM |
 | Geben | Tempo des Keyers bei deiner Eingabe | **wie Hören**, 10–60 WPM |
 | Zeichenabstand | Pause zwischen Zeichen beim Abspielen; beim Geben Teil des Wortendes | 3–45 Dits |
-| Wortabstand | Pause zwischen Wörtern; nie kleiner als der Zeichenabstand; beim Geben Teil des Wortendes | 6–105 Dits |
+| Wortabstand | Pause zwischen Wörtern; nie kleiner als der Zeichenabstand + 4; beim Geben Teil des Wortendes | Zeichenabstand + 4 bis 105 Dits |
 | Eingabe | Touch-Keyer oder Bildschirmtastatur | **Morsetaste**, Tastatur |
 | Abschicken mit | Womit ein gegebener Befehl abgeschickt wird (der Knopf Senden geht immer) | **`<AR>`**, `<AR>` oder K, Nur Knopf |
 | CW-Umfang | Was gemorst wird, der Rest steht nur als Text da (kursiv) | **Alles**, Erster Satz, Raum / Meldung |

@@ -20,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../adventure/adventure_map.dart';
 import '../adventure/adventure_store.dart';
 import '../adventure/cw_text.dart';
+import '../content/effective_wpm.dart';
 import '../content/training_profile.dart';
 import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
@@ -75,7 +76,7 @@ class AdventureSettings {
     }
     s.wpm = TrainingProfile.clampWpm(p.getInt('adv.wpm'));
     s.interChar = (p.getInt('adv.interCharSpace') ?? 3).clamp(3, 45);
-    s.interWord = (p.getInt('adv.interWordSpace') ?? 7).clamp(s.interChar < 6 ? 6 : s.interChar, 105);
+    s.interWord = (p.getInt('adv.interWordSpace') ?? 7).clamp(minWordSpaceDits(s.interChar), 105);
     s.scope = CwScope.values[(p.getInt('adv.scope') ?? 0).clamp(0, CwScope.values.length - 1)];
     s.show = (p.getInt('adv.show') ?? 1).clamp(0, 2);
     s.verbosity = (p.getInt('adv.verbosity') ?? 0).clamp(0, 2);
