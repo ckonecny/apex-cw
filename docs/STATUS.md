@@ -10,7 +10,7 @@ only the current state, organisational steps and hints for the next session.
 ## Google Play
 Live in production (reported 2026-11-08): 1.11.1, versionCode 512, https://play.google.com/store/apps/details?id=at.oe1cko.nextcwtrainer. Content-rating (IARC) answers must stay accurate when features change.
 
-## Release v1.11.2 (prepared, not yet tagged)
+## Release v1.11.2 (PR #195, prepared, not yet tagged)
 Done: docs consistency check, `/code-review high` (deferred findings: issues #191–#194; Adventure word-gap clamp and two manual rows fixed), `/security-review` (no findings), GitHub Security tab empty, CI green, `flutter analyze` clean, 1167 tests pass. Play "What's new" text in `docs/PLAY-LISTING.md`. Next, after the release PR is merged: tag `vX` on the merge commit, `tools/build_release.sh v1.11.2` (APK+AAB), install the release APK, retake `settings3` (+ any listed shot) DE+EN, `manual/build.sh`, manual PR, GitHub release (APK + manual PDFs), AAB to the Play Console; then finalise `fdroid/at.oe1cko.apexcw.yml` (versionName 1.11.2, commit = the tag, versionCode = `git rev-list --count v1.11.2`) and re-run the local `fdroid build`.
 
 ## F-Droid (issue #188, PR #189)
