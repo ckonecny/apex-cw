@@ -10,7 +10,7 @@ only the current state, organisational steps and hints for the next session.
 ## Google Play
 Live in production (reported 2026-11-08): 1.11.1, versionCode 512, https://play.google.com/store/apps/details?id=at.oe1cko.nextcwtrainer. Content-rating (IARC) answers must stay accurate when features change.
 
-## F-Droid (issue #188)
+## F-Droid (issue #188, PR #189)
 Prepared: `fastlane/metadata/android/`, draft `fdroid/at.oe1cko.nextcwtrainer.yml`, one-line `signingConfig` in `build.gradle.kts` (F-Droid strips that line by regex; `signingReport` checked identical, Play signing untouched). Local `fdroid build` produced the release APK; `fdroid scanner`: 0 problems. Decisions in `docs/DECISIONS.md` (separate signatures, no new version just for F-Droid). Open: finalise the draft (versionName, commit, versionCode) at the next regular tag, then the MR to fdroiddata; then README, landing page, manual Info (DE+EN).
 
 ## Manual: screenshots (v1.8.0)
