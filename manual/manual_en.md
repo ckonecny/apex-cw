@@ -839,10 +839,11 @@ characters come together, the less each single one stands out.
 | Setting | Meaning | Values |
 |---|---|---|
 | Character spacing | Pause between characters, in dits | 3–45 (**28**) |
-| Word spacing | Pause between groups/words, in dits | 6–105 (**40**) |
+| Word spacing | Pause between groups/words, in dits | character spacing + 4 to 105 (**40**) |
 
-Word spacing can never be smaller than character spacing. If you move
-character spacing past it, word spacing is pulled along.
+Word spacing can never be smaller than character spacing + 4 dits (the
+Morserino doesn't play a shorter word gap either). If you move character
+spacing past it, word spacing is pulled along.
 
 Word spacing only applies in paper mode. In typing mode the app waits for your
 input after each word, so only the character spacing counts there. The ⚙ sheet
@@ -2620,7 +2621,7 @@ Separate several commands in one line with a full stop: `TAKE LAMP. N`.
 | Listening | Speed of the CW output | 10–60 WPM |
 | Keying | Keyer speed for your input | **as listening**, 10–60 WPM |
 | Character spacing | Pause between characters when playing; part of the word end when keying | 3–45 dits |
-| Word spacing | Pause between words; never below the character spacing; part of the word end when keying | 6–105 dits |
+| Word spacing | Pause between words; never below the character spacing + 4; part of the word end when keying | character spacing + 4 to 105 dits |
 | Input | Touch keyer or on-screen keyboard | **Morse key**, Keyboard |
 | Send with | What sends a keyed command (the Send button always works) | **`<AR>`**, `<AR>` or K, Button only |
 | Played in CW | What is played; the rest is only shown as text (italics) | **Everything**, First sentence, Room / message |

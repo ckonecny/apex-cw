@@ -42,7 +42,7 @@ Widget _stepper(AppColors c, String label, String value, String? sub,
 
 /// Speed and spacing, the same ranges and coupling as the Geben ⚙ sheet:
 /// listening 10–60 WPM, keying "like listening" or 10–60, character
-/// spacing 3–45, word spacing 6–105 and never below the character spacing.
+/// spacing 3–45, word spacing up to 105 and never below character spacing + 4.
 List<Widget> _tempoRows(AppColors c, AdventureSettings s, void Function(VoidCallback) change) {
   return [
     _stepper(c, Strings.t('adv_hear'), '${s.wpm} WPM', null,

@@ -126,6 +126,22 @@ No ads, no accounts, no data collection. Free software (GPL-3.0), source code on
 Many ideas and much of the training logic come from the open-source Morserino-32 firmware by Willi Kraml, OE1WKL – many thanks for that. APEX CW is an independent project, not affiliated with the Morserino-32 team. Zork is a trademark of its owners; this app is not affiliated with them.
 ```
 
+## What's new (1.11.2, max. 500 characters each)
+
+**DE** (287)
+```
+• Morse-Timing exakt: Punkte, Striche und Pausen sind jetzt auch über Bluetooth-Kopfhörer sample-genau, vorher wackelten sie um 10–30 ms
+• Wortabstand wie bei der Firmware: nie unter Zeichenabstand + 4; eff. WPM zählt den gespielten Abstand
+• Pause zwischen Gruppen im Hören-Ablauf exakt
+```
+
+**EN** (280)
+```
+• Exact Morse timing: dits, dahs and gaps are now sample-accurate, also over Bluetooth headsets (before they wobbled by 10–30 ms)
+• Word spacing like the firmware: never below character spacing + 4; eff. WPM counts the played gap
+• Pause between groups in the Listen flow is exact
+```
+
 ## What's new (1.11.1, max. 500 characters each)
 
 Same content as 1.11.0 (which was not uploaded to the store); 1.11.1 only fixes the timing analysis.
