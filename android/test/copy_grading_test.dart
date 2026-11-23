@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/content/copy_grading.dart';
+import 'package:next_cw_trainer/ui/echo_trainer_screen.dart' show WordResult, WordOutcome, blockCharResults;
 
 void main() {
   group('gradeTyped', () {
@@ -14,6 +15,33 @@ void main() {
       expect(gradeTyped('AB', ''), [false, false]);
       expect(gradeTyped('ab', 'AB'), [true, true]);
     });
+  });
+
+  group('gradeSent (Geben, per character)', () {
+    test('one wrong character costs only that character', () {
+      expect(gradeSent('KARL', 'KARL'), [true, true, true, true]);
+      expect(gradeSent('KARL', 'KXRL'), [true, false, true, true]);
+      expect(gradeSent('KARL', 'KRL'), [true, false, true, true]);
+    });
+
+    test('an extra keyed character is an error', () {
+      expect(gradeSent('KARL', 'KAXRL'), [true, true, true, false]);
+      expect(gradeSent('CQ', 'CQQQ'), [false, false]);
+    });
+
+    test('empty answer is all wrong, blanks and case do not count', () {
+      expect(gradeSent('AB', ''), [false, false]);
+      expect(gradeSent('ab c', 'ABC'), [true, true, true]);
+    });
+  });
+
+  test('blockCharResults: a Geben block counts characters, not words', () {
+    final r = blockCharResults(const [
+      WordResult('SE', 'SE', 1, WordOutcome.first),
+      WordResult('ES', 'SS', 2, WordOutcome.afterRepeat),
+      WordResult('EE', '', 3, WordOutcome.failed),
+    ]);
+    expect(r, [true, true, false, true, false, false]);
   });
 
   group('firstMixup (#92)', () {

@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final hear = await TrainingProfile.open(TrainingProfile.hear);
     final echo = await TrainingProfile.open(TrainingProfile.echo);
     final hearTrend = trendOf(await const BlockHistory('hear').load(p));
-    final trend = trendOf(await const BlockHistory('echo').load(p));
+    final trend = trendOf(await const BlockHistory(echoTrendTrack).load(p));
     final goal = await DailyGoalSettings.load(p);
     final goalsCard = p.getInt(GoalStore.homeCardKey) ?? 0;
     if (!mounted) return;

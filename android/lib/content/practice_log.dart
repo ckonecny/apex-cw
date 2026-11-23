@@ -96,7 +96,9 @@ class MilestoneKind {
 /// One finished training block (for the achievements, #34).
 class BlockRecord {
   final String day; // practiceDayKey
-  final String track; // 'hear' | 'echo'
+  /// 'hear', 'echoChars' (Geben, per character), or 'echo' (Geben before it
+  /// counted characters: per word; only in old logs).
+  final String track;
   final int correct; // share of correct characters/words, permille
   final bool interference; // the interference simulation was on
 
@@ -112,6 +114,24 @@ class BlockRecord {
 
   /// Error rate 0..1.
   double get errors => 1 - correct / 1000;
+}
+
+/// [week] and [before] made comparable for a week-to-week error rate:
+/// Geben's word rate ('echo') and its character rate ('echoChars', since it
+/// counts characters, DECISIONS.md) are not set against each other. When one
+/// week has only the old kind and the other the new one, Geben is left out
+/// of both; if that empties [week], it stays whole and [before] is empty.
+/// Any other pair of weeks is returned unchanged.
+(List<BlockRecord>, List<BlockRecord>) comparableBlocks(
+    List<BlockRecord> week, List<BlockRecord> before) {
+  bool has(List<BlockRecord> l, String t) => l.any((b) => b.track == t);
+  final mixed = (has(week, 'echo') && has(before, 'echoChars')) ||
+      (has(week, 'echoChars') && has(before, 'echo'));
+  if (!mixed) return (week, before);
+  bool keep(BlockRecord b) => b.track != 'echo' && b.track != 'echoChars';
+  final w = week.where(keep).toList();
+  if (w.isEmpty) return (week, const []);
+  return (w, before.where(keep).toList());
 }
 
 /// Oldest blocks are dropped beyond this many.

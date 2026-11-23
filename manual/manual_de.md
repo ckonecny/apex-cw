@@ -1011,9 +1011,13 @@ deaktiviert und zeigt das gemessene Tempo.
 
 Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
 
-- **Trefferquote** – Anteil der Wörter, die beim **ersten Versuch** richtig
-  waren (Farben wie bei Hören), darunter „x von y richtig“ und der
-  [Trend](#trend). Wie bei Hören gibt es keine Liste der einzelnen Wörter.
+- **Trefferquote** – Anteil der **Zeichen**, die du beim **ersten Versuch**
+  richtig gegeben hast, wie bei Hören (Farben wie bei Hören). Ein falsches
+  oder ausgelassenes Zeichen kostet nur dieses eine Zeichen, nicht das ganze
+  Wort; ein zusätzlich gegebenes Zeichen zählt ebenfalls als ein Fehler.
+  Darunter „x von y richtig“ (Zeichen), „x von y Wörtern (Gruppen) im ersten
+  Versuch richtig“ und der [Trend](#trend). Wie bei Hören gibt es keine
+  Liste der einzelnen Wörter.
 - **Timing** (nur mit Handtaste an einem Adapter, z. B. VBand, und erst ab
   etwa 20 getasteten Elementen im Block): eine Zahl von 0 bis 100 – wie
   gleichmäßig du getastet hast, gemessen an deiner eigenen Dit-Länge. Ein
@@ -1187,8 +1191,9 @@ waren, in Hören und Geben gleich:
 
 - **Hören:** jedes gespielte Zeichen, richtig oder als Fehler markiert,
 - **Geben:** jedes Zeichen der getasteten Wörter. Ein Zeichen zählt als richtig,
-  wenn es beim **ersten** Versuch stimmte: In einem Wort mit Fehler zählen die
-  Zeichen vor dem ersten Fehler, der Rest nicht.
+  wenn es beim **ersten** Versuch stimmte. Ein falsches oder ausgelassenes
+  Zeichen kostet nur dieses Zeichen, ein zusätzlich gegebenes zählt als ein
+  Fehler (wie die Trefferquote der Ergebnisseite).
 
 Gezählt wird nur, was du **seit der letzten Änderung** geübt hast. Ändert sich
 Tempo, Abstand, Gruppenlänge, Lektion oder Gebetempo (durch **Übernehmen** oder
@@ -1469,7 +1474,8 @@ Ab dem **sechsten** Block zeigt die Statuszeile einen Trend, z. B.
   schlechter, **►** gleich.
 
 Der Trend wird über alle Sitzungen hinweg geführt, getrennt für Hören und
-Geben. Die App speichert dafür die letzten 20 Blöcke.
+Geben. Die App speichert dafür die letzten 20 Blöcke. Geben zählte früher
+ganze Wörter; seit der Umstellung auf Zeichen beginnt sein Trend neu.
 
 ## Pausenhinweis
 
@@ -1505,8 +1511,8 @@ erkennen; oft bringt eine Pause mehr als Weitermachen.
   Bedingungen werden verglichen.
 - Der Hinweis erscheint **höchstens einmal pro Sitzung**. Eine Sitzung endet
   nach 10 Minuten ohne Block. Hören und Geben werden getrennt beobachtet.
-- In **Geben** zählt ein Wort, das nicht im ersten Versuch richtig war, ab dem
-  ersten falschen Zeichen als falsch.
+- In **Geben** zählt, wie bei der Trefferquote, jedes Zeichen des ersten
+  Versuchs einzeln.
 - Er ist nie zwingend. **Pause** führt zur Startseite, **Weiter** schließt die
   Karte, **Nicht mehr anzeigen** schaltet den Hinweis aus.
 - Einstellungen: **Einstellungen → Allgemein → Pausenhinweis bei steigender

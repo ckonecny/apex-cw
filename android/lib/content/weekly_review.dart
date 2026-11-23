@@ -39,10 +39,11 @@ WeeklyReview weeklyReview(PracticeLog log, DateTime now) {
   int seconds(String w) => log.days.entries
       .where((e) => weekOfDayKey(e.key) == w)
       .fold(0, (a, e) => a + e.value.seconds);
-  double? errors(String w) {
-    final b = log.blocks.where((b) => weekOfDayKey(b.day) == w).toList();
-    return b.length < kReviewBlocks ? null : b.fold(0.0, (a, x) => a + x.errors) / b.length;
-  }
+  List<BlockRecord> blocksOf(String w) =>
+      log.blocks.where((b) => weekOfDayKey(b.day) == w).toList();
+  final (cur, prev) = comparableBlocks(blocksOf(week), blocksOf(before));
+  double? errors(List<BlockRecord> b) =>
+      b.length < kReviewBlocks ? null : b.fold(0.0, (a, x) => a + x.errors) / b.length;
 
   // Characters unlocked: the training that went furthest counts.
   final levels = <String, Set<int>>{};
@@ -57,5 +58,5 @@ WeeklyReview weeklyReview(PracticeLog log, DateTime now) {
       .where((e) => e.value.seconds > 0 && weekOfDayKey(e.key) == week)
       .length;
   return WeeklyReview(week, sunday, seconds(week), seconds(before), days, chars,
-      errors(week), errors(before));
+      errors(cur), errors(prev));
 }

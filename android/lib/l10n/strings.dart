@@ -792,6 +792,8 @@ class Strings {
     'ac_paddle_hint': ['Morsetaste: Dit = wiederholen, Dah = weiter', 'Morse key: dit = repeat, dah = next'],
     'ac_done_errors': ['Fertig · {n} Fehler', 'Done · {n} errors'],
     'ac_correct_of': ['{c} von {t} richtig', '{c} of {t} correct'],
+    'echo_first_try_words': ['{c} von {t} Wörtern im ersten Versuch richtig', '{c} of {t} words right at the first attempt'],
+    'echo_first_try_groups': ['{c} von {t} Gruppen im ersten Versuch richtig', '{c} of {t} groups right at the first attempt'],
     'boost_sum_title': ['Gezielt üben', 'Practice focus'],
     'boost_sum_pairs': ['{n} Verwechslungen', '{n} mix-ups'],
     'boost_sum_pair_one': ['{n} Verwechslung', '{n} mix-up'],

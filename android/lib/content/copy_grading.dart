@@ -88,3 +88,25 @@ bool isTypedRight(String played, String typed) {
   }
   return true;
 }
+
+/// Grading for Geben (echo trainer): which characters of [target] were keyed
+/// right in [sent], so the block rate counts characters like Hören does
+/// instead of whole words. Same alignment as [gradeTyped]; unlike there, a
+/// character keyed but not asked for is a sending error: each extra one
+/// turns one otherwise right character wrong (from the end), so a word with
+/// any mistake never reaches 100 %. Blanks are not characters and are left
+/// out. An empty [sent] marks all wrong.
+List<bool> gradeSent(String target, String sent) {
+  final a = target.replaceAll(' ', '').toUpperCase();
+  final b = sent.replaceAll(' ', '');
+  final aligned = _alignTyped(a, b);
+  final flags = [for (var i = 0; i < a.length; i++) aligned[i] == a[i]];
+  var extra = b.length - aligned.where((c) => c != null).length;
+  for (var i = a.length - 1; i >= 0 && extra > 0; i--) {
+    if (flags[i]) {
+      flags[i] = false;
+      extra--;
+    }
+  }
+  return flags;
+}

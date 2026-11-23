@@ -47,4 +47,42 @@ void main() {
     expect(r.errors, isNull);
     expect(weeklyReview(PracticeLog(), DateTime(2026, 10, 7, 12)).empty, isTrue);
   });
+
+  group('Geben word rate vs character rate (PR #199)', () {
+    BlockRecord b(String track, int r) => BlockRecord('2026-10-01', track, r, false);
+
+    test('old echo blocks are not compared with echoChars blocks', () {
+      final (w, p) = comparableBlocks(
+          [b('hear', 900), b('echoChars', 950)], [b('hear', 800), b('echo', 600)]);
+      expect(w.map((x) => x.track), ['hear']);
+      expect(p.map((x) => x.track), ['hear']);
+    });
+
+    test('weeks of one kind stay unchanged', () {
+      final old = [b('hear', 900), b('echo', 700)];
+      final (w, p) = comparableBlocks(old, [b('echo', 600)]);
+      expect(w, same(old));
+      expect(p.length, 1);
+    });
+
+    test('only Geben on both sides: this week stays, nothing to compare', () {
+      final now = [b('echoChars', 950)];
+      final (w, p) = comparableBlocks(now, [b('echo', 600)]);
+      expect(w, same(now));
+      expect(p, isEmpty);
+    });
+
+    test('the weekly review shows no fake improvement across the switch', () {
+      final l = PracticeLog();
+      for (final d in ['2026-09-28', '2026-09-30', '2026-10-02']) {
+        l.blocks.add(BlockRecord(d, 'echoChars', 950, false));
+      }
+      for (final d in ['2026-09-21', '2026-09-22', '2026-09-23']) {
+        l.blocks.add(BlockRecord(d, 'echo', 600, false));
+      }
+      final r = weeklyReview(l, DateTime(2026, 10, 7, 12));
+      expect(r.errors, closeTo(0.05, 1e-9));
+      expect(r.prevErrors, isNull);
+    });
+  });
 }

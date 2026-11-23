@@ -19,6 +19,7 @@ import '../content/echo_timing.dart';
 import '../content/cw_content.dart';
 import '../content/block_history.dart';
 import '../content/char_stats.dart';
+import '../content/copy_grading.dart' show gradeSent;
 import '../content/mixup_suggest.dart';
 import '../content/mixup_trend.dart';
 import '../content/adaptive_copy_engine.dart';
@@ -67,11 +68,14 @@ class WordResult {
   final String firstAttempt;
   final int attempts;
   final WordOutcome outcome;
-  /// Index of the first wrong character of the first attempt, or -1.
-  final int firstWrongIndex;
-  const WordResult(this.target, this.firstAttempt, this.attempts, this.outcome,
-      this.firstWrongIndex);
+  const WordResult(this.target, this.firstAttempt, this.attempts, this.outcome);
 }
+
+/// Per target character of every word's first attempt: keyed right or not
+/// (see [gradeSent]). The block's percentage is the share of true.
+List<bool> blockCharResults(Iterable<WordResult> results) => [
+      for (final r in results) ...gradeSent(r.target, r.firstAttempt),
+    ];
 
 // Learn New Chr / Preview Char (single-character drill) lives in
 // CharPracticeScreen since 2026-09-27, no longer as a mode of this screen.
@@ -498,18 +502,11 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     await _charStats.load(p);
     // Char-based content only: unlock check and weak chars need a char set.
     final charContent = _boostApplies;
-    final firstTry = _blockResults
-        .map((r) => r.outcome == WordOutcome.first)
-        .toList();
-    // One entry per target character: right up to the first wrong one of the
-    // first attempt; a word without a first try counts fully wrong. Feeds the
-    // goal window and the break reminder.
-    final chars = <bool>[
-      for (final r in _blockResults)
-        for (var i = 0; i < r.target.length; i++)
-          r.outcome == WordOutcome.first ||
-              (r.firstWrongIndex >= 0 && i < r.firstWrongIndex),
-    ];
+    // One entry per target character of the first attempt, graded like
+    // Hören (gradeSent: aligned, so one slip costs one character, an extra
+    // keyed character counts as an error). Feeds the block rate, the trend,
+    // the goal window and the break reminder.
+    final chars = blockCharResults(_blockResults);
     final unlockReady =
         charContent &&
         _koch &&
@@ -527,12 +524,12 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
       now: DateTime.now(),
     );
     final n = _blockResults.length;
-    final echoRate = n == 0 ? 0.0 : firstTry.where((r) => r).length / n;
-    _trend = await const BlockHistory('echo').record(p, echoRate);
+    final echoRate = chars.isEmpty ? 0.0 : chars.where((r) => r).length / chars.length;
+    _trend = await const BlockHistory(echoTrendTrack).record(p, echoRate);
     if (_fistRated) await const TimingHistory().record(p, _blockFist.report(), DateTime.now());
     final interf = await InterferenceProfile.load();
     if (n > 0) {
-      PracticeClock.instance.block('echo', echoRate, interference: interf.enabled);
+      PracticeClock.instance.block(echoTrendTrack, echoRate, interference: interf.enabled);
       // Everything that sets the difficulty of this block (issue #5).
       BreakReminder.onBlock('echo', chars,
           '$_wpm|$_answerWpmMax|$_interCharSpace|$_interWordSpace|${_koch ? _kochLevel : 0}'
@@ -1147,15 +1144,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   }
 
   void _recordWord(WordOutcome outcome) {
-    final t = _targetPlain.toUpperCase(), a = _firstAttempt.toUpperCase();
-    var wrong = -1;
-    if (a != t) {
-      wrong = 0;
-      while (wrong < t.length && wrong < a.length && t[wrong] == a[wrong]) {
-        wrong++;
-      }
-    }
-    _blockResults.add(WordResult(_targetPlain, _firstAttempt, _repeats, outcome, wrong));
+    _blockResults.add(WordResult(_targetPlain, _firstAttempt, _repeats, outcome));
   }
 
   // Moves on to the next word, or ends the session if Max # of Words has
