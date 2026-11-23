@@ -130,8 +130,10 @@ List<Achievement> achievements(PracticeLog log) {
   }
   double avg(List<BlockRecord> l) => l.fold(0.0, (a, b) => a + b.errors) / l.length;
   for (final e in byWeek.entries) {
-    final before = byWeek[previousWeekKey(e.key)];
-    if (e.value.length >= 3 && before != null && before.length >= 3 && avg(e.value) < avg(before)) {
+    final prev = byWeek[previousWeekKey(e.key)];
+    if (prev == null) continue;
+    final (week, before) = comparableBlocks(e.value, prev);
+    if (week.length >= 3 && before.length >= 3 && avg(week) < avg(before)) {
       earn(AchievementId.errBetter, e.value.last.day);
     }
   }

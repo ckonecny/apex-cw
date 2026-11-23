@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/content/copy_grading.dart';
+import 'package:next_cw_trainer/ui/echo_trainer_screen.dart' show WordResult, WordOutcome, blockCharResults;
 
 void main() {
   group('gradeTyped', () {
@@ -32,6 +33,15 @@ void main() {
       expect(gradeSent('AB', ''), [false, false]);
       expect(gradeSent('ab c', 'ABC'), [true, true, true]);
     });
+  });
+
+  test('blockCharResults: a Geben block counts characters, not words', () {
+    final r = blockCharResults(const [
+      WordResult('SE', 'SE', 1, WordOutcome.first),
+      WordResult('ES', 'SS', 2, WordOutcome.afterRepeat),
+      WordResult('EE', '', 3, WordOutcome.failed),
+    ]);
+    expect(r, [true, true, false, true, false, false]);
   });
 
   group('firstMixup (#92)', () {

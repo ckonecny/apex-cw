@@ -529,7 +529,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     if (_fistRated) await const TimingHistory().record(p, _blockFist.report(), DateTime.now());
     final interf = await InterferenceProfile.load();
     if (n > 0) {
-      PracticeClock.instance.block('echo', echoRate, interference: interf.enabled);
+      PracticeClock.instance.block(echoTrendTrack, echoRate, interference: interf.enabled);
       // Everything that sets the difficulty of this block (issue #5).
       BreakReminder.onBlock('echo', chars,
           '$_wpm|$_answerWpmMax|$_interCharSpace|$_interWordSpace|${_koch ? _kochLevel : 0}'
