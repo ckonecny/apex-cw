@@ -25,8 +25,12 @@ BlockTrend? trendOf(List<double> rates) {
   return BlockTrend((recent * 100).round(), dir);
 }
 
+/// Geben's track. Its block rate counts characters (like Hören) instead of whole words;
+/// a new key so the trend does not average both kinds (DECISIONS.md).
+const echoTrendTrack = 'echoChars';
+
 class BlockHistory {
-  final String track; // 'hear' | 'echo'
+  final String track; // 'hear' | echoTrendTrack
   const BlockHistory(this.track);
   String get _key => 'blockHistory.$track';
 

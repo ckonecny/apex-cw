@@ -16,6 +16,24 @@ void main() {
     });
   });
 
+  group('gradeSent (Geben, per character)', () {
+    test('one wrong character costs only that character', () {
+      expect(gradeSent('KARL', 'KARL'), [true, true, true, true]);
+      expect(gradeSent('KARL', 'KXRL'), [true, false, true, true]);
+      expect(gradeSent('KARL', 'KRL'), [true, false, true, true]);
+    });
+
+    test('an extra keyed character is an error', () {
+      expect(gradeSent('KARL', 'KAXRL'), [true, true, true, false]);
+      expect(gradeSent('CQ', 'CQQQ'), [false, false]);
+    });
+
+    test('empty answer is all wrong, blanks and case do not count', () {
+      expect(gradeSent('AB', ''), [false, false]);
+      expect(gradeSent('ab c', 'ABC'), [true, true, true]);
+    });
+  });
+
   group('firstMixup (#92)', () {
     test('substitution reads played>typed', () {
       expect(firstMixup('KARL', 'RARL'), 'K>R');

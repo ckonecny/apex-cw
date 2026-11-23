@@ -984,9 +984,13 @@ disabled and shows the measured speed.
 
 After the last word of a block the result page appears:
 
-- **Accuracy** is the share of words correct on the **first attempt**. The
-  colours are the same as in Listen. Below it come "x of y correct" and the
-  [trend](#trend). As in Listen, there is no list of the single words.
+- **Accuracy** is the share of **characters** you sent right on the **first
+  attempt**, as in Listen. The colours are the same as in Listen. A wrong or
+  missing character costs only that one character, not the whole word; an
+  extra character you sent also counts as one error. Below it come "x of y
+  correct" (characters), "x of y words (groups) right at the first attempt"
+  and the [trend](#trend). As in Listen, there is no list of the single
+  words.
 - **Timing** (only with a straight key on an adapter, e.g. VBand, and only
   from about 20 keyed elements in the block): a number from 0 to 100 – how
   evenly you keyed, measured against your own dit length. Slow but clean
@@ -1156,8 +1160,9 @@ went, in Listen and Send alike:
 
 - **Listen:** every character played, correct or marked as an error,
 - **Send:** every character of the words you keyed. A character counts as
-  correct if it was right on the **first** attempt: in a word with an error,
-  the characters before the first error count, the rest doesn't.
+  correct if it was right on the **first** attempt. A wrong or missing
+  character costs only that character, an extra one counts as one error
+  (like the accuracy on the result page).
 
 Only what you practised **since the last change** counts. When speed, spacing,
 group length, lesson or sending speed change (by **Apply** or by hand),
@@ -1429,7 +1434,8 @@ From the **sixth** block on, the status line shows a trend, for example
   and **►** means the same.
 
 The trend is kept across sessions, separately for Listen and Send. The app
-stores the last 20 blocks for it.
+stores the last 20 blocks for it. Send used to count whole
+words; since it counts characters, its trend has started anew.
 
 ## Break hint
 
@@ -1464,8 +1470,8 @@ carrying on.
   conditions are compared.
 - The hint appears **at most once per session**. A session ends after 10
   minutes without a block. Listen and Send are watched separately.
-- In **Send**, a word that was not right on the first try counts as wrong from
-  its first wrong character on.
+- In **Send**, as for the accuracy, every character of the first attempt
+  counts on its own.
 - It is never forced. **Break** returns to the start page, **Continue** closes
   the card, **Don't show again** switches the hint off.
 - Settings: **Settings → General → Break hint when the error rate rises**

@@ -48,9 +48,12 @@ extension _EchoViews on _EchoTrainerScreenState {
   // Same result page as Listen's: percentage, "x of y correct", trend, the
   // proposal cards and the suggestions; no list of the single words.
   Widget _buildBlockResult(AppColors c) {
+    // Main figure per character (like Hören); first-try words as a second line.
+    final chars = blockCharResults(_blockResults);
+    final right = chars.where((r) => r).length;
+    final pct = chars.isEmpty ? 100 : right * 100 ~/ chars.length;
     final first = _blockResults.where((r) => r.outcome == WordOutcome.first).length;
     final total = _blockResults.length;
-    final pct = total == 0 ? 100 : first * 100 ~/ total;
     String cs(String t) => _outputCase == 1 ? t.toUpperCase() : t.toLowerCase();
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
@@ -80,8 +83,12 @@ extension _EchoViews on _EchoTrainerScreenState {
                   style: TextStyle(fontFamily: 'DMSans', fontSize: 52,
                       fontVariations: const [FontVariation('wght', 600)],
                       color: pct >= 90 ? c.accent : pct >= 70 ? c.warning : c.danger)),
-              Text(Strings.t('ac_correct_of').replaceFirst('{c}', '$first').replaceFirst('{t}', '$total'),
+              Text(Strings.t('ac_correct_of').replaceFirst('{c}', '$right').replaceFirst('{t}', '${chars.length}'),
                   style: TextStyle(fontSize: 16, color: c.textMuted)),
+              Text(Strings.t(_choice.content == ContentKind.random ? 'echo_first_try_groups' : 'echo_first_try_words')
+                      .replaceFirst('{c}', '$first').replaceFirst('{t}', '$total'),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 13, color: c.textMuted)),
               if (_trend != null) ...[
                 const SizedBox(height: 10),
                 Text(Strings.t('trend_line')

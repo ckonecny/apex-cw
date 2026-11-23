@@ -2435,3 +2435,11 @@ A tester measured uneven element lengths over Bluetooth with Audacity (dits 60-7
 - **Checked:** local `fdroid build` builds the release APK, `fdroid scanner` finds 0 problems, no anti-features declared. WiFi Trx (optional, UDP/MOPP, user-editable server, `cq.morserino.info` only pre-filled) is described openly in the MR; the reviewers decide on NonFreeNet.
 - **fastlane metadata** in `fastlane/metadata/android/{en-US,de-DE}` is derived from `docs/PLAY-LISTING.md` and `store/out`; keep it in step when the Play texts change.
 - **Release timing:** no new version just for F-Droid; the draft `fdroid/at.oe1cko.apexcw.yml` is finalised at the next regular tag. From then on every release is handled for Play and F-Droid together (checklist in `docs/PROJECT.md`, "F-Droid goes with every release"); betas are not offered on F-Droid.
+
+## Geben: block rate per character, not per word (2026-11-23)
+Tester feedback: in Hören one wrong character in a group costs that character, in Geben (echo trainer) it cost the whole word, so the two percentages weren't comparable. The firmware shows no block rate in the echo trainer at all, so this is our own figure and free to change.
+- **Block rate, trend, practice clock, goal window and break reminder** now all use `gradeSent()` (`content/copy_grading.dart`) on each word's first attempt: the same Levenshtein alignment as the Hören typing mode, so a wrong or missing character costs one character. Unlike Hören, a character keyed but not asked for is a sending error: each extra one turns one otherwise right character wrong, so a word with any mistake never scores 100 %.
+- The goal window used "right up to the first error, rest wrong" before; it now matches the result page.
+- The result page keeps the word view as a second line ("x of y words/groups right at the first attempt").
+- **Trend:** new key `blockHistory.echoChars`, so word-based and character-based blocks aren't averaged together; the Geben trend starts anew (old key left in place, unused).
+- **Unchanged:** the per-character statistics (`CharStatsStore.recordWord`, KOCH_ADAPTIVE weighting) still count only up to the first wrong character, as the firmware does.
