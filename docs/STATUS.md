@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Latest tagged: v1.11.1 (pubspec 1.11.1+15, 2026-10-31, notes `docs/release-notes-v1.11.1.md`). In preparation: v1.11.2 (pubspec 1.11.2+16, notes `docs/release-notes-v1.11.2.md`): sample-accurate generator keying and word gap ≥ character gap + 4 (PR #190), plus F-Droid preparation. v1.11.0 (+14, notes `docs/release-notes-v1.11.0.md`): training goals (#165), straight-key timing (#164, #166, #167), audio trainer colours. Play texts in `docs/PLAY-LISTING.md`; manual, screenshots and AAB in the release steps. Previous: v1.10.0 (2026-10-25), v1.9.0 (2026-10-24), v1.8.0 (2026-10-21); older versions in `docs/STATUS-ARCHIVE.md`.
+Latest tagged: v1.11.2 (pubspec 1.11.2+16, 2026-11-10, notes `docs/release-notes-v1.11.2.md`): sample-accurate generator keying and word gap ≥ character gap + 4 (PR #190), F-Droid preparation. Beta `v1.11.3-beta1` (pubspec 1.11.3+17, GitHub pre-release only): Geben block rate per character (PR #199), AGP 9.5.2 and Gradle 9.9.2 (#197, #198). Previous: v1.11.1/v1.11.0 (2026-10-31), v1.10.0 (2026-10-25); older versions in `docs/STATUS-ARCHIVE.md`. Play texts in `docs/PLAY-LISTING.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
@@ -10,8 +10,8 @@ only the current state, organisational steps and hints for the next session.
 ## Google Play
 Live in production (reported 2026-11-08): 1.11.1, versionCode 512, https://play.google.com/store/apps/details?id=at.oe1cko.nextcwtrainer. Content-rating (IARC) answers must stay accurate when features change.
 
-## Release v1.11.2 (PR #195, prepared, not yet tagged)
-Done: docs consistency check, `/code-review high` (deferred findings: issues #191–#194; Adventure word-gap clamp and two manual rows fixed), `/security-review` (no findings), GitHub Security tab empty, CI green, `flutter analyze` clean, 1167 tests pass. Play "What's new" text in `docs/PLAY-LISTING.md`. Next, after the release PR is merged: tag `vX` on the merge commit, `tools/build_release.sh v1.11.2` (APK+AAB), install the release APK, retake `settings3` (+ any listed shot) DE+EN, `manual/build.sh`, manual PR, GitHub release (APK + manual PDFs), AAB to the Play Console; then finalise `fdroid/at.oe1cko.apexcw.yml` (versionName 1.11.2, commit = the tag, versionCode = `git rev-list --count v1.11.2`) and re-run the local `fdroid build`.
+## Release v1.11.2: open steps
+Tagged and GitHub release published 2026-11-10 (APK only). Not confirmed here: manual PDFs on the GitHub release (`manual/build.sh`, manual PR), AAB in the Play Console, F-Droid draft finalised (`fdroid/at.oe1cko.apexcw.yml` still has versionCode 0; the count at v1.11.2 is 540), MR to fdroiddata.
 
 ## F-Droid (issue #188, PR #189)
 Prepared: `fastlane/metadata/android/`, draft `fdroid/at.oe1cko.apexcw.yml`, one-line `signingConfig` in `build.gradle.kts` (F-Droid strips that line by regex; `signingReport` checked identical, Play signing untouched). Local `fdroid build` produced the release APK; `fdroid scanner`: 0 problems. Decisions in `docs/DECISIONS.md` (F-Droid app id `at.oe1cko.apexcw`, separate signatures, no new version just for F-Droid). Parallel install with the Play app tested on the test phone. Open: finalise the draft (versionName, commit, versionCode) at the next regular tag, then the MR to fdroiddata; then README, landing page, manual Info (DE+EN).
