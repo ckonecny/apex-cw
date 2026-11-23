@@ -2436,7 +2436,7 @@ A tester measured uneven element lengths over Bluetooth with Audacity (dits 60-7
 - **fastlane metadata** in `fastlane/metadata/android/{en-US,de-DE}` is derived from `docs/PLAY-LISTING.md` and `store/out`; keep it in step when the Play texts change.
 - **Release timing:** no new version just for F-Droid; the draft `fdroid/at.oe1cko.apexcw.yml` is finalised at the next regular tag. From then on every release is handled for Play and F-Droid together (checklist in `docs/PROJECT.md`, "F-Droid goes with every release"); betas are not offered on F-Droid.
 
-## Geben: block rate per character, not per word (2026-11-23)
+## Geben: block rate per character, not per word (2026-11-23, PR #199)
 Tester feedback: in Hören one wrong character in a group costs that character, in Geben (echo trainer) it cost the whole word, so the two percentages weren't comparable. The firmware shows no block rate in the echo trainer at all, so this is our own figure and free to change.
 - **Block rate, trend, practice clock, goal window and break reminder** now all use `gradeSent()` (`content/copy_grading.dart`) on each word's first attempt: the same Levenshtein alignment as the Hören typing mode, so a wrong or missing character costs one character. Unlike Hören, a character keyed but not asked for is a sending error: each extra one turns one otherwise right character wrong, so a word with any mistake never scores 100 %.
 - The goal window used "right up to the first error, rest wrong" before; it now matches the result page.

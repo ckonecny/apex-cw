@@ -31,7 +31,7 @@ Done and checked on the test phone: launcher icons, README, landing page. Pendin
 Retaken for 1.11.0/1.11.1 (2026-10-31, DE+EN): home, achievements, hear/echo start, hear/echo progress, echo timing card (new, with sample data), training goals screen (new), ⚙ sheets (goals), audio trainer, settings3. Still open:
 - Keyer screen (Straight key + adapter): the "Rhythm" panel and the Keyer settings row "Timing analysis in the CW Keyer" (#164, no shot yet; needs keying by hand on the adapter).
 - Geben result page: "Timing" card (#166, no shot yet; same).
-- `echo_result.png` (DE+EN): Geben's percentage now counts characters, plus a new second line "x of y words right at the first attempt".
+- `echo_result.png` (DE+EN, PR #199): Geben's percentage now counts characters, plus a new second line "x of y words right at the first attempt".
 - `hear_result.png`, `echo_result2.png`, `hear_start*`/`echo_*` result views: the training-goal card (Apply / Not now) and the numbers sheet of the readiness bar (need played blocks).
 
 ## Prosign set (#156, in 1.10.0)
