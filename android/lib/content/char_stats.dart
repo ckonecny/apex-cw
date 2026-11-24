@@ -75,7 +75,7 @@ class DayStat {
   int errors = 0;
   int ws = 0;
   int wm = 0;
-  // Effective wpm (spacing included, see effectiveWpm): sum over the `wn`
+  // Effective wpm (spacing included, see effectiveWpmExact): sum over the `wn`
   // attempts that carry one. Days from before this existed have none.
   double we = 0;
   int wn = 0;
@@ -111,18 +111,6 @@ class DayStat {
   double? get avgEffWpm => wn == 0 ? null : we / wn;
 }
 
-/// Effective speed in wpm of a character speed [wpm] with the gaps
-/// [interChar] / [interWord] (total gaps in dits, like the generator). PARIS
-/// is 31 dits of elements + 4 character gaps + 1 word gap; at 3 / 7 the result
-/// equals [wpm]. [wordGap] false (typing, keying: the sender stops after every
-/// word) counts the standard 7-dit word gap instead of [interWord], so only the
-/// character gap stretches the result. The word gap is at least
-/// interChar + 4, as in the generator (wordGapExtra).
-double effectiveWpm(int wpm, int interChar, int interWord, {bool wordGap = true}) {
-  final word = wordGap ? (interWord > interChar + 4 ? interWord : interChar + 4) : 7;
-  return wpm * 50 / (31 + 4 * interChar + word);
-}
-
 String dayKey(DateTime d) =>
     '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
@@ -147,7 +135,7 @@ class CharStatsStore {
   // back-fill. `wpm` is set by the screen before it records (0 = unknown).
   final Map<String, DayStat> days = {};
   int wpm = 0;
-  // Effective wpm of the same attempts, see effectiveWpm (0 = unknown).
+  // Effective wpm of the same attempts, see effectiveWpmExact (0 = unknown).
   double effWpm = 0;
   // Overridable for tests.
   DateTime Function() now = DateTime.now;

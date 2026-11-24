@@ -720,8 +720,11 @@ class CwGenerator(
     // Extra dits needed after the inter-char gap to reach the full inter-word
     // gap, which the firmware computes in updateTimings() as
     // max(InterWord Spc, Interchar Spc + 4) dits, counted from the last tone.
-    private fun wordGapExtra(): Int = maxOf(interWordSpace, interCharSpace + 4) - interCharSpace
-    private fun wordGapMs(): Int = ditMs() * maxOf(interWordSpace, interCharSpace + 4)
+    // The rule lives in wordGapDits() only (#194); Dart has the same rule in
+    // playedWordSpaceDits() (lib/content/effective_wpm.dart).
+    private fun wordGapDits(): Int = maxOf(interWordSpace, interCharSpace + 4)
+    private fun wordGapExtra(): Int = wordGapDits() - interCharSpace
+    private fun wordGapMs(): Int = ditMs() * wordGapDits()
 
     // ── Timing helpers ────────────────────────────────────────────────────────
     private fun ditMs()  = (1200.0 / wpm).roundToInt()

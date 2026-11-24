@@ -999,7 +999,11 @@ After the last word of a block the result page appears:
   and a hint in plain words. Because the target word is known, a dah keyed
   as short as a dit counts as a timing error ("dahs too short"). Words with
   a missing or extra element are left out – they are real errors and already
-  in the accuracy.
+  in the accuracy. The block is rated from the first word you key on the
+  adapter, even if the app only recognises the adapter at that first key
+  press, and stays rated if you unplug the adapter later; words keyed on the
+  screen don't count. As in the CW Keyer, a pause of more than 15 dit lengths
+  inside a word is not counted.
 - The **speed and spacing** card (at the bottom, above the buttons): sliders
   **Send** and **Listen** (with the effective speed in brackets), plus
   **Character spacing**. The answer pause is not on this screen but in the ⚙
@@ -3092,8 +3096,10 @@ no sense.
 The app measures the times from the system's timestamp of the key press, not
 from its own clock. Short contact bounce of the adapter (under 20 ms) is
 filtered out. A pause of more than 15 dit lengths (thinking, the end of a
-phrase) is not counted as a gap, so a break doesn't lower the number. When the
-analysis is switched off or the adapter is unplugged, the panel starts afresh.
+phrase) is not counted as a gap, so a break doesn't lower the number. Nor is a
+key press more than eight times as long as your typical press (holding the key
+down to tune, a slip), so it doesn't mix up dits and dahs. When the analysis is
+switched off or the adapter is unplugged, the panel starts afresh.
 
 The **Rhythm** panel shows:
 

@@ -18,7 +18,12 @@ class KeyerStatusButton extends StatefulWidget {
   /// Speed in WPM when the screen has its own Send speed control; follows it
   /// live. Null = the general Send setting.
   final int? wpm;
-  const KeyerStatusButton({super.key, this.sound = true, this.wpm});
+
+  /// Runs after the keyer settings opened by this button are closed, so a
+  /// screen that keeps keyer settings of its own can read them again (#183).
+  final VoidCallback? onSettingsClosed;
+  const KeyerStatusButton(
+      {super.key, this.sound = true, this.wpm, this.onSettingsClosed});
 
   @override
   State<KeyerStatusButton> createState() => _KeyerStatusButtonState();
@@ -76,8 +81,11 @@ class _KeyerStatusButtonState extends State<KeyerStatusButton> {
           painter: StraightKeyPainter(detected ? c.accent : c.textFaint),
         ),
         tooltip: Strings.t(detected ? 'keyer_btn_detected' : 'keyer_btn_none'),
-        onPressed: () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const KeyerSettingsScreen())),
+        onPressed: () async {
+          await Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const KeyerSettingsScreen()));
+          widget.onSettingsClosed?.call();
+        },
       ),
     );
   }

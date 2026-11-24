@@ -215,4 +215,27 @@ void main() {
       expect(h.shown, isEmpty);
     });
   });
+
+  group('overlong presses (#180)', () {
+    test('one 10 s press does not break the dit/dah split', () {
+      final seq = [...cq(60, reps: 3), (10000, 420), ...cq(60, reps: 3)];
+      final r = keyed(seq).report();
+      expect(r.index, 100);
+      expect(r.ditMs, closeTo(60, 0.1));
+      expect(r.stats[FistElement.dah]!.ratio, closeTo(3, 0.01));
+    });
+
+    test('a long but plausible dah (5 dits) still counts', () {
+      final r = keyed(cq(60, dah: 5)).report();
+      expect(r.stats[FistElement.dah]!.ratio, closeTo(5, 0.01));
+      expect(r.index!, lessThan(100));
+    });
+
+    test('dit-only keying keeps every press', () {
+      final seq = [for (var i = 0; i < 24; i++) (60, i % 4 == 3 ? 180 : 60)];
+      final r = keyed(seq).report();
+      expect(r.stats[FistElement.dit]!.count, 24);
+      expect(r.stats[FistElement.dah], isNull);
+    });
+  });
 }

@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
 import '../content/echo_timing.dart' show effectiveWordSpaceDits;
 import '../content/char_stats.dart';
+import '../content/effective_wpm.dart';
 import '../content/mixup_suggest.dart';
 import '../content/mixup_trend.dart';
 import '../content/training_profile.dart';
@@ -1027,7 +1028,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
     _charStats.wpm = _activeWpm;
     // Paper: the word gaps count; typing stops after every word, so they don't.
     _charStats.effWpm =
-        effectiveWpm(_activeWpm, _activeInterChar, _activeInterWord, wordGap: !_typing);
+        effectiveWpmExact(_activeWpm, _activeInterChar, _activeInterWord, typing: _typing);
     var total = 0, correct = 0;
     final results = <bool>[];
     for (var g = 0; g < _sentGroups.length; g++) {

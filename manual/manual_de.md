@@ -1027,7 +1027,12 @@ Nach dem letzten Wort eines Blocks erscheint die Ergebnisseite:
   Hinweis in einfachen Worten. Weil das Zielwort bekannt ist, zählt ein Dah,
   das so kurz getastet wurde wie ein Dit, als Timing-Fehler („Dahs zu
   kurz“). Wörter mit fehlendem oder zusätzlichem Element zählen nicht
-  mit – sie sind echte Fehler und stehen schon in der Trefferquote.
+  mit – sie sind echte Fehler und stehen schon in der Trefferquote. Der Block
+  wird ab dem ersten Wort bewertet, das du am Adapter tastest, auch wenn die
+  App den Adapter erst bei diesem ersten Tastendruck erkennt, und bleibt
+  bewertet, wenn du den Adapter danach abziehst; am Bildschirm getastete
+  Wörter zählen nicht. Wie im CW Keyer zählt eine Pause von mehr als
+  15 Punktlängen innerhalb eines Wortes nicht.
 - Die Karte **Tempo und Abstände** (unten, über den Schaltflächen): Regler
   **Geben** und **Hören** (mit dem effektiven Tempo in Klammern) sowie
   **Zeichenabstand**. Die Antwortpause steht nicht hier, sondern im ⚙-Blatt;
@@ -3200,8 +3205,10 @@ Die App misst die Zeiten über den Zeitstempel des Tastendrucks vom System, nich
 über ihre eigene Uhr. Kurze Kontaktprellungen des Adapters (unter 20 ms)
 werden herausgefiltert. Eine Pause von mehr als 15 Punktlängen (Nachdenken,
 Ende einer Phrase) zählt nicht als Abstand, eine Pause senkt die Zahl also
-nicht. Wird die Analyse ausgeschaltet oder der Adapter abgezogen, beginnt die
-Anzeige von vorn.
+nicht. Ebenso zählt ein Tastendruck nicht, der mehr als achtmal so lang ist wie
+dein typischer Tastendruck (Taste zum Abstimmen gedrückt gehalten,
+Ausrutscher); so bringt er Dits und Dahs nicht durcheinander. Wird die Analyse
+ausgeschaltet oder der Adapter abgezogen, beginnt die Anzeige von vorn.
 
 Das Feld **Rhythmus** zeigt:
 
