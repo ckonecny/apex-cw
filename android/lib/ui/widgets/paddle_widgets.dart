@@ -7,7 +7,7 @@ import '../../theme/app_colors.dart';
 import '../../util/bluetooth_hint.dart';
 import '../../util/key_adapter_state.dart';
 import '../../util/paddle_layout.dart';
-import '../settings_screen.dart';
+import '../settings_section_screens.dart';
 
 // Stands in for the touch keys while a key adapter is detected and hiding is
 // switched on (#95); the key symbol in the app bar tells the rest. The
@@ -128,7 +128,7 @@ class BluetoothLatencyHint extends StatelessWidget {
           child: Row(children: [
             Expanded(child: InkWell(
               onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => const SettingsScreen(scrollToAudio: true))),
+                  builder: (_) => const AudioOutputScreen())),
               child: Row(children: [
                 Icon(Icons.bluetooth_audio, size: 14, color: c.warning),
                 const SizedBox(width: 6),

@@ -116,6 +116,7 @@ class Strings {
     'settings_think_time_help': ['Zusätzliche Zeit nach dem gespielten Wort, um mit deiner Antwort zu beginnen (z. B. zum Kopfkopieren). Sie gilt nur bis zu deinem ersten Zeichen; danach zählt die Antwortpause.', 'Extra time after the played word to begin your answer (e.g. for head copy). It only applies until your first character; after that the answer pause counts.'],
     'settings_answer_pause_help': ['Stille nach deinem letzten Zeichen, bis die Antwort zählt: Paddle 2 × Zeichenabstand + 1 + Antwortpause / 8 Dits, Handtaste Antwortpause + 1 Dits. Sie verlängert außerdem die Zeit zum Anfangen ein wenig (ein Drittel davon). Wird nicht gespielt.', 'Silence after your last character before the answer counts: paddle 2 × character spacing + 1 + answer pause / 8 dits, straight key answer pause + 1 dits. It also extends the time to start a little (a third of it). It is never played.'],
     'settings_spacing_desc': ['Abstand in Dit-Längen, wie am Morserino (normal = 3 / 7)', 'Spacing in dit lengths, as on the Morserino (normal = 3 / 7)'],
+    'settings_keyer': ['Keyer', 'Keyer'],
     'settings_audio_output': ['Audioausgabe', 'Audio output'],
     'settings_audio_output_desc': ['Wird automatisch erkannt, wenn USB- oder Bluetooth-Geräte an-/abgesteckt werden.', 'Detected automatically as USB or Bluetooth devices connect and disconnect.'],
     'settings_audio_output_active': ['Aktiv: {val}', 'Active: {val}'],

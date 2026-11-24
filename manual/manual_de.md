@@ -177,7 +177,7 @@ egal, beim Geben stört es: Du hörst deinen Mithörton spürbar später, als du
 tastest. Zum Geben sind ein Kabelkopfhörer oder der Lautsprecher besser.
 Überall, wo die Tasten (Dit/Dah oder Handtaste) eingeblendet sind, weist dich
 eine kleine Zeile über den Tasten darauf hin, solange der Ton über Bluetooth
-läuft. Tippst du auf die Zeile, öffnen sich die Einstellungen direkt bei der
+läuft. Tippst du auf die Zeile, öffnet sich eine eigene Seite nur mit der
 Audioausgabe, sodass du gleich umschalten kannst. Mit dem X schließt du sie bis
 zum nächsten App-Start; dauerhaft
 schaltest du sie in den Einstellungen unter [Audioausgabe](#audioausgabe) aus.
@@ -2981,7 +2981,8 @@ nicht mehr.
 **Das Keyer-Symbol.** In der Titelleiste vieler Bildschirme (Hören, Geben, Üben,
 Spiele, Morsetabelle und mehr) steht ein Symbol für die externe Taste. Es ist
 gedimmt, solange kein Adapter erkannt ist, und leuchtet, sobald einer erkannt
-wurde. Ein Tipp darauf öffnet die Keyer-Einstellungen. Auf Bildschirmen, auf denen
+wurde. Ein Tipp darauf öffnet eine eigene Seite nur mit den Keyer-Einstellungen
+(dieselben wie unter **Einstellungen → Keyer**). Auf Bildschirmen, auf denen
 du nicht selbst tastest, kannst du die Taste damit auch ausprobieren: Dit und Dah
 tönen dort mit deinen Einstellungen für Geben (Tempo, Tonhöhe, Keyer-Modus). Während
 eines Blocks bleibt es still. Auf der Ergebnisseite bei Geben wählst du mit der
@@ -3189,7 +3190,7 @@ Mit einer Handtaste am USB-Adapter (z. B. VBand) kann der CW Keyer zeigen, wie
 gleichmäßig du tastest. Die Analyse ist **standardmäßig aus**: Einstellungen →
 Keyer → **Timing-Analyse im CW Keyer** (nur sichtbar bei Keyer-Modus Straight).
 Sobald ein Adapter mit Straight-Taste erkannt ist und die Analyse noch aus ist,
-zeigt der CW Keyer einen Tipp; Antippen springt in die Einstellungen, das ✕
+zeigt der CW Keyer einen Tipp; Antippen öffnet die Keyer-Einstellungen, das ✕
 blendet ihn dauerhaft aus. Ist die Analyse an, aber keine Taste am Adapter
 erkannt, erscheint ein ausblendbarer Hinweis mit Link zur Anleitung. Mit den
 Touch-Tasten gibt es keine Analyse, weil der Touchscreen zu viel Verzögerung

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:next_cw_trainer/l10n/strings.dart';
 import 'package:next_cw_trainer/ui/keyer_screen.dart';
-import 'package:next_cw_trainer/ui/settings_screen.dart';
+import 'package:next_cw_trainer/ui/settings_section_screens.dart';
 import 'package:next_cw_trainer/util/key_adapter_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -61,11 +61,11 @@ void main() {
     expect(hint, findsNothing);
   });
 
-  testWidgets('tap opens the settings', (t) async {
+  testWidgets('tap opens the keyer settings page', (t) async {
     await open(t, {});
     await t.tap(hint);
     await t.pump(const Duration(milliseconds: 400));
-    expect(find.byType(SettingsScreen, skipOffstage: false), findsOneWidget);
+    expect(find.byType(KeyerSettingsScreen, skipOffstage: false), findsOneWidget);
   });
 
   testWidgets('analysis on without adapter: note, closable for good', (t) async {
