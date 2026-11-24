@@ -173,6 +173,93 @@ static void fullQueueRefuses() {
     delete k;
 }
 
+// Renders [frames] samples in blocks of 96 at [rate], noting the first and
+// the last tone sample (frame indices counted on in [frame]).
+static void renderFrames(KeySchedule& k, double rate, long frames, long& frame, long& firstOn, long& lastOn) {
+    long left = frames;
+    while (left > 0) {
+        const int n = static_cast<int>(std::min<long>(96, left));
+        k.beginBlock(rate);
+        for (int i = 0; i < n; ++i, ++frame) {
+            if (k.nextSample() == KeySchedule::kOn) {
+                lastOn = frame;
+                if (firstOn < 0) firstOn = frame;
+            }
+        }
+        k.endBlock();
+        left -= n;
+    }
+}
+
+// Plays [first] for [beforeStopMs], stops it with a new epoch that waits for a
+// 420 ms gap and plays a tone; returns the silence between the last tone
+// sample before the stop and the first tone sample after it.
+static long gapAfterStop(const std::vector<std::pair<bool, int>>& first, long beforeStopMs) {
+    KeySchedule* k = new KeySchedule();
+    k->setEpoch(1);
+    for (auto& p : first) k->push(1, p.first, p.second);
+    long frame = 0, firstOn1 = -1, lastOn1 = -1;
+    renderFrames(*k, 48000, beforeStopMs * 48, frame, firstOn1, lastOn1);
+    k->setEpoch(2);
+    k->pushIdleGap(2, 420);
+    k->push(2, true, 10);
+    long firstOn2 = -1, lastOn2 = -1;
+    renderFrames(*k, 48000, 2000 * 48, frame, firstOn2, lastOn2);
+    delete k;
+    return firstOn2 - lastOn1 - 1;
+}
+
+// #193: the gap is measured from the last tone, also when the previous
+// playback was stopped in one of its pauses or in the middle of a tone.
+static void gapAfterAStoppedPlaybackCountsFromItsLastTone() {
+    const long want = 420 * 48;
+    // stopped 100 ms into a 500 ms pause: those 100 ms are already silence
+    long got = gapAfterStop({{true, 10}, {false, 500}, {true, 10}}, 110);
+    check(got == want, "gap after a stop in a pause", got, want);
+    // stopped 200 ms into a 1 s tone: the tone ends at the stop
+    got = gapAfterStop({{true, 1000}}, 200);
+    check(got == want, "gap after a stop mid-tone", got, want);
+}
+
+// #193: a new stream at another sample rate keeps the durations: the silence
+// already counted and the rest of a running segment.
+static void sampleRateChangeKeepsDurations() {
+    {
+        KeySchedule* k = new KeySchedule();
+        k->setEpoch(1);
+        k->push(1, true, 10);
+        long frame = 0, firstOn = -1, lastOn = -1;
+        renderFrames(*k, 48000, 210 * 48, frame, firstOn, lastOn);   // tone + 200 ms silence
+        k->setEpoch(2);
+        k->pushIdleGap(2, 420);
+        k->push(2, true, 10);
+        // the rest of the gap, 220 ms, at 24 kHz
+        long silent = 0;
+        bool on = false;
+        for (int guard = 0; guard < 1000 && !on; ++guard) {
+            k->beginBlock(24000);
+            for (int i = 0; i < 48 && !on; ++i) {
+                if (k->nextSample() == KeySchedule::kOn) on = true; else ++silent;
+            }
+            k->endBlock();
+        }
+        check(silent == 220 * 24, "rest of the gap after a rate change", silent, 220 * 24);
+        delete k;
+    }
+    {
+        KeySchedule* k = new KeySchedule();
+        k->setEpoch(1);
+        k->push(1, true, 100);
+        long frame = 0, firstOn = -1, lastOn = -1;
+        renderFrames(*k, 48000, 50 * 48, frame, firstOn, lastOn);
+        const auto runs = render(*k, 24000, 48);
+        check(runs.size() == 1 && runs[0].on && runs[0].frames == 50 * 24,
+              "rest of a tone after a rate change", runs.empty() ? 0 : runs[0].frames, 50 * 24);
+        check(k->playedMs(1) == 100, "played after a rate change", (long)k->playedMs(1), 100);
+        delete k;
+    }
+}
+
 int main() {
     exactLengths();
     newEpochDropsTheOldQueue();
@@ -181,6 +268,8 @@ int main() {
     notStartedUntilTheFirstSegment();
     emptyMeansNothing();
     fullQueueRefuses();
+    gapAfterAStoppedPlaybackCountsFromItsLastTone();
+    sampleRateChangeKeepsDurations();
     if (failures) { std::printf("%d failures\n", failures); return 1; }
     std::printf("key_schedule_test: ok\n");
     return 0;

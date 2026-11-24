@@ -32,9 +32,12 @@ public:
     // False if the queue is full (the caller waits and retries).
     bool push(int32_t epoch, bool on, int32_t ms) { return add(Segment{epoch, ms, on, false}); }
 
-    // Silence until [ms] have passed since the last queued segment ended,
-    // counted in samples, so a separate playback can start at an exact distance
-    // from the previous one. Nothing if that much silence has already passed.
+    // Silence until [ms] have passed since the last tone sample, counted in
+    // samples, so a separate playback can start at an exact distance from the
+    // previous one's last tone. Nothing if that much silence has already passed.
+    // The count runs across epochs (a playback stopped in a pause or mid-tone
+    // still counts from its last tone, #193) and is rescaled when the sample
+    // rate changes; while no callbacks run (stream restart) it does not advance.
     bool pushIdleGap(int32_t epoch, int32_t ms) { return add(Segment{epoch, ms, false, true}); }
 
     // How much of this epoch's queue has been rendered, in ms. -1 while its
@@ -48,6 +51,14 @@ public:
     }
 
     void beginBlock(double sampleRate) {
+        if (sampleRate > 0 && rate_ > 0 && sampleRate != rate_) {
+            // A new stream (route change) can run at another rate: keep the
+            // durations, not the frame counts (#193).
+            const double f = sampleRate / rate_;
+            left_ = std::llround(left_ * f);
+            done_ = std::llround(done_ * f);
+            silentFrames_ = std::min(kLongSilence, static_cast<int64_t>(std::llround(silentFrames_ * f)));
+        }
         rate_ = sampleRate;
         const int32_t e = epoch_.load(std::memory_order_acquire);
         if (e != active_) {
@@ -64,12 +75,17 @@ public:
     // State for the next sample; kNothing when no segment is scheduled.
     Key nextSample() {
         if (left_ == 0 && !popSegment()) {
-            ++idleFrames_;
+            if (silentFrames_ < kLongSilence) ++silentFrames_;
             return kNothing;
         }
         --left_;
         ++done_;
-        return on_ ? kOn : kOff;
+        if (on_) {
+            silentFrames_ = 0;
+            return kOn;
+        }
+        if (silentFrames_ < kLongSilence) ++silentFrames_;
+        return kOff;
     }
 
     void endBlock() {
@@ -93,6 +109,7 @@ private:
     }
 
     static constexpr int kEpochShift = 40;
+    static constexpr int64_t kLongSilence = 1LL << 40;
     static constexpr uint64_t kMicrosMask = (1ULL << kEpochShift) - 1;
     static uint64_t epochBits(int32_t epoch) { return static_cast<uint32_t>(epoch) & 0xFFFFFFu; }
 
@@ -112,15 +129,14 @@ private:
             if (s.epoch != active_) continue;  // left over from a stopped playback
             const int64_t frames = std::max<int64_t>(1, std::llround(s.ms * rate_ / 1000.0));
             if (s.untilIdle) {
-                if (frames <= idleFrames_) continue;   // already that quiet
-                left_ = frames - idleFrames_;
+                if (frames <= silentFrames_) continue;   // already that quiet
+                left_ = frames - silentFrames_;
                 on_ = false;
                 waiting_ = true;                       // not part of the played time
             } else {
                 left_ = frames;
                 on_ = s.on;
                 segMicros_ = s.ms * 1000LL;
-                idleFrames_ = 0;
                 started_ = true;
             }
             found = true;
@@ -143,7 +159,8 @@ private:
     int64_t done_ = 0;
     int64_t segMicros_ = 0;
     int64_t finishedMicros_ = 0;
-    int64_t idleFrames_ = 1LL << 40;  // long silence before the first playback
+    // Samples since the last tone sample, any epoch; starts as a long silence.
+    int64_t silentFrames_ = kLongSilence;
     bool on_ = false;
     bool waiting_ = false;
     bool started_ = false;
