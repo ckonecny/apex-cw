@@ -209,7 +209,7 @@ class CwGenerator(
      */
     fun playOne(text: String, afterWordGap: Boolean = false) {
         if (running) return
-        val t = newTrack(++generation)
+        val t = newTrack()
         running = true
         out.setRx(true)
         thread = Thread({
@@ -223,7 +223,7 @@ class CwGenerator(
                 // Trainer / Learn New Char / Preview) — before the operator was
                 // allowed to key their echo. Now onDone fires right after the
                 // last element's own natural key-up.
-                if (afterWordGap) out.enqueueIdleGap(t.epoch, wordGapMs())
+                if (afterWordGap) idleGap(t, wordGapMs())
                 playWord(text, t, trailingGap = false)
                 drain(t)
             } catch (_: InterruptedException) {
@@ -246,13 +246,13 @@ class CwGenerator(
      */
     fun playPatterns(patterns: List<String>) {
         if (running) return
-        val t = newTrack(++generation)
+        val t = newTrack()
         running = true
         out.setRx(true)
         thread = Thread({
             try {
                 for ((i, p) in patterns.withIndex()) {
-                    if (!running) break
+                    if (!isCurrent(t)) break
                     playPattern(p, t)
                     if (i < patterns.size - 1) key(t, false, jitterGap(ditMs() * interCharSpace, hesitate = true))
                 }
@@ -267,7 +267,7 @@ class CwGenerator(
 
     private fun playPattern(morse: String, t: Track) {
         for ((idx, sym) in morse.withIndex()) {
-            if (!running) break
+            if (!isCurrent(t)) break
             key(t, true, jitterTone(sym == '.'))
             if (idx < morse.length - 1) key(t, false, jitterGap(ditMs()))
         }
@@ -275,7 +275,7 @@ class CwGenerator(
 
     fun start() {
         if (running) return
-        val t = newTrack(++generation)
+        val t = newTrack()
         running = true
         out.setRx(true)
         thread = Thread({ generatorLoop(t) }, "cw-generator").also {
@@ -284,10 +284,13 @@ class CwGenerator(
     }
 
     fun stop() {
-        generation++
-        running = false
+        // Under the lock, so a stalled thread can't renew its epoch in between (#192).
+        synchronized(this) {
+            generation++
+            running = false
+            out.setKeyEpoch(nextEpoch())
+        }
         thread?.interrupt()
-        out.setKeyEpoch(nextEpoch())
         out.setRx(false)
     }
 
@@ -305,19 +308,21 @@ class CwGenerator(
             var lastText: String? = null
             var repeatNext = false
             var wordCount = 0
-            while (running) {
+            // isCurrent(t), not just `running`: once stop() has been followed by
+            // the next start(), `running` belongs to that one (#192).
+            while (isCurrent(t)) {
                 val text = if (repeatNext && lastText != null) lastText!! else nextContent()
                 lastText = text
                 repeatNext = false
                 wordCount++
 
                 playWord(text, t)
-                if (eachWordTwice && running) {
+                if (eachWordTwice && isCurrent(t)) {
                     key(t, false, jitterGap(ditMs() * wordGapExtra()))
                     playWord(text, t)
                 }
 
-                if (!running) break
+                if (!isCurrent(t)) break
 
                 if (stopAfterItem) {
                     // Pause and wait for the operator's paddle choice (dit=repeat, dah=next),
@@ -325,7 +330,7 @@ class CwGenerator(
                     drain(t)
                     awaitingChoice = true
                     if (t.gen == generation) onWaiting?.invoke()
-                    while (awaitingChoice && running) Thread.sleep(20)
+                    while (awaitingChoice && isCurrent(t)) Thread.sleep(20)
                     repeatNext = pendingRepeat
                 } else if (maxWords > 0 && wordCount >= maxWords) {
                     // "Max # of Words": stops the generator, like the real device's
@@ -567,7 +572,7 @@ class CwGenerator(
         // pair is always two letters (START used to play as S T <AR> T, the
         // word AS and the abbreviation BK as prosigns).
         var i = 0
-        while (i < upper.length && running) {
+        while (i < upper.length && isCurrent(t)) {
             val close = if (upper[i] == '<') upper.indexOf('>', i) else -1
             val prosign = if (close > i) upper.substring(i + 1, close) else null
             val isProsign = prosign != null && prosign.length >= 2 && morseTable.containsKey(prosign)
@@ -590,9 +595,9 @@ class CwGenerator(
     /** Test hook: plays one word synchronously on the calling thread. */
     internal fun playWordNow(text: String, trailingGap: Boolean = true, afterWordGap: Boolean = false) {
         running = true
-        val t = newTrack(generation)
+        val t = newTrack(bump = false)
         try {
-            if (afterWordGap) out.enqueueIdleGap(t.epoch, wordGapMs())
+            if (afterWordGap) idleGap(t, wordGapMs())
             playWord(text, t, trailingGap)
             drain(t)
         } finally { running = false }
@@ -601,7 +606,7 @@ class CwGenerator(
     private fun playChar(ch: String, t: Track, withTrailingGap: Boolean = true) {
         val morse = morseTable[ch] ?: return
         for ((idx, sym) in morse.withIndex()) {
-            if (!running) break
+            if (!isCurrent(t)) break
             at(t) { onElement?.invoke(idx, true) }
             key(t, true, jitterTone(sym == '.'))
             at(t) { onElement?.invoke(idx, false) }
@@ -631,16 +636,31 @@ class CwGenerator(
     private class Track(val gen: Int, var epoch: Int) {
         var queuedMs = 0L                                     // total length queued so far
         val events = ArrayDeque<Pair<Long, () -> Unit>>()     // (queue position, action)
+        var idleGapMs = 0L      // idle gap queued before the first element (#191)
+        var wallClock = false   // the stream stopped moving: timed by sleeps (#192)
     }
 
     private var lastEpoch = 0
 
     @Synchronized private fun nextEpoch(): Int = ++lastEpoch
 
-    private fun newTrack(gen: Int): Track {
+    // Generation and epoch change together under the lock that stop() and
+    // renewEpoch() hold too, so no thread can slip a stale epoch in between.
+    @Synchronized private fun newTrack(bump: Boolean = true): Track {
+        if (bump) ++generation
         val epoch = nextEpoch()
         out.setKeyEpoch(epoch)
-        return Track(gen, epoch)
+        return Track(generation, epoch)
+    }
+
+    /** Gives [t] a fresh epoch, dropping its queue; false (and nothing changed) once it was stopped. */
+    @Synchronized private fun renewEpoch(t: Track): Boolean {
+        if (!isCurrent(t)) return false
+        t.epoch = nextEpoch()
+        out.setKeyEpoch(t.epoch)
+        t.queuedMs = 0
+        t.idleGapMs = 0
+        return true
     }
 
     private fun isCurrent(t: Track) = running && t.gen == generation
@@ -659,11 +679,23 @@ class CwGenerator(
         t.events.addLast(t.queuedMs to { if (t.gen == generation) action() })
     }
 
+    private fun idleGap(t: Track, ms: Int) {
+        if (out.enqueueIdleGap(t.epoch, ms)) t.idleGapMs = ms.toLong()
+    }
+
     private fun key(t: Track, on: Boolean, ms: Int) {
-        if (ms <= 0) return
+        if (ms <= 0 || !isCurrent(t)) return
+        if (t.wallClock) return keyByWallClock(t, on, ms)
+        var fullMs = 0L
         while (!out.enqueueKey(t.epoch, on, ms)) {
             if (!isCurrent(t)) return
             sleeper(POLL_MS)
+            fullMs += POLL_MS
+            // Nothing takes from the queue: the stream is gone (#192).
+            if (fullMs >= STALL_MS) {
+                giveUpQueue(t)
+                return keyByWallClock(t, on, ms)
+            }
         }
         t.queuedMs += ms
         pace(t, LEAD_MS)
@@ -679,6 +711,10 @@ class CwGenerator(
     // stream stops moving (a route change that never recovers) the queue is
     // given up, so that stop() and onDone never depend on a working stream.
     private fun pace(t: Track, keepMs: Long) {
+        if (t.wallClock) {
+            fireEvents(t, t.queuedMs)
+            return
+        }
         var pos = out.keyPlayedMs(t.epoch)
         var last = pos
         var stalledMs = 0L
@@ -693,13 +729,42 @@ class CwGenerator(
                 stalledMs = 0
             } else {
                 stalledMs += waitMs
-                if (stalledMs >= STALL_MS) {
-                    fireEvents(t, t.queuedMs)
-                    t.epoch = nextEpoch()
-                    out.setKeyEpoch(t.epoch)
-                    t.queuedMs = 0
+                // Before the first element (-1) a queued idle gap may still be
+                // running: that is waiting, not a stall (#191).
+                val limit = if (pos < 0) STALL_MS + t.idleGapMs else STALL_MS
+                if (stalledMs >= limit) {
+                    giveUpQueue(t)
                     return
                 }
+            }
+        }
+    }
+
+    // The stream has not moved for STALL_MS: what is queued counts as played,
+    // the queue is dropped and the rest of this playback is timed by sleeps.
+    private fun giveUpQueue(t: Track) {
+        fireEvents(t, t.queuedMs)
+        if (renewEpoch(t)) t.wallClock = true
+    }
+
+    // With the stream gone the playback keeps real time, silently (it used to
+    // stall for STALL_MS at every element, #192). Each element still goes to
+    // the queue under a fresh epoch, so once the stream runs again it is heard
+    // and the queue takes over from there.
+    private fun keyByWallClock(t: Track, on: Boolean, ms: Int) {
+        fireEvents(t, t.queuedMs)
+        if (!renewEpoch(t)) return
+        val queued = out.enqueueKey(t.epoch, on, ms)   // false while the ring is full of dead segments
+        t.queuedMs = ms.toLong()
+        var waited = 0L
+        while (waited < ms && isCurrent(t)) {
+            val step = minOf(MAX_WAIT_MS, ms - waited)
+            sleeper(step)
+            waited += step
+            if (queued && out.keyPlayedMs(t.epoch) >= 0) {
+                t.wallClock = false
+                pace(t, LEAD_MS)
+                return
             }
         }
     }
