@@ -56,8 +56,11 @@ class EchoFistBlock {
   }
 
   /// Adds the first attempt of one word: [presses] as (start, end) in ms.
-  /// Returns false if the word was left out.
+  /// Returns false if the word was left out. A word with no presses at all
+  /// was keyed on screen (touch sends no key edges) or not keyed: it has no
+  /// timing and counts neither as rated nor as left out (#182).
   bool addWord(String target, List<(int, int)> presses) {
+    if (presses.isEmpty) return false;
     final pat = pattern(target);
     final kinds = <FistElement>[]; // intended kind of each press
     final gapKinds = <FistElement>[]; // ... and of each gap after a press
@@ -104,6 +107,13 @@ class EchoFistBlock {
       return FistReport(
           ditMs: 0, wpm: 0, index: null, stats: const {}, elements: _marks.length);
     }
-    return fistReport(_marks, unit);
+    // Same pause rule as the CW Keyer (#181): a gap of more than
+    // [FistAnalyzer.maxGapDits] is a hesitation, not keying, and stays out.
+    const keyed = {FistElement.dit, FistElement.dah};
+    final marks = [
+      for (final m in _marks)
+        if (keyed.contains(m.$1) || m.$2 / unit <= FistAnalyzer.maxGapDits) m,
+    ];
+    return fistReport(marks, unit);
   }
 }

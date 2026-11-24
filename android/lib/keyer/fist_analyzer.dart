@@ -115,6 +115,12 @@ class FistAnalyzer {
   /// Gaps longer than this (in dits) are pauses and stay out of the report.
   static const maxGapDits = 15;
 
+  /// Presses longer than this many times the median press are not keying
+  /// (holding the key to tune, a slip) and stay out of the report (#180).
+  /// The median lies between dit and dah, so a dah keyed even five dits long
+  /// still counts.
+  static const maxPressMedians = 8;
+
   final List<(int start, int end)> _presses = [];
   int? _downAt;
 
@@ -154,7 +160,9 @@ class FistAnalyzer {
       for (var i = 1; i < presses.length; i++)
         (presses[i].$1 - presses[i - 1].$2).toDouble(),
     ];
-    final lengths = [for (final p in presses) (p.$2 - p.$1).toDouble()];
+    final all = [for (final p in presses) (p.$2 - p.$1).toDouble()];
+    final longest = all.isEmpty ? 0.0 : maxPressMedians * _median(all);
+    final lengths = [for (final l in all) if (l <= longest) l];
     final elements = lengths.length + gaps.length;
     if (lengths.length < 4) {
       return FistReport(

@@ -78,6 +78,48 @@ void main() {
     expect(b.report().stats[FistElement.wordGap]!.ratio, closeTo(7, 0.1));
   });
 
+  test('a word without presses (keyed on screen) is neither rated nor left out (#182)', () {
+    final b = block(words);
+    final before = b.report();
+    expect(b.addWord('CQ', const []), isFalse);
+    expect(b.addWord('TEST', const []), isFalse);
+    expect(b.words, words.length);
+    expect(b.skipped, 0);
+    expect(b.report().index, before.index);
+    expect(b.report().elements, before.elements);
+  });
+
+  test('a hesitation over 15 dits inside a word stays out (#181)', () {
+    final clean = block(words).report();
+    final b = EchoFistBlock();
+    for (final w in words) {
+      final p = key(w);
+      if (w == 'OE1CKO') {
+        // 30 dits (60 ms each) of thinking before the third letter.
+        final i = EchoFistBlock.pattern('OE')!.join().length;
+        for (var j = i; j < p.length; j++) {
+          p[j] = (p[j].$1 + 27 * 60, p[j].$2 + 27 * 60);
+        }
+      }
+      b.addWord(w, p);
+    }
+    final r = b.report();
+    expect(b.skipped, 0);
+    expect(r.index, 100);
+    expect(r.elements, clean.elements - 1);
+  });
+
+  test('gaps up to 15 dits still count in full (#181)', () {
+    final b = EchoFistBlock();
+    for (final w in words) {
+      b.addWord(w, key(w, letter: 14));
+    }
+    final r = b.report();
+    expect(r.elements, block(words).report().elements);
+    expect(r.stats[FistElement.letterGap]!.ratio, closeTo(14, 0.1));
+    expect(r.index!, lessThan(60));
+  });
+
   test('too few elements gives no index; clear resets', () {
     final b = block(['E', 'T']);
     expect(b.report().index, isNull);
