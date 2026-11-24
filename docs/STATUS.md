@@ -1,7 +1,7 @@
 # Status
 
 Baseline: Morserino-32 firmware v9.0.0. Repo: ckonecny/apex-cw (public since 2026-09-28, GPL-3.0).
-Latest tagged: v1.11.2 (pubspec 1.11.2+16, 2026-11-10, notes `docs/release-notes-v1.11.2.md`): sample-accurate generator keying and word gap ≥ character gap + 4 (PR #190), F-Droid preparation. Beta `v1.11.3-beta1` (pubspec 1.11.3+17, GitHub pre-release only): Geben block rate per character (PR #199), AGP 9.5.2 and Gradle 9.9.2 (#197, #198). On branch `fix/settings-section-screens` (not merged): Keyer and Audio output as pages of their own for the shortcuts (DECISIONS.md, 2026-11-24). Previous: v1.11.1/v1.11.0 (2026-10-31), v1.10.0 (2026-10-25); older versions in `docs/STATUS-ARCHIVE.md`. Play texts in `docs/PLAY-LISTING.md`.
+Latest tagged: v1.11.2 (pubspec 1.11.2+16, 2026-11-10, notes `docs/release-notes-v1.11.2.md`): sample-accurate generator keying and word gap ≥ character gap + 4 (PR #190), F-Droid preparation. Beta `v1.11.3-beta1` (pubspec 1.11.3+17, GitHub pre-release only): Geben block rate per character (PR #199), AGP 9.5.2 and Gradle 9.9.2 (#197, #198). PR #201 (open): Keyer and Audio output as pages of their own for the shortcuts (DECISIONS.md, 2026-11-24). Previous: v1.11.1/v1.11.0 (2026-10-31), v1.10.0 (2026-10-25); older versions in `docs/STATUS-ARCHIVE.md`. Play texts in `docs/PLAY-LISTING.md`.
 
 Open features and bugs: GitHub issues in ckonecny/apex-cw (CLAUDE.md
 rule 12). Finished work: `docs/STATUS-ARCHIVE.md` (rule 13). This file holds
