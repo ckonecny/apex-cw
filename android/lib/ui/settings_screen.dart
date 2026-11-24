@@ -12,26 +12,23 @@ import '../l10n/strings.dart';
 import '../licenses.dart';
 import 'widgets/setting_rows.dart';
 import 'interference_settings_card.dart';
+import 'keyer_settings_card.dart';
+import 'audio_output_card.dart';
+import '../util/settings_events.dart';
 import 'shortcuts_screen.dart';
 import '../util/app_shortcuts.dart';
-import '../util/bluetooth_hint.dart';
 import '../util/confirm_tone.dart';
 import '../util/key_adapter_state.dart';
 import '../content/break_hint.dart';
 import '../util/break_reminder.dart';
 import '../util/focus_mode.dart';
-import '../util/paddle_layout.dart';
 import '../util/practice_clock.dart';
 import '../util/reminder.dart';
 
 enum _LearnState { idle, waitDit, waitDah, done }
 
 class SettingsScreen extends StatefulWidget {
-  /// Opens scrolled to the "Audio output" section (used by the Bluetooth hint
-  /// above the paddles, so the output can be switched right there).
-  final bool scrollToAudio;
-  final bool scrollToKeyer;
-  const SettingsScreen({super.key, this.scrollToAudio = false, this.scrollToKeyer = false});
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -39,11 +36,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   static const _settingsChannel = MethodChannel('at.oe1cko.nextcwtrainer/settings');
-  static const _settingsEvents  = EventChannel('at.oe1cko.nextcwtrainer/settings_events');
   static const _toneChannel     = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
-  final _scroll = ScrollController();
-  final _audioKey = GlobalKey();
-  final _keyerKey = GlobalKey();
 
   // ── General ────────────────────────────────────────────────────────────────
   // Which training's profile the profile-backed fields below edit (P2 D5;
@@ -58,25 +51,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   ConfirmTone _confirmTone = ConfirmTone.classic;
 
   // ── Practice Set ──────────────────────────────────────────────────────────
-
-  // ── Keyer ──────────────────────────────────────────────────────────────────
-  int  _keyerMode   = 0;    // 0=Iambic A, 1=Iambic B, 2=Ultimatic, 3=Non-Squeeze, 4=Straight
-  // "CurtisB DitT%"/"CurtisB DahT%" (M32 defaults 75/45): only meaningful in
-  // Iambic B (Ultimatic ignores them, as in the firmware) — how far into the
-  // current element (as a % of its length) the keyer starts looking ahead for
-  // the opposite paddle.
-  bool _fistAnalyzer = false;  // straight key: timing panel in the CW Keyer (#164)
-  int  _curtisBDitTiming = 75;
-  int  _curtisBDahTiming = 45;
-  // "AutoChar Spc" (M32 posACS, default 0=off): minimum pause enforced
-  // between characters — 1/2/3 = 2/3/4 dits.
-  int  _acs = 0;
-  // Start speed estimate for the straight key (the measurement adapts from there).
-  int  _straightStartWpm = 15;
-  // "Tone Shift" (M32 posEchoToneShift, default 1): shifts the operator's own
-  // echoed-answer sidetone in the Echo Trainer up/down a half-tone from the
-  // target word's pitch, so the two are audibly distinguishable. Has no
-  // effect on the standalone CW Keyer, matching the real device.
 
   // ── Spacing ────────────────────────────────────────────────────────────────
   // Absolute gap length in dits, exactly like the real M32 (Interchar 3..45,
@@ -98,12 +72,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // AdaptiveCopyThresholds (content/adaptive_copy_engine.dart) for what
   // these drive. Stored as percent ints for slider-friendliness; converted
   // to the 0..1 doubles AdaptiveCopyThresholds expects where consumed.
-
-  // ── Audio Output ──────────────────────────────────────────────────────────
-  // Kind values match AudioRouteManager.kt's KIND_* constants exactly.
-  int _outputKindPref = 0;
-  List<int> _outputKindsAvailable = const [0];
-  String _activeOutputLabel = '…';
 
   // ── Paddle ────────────────────────────────────────────────────────────────
   String _ditDesc = '…';
@@ -132,33 +100,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _load();
     _loadPaddleDesc();
     KeyAdapterState.detected.addListener(_loadPaddleDesc);
-    _loadOutputDeviceKinds();
     _loadAppVersion();
-    _eventSub = _settingsEvents.receiveBroadcastStream().listen(_onSettingsEvent);
-    if (widget.scrollToAudio) WidgetsBinding.instance.addPostFrameCallback((_) => _reveal(_audioKey));
-    if (widget.scrollToKeyer) WidgetsBinding.instance.addPostFrameCallback((_) => _reveal(_keyerKey));
-  }
-
-  // The list builds its children lazily, so the section may not exist yet:
-  // step down the page until its context appears, then bring it into view.
-  Future<void> _reveal(GlobalKey key) async {
-    for (var i = 0; i < 20 && mounted; i++) {
-      final ctx = key.currentContext;
-      if (ctx != null && ctx.mounted) {
-        await Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 250));
-        return;
-      }
-      if (!_scroll.hasClients) return;
-      _scroll.jumpTo((_scroll.offset + 500).clamp(0, _scroll.position.maxScrollExtent));
-      await WidgetsBinding.instance.endOfFrame;
-    }
+    _eventSub = SettingsEvents.stream.listen(_onSettingsEvent);
   }
 
   @override
   void dispose() {
     _eventSub?.cancel();
     KeyAdapterState.detected.removeListener(_loadPaddleDesc);
-    _scroll.dispose();
     ConfirmTone.cancelPreview();
     _settingsChannel.invokeMethod('cancelLearnPaddle');
     super.dispose();
@@ -171,12 +120,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _outputCase     = (p.getInt('outputCase')    ?? 0).clamp(0, 1);
       _toneSoftness   = (p.getInt('toneSoftness')  ?? 4).clamp(0, 8);
       _confirmTone    = ConfirmTone.fromPrefs(p);
-      _keyerMode      = p.getInt('keyerMode')      ?? 0;
-      _fistAnalyzer   = p.getBool('fistAnalyzer')  ?? false;
-      _curtisBDitTiming = (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
-      _curtisBDahTiming = (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
-      _acs              = (p.getInt('acs') ?? 0).clamp(0, 3);
-      _straightStartWpm = (p.getInt('straightStartWpm') ?? 15).clamp(5, 40);
       // clamp() guards against stale values from the old 1..8 multiplier scale
       // genDisplayMode/echoDisplayMode: new int-valued keys (old genDisplay/echoPrompt
       // keys were bool — renamed to avoid a SharedPreferences type-cast crash on upgrade)
@@ -192,11 +135,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await p.setInt('pitch',          _pitch);
     await p.setInt('outputCase',     _outputCase);
     await p.setInt('toneSoftness',   _toneSoftness);
-    await p.setInt('keyerMode',      _keyerMode);
-    await p.setInt('curtisBDitTiming', _curtisBDitTiming);
-    await p.setInt('curtisBDahTiming', _curtisBDahTiming);
-    await p.setInt('acs',            _acs);
-    await p.setInt('straightStartWpm', _straightStartWpm);
   }
 
   static String _confirmToneLabelKey(ConfirmTone t) => switch (t) {
@@ -250,41 +188,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         case 'keyDiag':
           _keyDiagLog.insert(0, val);
           if (_keyDiagLog.length > 20) _keyDiagLog.removeLast();
-        case 'audioRoute':
-          _activeOutputLabel = val;
       }
     });
   }
-
-  // Native-side labels ("Lautsprecher"/"Kabel/USB"/"Bluetooth") are matched
-  // back to localized strings here rather than sent pre-translated, since the
-  // same event also fires from a background AudioDeviceCallback.
-  String _localizedActiveLabel() => switch (_activeOutputLabel) {
-    'Kabel/USB' => Strings.t('opt_audio_wired'),
-    'Bluetooth' => Strings.t('opt_audio_bluetooth'),
-    _           => Strings.t('opt_audio_speaker'),
-  };
-
-  Future<void> _loadOutputDeviceKinds() async {
-    final result = await _settingsChannel.invokeMapMethod<String, dynamic>('getOutputDeviceKinds');
-    if (result == null || !mounted) return;
-    setState(() {
-      _outputKindPref = result['preferred'] as int? ?? 0;
-      _outputKindsAvailable = (result['available'] as List?)?.cast<int>() ?? const [0];
-    });
-  }
-
-  Future<void> _applyOutputKind(int kind) async {
-    setState(() => _outputKindPref = kind);
-    await _settingsChannel.invokeMethod('setOutputDeviceKind', kind);
-  }
-
-  String _outputKindLabel(int kind) => switch (kind) {
-    1 => Strings.t('opt_audio_speaker'),
-    2 => Strings.t('opt_audio_wired'),
-    3 => Strings.t('opt_audio_bluetooth'),
-    _ => Strings.t('opt_audio_auto'),
-  };
 
   Future<void> _startLearn()  async { await _settingsChannel.invokeMethod('startLearnPaddle'); }
   Future<void> _cancelLearn() async {
@@ -303,38 +209,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Future<void> _applyKeyerMode(int mode) async {
-    setState(() => _keyerMode = mode);
-    await _settingsChannel.invokeMethod('setKeyerMode', mode);
-    _saveLive();
-  }
-
   Future<void> _applyToneSoftness(double v) async {
     final ms = v.round();
     setState(() => _toneSoftness = ms);
     await _toneChannel.invokeMethod('setEnvelopeMs', (ms + 1).toDouble());
-    _saveLive();
-  }
-
-  Future<void> _applyCurtisBTiming({int? dit, int? dah}) async {
-    setState(() {
-      if (dit != null) _curtisBDitTiming = dit;
-      if (dah != null) _curtisBDahTiming = dah;
-    });
-    await _settingsChannel.invokeMethod('setCurtisBTiming',
-        {'dit': _curtisBDitTiming, 'dah': _curtisBDahTiming});
-    _saveLive();
-  }
-
-  Future<void> _applyAcs(int value) async {
-    setState(() => _acs = value);
-    await _settingsChannel.invokeMethod('setAcs', value);
-    _saveLive();
-  }
-
-  Future<void> _applyStraightStartWpm(int v) async {
-    setState(() => _straightStartWpm = v);
-    await _settingsChannel.invokeMethod('setStraightStartWpm', v);
     _saveLive();
   }
 
@@ -376,7 +254,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
       body: ListView(
-        controller: _scroll,
         padding: const EdgeInsets.all(20),
         children: [
 
@@ -600,77 +477,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 24),
 
           // ── Keyer ──────────────────────────────────────────────────────────
-          SettingsSectionHeader('Keyer', key: _keyerKey),
+          SettingsSectionHeader(Strings.t('settings_keyer')),
           const SizedBox(height: 12),
-          SettingsCard(children: [
-            SegmentRow(
-              label: Strings.t('settings_mode'),
-              options: const ['Iambic A', 'Iambic B', 'Ultimatic', 'Non-Squeeze', 'Straight'],
-              selected: _keyerMode,
-              onChanged: _applyKeyerMode,
-            ),
-            // On-screen paddles only; learned hardware keys stay as learned.
-            if (_keyerMode != 4) ...[
-              const SettingsDivider(),
-              ValueListenableBuilder<bool>(
-                valueListenable: PaddleLayout.swapped,
-                builder: (context, on, _) => ToggleRow(
-                  label: Strings.t('settings_swap_touch_paddles'),
-                  value: on,
-                  onChanged: PaddleLayout.setSwapped,
-                ),
-              ),
-            ],
-            // Real key on an adapter detected (#95): the touch keys only take space.
-            const SettingsDivider(),
-            ValueListenableBuilder<bool>(
-              valueListenable: KeyAdapterState.hideEnabled,
-              builder: (context, on, _) => ToggleRow(
-                label: Strings.t('settings_hide_softkeys_adapter'),
-                value: on,
-                onChanged: KeyAdapterState.setHideEnabled,
-              ),
-            ),
-            if (_keyerMode == 1) ...[
-              const SettingsDivider(),
-              LabeledSlider(label: Strings.t('settings_curtisb_dit'),
-                  value: _curtisBDitTiming.toDouble(),
-                  min: 0, max: 100, divisions: 20, display: '$_curtisBDitTiming%',
-                  onChanged: (v) => _applyCurtisBTiming(dit: v.round())),
-              const SettingsDivider(),
-              LabeledSlider(label: Strings.t('settings_curtisb_dah'),
-                  value: _curtisBDahTiming.toDouble(),
-                  min: 0, max: 100, divisions: 20, display: '$_curtisBDahTiming%',
-                  onChanged: (v) => _applyCurtisBTiming(dah: v.round())),
-            ],
-            const SettingsDivider(),
-            // Straight key: no AutoChar Spc (a paddle aid), but the start speed
-            // of the adaptive measurement.
-            if (_keyerMode == 4)
-              LabeledSlider(label: Strings.t('settings_straight_start'),
-                  value: _straightStartWpm.toDouble(),
-                  min: 5, max: 40, divisions: 35, display: '$_straightStartWpm WPM',
-                  onChanged: (v) => _applyStraightStartWpm(v.round()))
-            else
-              SegmentRow(
-                label: Strings.t('settings_acs'),
-                options: [Strings.t('opt_off'), for (final n in [2, 3, 4])
-                    Strings.t('unit_dits').replaceFirst('{n}', '$n')],
-                selected: _acs,
-                onChanged: _applyAcs,
-              ),
-            if (_keyerMode == 4) ...[
-              const SettingsDivider(),
-              ToggleRow(
-                label: Strings.t('settings_fist_analyzer'),
-                value: _fistAnalyzer,
-                onChanged: (v) async {
-                  setState(() => _fistAnalyzer = v);
-                  (await SharedPreferences.getInstance()).setBool('fistAnalyzer', v);
-                },
-              ),
-            ],
-          ]),
+          const KeyerSettingsCard(),
 
           const SizedBox(height: 24),
 
@@ -731,28 +540,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 24),
 
           // ── Audioausgabe ─────────────────────────────────────────────────────
-          SettingsSectionHeader(Strings.t('settings_audio_output'), key: _audioKey),
+          SettingsSectionHeader(Strings.t('settings_audio_output')),
           const SizedBox(height: 4),
-          Text(Strings.t('settings_audio_output_desc'),
-              style: TextStyle(fontSize: 11, color: c.textFaint)),
-          const SizedBox(height: 12),
-          SettingsCard(children: [
-            SegmentRow(
-              label: Strings.t('settings_audio_output_active').replaceFirst('{val}', _localizedActiveLabel()),
-              options: _outputKindsAvailable.map(_outputKindLabel).toList(),
-              selected: _outputKindsAvailable.indexOf(_outputKindPref).clamp(0, _outputKindsAvailable.length - 1),
-              onChanged: (i) => _applyOutputKind(_outputKindsAvailable[i]),
-            ),
-            const SettingsDivider(),
-            ValueListenableBuilder<bool>(
-              valueListenable: BluetoothHint.enabled,
-              builder: (context, on, _) => ToggleRow(
-                label: Strings.t('settings_bt_latency_hint'),
-                value: on,
-                onChanged: BluetoothHint.setEnabled,
-              ),
-            ),
-          ]),
+          const AudioOutputCard(),
 
           const SizedBox(height: 24),
 

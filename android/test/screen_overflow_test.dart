@@ -51,6 +51,7 @@ import 'package:next_cw_trainer/ui/qso_bot_screen.dart';
 import 'package:next_cw_trainer/ui/radio_cave_screen.dart';
 import 'package:next_cw_trainer/ui/wifi_trx_screen.dart';
 import 'package:next_cw_trainer/ui/settings_screen.dart';
+import 'package:next_cw_trainer/ui/settings_section_screens.dart';
 import 'package:next_cw_trainer/ui/shortcuts_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -96,6 +97,8 @@ void main() {
     'char_practice': () => const CharPracticeScreen(ch: 'q'),
     'echo': () => const EchoTrainerScreen(),
     'settings': () => const SettingsScreen(),
+    'keyer_settings': () => const KeyerSettingsScreen(),
+    'audio_output': () => const AudioOutputScreen(),
     'shortcuts': () => const ShortcutsScreen(),
     'goals': () => const GoalsScreen(),
     'adventure_select': () => const AdventureSelectScreen(),

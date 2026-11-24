@@ -11,7 +11,7 @@ import '../keyer/fist_analyzer.dart';
 import '../util/key_adapter_state.dart';
 import 'widgets/fist_panel.dart';
 import 'widgets/key_adapter_hint.dart';
-import 'settings_screen.dart';
+import 'settings_section_screens.dart';
 import '../keyer/morse_decoder.dart';
 import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
@@ -139,7 +139,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
 
   Future<void> _openFistSettings() async {
     await Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const SettingsScreen(scrollToKeyer: true)));
+        MaterialPageRoute(builder: (_) => const KeyerSettingsScreen()));
     final p = await SharedPreferences.getInstance();
     if (mounted) setState(() => _fistOn = p.getBool('fistAnalyzer') ?? false);
     if (!_fistActive) _resetFist();

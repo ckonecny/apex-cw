@@ -8,7 +8,7 @@ import '../../theme/app_colors.dart';
 import '../../theme/theme_controller.dart';
 import '../../util/key_adapter_state.dart';
 import '../../util/keyer_try.dart';
-import '../settings_screen.dart';
+import '../settings_section_screens.dart';
 
 class KeyerStatusButton extends StatefulWidget {
   /// False while the screen needs the keyer for itself or must stay quiet
@@ -77,7 +77,7 @@ class _KeyerStatusButtonState extends State<KeyerStatusButton> {
         ),
         tooltip: Strings.t(detected ? 'keyer_btn_detected' : 'keyer_btn_none'),
         onPressed: () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const SettingsScreen(scrollToKeyer: true))),
+            MaterialPageRoute(builder: (_) => const KeyerSettingsScreen())),
       ),
     );
   }

@@ -169,8 +169,8 @@ Bluetooth headphones usually add noticeable latency. That doesn't matter for
 listening, but it does for sending: you hear your sidetone noticeably later
 than you key. For sending, use wired headphones or the speaker.
 Wherever the keys (dit/dah or straight key) are shown, a small line above them
-warns you while the sound plays over Bluetooth. Tap the line to open the settings
-right at the audio output, so you can switch there. Close it with the X until
+warns you while the sound plays over Bluetooth. Tap the line to open a page of
+its own with just the audio output, so you can switch there. Close it with the X until
 the next app start; turn it off for good in the settings under
 [Audio output](#audio-output).
 
@@ -2880,8 +2880,8 @@ adapter, the touch keys come back. The "A real Morse key is better" tip no longe
 
 **The keyer symbol.** The title bar of many screens (Listen, Send, practice,
 games, Morse chart and more) shows a symbol for the external key. It is dimmed
-while no adapter is detected and lit once one is. Tapping it opens the keyer
-settings. On screens where you do not key yourself you can also try the key out:
+while no adapter is detected and lit once one is. Tapping it opens a page of its
+own with just the keyer settings (the same as under **Settings → Keyer**). On screens where you do not key yourself you can also try the key out:
 dit and dah sound there with your Send settings (speed, pitch, keyer mode). It
 stays silent while a block runs. On the result page in Send the key chooses:
 **dah (–) = Next block**, **dit (·) = Finish**; the two buttons then carry a
@@ -3083,7 +3083,7 @@ With a straight key on a USB adapter (e.g. VBand) the CW Keyer can show how
 evenly you key. The analysis is **off by default**: Settings → Keyer →
 **Timing analysis in the CW Keyer** (only visible in keyer mode Straight). As
 soon as an adapter with a straight key is detected and the analysis is still
-off, the CW Keyer shows a tip; tapping it jumps to the settings, the ✕ hides
+off, the CW Keyer shows a tip; tapping it opens the keyer settings, the ✕ hides
 it for good. If the analysis is on but no key on an adapter is detected, a
 dismissible note with a link to the guide appears. With the touch keys there is
 no analysis, because the touch screen lags too much; with paddles it would make
