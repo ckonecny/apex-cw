@@ -19,6 +19,7 @@ import '../content/echo_timing.dart';
 import '../content/cw_content.dart';
 import '../content/block_history.dart';
 import '../content/char_stats.dart';
+import '../content/effective_wpm.dart';
 import '../content/copy_grading.dart' show gradeSent;
 import '../content/mixup_suggest.dart';
 import '../content/mixup_trend.dart';
@@ -214,8 +215,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
   String _attempt = '';
   // Timing index only for a straight key on an adapter (touch lags too much).
   bool get _fistRatedNow => _keyerMode == 4 && KeyAdapterState.detected.value;
-  // Fixed when the block starts, so an adapter pulled mid-block doesn't
-  // drop the block's timing.
+  // Latches: set at the start or at the first word keyed while the adapter
+  // is seen (an adapter never learned is only reported at its first key
+  // press, #179), and never cleared mid-block, so an adapter pulled later
+  // doesn't drop the block's timing.
   bool _fistRated = false;
 
   // "repeats" in m32_v6.ino: how many times the CURRENT word has been
@@ -406,7 +409,7 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     // Straight key: the speed the operator actually keyed (measured).
     _charStats.wpm = _keyerMode == 4 ? _measuredWpm : _wpm;
     // Every word is answered before the next one: only the character gap counts.
-    _charStats.effWpm = effectiveWpm(_charStats.wpm, _interCharSpace, _interWordSpace, wordGap: false);
+    _charStats.effWpm = effectiveWpmExact(_charStats.wpm, _interCharSpace, _interWordSpace, typing: true);
     final pair = _charStats.recordWord(target, received);
     if (pair != null) _blockPairs.add(pair);
     final p = await SharedPreferences.getInstance();
@@ -1110,7 +1113,10 @@ class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
     final ok = _attempt.trim().toUpperCase() == _targetPlain.toUpperCase();
     if (_repeats == 1) _firstAttempt = _attempt.trim();
     if (_repeats == 1) _applyBlockFeedback(_targetPlain, _attempt);
-    if (_repeats == 1 && _fistRated) _blockFist.addWord(_target, _wordFist.presses);
+    if (_repeats == 1) {
+      _fistRated = _fistRated || _fistRatedNow;
+      if (_fistRated) _blockFist.addWord(_target, _wordFist.presses);
+    }
 
     setState(() => _state = ok ? _State.correct : _State.wrong);
     _confirmTone.play(_toneChannel, ok);

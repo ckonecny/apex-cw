@@ -140,9 +140,25 @@ class _KeyerScreenState extends State<KeyerScreen> {
   Future<void> _openFistSettings() async {
     await Navigator.push(context,
         MaterialPageRoute(builder: (_) => const KeyerSettingsScreen()));
+    await _afterKeyerSettings();
+  }
+
+  // Back from the keyer settings (tip or app bar key icon, #183): read what
+  // may have changed there and push it to the shared keyer again (rule 2).
+  Future<void> _afterKeyerSettings() async {
     final p = await SharedPreferences.getInstance();
-    if (mounted) setState(() => _fistOn = p.getBool('fistAnalyzer') ?? false);
+    if (!mounted) return;
+    setState(() {
+      _keyerMode = p.getInt('keyerMode') ?? 0;
+      _fistOn = p.getBool('fistAnalyzer') ?? false;
+    });
     if (!_fistActive) _resetFist();
+    await _keyerChannel.invokeMethod('setMode', _keyerMode);
+    await _keyerChannel.invokeMethod('setCurtisBTiming', {
+      'dit': (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100),
+      'dah': (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100),
+    });
+    await _keyerChannel.invokeMethod('setAcs', (p.getInt('acs') ?? 0).clamp(0, 3));
   }
 
   // Nothing from an earlier stretch (analysis off, adapter out) may mix with
@@ -226,7 +242,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          const KeyerStatusButton(sound: false),
+          KeyerStatusButton(sound: false, onSettingsClosed: _afterKeyerSettings),
           IconButton(
             icon: Icon(Icons.settings, color: c.textMuted),
             tooltip: Strings.t('settings_title'),

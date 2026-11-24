@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:next_cw_trainer/content/char_stats.dart';
+import 'package:next_cw_trainer/content/effective_wpm.dart';
 
 void main() {
   test('old single store becomes the hearing track, echo starts empty', () async {
@@ -146,16 +147,16 @@ void main() {
 
   group('effectiveWpm', () {
     test('standard spacing equals the character speed', () {
-      expect(effectiveWpm(20, 3, 7), closeTo(20, 1e-9));
-      expect(effectiveWpm(20, 3, 7, wordGap: false), closeTo(20, 1e-9));
+      expect(effectiveWpmExact(20, 3, 7), closeTo(20, 1e-9));
+      expect(effectiveWpmExact(20, 3, 7, typing: true), closeTo(20, 1e-9));
     });
     test('paper counts char and word gap, typing only the char gap', () {
       // 31 + 4*6 + 14 = 69 dits vs. 31 + 24 + 7 = 62 dits per word.
-      expect(effectiveWpm(20, 6, 14), closeTo(20 * 50 / 69, 1e-9));
-      expect(effectiveWpm(20, 6, 14, wordGap: false), closeTo(20 * 50 / 62, 1e-9));
+      expect(effectiveWpmExact(20, 6, 14), closeTo(20 * 50 / 69, 1e-9));
+      expect(effectiveWpmExact(20, 6, 14, typing: true), closeTo(20 * 50 / 62, 1e-9));
     });
     test('word gap is at least char gap + 4 like the generator', () {
-      expect(effectiveWpm(20, 10, 7), closeTo(20 * 50 / (31 + 40 + 14), 1e-9));
+      expect(effectiveWpmExact(20, 10, 7), closeTo(20 * 50 / (31 + 40 + 14), 1e-9));
     });
   });
 

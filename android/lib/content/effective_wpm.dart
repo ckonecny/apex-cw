@@ -11,9 +11,14 @@ import 'dart:math';
 /// inter-character gap counts; the word gap is taken at its normal 7 dits, so
 /// the value is [wpm] again once the character gap is 3 (DECISIONS.md
 /// "Word gap in typing mode").
-int effectiveWpm(int wpm, int interChar, int interWord, {bool typing = false}) {
+int effectiveWpm(int wpm, int interChar, int interWord, {bool typing = false}) =>
+    effectiveWpmExact(wpm, interChar, interWord, typing: typing).round();
+
+/// [effectiveWpm] unrounded, for averages (character statistics). The one
+/// place where the gaps turn into a text speed (#194).
+double effectiveWpmExact(int wpm, int interChar, int interWord, {bool typing = false}) {
   final wordGap = typing ? 7 : playedWordSpaceDits(interChar, interWord);
-  return (50 * wpm / (31 + 4 * interChar + wordGap)).round();
+  return 50 * wpm / (31 + 4 * interChar + wordGap);
 }
 
 /// Shortest word gap that is actually played. The firmware plays
