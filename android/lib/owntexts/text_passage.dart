@@ -2,129 +2,35 @@
 // engine plays for each. The screen always shows the original text; only the
 // audio is flattened to what Morse has (DECISIONS.md "Own texts").
 //
-// Deliberately separate from the text adventure's Passage (issue #23 tracks
-// merging the two later).
+// Split and navigated by the shared Passage (content/passage.dart, #23);
+// only the word mapping and sentence ends are own-text specific.
+
+import '../content/passage.dart';
+
+export '../content/passage.dart';
 
 /// Longest text accepted, in characters.
 const maxTextChars = 20000;
 
-class TextWord {
-  /// As shown, e.g. `Größe,`.
-  final String display;
-  /// As played, e.g. `GROESSE,`; prosigns as `<KA>`; empty = nothing to play.
-  final String cw;
-  /// Number of characters the engine reports for [cw] (a prosign counts one).
-  final int tokens;
-  /// Line (paragraph) index.
-  final int line;
-  final bool endsSentence;
-  const TextWord(this.display, this.cw, this.tokens, this.line, this.endsSentence);
+/// A pasted text as a [Passage]: line breaks and blanks unified first, at
+/// most one empty line in a row.
+Passage parseOwnText(String text) => Passage([
+      for (final (w, line) in splitWords(_normalise(text)))
+        if (flattenWord(w) case (final cw, final tokens))
+          PassageWord(w, cw, tokens, line, _endsSentence(w)),
+    ]);
+
+String _normalise(String text) {
+  var t = text.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+  t = t.replaceAll(RegExp(r'[\t ​]'), ' ');
+  t = t.split('\n').map((l) => l.trim()).join('\n');
+  t = t.replaceAll(RegExp(r'\n{3,}'), '\n\n');
+  return t.trim();
 }
 
-class TextPassage {
-  final List<TextWord> words;
-  /// Indices of the words that are played, in order.
-  final List<int> played;
-  TextPassage._(this.words) : played = [
-        for (var i = 0; i < words.length; i++)
-          if (words[i].cw.isNotEmpty) i
-      ];
-
-  bool get hasAudio => played.isNotEmpty;
-
-  /// Text for CwGenerator.playOne, played words [from] to [to] (inclusive,
-  /// default to the end); a paragraph break becomes a double word gap. Also
-  /// returns the played word indices, to map the engine's char events back.
-  (String, List<int>) audioFrom(int from, [int? to]) {
-    final sb = StringBuffer();
-    final order = <int>[];
-    int? lastLine;
-    for (final i in played) {
-      if (i < from) continue;
-      if (to != null && i > to) break;
-      final w = words[i];
-      if (sb.isNotEmpty) {
-        sb.write(' ');
-        if (lastLine != null && w.line - lastLine > 1) sb.write(' ');
-      }
-      sb.write(w.cw);
-      order.add(i);
-      lastLine = w.line;
-    }
-    return (sb.toString(), order);
-  }
-
-  /// First played word at or after [i]; the last one if there is none.
-  int playableFrom(int i) {
-    for (final j in played) {
-      if (j >= i) return j;
-    }
-    return played.isEmpty ? 0 : played.last;
-  }
-
-  /// Last played word before [i], or null.
-  int? playableBefore(int i) {
-    int? r;
-    for (final j in played) {
-      if (j >= i) break;
-      r = j;
-    }
-    return r;
-  }
-
-  /// First word of the sentence containing word [i].
-  int sentenceStart(int i) {
-    var start = played.isEmpty ? 0 : played.first;
-    for (final j in played) {
-      if (j >= i) break;
-      if (words[j].endsSentence) start = j + 1;
-    }
-    return playableFrom(start);
-  }
-
-  /// Last word of the sentence containing word [i].
-  int sentenceEnd(int i) {
-    for (final j in played) {
-      if (j >= i && words[j].endsSentence) return j;
-    }
-    return played.isEmpty ? i : played.last;
-  }
-
-  /// First word of the sentence after the one containing [i], or null.
-  int? nextSentenceStart(int i) {
-    final e = sentenceEnd(i);
-    for (final j in played) {
-      if (j > e) return j;
-    }
-    return null;
-  }
-
-  static TextPassage parse(String text) {
-    final lines = _normalise(text).split('\n');
-    final words = <TextWord>[];
-    for (var l = 0; l < lines.length; l++) {
-      for (final w in lines[l].split(' ')) {
-        if (w.isEmpty) continue;
-        final (cw, tokens) = flattenWord(w);
-        words.add(TextWord(w, cw, tokens, l, _endsSentence(w)));
-      }
-    }
-    return TextPassage._(words);
-  }
-
-  /// Unified line breaks and blanks; at most one empty line in a row.
-  static String _normalise(String text) {
-    var t = text.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
-    t = t.replaceAll(RegExp(r'[\t ​]'), ' ');
-    t = t.split('\n').map((l) => l.trim()).join('\n');
-    t = t.replaceAll(RegExp(r'\n{3,}'), '\n\n');
-    return t.trim();
-  }
-
-  static bool _endsSentence(String w) {
-    final t = w.replaceAll(RegExp('["\')\\]»“”’]+\$'), '');
-    return t.endsWith('.') || t.endsWith('!') || t.endsWith('?') || t.endsWith('…');
-  }
+bool _endsSentence(String w) {
+  final t = w.replaceAll(RegExp('["\')\\]»“”’]+\$'), '');
+  return t.endsWith('.') || t.endsWith('!') || t.endsWith('?') || t.endsWith('…');
 }
 
 const _prosigns = {'AR', 'SK', 'KN', 'KA', 'BT', 'AS', 'VE', 'BK', 'HH'};

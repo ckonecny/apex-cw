@@ -24,7 +24,7 @@ void main() {
   });
 
   test('splits words, sentences and paragraphs', () {
-    final p = TextPassage.parse('Hello world. How are you?\n\n\n\nFine, thanks! — ok');
+    final p = parseOwnText('Hello world. How are you?\n\n\n\nFine, thanks! — ok');
     expect(p.words.map((w) => w.display).toList(),
         ['Hello', 'world.', 'How', 'are', 'you?', 'Fine,', 'thanks!', '—', 'ok']);
     expect(p.words[5].line - p.words[4].line, 2); // one blank line kept

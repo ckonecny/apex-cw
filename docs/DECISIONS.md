@@ -1299,7 +1299,7 @@ Replaces the firmware's File Player (`MorseFilePlayer`-style: one uploaded file,
 
 Audio flattening (`owntexts/text_passage.dart`), screen text stays original: Ä Ö Ü ß → AE OE UE SS, other accents dropped, `!`→`.`, `;`→`,`, `&`→AND, dashes→`-` (a lone dash between spaces is skipped), unknown characters dropped (as in the firmware). Prosigns as `<KA>` or `[KA]` (the firmware accepts both; rule 3), `<CT>` = KA; they count as one engine char event.
 
-Playback reuses the Zork scheme (`playOne` of a word range, `char`/`done` events mapped back to words) but with its **own** `TextPassage` class so the working Zork code stays untouched; merging both is issue #23. Tempo and spacing are read by the engine per element, so changing them during playback needs no restart. Own profile `own.*` (wpm, spacing, show), seeded from the Hören profile on first use; the screen pushes pitch/softness/speed on entry (rule 2). Tap on a word = play from there (also in "after playing" mode, unlike Zork where hidden words are not tappable). The screen stays awake while a text is open; playback with the screen off and lock-screen/Bluetooth controls are issues #21 and #22, sharing from other apps #24 (done, see "Share text into Own texts").
+Playback reuses the Zork scheme (`playOne` of a word range, `char`/`done` events mapped back to words) at first with its own `TextPassage` class so the working Zork code stayed untouched; since #23 both use one `Passage` (see "Passages: one class for text adventure and own texts"). Tempo and spacing are read by the engine per element, so changing them during playback needs no restart. Own profile `own.*` (wpm, spacing, show), seeded from the Hören profile on first use; the screen pushes pitch/softness/speed on entry (rule 2). Tap on a word = play from there (also in "after playing" mode, unlike Zork where hidden words are not tappable). The screen stays awake while a text is open; playback with the screen off and lock-screen/Bluetooth controls are issues #21 and #22, sharing from other apps #24 (done, see "Share text into Own texts").
 
 
 ## 2026-10-02: Interference simulation (issue #6)
@@ -2485,3 +2485,35 @@ Behavior-neutral cleanup. Before it, 43 files built their own `MethodChannel`/`E
   - The settings screen's live preview and the interference card, which sends the pitch as a double.
   - Everything sent during a session.
 - **Native code unchanged** (no file under `android/android/` touched), so the sample-accurate timing is untouched by construction.
+
+## Passages: one class for text adventure and own texts (2026-11-25, #23)
+
+`lib/content/passage.dart` holds what both modes did twice: `PassageWord`
+(display, cw, tokens, line, endsSentence, inScope), splitting at blanks and
+line breaks, the played word list, `audioFrom` (paragraph = double word gap),
+and the navigation (`playableFrom/Before`, `sentenceStart/End`,
+`nextSentenceStart`, `lastSentenceStart`). Each mode keeps only its own
+parsing: `parseAdventureText` (`adventure/cw_text.dart`: CW scope, room name,
+`cwWord`, ASCII sentence ends, game text not normalised) and `parseOwnText`
+(`owntexts/text_passage.dart`: line-break/blank normalising, `flattenWord`
+with umlauts, accents and prosigns, sentence ends incl. `» “ ” ’ …`).
+
+The word mapping and sentence ends stay apart on purpose: using
+`flattenWord` and the normalising for game text would change what the text
+adventure plays (a lone `--` dropped, `[BK]`-style brackets read as
+prosigns, trimmed lines shifting paragraph gaps). Behavior-neutral: the
+adventure screen counts `tokens` (= `cw.length` there) instead of
+`cw.length`; `sentenceStart` now always returns a played word, which for the
+adventure only changes the index, not the audio (the screen calls it with
+played words and passes the result to `audioFrom`). Checked before merging
+with a temporary test that ran old and new code side by side on about 4,000
+generated texts (all scopes and room names for the adventure; every
+`from`/`to`, sentence and seek call): identical. A second temporary widget
+test drove both screens like a user (play, char/done events one by one,
+Wort/Satz/Anfang, ⏮ ⏭ ‹ ›, tapping words, pause/resume, resume at a saved
+position, Nochmal tap/long press, four Zork commands, every CW scope and
+show mode) and logged every `playOne`/`stopOne` and the style of every
+shown word after each step: the logs of main and the branch were identical
+(25,677 lines). On the test phone: highlighting across the lone dash and
+`<KA>`, ⏭, Satz, Nochmal after the end and a single word in Zork, no errors
+in logcat.

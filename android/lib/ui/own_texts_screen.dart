@@ -64,7 +64,7 @@ class _OwnTextsScreenState extends State<OwnTextsScreen> {
           .replaceAll('{max}', '$maxTextChars'));
       return;
     }
-    final passage = TextPassage.parse(text);
+    final passage = parseOwnText(text);
     if (!passage.hasAudio) {
       _snack(Strings.t('ot_no_morse'));
       return;
