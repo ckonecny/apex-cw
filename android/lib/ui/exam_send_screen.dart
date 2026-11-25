@@ -11,7 +11,6 @@ import 'dart:async';
 import 'widgets/keyer_status_button.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../content/exam_grading.dart';
@@ -27,6 +26,8 @@ import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/slider_row.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 enum _Phase { ready, keying, result }
 
@@ -43,9 +44,8 @@ class ExamSendScreen extends StatefulWidget {
 }
 
 class _ExamSendScreenState extends State<ExamSendScreen> {
-  static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _keyerChannel = Channels.keyer;
+  static const _symbolStream = Channels.symbols;
 
   ExamProfile get _p => widget.profile;
 
@@ -95,17 +95,9 @@ class _ExamSendScreenState extends State<ExamSendScreen> {
   /// Everything the shared native keyer and tone need for this screen.
   Future<void> _pushConfig() async {
     final prefs = await SharedPreferences.getInstance();
-    await _toneChannel.invokeMethod('setFreq', prefs.getInt('pitch') ?? 600);
-    await _toneChannel.invokeMethod('setVolume', 0.7);
-    await _toneChannel.invokeMethod('setEnvelopeMs',
-        ((prefs.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
+    await pushToneSettings(prefs, volume: 0.7);
     await _keyerChannel.invokeMethod('setWpm', _sendWpm);
-    await _keyerChannel.invokeMethod('setMode', _keyerMode);
-    await _keyerChannel.invokeMethod('setCurtisBTiming', {
-      'dit': (prefs.getInt('curtisBDitTiming') ?? 75).clamp(0, 100),
-      'dah': (prefs.getInt('curtisBDahTiming') ?? 45).clamp(0, 100),
-    });
-    await _keyerChannel.invokeMethod('setAcs', (prefs.getInt('acs') ?? 0).clamp(0, 3));
+    await pushKeyerSettings(prefs, mode: _keyerMode);
     // Standard word gap (the native side takes the spacing and subtracts 1).
     await _keyerChannel.invokeMethod('setInterWordSpace', 7);
   }

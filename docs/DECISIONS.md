@@ -2459,3 +2459,21 @@ Deferred findings from the review of v1.11.0..v1.11.1 and v1.11.2. Each changes 
 - **Overlong presses out of the CW Keyer report (#180):** presses longer than `maxPressMedians` (8) × the median press of the window are dropped before the dit/dah clustering. The median lies between dit and dah, so the limit is at least 8 dits; a dah keyed 5 dits long still counts (test). Relative to the median rather than the clustered dit, because one 10 s press is what breaks the clustering. The Geben block has no such limit: its presses are classified by the target, so a far too long dah there is a real "dah too long".
 - **CW Keyer reads its settings again after the key icon (#183):** `KeyerStatusButton` got an optional `onSettingsClosed`; the CW Keyer uses it (and the tip) to re-read keyer mode and timing analysis, reset the panel when the analysis is off and push mode, CurtisB timing and ACS to the keyer again (rule 2; the settings card already sets them natively, the push is a harmless repeat).
 - **Word-gap rule in one place per language (#194):** Dart: `effectiveWpmExact()` in `content/effective_wpm.dart` (the rounded `effectiveWpm()` uses it); the double copy in `char_stats.dart` is gone (checked identical bit for bit over wpm 5–60, character gap 1–30, word gap 1–105, both modes). Kotlin: `CwGenerator.wordGapDits()` holds `max(interWord, interChar + 4)`, `wordGapExtra()`/`wordGapMs()` use it. Plain algebra, no timing change; generator timing tests green.
+
+## Platform channels and engine config in one place (2026-11-24, #18)
+Behavior-neutral cleanup. Before it, 43 files built their own `MethodChannel`/`EventChannel` from the name string (122 places), and about 30 screens repeated the same blocks that push tone and keyer settings (rule 2).
+- **Engine trace first:** `android/test/engine_trace_test.dart` was written and recorded *before* the change. It opens each of the 25 screens that use the engine, once only opening and closing, and 14 of them a second time with their session started (Hören with paddle and typing, Geben, Prüfung, Decoder, the games, audio trainer, head copy). Every method call (with arguments, in order) and every event-channel listen/cancel goes to `test/engine_trace/<case>.txt`. After each step of the cleanup the traces had to stay identical character for character, which they did.
+  - Two things are normalised so the traces are stable from run to run: random text in `playOne` is masked in the cases that play random content (exam, pileup, radio cave, echo), and `cw_tone.setAmbient` keeps its value but not its position. It is pushed from the interference profile's own async flow and races the screen's set-up.
+  - Mutation check: a wrong ACS value in the keyer screen fails the test.
+  - Update the traces only for a deliberate change: `flutter test test/engine_trace_test.dart --dart-define=UPDATE_TRACE=true`, and review the diff like code. A new screen that uses the engine gets a case there (and in `engine_config_test.dart`).
+- **Channels:** `android/lib/keyer/channels.dart` (`Channels.tone`, `.generator`, `.keyer`, `.symbols`, …) defines all 18 channels once. Screens keep their local aliases (`static const _toneChannel = Channels.tone;`), so call sites are unchanged.
+- **Config helpers:** `android/lib/keyer/engine_config.dart`:
+  - `pushToneSettings(prefs, {volume})` / `pushTone(pitch:, softness:, {volume})`: pitch, then the volume if given (keyer, QSO bot, WiFi Trx, Geben exam set 0.7 there), then the envelope.
+  - `pushKeyerSettings(prefs, mode:)` / `pushKeyerTiming(prefs)`: mode, then CurtisB timing, then ACS.
+  - The preference keys, defaults and clamps live there. Every call is still awaited one after the other, in the order the screens always used.
+- **Left as they were, on purpose:**
+  - Calls with `catchError` per call: Geben, character practice, morse chart/tree, `keyer_try.dart`. A helper would stop at the first error instead of trying the rest.
+  - Shifted or special pitches (answer pitch, clue and attack tones in the games).
+  - The settings screen's live preview and the interference card, which sends the pitch as a double.
+  - Everything sent during a session.
+- **Native code unchanged** (no file under `android/android/` touched), so the sample-accurate timing is untouched by construction.

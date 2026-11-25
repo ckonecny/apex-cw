@@ -1,22 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../content/cw_content.dart'
     show glyphToken, kochPlayText, kProsignCodes;
 import '../../keyer/morse_decoder.dart';
 import '../../theme/app_colors.dart';
 import '../../util/char_color.dart';
+import '../../keyer/channels.dart';
 
-const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
+const _genChannel = Channels.generator;
 // One shared stream for the tile, playCharThrice() and the character practice
 // screen: a second receiveBroadcastStream() call on the same channel replaces
 // the first one's platform message handler, so the tile would stop getting
 // events.
-final Stream<dynamic> cwGenEvents = const EventChannel(
-  'at.oe1cko.nextcwtrainer/cw_gen_events',
-).receiveBroadcastStream();
+final Stream<dynamic> cwGenEvents = Channels.genEvents.receiveBroadcastStream();
 
 // char → dit/dah pattern, the inverse of the decoder's table.
 final Map<String, String> _patterns = {

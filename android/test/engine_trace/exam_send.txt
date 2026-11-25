@@ -1,0 +1,6 @@
+-- open
+settings.setKeepScreenOn(true)
+-- close
+cw_keyer.setInputs({dit: false, dah: false})
+cw_keyer.stop(null)
+settings.setKeepScreenOn(false)

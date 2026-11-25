@@ -11,7 +11,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../content/audio_trainer_engine.dart';
@@ -32,9 +31,11 @@ import 'widgets/charset_header.dart';
 import 'widgets/setting_rows.dart';
 import 'widgets/tempo_spacing_section.dart';
 import 'widgets/training_settings_sheet.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
-const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+const _genChannel = Channels.generator;
+const _toneChannel = Channels.tone;
 
 class AudioTrainerScreen extends StatefulWidget {
   const AudioTrainerScreen({super.key});
@@ -220,11 +221,7 @@ class _AudioTrainerScreenState extends State<AudioTrainerScreen> {
     );
     await _genChannel.invokeMethod('setBoostLevel', boost);
     await _toneChannel.invokeMethod('setVoiceVolume', _voiceVolume / 100);
-    await _toneChannel.invokeMethod('setFreq', p.getInt('pitch') ?? 600);
-    await _toneChannel.invokeMethod(
-      'setEnvelopeMs',
-      ((p.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble(),
-    );
+    await pushToneSettings(p);
   }
 
   void _applyConfig() {

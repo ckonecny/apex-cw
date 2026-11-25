@@ -1,8 +1,8 @@
 import 'dart:math';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/echo_suggestions.dart' show kGiveWpmCap;
 import '../content/training_profile.dart';
+import '../keyer/channels.dart';
 
 /// Lets an external key be tried out on screens that do not key themselves
 /// (#116): pushes the general Send settings (speed, pitch, mode, Curtis-B, ACS,
@@ -12,8 +12,8 @@ import '../content/training_profile.dart';
 class KeyerTry {
   KeyerTry._();
 
-  static const _keyer = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _tone = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _keyer = Channels.keyer;
+  static const _tone = Channels.tone;
 
   /// [wpm]: the screen's own Send speed, else the general Send setting.
   static Future<void> start({int? wpm}) async {

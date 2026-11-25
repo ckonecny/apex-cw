@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../keyer/channels.dart';
 
 /// Optional "do not disturb while training" (issue #55, docs/DECISIONS.md
 /// "Focus mode"). While a training screen is open the system interruption
@@ -12,7 +13,7 @@ class FocusMode {
   FocusMode._();
 
   static const prefKey = 'focusMode';
-  static const _channel = MethodChannel('at.oe1cko.nextcwtrainer/settings');
+  static const _channel = Channels.settings;
 
   /// User setting (Settings → General); default off.
   static final enabled = ValueNotifier<bool>(false);

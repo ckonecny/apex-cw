@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../keyer/channels.dart';
 
 /// The sound that follows a right/wrong grading (Hören typing, Geben, Echo
 /// Trainer, character practice). One global choice, set in Settings → General.
@@ -23,7 +24,7 @@ enum ConfirmTone {
   /// Order of the choices in the settings sheet.
   static const uiOrder = [classic, marimba, sanft, off];
 
-  static const _channel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _channel = Channels.tone;
 
   // Pause between the two halves of the preview (the longest tone lasts ~0.6 s).
   static const _previewGap = Duration(milliseconds: 1000);

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'widgets/keyer_status_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_colors.dart';
@@ -24,6 +23,7 @@ import '../util/break_reminder.dart';
 import '../util/focus_mode.dart';
 import '../util/practice_clock.dart';
 import '../util/reminder.dart';
+import '../keyer/channels.dart';
 
 enum _LearnState { idle, waitDit, waitDah, done }
 
@@ -35,8 +35,8 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  static const _settingsChannel = MethodChannel('at.oe1cko.nextcwtrainer/settings');
-  static const _toneChannel     = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _settingsChannel = Channels.settings;
+  static const _toneChannel     = Channels.tone;
 
   // ── General ────────────────────────────────────────────────────────────────
   // Which training's profile the profile-backed fields below edit (P2 D5;

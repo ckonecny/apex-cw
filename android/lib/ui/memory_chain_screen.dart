@@ -16,7 +16,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../content/cw_content.dart';
@@ -29,6 +28,8 @@ import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/paddle_widgets.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 // Same values as the firmware.
 const _perRow = 12;                    // a call (max 12 chars) always fits one row
@@ -60,11 +61,11 @@ class MemoryChainScreen extends StatefulWidget {
 
 class _MemoryChainScreenState extends State<MemoryChainScreen>
     with WidgetsBindingObserver {
-  static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _genEvents    = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
-  static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _genChannel   = Channels.generator;
+  static const _genEvents    = Channels.genEvents;
+  static const _keyerChannel = Channels.keyer;
+  static const _symbolStream = Channels.symbols;
+  static const _toneChannel  = Channels.tone;
   static const _hiKeys = ['memChainHi', 'memChainHiCalls'];
 
   // Character -> dit/dah pattern; the prompt goes out as an exact pattern,
@@ -167,16 +168,9 @@ class _MemoryChainScreenState extends State<MemoryChainScreen>
     }
 
     // Shared native engine: push everything this screen relies on.
-    await _toneChannel.invokeMethod('setFreq', _pitch);
-    await _toneChannel.invokeMethod('setEnvelopeMs',
-        ((p.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
+    await pushTone(pitch: _pitch, softness: prefToneSoftness(p));
     await _keyerChannel.invokeMethod('setWpm', _keyWpm);
-    await _keyerChannel.invokeMethod('setMode', _keyerMode);
-    await _keyerChannel.invokeMethod('setCurtisBTiming', {
-      'dit': (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100),
-      'dah': (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100),
-    });
-    await _keyerChannel.invokeMethod('setAcs', (p.getInt('acs') ?? 0).clamp(0, 3));
+    await pushKeyerSettings(p, mode: _keyerMode);
     await _keyerChannel.invokeMethod('setInterWordSpace',
         (p.getInt('profile.keyer.interWordSpace') ??
             TrainingProfile.defaultInterWord(TrainingProfile.keyer)).clamp(6, 105));

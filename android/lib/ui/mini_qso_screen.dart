@@ -11,7 +11,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../content/head_copy_log.dart';
@@ -29,6 +28,8 @@ import 'widgets/interference_button.dart';
 import 'widgets/keyer_status_button.dart';
 import 'widgets/setting_rows.dart';
 import 'widgets/tempo_spacing_section.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 part 'mini_qso_views.dart';
 
@@ -83,8 +84,8 @@ class _MiniQsoScreenState extends State<MiniQsoScreen> {
   // setState for the view extension in mini_qso_views.dart.
   void _update(VoidCallback fn) => setState(fn);
 
-  static const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _genChannel = Channels.generator;
+  static const _toneChannel = Channels.tone;
 
   MqSettings _s = MqSettings();
   List<HcResult> _results = [];
@@ -148,9 +149,7 @@ class _MiniQsoScreenState extends State<MiniQsoScreen> {
   /// Everything the shared native engine needs for this screen.
   Future<void> _pushAudio() async {
     final prefs = await SharedPreferences.getInstance();
-    await _toneChannel.invokeMethod('setFreq', prefs.getInt('pitch') ?? 600);
-    await _toneChannel.invokeMethod('setEnvelopeMs',
-        ((prefs.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
+    await pushToneSettings(prefs);
     await _genChannel.invokeMethod('setWpm', _s.wpm);
     await _genChannel.invokeMethod('setInterCharSpace', _s.interChar);
     await _genChannel.invokeMethod('setInterWordSpace', _s.interWord);

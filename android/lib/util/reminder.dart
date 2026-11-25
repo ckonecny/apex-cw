@@ -4,6 +4,7 @@ import '../content/daily_goal.dart';
 import '../content/practice_log.dart';
 import '../l10n/strings.dart';
 import 'practice_clock.dart';
+import '../keyer/channels.dart';
 
 /// Fire times for the next [days] days at [minutes] past midnight, all after
 /// [now]. Today's is skipped when the goal of today's practice day is already
@@ -28,7 +29,7 @@ class Reminder {
   static const onKey = 'reminder.on';
   static const minutesKey = 'reminder.minutes';
   static const defaultMinutes = 19 * 60;
-  static const _channel = MethodChannel('at.oe1cko.nextcwtrainer/reminder');
+  static const _channel = Channels.reminder;
 
   static Future<bool> isOn() async =>
       (await SharedPreferences.getInstance()).getBool(onKey) ?? false;

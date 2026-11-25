@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../keyer/channels.dart';
 
 /// Tracks whether the sidetone currently plays on a Bluetooth output, so every
 /// screen that shows keying paddles can warn about the 100–250 ms delay.
@@ -10,8 +11,8 @@ class BluetoothHint {
   BluetoothHint._();
 
   static const prefKey = 'btLatencyHint';
-  static const _settings = MethodChannel('at.oe1cko.nextcwtrainer/settings');
-  static const _events = EventChannel('at.oe1cko.nextcwtrainer/audio_route_events');
+  static const _settings = Channels.settings;
+  static const _events = Channels.audioRouteEvents;
 
   /// True while a Bluetooth output is the active route.
   static final bluetoothActive = ValueNotifier<bool>(false);

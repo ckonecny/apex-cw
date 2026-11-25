@@ -7,7 +7,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../content/pileup_engine.dart';
@@ -21,6 +20,8 @@ import 'widgets/app_ui.dart';
 import 'widgets/interference_button.dart';
 import 'widgets/keyer_status_button.dart';
 import 'widgets/paddle_widgets.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 enum _Phase { lobby, playing, over }
 
@@ -43,11 +44,11 @@ class PileupScreen extends StatefulWidget {
 }
 
 class _PileupScreenState extends State<PileupScreen> with WidgetsBindingObserver {
-  static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _genEvents    = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
-  static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _genChannel   = Channels.generator;
+  static const _genEvents    = Channels.genEvents;
+  static const _keyerChannel = Channels.keyer;
+  static const _symbolStream = Channels.symbols;
+  static const _toneChannel  = Channels.tone;
 
   final _random = Random();
   late final PileupEngine _engine;
@@ -131,16 +132,9 @@ class _PileupScreenState extends State<PileupScreen> with WidgetsBindingObserver
     _interWord = (p.getInt('profile.keyer.interWordSpace') ?? 7).clamp(6, 105);
 
     // Shared native engine: push everything this screen relies on.
-    await _toneChannel.invokeMethod('setFreq', _pitch);
-    await _toneChannel.invokeMethod('setEnvelopeMs',
-        ((p.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
+    await pushTone(pitch: _pitch, softness: prefToneSoftness(p));
     await _keyerChannel.invokeMethod('setWpm', _keyWpm);
-    await _keyerChannel.invokeMethod('setMode', _keyerMode);
-    await _keyerChannel.invokeMethod('setCurtisBTiming', {
-      'dit': (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100),
-      'dah': (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100),
-    });
-    await _keyerChannel.invokeMethod('setAcs', (p.getInt('acs') ?? 0).clamp(0, 3));
+    await pushKeyerSettings(p, mode: _keyerMode);
     await _keyerChannel.invokeMethod('setInterWordSpace', _interWord);
     await _keyerChannel.invokeMethod('stop');
 

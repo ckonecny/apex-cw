@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../content/cw_content.dart' show kProsignCodes, kProsignTokens;
@@ -15,6 +14,7 @@ import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'widgets/interference_button.dart';
 import 'widgets/keyer_status_button.dart';
+import '../keyer/channels.dart';
 
 /// Interactive character chart: every character of MorseDecoder.table with
 /// its code drawn as dots and dashes, grouped into letters, digits and signs.
@@ -30,9 +30,9 @@ class MorseChartScreen extends StatefulWidget {
 }
 
 class _MorseChartScreenState extends State<MorseChartScreen> {
-  static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _genChannel   = Channels.generator;
+  static const _keyerChannel = Channels.keyer;
+  static const _toneChannel  = Channels.tone;
 
   static final _letters =
       List.generate(26, (i) => String.fromCharCode(65 + i));

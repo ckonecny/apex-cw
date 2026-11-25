@@ -14,7 +14,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../content/cw_content.dart';
@@ -26,6 +25,8 @@ import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/paddle_widgets.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 // Tunables, same values as the firmware's S1 block.
 const _startWpmDefault = 48; // clue speed in round 1 (firmware: fixed)
@@ -71,14 +72,14 @@ class MorselScreen extends StatefulWidget {
 }
 
 class _MorselScreenState extends State<MorselScreen> {
-  static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _genEvents    = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
-  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  static const _genChannel   = Channels.generator;
+  static const _genEvents    = Channels.genEvents;
+  static const _keyerChannel = Channels.keyer;
+  static const _symbolStream = Channels.symbols;
+  static const _straightWpmStream = Channels.straightWpm;
   StreamSubscription? _wpmSub;
   int _measuredWpm = 15;   // straight key: measured speed (display and timing only)
-  static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _toneChannel  = Channels.tone;
 
   // Letter -> dit/dah pattern. The clue goes out as exact patterns, not
   // text, so it never depends on playWord()'s prosign parsing.
@@ -180,16 +181,9 @@ class _MorselScreenState extends State<MorselScreen> {
     _hi = _loadHi(p);
 
     // Shared native engine: push everything this screen relies on.
-    await _toneChannel.invokeMethod('setFreq', _pitch);
-    await _toneChannel.invokeMethod('setEnvelopeMs',
-        ((p.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
+    await pushTone(pitch: _pitch, softness: prefToneSoftness(p));
     await _keyerChannel.invokeMethod('setWpm', _keyWpm);
-    await _keyerChannel.invokeMethod('setMode', _keyerMode);
-    await _keyerChannel.invokeMethod('setCurtisBTiming', {
-      'dit': (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100),
-      'dah': (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100),
-    });
-    await _keyerChannel.invokeMethod('setAcs', (p.getInt('acs') ?? 0).clamp(0, 3));
+    await pushKeyerSettings(p, mode: _keyerMode);
     await _keyerChannel.invokeMethod('setInterWordSpace', _wordGapDits);
 
     _genSub = _genEvents.receiveBroadcastStream().listen(_onGenEvent);

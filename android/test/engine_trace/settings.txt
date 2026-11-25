@@ -1,0 +1,7 @@
+-- open
+settings.getPaddleChars(null)
+settings.getAppVersion(null)
+settings_events.listen(null)
+-- close
+settings_events.cancel(null)
+settings.cancelLearnPaddle(null)

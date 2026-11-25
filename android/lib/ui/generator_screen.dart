@@ -1,7 +1,6 @@
 import 'widgets/interference_button.dart';
 import 'widgets/keyer_status_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/cw_content.dart';
 import '../content/char_stats.dart';
@@ -21,6 +20,8 @@ import '../content/training_goals.dart';
 import 'widgets/charset_header.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'widgets/training_settings_sheet.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 class GeneratorScreen extends StatefulWidget {
   const GeneratorScreen({super.key});
@@ -30,8 +31,7 @@ class GeneratorScreen extends StatefulWidget {
 }
 
 class _GeneratorScreenState extends State<GeneratorScreen> {
-  static const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _genChannel = Channels.generator;
 
   String _practiceChars = '';
   int  _wpm        = 20;
@@ -125,10 +125,7 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
     }
     await _restorePracticeCharsAndBoost();
     // Sidetone pitch/envelope: left at whatever another screen last set otherwise.
-    final pitch = p.getInt('pitch') ?? 600;
-    final toneSoftness = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
-    await _toneChannel.invokeMethod('setFreq', pitch);
-    await _toneChannel.invokeMethod('setEnvelopeMs', (toneSoftness + 1).toDouble());
+    await pushToneSettings(p);
   }
 
   // Tempo + spacing card, the same block as on the Verstehen setup screens

@@ -1,0 +1,8 @@
+-- open
+settings.setKeepScreenOn(true)
+cw_keyer.stop(null)
+cw_tone.setFreq(777)
+-- close
+settings.setKeepScreenOn(false)
+cw_mic.stop(null)
+cw_tone.setPlaying(false)

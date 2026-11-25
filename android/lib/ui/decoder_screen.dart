@@ -23,6 +23,7 @@ import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/keep_screen_on.dart';
 import 'widgets/app_ui.dart';
+import '../keyer/channels.dart';
 
 class DecoderScreen extends StatefulWidget {
   const DecoderScreen({super.key});
@@ -32,10 +33,10 @@ class DecoderScreen extends StatefulWidget {
 }
 
 class _DecoderScreenState extends State<DecoderScreen> with WidgetsBindingObserver {
-  static const _micChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_mic');
-  static const _pcmChannel   = EventChannel('at.oe1cko.nextcwtrainer/cw_mic_pcm');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _micChannel   = Channels.mic;
+  static const _pcmChannel   = Channels.micPcm;
+  static const _keyerChannel = Channels.keyer;
+  static const _toneChannel  = Channels.tone;
 
   static const _maxText = 3000;
   static const _dbMin = -70.0;

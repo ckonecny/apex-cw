@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/interference_profile.dart';
 import 'widgets/setting_rows.dart';
+import '../keyer/channels.dart';
 
 /// Settings card for the interference simulation (issue #6): master switch,
 /// presets, one slider per implemented effect and a "try it" button.
@@ -21,11 +21,9 @@ class InterferenceSettingsCard extends StatefulWidget {
 }
 
 class _InterferenceSettingsCardState extends State<InterferenceSettingsCard> {
-  static const _gen = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _tone = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
-  static const _genEvents = EventChannel(
-    'at.oe1cko.nextcwtrainer/cw_gen_events',
-  );
+  static const _gen = Channels.generator;
+  static const _tone = Channels.tone;
+  static const _genEvents = Channels.genEvents;
 
   InterferenceProfile _p = const InterferenceProfile();
   bool _loaded = false;

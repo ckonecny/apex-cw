@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../keyer/channels.dart';
 
 /// User setting for the interference simulation (issue #6): noise, QRM, QSB,
 /// pitch drift and timing jitter ("bad fist") on the other station's signal.
@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// keying stays clean. Optional "ambient": the noise also stands between
 /// signals while a screen or block asks for it (requestAmbient).
 class InterferenceProfile {
-  static const _tone = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _tone = Channels.tone;
 
   /// 0 = custom, then the presets below.
   static const presetCustom = 0;

@@ -5,17 +5,15 @@
 // the sound itself still comes from the shared generator.
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/strings.dart';
+import '../keyer/channels.dart';
 
 class OwnTextPlayback {
-  static const _channel = MethodChannel('at.oe1cko.nextcwtrainer/own_playback');
-  static const _events = EventChannel(
-    'at.oe1cko.nextcwtrainer/own_playback_events',
-  );
-  static const _reminder = MethodChannel('at.oe1cko.nextcwtrainer/reminder');
+  static const _channel = Channels.ownPlayback;
+  static const _events = Channels.ownPlaybackEvents;
+  static const _reminder = Channels.reminder;
 
   /// Buttons from the lock screen, notification and headset:
   /// "play", "pause", "next" (next sentence / group), "prev" (previous

@@ -12,7 +12,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/block_history.dart';
 import '../content/echo_timing.dart' show effectiveWordSpaceDits;
@@ -47,6 +46,8 @@ import '../util/practice_clock.dart';
 import '../util/break_reminder.dart';
 import 'widgets/break_hint_card.dart';
 import '../content/practice_log.dart' show MilestoneKind;
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 part 'adaptive_copy_body_views.dart';
 part 'adaptive_copy_body_widgets.dart';
@@ -179,11 +180,11 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
   // setState for the view extension in adaptive_copy_body_views.dart.
   void _update(VoidCallback fn) => setState(fn);
 
-  static const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
+  static const _genChannel = Channels.generator;
   // How long before the end of a word gap the next group goes to the engine.
   static const _wordGapHandoverMs = 150;
-  static const _genEvents = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
-  static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _genEvents = Channels.genEvents;
+  static const _toneChannel = Channels.tone;
 
   // Weak-char detection for the "weak characters" display and the
   // boost-next-block proposal: needs enough attempts to be meaningful (not
@@ -695,10 +696,7 @@ class _AdaptiveCopyBodyState extends State<AdaptiveCopyBody> {
       // Practice set / words: the profile's own set (rule 2).
       await _restorePracticeCharsAndBoost();
     }
-    final pitch = p.getInt('pitch') ?? 600;
-    final toneSoftness = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
-    await _toneChannel.invokeMethod('setFreq', pitch);
-    await _toneChannel.invokeMethod('setEnvelopeMs', (toneSoftness + 1).toDouble());
+    await pushToneSettings(p);
 
     _genSub?.cancel();
     _genSub = _genEvents.receiveBroadcastStream().listen(_onGenEvent);

@@ -10,7 +10,6 @@
 // 2026-09-23).
 import '../content/training_profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/char_stats.dart';
 import '../content/timing_history.dart';
@@ -27,6 +26,7 @@ import '../util/practice_clock.dart';
 
 import '../content/training_goals.dart';
 import 'training_goals_screen.dart' show loadGoalValues;
+import '../keyer/engine_config.dart';
 
 class CharStatsScreen extends StatefulWidget {
   // `track`: CharStatsStore.hear or .echo — each training shows its own.
@@ -94,10 +94,7 @@ class _CharStatsScreenState extends State<CharStatsScreen> {
     final pf = await TrainingProfile.open(widget.track);
     final wpm = TrainingProfile.clampWpm(pf.getInt('wpm'));
     final iws = (pf.getInt('interWordSpace') ?? 40).clamp(6, 105);
-    const tone = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
-    await tone.invokeMethod('setFreq', p.getInt('pitch') ?? 600);
-    await tone.invokeMethod('setEnvelopeMs',
-        ((p.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
+    await pushToneSettings(p);
     if (!mounted) return;
     await showCharPlayback(context,
         ch: ch, outputCase: _outputCase,

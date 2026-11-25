@@ -15,6 +15,7 @@ import '../ui/keyer_screen.dart';
 import '../ui/morse_chart_screen.dart';
 import '../ui/own_texts_screen.dart';
 import 'share_intake.dart';
+import '../keyer/channels.dart';
 
 /// One launcher shortcut: its id (also what native code hands back), label,
 /// icon (the same one as on the app's own card) and screen.
@@ -31,7 +32,7 @@ class AppShortcut {
 /// tapped shortcut; this takes it, on start and whenever one is tapped while
 /// the app is running, and opens that screen.
 class AppShortcuts {
-  static const _channel = MethodChannel('at.oe1cko.nextcwtrainer/shortcuts');
+  static const _channel = Channels.shortcuts;
 
   /// Every shortcut on offer, in the default order. Which are published and
   /// in which order is the user's choice ([order], [off]; Settings → App

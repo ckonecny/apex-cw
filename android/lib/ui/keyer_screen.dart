@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'widgets/keyer_status_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/pinch_zoom_text.dart';
@@ -20,6 +19,8 @@ import 'widgets/app_ui.dart';
 import 'widgets/slider_row.dart';
 import '../util/keep_screen_on.dart';
 import '../util/practice_clock.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 class KeyerScreen extends StatefulWidget {
   const KeyerScreen({super.key});
@@ -29,11 +30,10 @@ class KeyerScreen extends StatefulWidget {
 }
 
 class _KeyerScreenState extends State<KeyerScreen> {
-  static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
-  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
-  static const _edgeStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_edges');
+  static const _keyerChannel = Channels.keyer;
+  static const _symbolStream = Channels.symbols;
+  static const _straightWpmStream = Channels.straightWpm;
+  static const _edgeStream = Channels.straightEdges;
   StreamSubscription? _wpmSub;
   StreamSubscription? _edgeSub;
   // Straight-key timing (#164): only fed by a physical key on an adapter.
@@ -153,12 +153,7 @@ class _KeyerScreenState extends State<KeyerScreen> {
       _fistOn = p.getBool('fistAnalyzer') ?? false;
     });
     if (!_fistActive) _resetFist();
-    await _keyerChannel.invokeMethod('setMode', _keyerMode);
-    await _keyerChannel.invokeMethod('setCurtisBTiming', {
-      'dit': (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100),
-      'dah': (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100),
-    });
-    await _keyerChannel.invokeMethod('setAcs', (p.getInt('acs') ?? 0).clamp(0, 3));
+    await pushKeyerSettings(p, mode: _keyerMode);
   }
 
   // Nothing from an earlier stretch (analysis off, adapter out) may mix with
@@ -185,18 +180,9 @@ class _KeyerScreenState extends State<KeyerScreen> {
       _decoder.chars = DecoderChars.values[(prefs.getInt(decoderCharsKey) ?? 0).clamp(0, DecoderChars.values.length - 1)];
     });
     }
-    final pitch = prefs.getInt('pitch') ?? 600;
-    final toneSoftness = (prefs.getInt('toneSoftness') ?? 4).clamp(0, 8);
-    final curtisBDit = (prefs.getInt('curtisBDitTiming') ?? 75).clamp(0, 100);
-    final curtisBDah = (prefs.getInt('curtisBDahTiming') ?? 45).clamp(0, 100);
-    final acs = (prefs.getInt('acs') ?? 0).clamp(0, 3);
-    await _toneChannel.invokeMethod('setFreq', pitch);
-    await _toneChannel.invokeMethod('setVolume', 0.7);
-    await _toneChannel.invokeMethod('setEnvelopeMs', (toneSoftness + 1).toDouble());
+    await pushToneSettings(prefs, volume: 0.7);
     await _keyerChannel.invokeMethod('setWpm',  _wpm);
-    await _keyerChannel.invokeMethod('setMode', _keyerMode);
-    await _keyerChannel.invokeMethod('setCurtisBTiming', {'dit': curtisBDit, 'dah': curtisBDah});
-    await _keyerChannel.invokeMethod('setAcs', acs);
+    await pushKeyerSettings(prefs, mode: _keyerMode);
     await _keyerChannel.invokeMethod('setInterWordSpace', (prefs.getInt('profile.keyer.interWordSpace') ?? TrainingProfile.defaultInterWord(TrainingProfile.keyer)).clamp(6, 105));
     await _keyerChannel.invokeMethod('start');
     if (mounted) setState(() => _ready = true);
