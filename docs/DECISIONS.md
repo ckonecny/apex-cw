@@ -2486,7 +2486,7 @@ Behavior-neutral cleanup. Before it, 43 files built their own `MethodChannel`/`E
   - Everything sent during a session.
 - **Native code unchanged** (no file under `android/android/` touched), so the sample-accurate timing is untouched by construction.
 
-## Passages: one class for text adventure and own texts (2026-11-25, #23)
+## Passages: one class for text adventure and own texts (2026-11-25, #23, PR #205)
 
 `lib/content/passage.dart` holds what both modes did twice: `PassageWord`
 (display, cw, tokens, line, endsSentence, inScope), splitting at blanks and
