@@ -90,7 +90,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
   static const _genChannel = Channels.generator;
 
   late OwnTextSettings _s;
-  TextPassage? _p;
+  Passage? _p;
   final List<_Para> _paras = [];
   final Map<int, _Para> _paraOf = {}; // word → its paragraph
   final Map<int, GlobalKey> _paraKeys = {};
@@ -155,7 +155,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
       final prefs = await SharedPreferences.getInstance();
       await pushToneSettings(prefs);
       await _pushSpeed();
-      final p = TextPassage.parse(await widget.store.body(widget.info.id));
+      final p = parseOwnText(await widget.store.body(widget.info.id));
       _buildParas(p);
       _genSub = cwGenEvents.listen(_onGenEvent);
       final saved = widget.info.pos;
@@ -173,7 +173,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
     }
   }
 
-  void _buildParas(TextPassage p) {
+  void _buildParas(Passage p) {
     _Para? cur;
     var prevLine = -1;
     var offset = 0;

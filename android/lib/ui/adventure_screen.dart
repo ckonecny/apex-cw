@@ -328,7 +328,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
     _revealed = _s.show == 0;
     _passage = _curEntry < 0
         ? null
-        : Passage.parse(_log[_curEntry].text, scope: _s.scope, roomName: _z?.status.room);
+        : parseAdventureText(_log[_curEntry].text, scope: _s.scope, roomName: _z?.status.room);
     if (play) _play();
   }
 
@@ -354,7 +354,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
     _genChannel.invokeMethod('stopOne');
     _pausedAt = null;
     final (text, order) = p.audioFrom(from, to);
-    final rest = to == null ? const <int>[] : p.playedIndices.where((i) => i > to);
+    final rest = to == null ? const <int>[] : p.played.where((i) => i > to);
     _thenPauseAt = rest.isEmpty ? null : rest.first;
     if (order.isEmpty) {
       setState(() => _playing = false);
@@ -416,7 +416,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
     final p = _passage;
     if (p == null) return false;
     if (_revealed) return true;
-    return _s.show != 2 && p.playedIndices.every(_heard.contains);
+    return _s.show != 2 && p.played.every(_heard.contains);
   }
 
   /// Text button: shows the whole answer, or hides it again — then words
@@ -438,7 +438,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
         if (_orderPos >= _order.length) return;
         _charInWord++;
         final w = _order[_orderPos];
-        if (_charInWord >= _passage!.words[w].cw.length) {
+        if (_charInWord >= _passage!.words[w].tokens) {
           _heard.add(w);
           _orderPos++;
           _charInWord = 0;
@@ -468,7 +468,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
     }
     if (_pausedAt != null) return _pausedAt!;
     if (_lastWord >= 0) return _lastWord;
-    final played = _passage!.playedIndices;
+    final played = _passage!.played;
     return played.isEmpty ? 0 : played.last;
   }
 
