@@ -2467,3 +2467,21 @@ Found by code review, none seen on a phone. All in the sample-accurate queue of 
 - **A stopped thread stops (#192).** The loops test `isCurrent(t)` (own generation) instead of the shared `running`, and `key()` returns at once for a stale track, so an old thread can't run on and push segments when the next playback has already set `running`.
 - **Epoch changes under one lock (#192).** `newTrack()` (generation + epoch), `stop()` and the stall's `renewEpoch()` are synchronized on the generator, and `renewEpoch()` re-checks `isCurrent(t)`, so a stalled thread can't overwrite the epoch of a playback started right after `stop()`.
 - **Idle gap counted from the last tone, across epochs (#193).** `KeySchedule` counts samples since the last tone sample (off and empty samples alike) instead of empty samples since the last segment, and never resets it on an epoch change. A playback stopped in a pause or mid-tone is measured from its last tone. In the paths in use (playOne ends on a tone) nothing changes. When a new stream runs at another sample rate, the counted silence and the rest of a running segment are rescaled. Still not counted: the time no callbacks run during a stream restart (the gap gets that much longer).
+
+## Platform channels and engine config in one place (2026-11-24, #18, PR #204)
+Behavior-neutral cleanup. Before it, 43 files built their own `MethodChannel`/`EventChannel` from the name string (122 places), and about 30 screens repeated the same blocks that push tone and keyer settings (rule 2).
+- **Engine trace first:** `android/test/engine_trace_test.dart` was written and recorded *before* the change. It opens each of the 25 screens that use the engine, once only opening and closing, and 14 of them a second time with their session started (Hören with paddle and typing, Geben, Prüfung, Decoder, the games, audio trainer, head copy). Every method call (with arguments, in order) and every event-channel listen/cancel goes to `test/engine_trace/<case>.txt`. After each step of the cleanup the traces had to stay identical character for character, which they did.
+  - Two things are normalised so the traces are stable from run to run: random text in `playOne` is masked in the cases that play random content (exam, pileup, radio cave, echo), and `cw_tone.setAmbient` keeps its value but not its position. It is pushed from the interference profile's own async flow and races the screen's set-up.
+  - Mutation check: a wrong ACS value in the keyer screen fails the test.
+  - Update the traces only for a deliberate change: `flutter test test/engine_trace_test.dart --dart-define=UPDATE_TRACE=true`, and review the diff like code. A new screen that uses the engine gets a case there (and in `engine_config_test.dart`).
+- **Channels:** `android/lib/keyer/channels.dart` (`Channels.tone`, `.generator`, `.keyer`, `.symbols`, …) defines all 18 channels once. Screens keep their local aliases (`static const _toneChannel = Channels.tone;`), so call sites are unchanged.
+- **Config helpers:** `android/lib/keyer/engine_config.dart`:
+  - `pushToneSettings(prefs, {volume})` / `pushTone(pitch:, softness:, {volume})`: pitch, then the volume if given (keyer, QSO bot, WiFi Trx, Geben exam set 0.7 there), then the envelope.
+  - `pushKeyerSettings(prefs, mode:)` / `pushKeyerTiming(prefs)`: mode, then CurtisB timing, then ACS.
+  - The preference keys, defaults and clamps live there. Every call is still awaited one after the other, in the order the screens always used.
+- **Left as they were, on purpose:**
+  - Calls with `catchError` per call: Geben, character practice, morse chart/tree, `keyer_try.dart`. A helper would stop at the first error instead of trying the rest.
+  - Shifted or special pitches (answer pitch, clue and attack tones in the games).
+  - The settings screen's live preview and the interference card, which sends the pitch as a double.
+  - Everything sent during a session.
+- **Native code unchanged** (no file under `android/android/` touched), so the sample-accurate timing is untouched by construction.

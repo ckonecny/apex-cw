@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
+import '../keyer/channels.dart';
 
 /// The native settings event channel (paddle learning, key diagnostics, audio
 /// route) as one shared broadcast stream. An EventChannel has a single native
@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 class SettingsEvents {
   SettingsEvents._();
 
-  static const _channel = EventChannel('at.oe1cko.nextcwtrainer/settings_events');
+  static const _channel = Channels.settingsEvents;
   static StreamSubscription? _native;
   static final StreamController<Map> _out = StreamController<Map>.broadcast(
     onListen: () => _native = _channel

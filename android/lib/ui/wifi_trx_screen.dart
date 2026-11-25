@@ -16,6 +16,8 @@ import '../theme/app_colors.dart';
 import 'widgets/app_ui.dart';
 import '../util/interference_profile.dart';
 import '../util/keep_screen_on.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 /// WiFi Trx: send/receive Morse over UDP (MOPP) to a server such as
 /// cq.morserino.info, like the firmware's WiFi Trx mode. Uses the system
@@ -41,12 +43,11 @@ class _Svc {
 }
 
 class _WifiTrxScreenState extends State<WifiTrxScreen> {
-  static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
-  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
-  static const _genEvents    = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
+  static const _keyerChannel = Channels.keyer;
+  static const _genChannel   = Channels.generator;
+  static const _symbolStream = Channels.symbols;
+  static const _straightWpmStream = Channels.straightWpm;
+  static const _genEvents    = Channels.genEvents;
 
   final _client  = MoppClient();
   final _encoder = MoppEncoder();
@@ -111,18 +112,9 @@ class _WifiTrxScreenState extends State<WifiTrxScreen> {
     await _loadLog();
     // The native engine is a shared singleton: push this screen's own config
     // (same set as the keyer screen) instead of assuming it is still valid.
-    final pitch = p.getInt('pitch') ?? 600;
-    final soft  = (p.getInt('toneSoftness') ?? 4).clamp(0, 8);
-    await _toneChannel.invokeMethod('setFreq', pitch);
-    await _toneChannel.invokeMethod('setVolume', 0.7);
-    await _toneChannel.invokeMethod('setEnvelopeMs', (soft + 1).toDouble());
+    await pushToneSettings(p, volume: 0.7);
     await _keyerChannel.invokeMethod('setWpm', _wpm);
-    await _keyerChannel.invokeMethod('setMode', _keyerMode);
-    await _keyerChannel.invokeMethod('setCurtisBTiming', {
-      'dit': (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100),
-      'dah': (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100),
-    });
-    await _keyerChannel.invokeMethod('setAcs', (p.getInt('acs') ?? 0).clamp(0, 3));
+    await pushKeyerSettings(p, mode: _keyerMode);
     await _keyerChannel.invokeMethod('setInterWordSpace', (p.getInt('profile.trx.interWordSpace') ?? TrainingProfile.defaultInterWord(TrainingProfile.trx)).clamp(6, 105));
     await _keyerChannel.invokeMethod('start');
     if (mounted) setState(() => _ready = true);

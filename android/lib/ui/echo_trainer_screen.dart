@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import '../theme/theme_controller.dart';
 import 'widgets/setting_rows.dart';
 import 'widgets/tempo_spacing_section.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../keyer/morse_decoder.dart';
 import '../content/timing_history.dart';
@@ -54,6 +53,7 @@ import 'widgets/break_hint_card.dart';
 import '../l10n/strings.dart';
 import 'widgets/training_settings_sheet.dart';
 import '../content/practice_log.dart' show MilestoneKind;
+import '../keyer/channels.dart';
 
 part 'echo_trainer_screen_views.dart';
 part 'echo_trainer_screen_widgets.dart';
@@ -88,19 +88,19 @@ class EchoTrainerScreen extends StatefulWidget {
 }
 
 class _EchoTrainerScreenState extends State<EchoTrainerScreen> {
-  static const _genChannel    = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _genEvents     = EventChannel('at.oe1cko.nextcwtrainer/cw_gen_events');
-  static const _keyerChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _symbolStream  = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
-  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  static const _genChannel    = Channels.generator;
+  static const _genEvents     = Channels.genEvents;
+  static const _keyerChannel  = Channels.keyer;
+  static const _symbolStream  = Channels.symbols;
+  static const _straightWpmStream = Channels.straightWpm;
   StreamSubscription? _wpmSub;
-  static const _edgeStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_edges');
+  static const _edgeStream = Channels.straightEdges;
   StreamSubscription? _edgeSub;
   // Timing index (#166): edges of the current first attempt, and the block.
   final _wordFist = FistAnalyzer();
   final _blockFist = EchoFistBlock();
   int _measuredWpm = 15;   // straight key: measured speed, display and timeouts only
-  static const _toneChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _toneChannel   = Channels.tone;
 
   static const _dispCodeOnly    = 1;  // Sound only
   static const _dispDispOnly    = 2;  // Display only (no audio)

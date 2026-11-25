@@ -35,6 +35,8 @@ import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart' show cwGenEvents;
 import 'widgets/cw_keyboard.dart';
 import 'widgets/paddle_widgets.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 part 'adventure_screen_views.dart';
 
@@ -123,11 +125,10 @@ class _AdventureScreenState extends State<AdventureScreen> {
   // setState for the view extension in adventure_screen_views.dart.
   void _update(VoidCallback fn) => setState(fn);
 
-  static const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
-  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  static const _genChannel = Channels.generator;
+  static const _keyerChannel = Channels.keyer;
+  static const _symbolStream = Channels.symbols;
+  static const _straightWpmStream = Channels.straightWpm;
   StreamSubscription? _wpmSub;
   static const _undoMax = 20;
 
@@ -200,9 +201,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
     try {
       _s = await AdventureSettings.load();
       final p = await SharedPreferences.getInstance();
-      await _toneChannel.invokeMethod('setFreq', p.getInt('pitch') ?? 600);
-      await _toneChannel.invokeMethod('setEnvelopeMs',
-          ((p.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
+      await pushToneSettings(p);
       await _pushSpeed();
       _genSub = cwGenEvents.listen(_onGenEvent);
       _keyerMode = p.getInt('keyerMode') ?? 0;
@@ -214,11 +213,7 @@ class _AdventureScreenState extends State<AdventureScreen> {
           if (mounted) setState(() => _s.straightWpm = (w as int).clamp(5, 60));
         });
       }
-      await _keyerChannel.invokeMethod('setCurtisBTiming', {
-        'dit': (p.getInt('curtisBDitTiming') ?? 75).clamp(0, 100),
-        'dah': (p.getInt('curtisBDahTiming') ?? 45).clamp(0, 100),
-      });
-      await _keyerChannel.invokeMethod('setAcs', (p.getInt('acs') ?? 0).clamp(0, 3));
+      await pushKeyerTiming(p);
       await _genChannel.invokeMethod('setPaddleChoice', false);
       await _pushKeyer();
       await _keyerChannel.invokeMethod('start');

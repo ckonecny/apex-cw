@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/strings.dart';
 import '../util/key_adapter_state.dart';
 import '../util/paddle_layout.dart';
 import 'widgets/setting_rows.dart';
+import '../keyer/channels.dart';
 
 /// Settings card for the keyer: mode, touch paddle layout, CurtisB timing
 /// (Iambic B), AutoChar spacing or the straight key's start speed, and the
@@ -19,7 +19,7 @@ class KeyerSettingsCard extends StatefulWidget {
 }
 
 class _KeyerSettingsCardState extends State<KeyerSettingsCard> {
-  static const _settings = MethodChannel('at.oe1cko.nextcwtrainer/settings');
+  static const _settings = Channels.settings;
 
   int _keyerMode = 0; // 0=Iambic A, 1=Iambic B, 2=Ultimatic, 3=Non-Squeeze, 4=Straight
   // "CurtisB DitT%"/"CurtisB DahT%" (M32 defaults 75/45): only meaningful in

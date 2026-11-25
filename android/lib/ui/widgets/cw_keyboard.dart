@@ -4,11 +4,11 @@
 // practiced charset are drawn inactive and do nothing. A punctuation row
 // and prosign keys only appear when the charset contains any of them.
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/nav_strip.dart';
 import '../../content/cw_content.dart' show kProsignTokens;
 import 'app_ui.dart';
+import '../../keyer/channels.dart';
 
 const kKeyboardPunct = ['.', ',', ':', '-', '/', '=', '?', '@', '+'];
 const kKeyboardProsigns = kProsignTokens;
@@ -111,7 +111,7 @@ class CwKeyboard extends StatelessWidget {
   }
 }
 
-const _hapticChannel = MethodChannel('at.oe1cko.nextcwtrainer/settings');
+const _hapticChannel = Channels.settings;
 
 /// Key vibration: a short native buzz; Flutter's HapticFeedback is only a
 /// faint tick on Android 17.

@@ -12,7 +12,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../content/training_profile.dart';
@@ -29,6 +28,8 @@ import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart' show cwGenEvents;
 import 'widgets/pinch_zoom_text.dart';
 import 'widgets/setting_rows.dart';
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 part 'own_text_player_views.dart';
 
@@ -86,8 +87,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
   // setState for the view extension in own_text_player_views.dart.
   void _update(VoidCallback fn) => setState(fn);
 
-  static const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _genChannel = Channels.generator;
 
   late OwnTextSettings _s;
   TextPassage? _p;
@@ -153,9 +153,7 @@ class _OwnTextPlayerScreenState extends State<OwnTextPlayerScreen> {
     try {
       _s = await OwnTextSettings.load();
       final prefs = await SharedPreferences.getInstance();
-      await _toneChannel.invokeMethod('setFreq', prefs.getInt('pitch') ?? 600);
-      await _toneChannel.invokeMethod('setEnvelopeMs',
-          ((prefs.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
+      await pushToneSettings(prefs);
       await _pushSpeed();
       final p = TextPassage.parse(await widget.store.body(widget.info.id));
       _buildParas(p);

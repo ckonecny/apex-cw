@@ -16,6 +16,7 @@ import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart';
 import 'widgets/interference_button.dart';
 import 'widgets/keyer_status_button.dart';
+import '../keyer/channels.dart';
 
 /// Interactive Morse tree (dichotomic table): a dit goes left, a dah right,
 /// the character sits where its code ends. Drawn from MorseDecoder.table, so
@@ -31,9 +32,9 @@ class MorseTreeScreen extends StatefulWidget {
 }
 
 class _MorseTreeScreenState extends State<MorseTreeScreen> {
-  static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
-  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
+  static const _genChannel   = Channels.generator;
+  static const _toneChannel  = Channels.tone;
+  static const _symbolStream = Channels.symbols;
 
   StreamSubscription? _sub;
   int _wpm = 20;

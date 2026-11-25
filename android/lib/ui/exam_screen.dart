@@ -11,7 +11,6 @@ import 'widgets/keyer_status_button.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../content/exam_grading.dart';
@@ -27,6 +26,8 @@ import 'exam_picker.dart';
 import 'exam_send_screen.dart';
 import 'widgets/app_ui.dart';
 import 'widgets/char_playback_overlay.dart' show cwGenEvents;
+import '../keyer/channels.dart';
+import '../keyer/engine_config.dart';
 
 enum _Phase { setup, listen, correct, result }
 
@@ -44,8 +45,7 @@ class ExamScreen extends StatefulWidget {
 }
 
 class _ExamScreenState extends State<ExamScreen> {
-  static const _genChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _toneChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _genChannel = Channels.generator;
 
   ExamProfile _profile = examAt12;
   ExamProfile _custom = ExamProfile.custom();
@@ -106,9 +106,7 @@ class _ExamScreenState extends State<ExamScreen> {
   /// Everything the shared native engine needs for this screen.
   Future<void> _pushAudio() async {
     final prefs = await SharedPreferences.getInstance();
-    await _toneChannel.invokeMethod('setFreq', prefs.getInt('pitch') ?? 600);
-    await _toneChannel.invokeMethod('setEnvelopeMs',
-        ((prefs.getInt('toneSoftness') ?? 4).clamp(0, 8) + 1).toDouble());
+    await pushToneSettings(prefs);
     await _genChannel.invokeMethod('setWpm', _profile.charWpm);
     await _genChannel.invokeMethod('setInterCharSpace', _profile.interChar);
     await _genChannel.invokeMethod('setInterWordSpace', _profile.interWord);

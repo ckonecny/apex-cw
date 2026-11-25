@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../l10n/strings.dart';
 import '../theme/app_colors.dart';
 import '../util/bluetooth_hint.dart';
 import '../util/settings_events.dart';
 import 'widgets/setting_rows.dart';
+import '../keyer/channels.dart';
 
 /// Audio output: which device plays the sidetone, and the Bluetooth latency
 /// hint. Shown in the settings and on its own page (Bluetooth hint above the
@@ -20,7 +20,7 @@ class AudioOutputCard extends StatefulWidget {
 }
 
 class _AudioOutputCardState extends State<AudioOutputCard> {
-  static const _settings = MethodChannel('at.oe1cko.nextcwtrainer/settings');
+  static const _settings = Channels.settings;
 
   // Kind values match AudioRouteManager.kt's KIND_* constants exactly.
   int _kindPref = 0;

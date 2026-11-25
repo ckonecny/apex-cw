@@ -36,7 +36,10 @@ questions: `docs/STATUS.md`. Read `docs/STATUS.md` before starting new work.
    entry. Forgetting this is the single most common bug class so far
    (hit and fixed repeatedly: wpm, pitch, spacing, keyer mode, CurtisB).
    `android/test/engine_config_test.dart` checks this: a new screen that
-   uses the keyer or generator goes into one of its lists.
+   uses the keyer or generator goes into one of its lists, and into
+   `android/test/engine_trace_test.dart`. Channels come from
+   `lib/keyer/channels.dart`, tone/keyer settings from
+   `lib/keyer/engine_config.dart`.
 3. **Prosigns are two-character mnemonic keys** ("KA", "KN", "SK", "AS",
    "VE", "BK"), not the firmware's single-uppercase-letter convention —
    `playWord()` uppercases all text before parsing, so the firmware's

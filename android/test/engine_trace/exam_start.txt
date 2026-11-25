@@ -1,0 +1,23 @@
+-- open
+settings.setKeepScreenOn(true)
+cw_gen_events.listen(null)
+cw_keyer.setMode(3)
+cw_keyer.setCurtisBTiming({dit: 60, dah: 30})
+cw_keyer.setAcs(2)
+cw_keyer.setWpm(23)
+cw_tone.setEnvelopeMs(3.0)
+cw_tone.setFreq(823)
+cw_keyer.start(null)
+-- act
+cw_generator.stopOne(null)
+cw_keyer.stop(null)
+cw_tone.setFreq(777)
+cw_tone.setEnvelopeMs(3.0)
+cw_generator.setWpm(12)
+cw_generator.setInterCharSpace(3)
+cw_generator.setInterWordSpace(7)
+cw_generator.playOne(<text>)
+-- close
+cw_generator.stopOne(null)
+cw_gen_events.cancel(null)
+settings.setKeepScreenOn(false)

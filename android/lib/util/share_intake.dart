@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../ui/own_texts_screen.dart';
+import '../keyer/channels.dart';
 
 /// Text shared into the app from another app's Share menu (issue #24). Native
 /// code (MainActivity.kt) holds the text; this takes it, on start and
 /// whenever a new share arrives while the app is running, and opens Own texts
 /// with the import dialog.
 class ShareIntake {
-  static const _channel = MethodChannel('at.oe1cko.nextcwtrainer/share');
+  static const _channel = Channels.share;
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   static void init() {

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../keyer/channels.dart';
 
 /// Whether a real key/paddle on an adapter is in use (#95), and what the
 /// on-screen paddles do about it. The native side reports a physical input
@@ -12,8 +13,8 @@ class KeyAdapterState {
   KeyAdapterState._();
 
   static const prefKey = 'hideSoftKeysOnAdapter';
-  static const _settings = MethodChannel('at.oe1cko.nextcwtrainer/settings');
-  static const _events = EventChannel('at.oe1cko.nextcwtrainer/key_adapter_events');
+  static const _settings = Channels.settings;
+  static const _events = Channels.keyAdapterEvents;
 
   /// True while a key adapter is detected.
   static final detected = ValueNotifier<bool>(false);

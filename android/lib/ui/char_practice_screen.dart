@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../content/cw_content.dart' show kochPlayText;
 import '../content/echo_suggestions.dart';
@@ -21,6 +20,7 @@ import 'widgets/keyer_status_button.dart';
 import 'widgets/paddle_widgets.dart';
 import 'widgets/setting_rows.dart';
 import 'widgets/slider_row.dart';
+import '../keyer/channels.dart';
 
 /// Long press on a Koch character in Hören or Geben (user request 2026-09-27,
 /// replaces the fixedTarget echo drill): the same tile as the tap playback,
@@ -36,13 +36,13 @@ class CharPracticeScreen extends StatefulWidget {
 }
 
 class _CharPracticeScreenState extends State<CharPracticeScreen> {
-  static const _genChannel   = MethodChannel('at.oe1cko.nextcwtrainer/cw_generator');
-  static const _keyerChannel = MethodChannel('at.oe1cko.nextcwtrainer/cw_keyer');
-  static const _symbolStream = EventChannel('at.oe1cko.nextcwtrainer/cw_symbols');
-  static const _straightWpmStream = EventChannel('at.oe1cko.nextcwtrainer/cw_straight_wpm');
+  static const _genChannel   = Channels.generator;
+  static const _keyerChannel = Channels.keyer;
+  static const _symbolStream = Channels.symbols;
+  static const _straightWpmStream = Channels.straightWpm;
   StreamSubscription? _wpmSub;
   int _measuredWpm = 15;   // straight key: measured speed (display and timing only)
-  static const _toneChannel  = MethodChannel('at.oe1cko.nextcwtrainer/cw_tone');
+  static const _toneChannel  = Channels.tone;
 
   // Settings, read from the Geben profile and the global keyer/tone prefs
   // (same keys as the Echo Trainer).
